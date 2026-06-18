@@ -1,0 +1,49 @@
+export const PLACE_CATEGORIES = [
+  { value: "cafe", label_en: "Cafe", label_ko: "카페", icon: "☕" },
+  { value: "restaurant", label_en: "Restaurant", label_ko: "식당", icon: "🍽️" },
+  { value: "bar", label_en: "Bar", label_ko: "술집", icon: "🍺" },
+  { value: "market", label_en: "Market", label_ko: "시장", icon: "🛒" },
+  { value: "accommodation", label_en: "Accommodation", label_ko: "숙소", icon: "🏨" },
+  { value: "activity", label_en: "Activity", label_ko: "체험", icon: "🎭" },
+  { value: "health", label_en: "Health", label_ko: "건강", icon: "🏥" },
+  { value: "shopping", label_en: "Shopping", label_ko: "쇼핑", icon: "🛍️" },
+];
+
+export const GUIDE_CATEGORIES = [
+  { value: "dining", label_en: "Dining Etiquette", label_ko: "식사 예절", icon: "🍜" },
+  { value: "transportation", label_en: "Transportation", label_ko: "교통", icon: "🚇" },
+  { value: "social", label_en: "Social Manners", label_ko: "사회 예절", icon: "🤝" },
+  { value: "daily_life", label_en: "Daily Life", label_ko: "일상생활", icon: "🏠" },
+  { value: "admin", label_en: "Housing & Admin", label_ko: "행정", icon: "📋" },
+  { value: "language", label_en: "Language Tips", label_ko: "언어", icon: "💬" },
+];
+
+export const INTEREST_ICONS: Record<string, string> = {
+  food: "🍜",
+  language: "💬",
+  culture: "🎭",
+  hiking: "🏔️",
+  music: "🎵",
+  art: "🎨",
+  sport: "⚽",
+  travel: "✈️",
+  coffee: "☕",
+  nightlife: "🌙",
+  cooking: "👨‍🍳",
+  photography: "📷",
+};
+
+export const LANGUAGES = [
+  { value: "en", label: "English" },
+  { value: "ko", label: "한국어" },
+  { value: "ja", label: "日本語" },
+  { value: "zh", label: "中文" },
+  { value: "fr", label: "Français" },
+  { value: "es", label: "Español" },
+  { value: "de", label: "Deutsch" },
+  { value: "vi", label: "Tiếng Việt" },
+  { value: "th", label: "ภาษาไทย" },
+];
+
+export const APP_NAME = "Localoop Korea";
+export const APP_TAGLINE = "Dig into local Korea";

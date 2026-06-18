@@ -1,0 +1,132 @@
+{
+  "app": {
+    "name": "Localoop Korea",
+    "tagline": "Dig into local Korea"
+  },
+  "nav": {
+    "home": "Home",
+    "places": "Places",
+    "guides": "Guides",
+    "food": "Food",
+    "meetups": "Meetups",
+    "community": "Community",
+    "profile": "Profile",
+    "settings": "Settings",
+    "saved": "Saved"
+  },
+  "auth": {
+    "login": "Log in",
+    "signup": "Sign up",
+    "logout": "Log out",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "continueWith": "Continue with"
+  },
+  "onboarding": {
+    "title": "Welcome to Localoop",
+    "subtitle": "Let's set up your profile",
+    "step": "Step {{current}} of {{total}}",
+    "typeTitle": "I am...",
+    "foreigner": "A foreigner in Korea",
+    "foreignerDesc": "I want to discover local Korea, get practical help, and meet locals",
+    "korean": "Korean",
+    "koreanDesc": "I want to meet foreigners, practice languages, and share my local knowledge",
+    "regionTitle": "Where are you based?",
+    "interestsTitle": "What are you into?",
+    "interestsSubtitle": "Pick at least 3 interests",
+    "bioTitle": "Introduce yourself",
+    "displayName": "Display name",
+    "bio": "Short bio",
+    "bioPlaceholder": "Tell others a bit about yourself...",
+    "skip": "Skip for now",
+    "next": "Next",
+    "finish": "Finish setup"
+  },
+  "home": {
+    "greeting": "Hey there",
+    "nearYou": "Near you in",
+    "featuredPlaces": "Foreigner-friendly places",
+    "guides": "Life guides",
+    "food": "Local food picks",
+    "meetups": "Upcoming meetups",
+    "people": "People nearby"
+  },
+  "places": {
+    "title": "Places",
+    "subtitle": "Foreigner-friendly spots near you",
+    "allCategories": "All",
+    "englishSupport": "English support",
+    "cardPayment": "Card payment",
+    "soloFriendly": "Solo friendly",
+    "reservationDifficulty": "Reservation",
+    "easy": "Easy",
+    "moderate": "Moderate",
+    "hard": "Hard"
+  },
+  "guides": {
+    "title": "Life Guides",
+    "subtitle": "Navigate life in Korea",
+    "beginner": "Beginner",
+    "intermediate": "Intermediate",
+    "advanced": "Advanced"
+  },
+  "food": {
+    "title": "Food & Menus",
+    "subtitle": "Discover what to eat",
+    "spiceLevel": "Spice level",
+    "howToOrder": "How to order",
+    "localTip": "Local tip",
+    "vegetarian": "Vegetarian friendly"
+  },
+  "meetups": {
+    "title": "Meetups",
+    "subtitle": "Meet people, share experiences",
+    "create": "Create meetup",
+    "join": "Join",
+    "joined": "Joined",
+    "full": "Full",
+    "open": "Open",
+    "cancelled": "Cancelled",
+    "participants": "{{count}} / {{max}} going",
+    "hosted_by": "Hosted by",
+    "when": "When",
+    "where": "Where"
+  },
+  "community": {
+    "title": "Community",
+    "subtitle": "Find people near you",
+    "connect": "Connect",
+    "connected": "Connected",
+    "pending": "Pending",
+    "foreigners": "Foreigners",
+    "koreans": "Koreans",
+    "allUsers": "Everyone"
+  },
+  "profile": {
+    "editProfile": "Edit profile",
+    "savedItems": "Saved items",
+    "joinedMeetups": "Meetups joined",
+    "connections": "Connections",
+    "memberSince": "Member since"
+  },
+  "common": {
+    "seeAll": "See all",
+    "loading": "Loading...",
+    "noResults": "No results found",
+    "error": "Something went wrong",
+    "retry": "Try again",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "share": "Share",
+    "back": "Back",
+    "viewAll": "View all",
+    "savedSuccess": "Saved!",
+    "unsaved": "Removed from saved"
+  }
+}
