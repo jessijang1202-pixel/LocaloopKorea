@@ -243,18 +243,22 @@ function HeroCards({ d }: { d: LandingData }) {
         <div className="lp-container">
           <div className="lp-showcase-grid">
             {cards.map((c) => (
-              <div key={c.name} className="lp-hero-card" style={{ background:c.bg, borderColor:c.border }}>
-                <div className="lp-hero-card-icon">{c.emoji}</div>
-                <div style={{ flex:1, minWidth:0 }}>
-                  <p style={{ fontWeight:700, fontSize:14, color:TX, marginBottom:3, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
-                    {c.name}
-                  </p>
-                  <p style={{ fontSize:12, color:MU }}>📍 {c.area}</p>
-                </div>
+              <div key={c.name} style={{
+                background:c.bg, border:`2px solid ${c.border}`,
+                borderRadius:18, padding:"16px 14px",
+                display:"flex", flexDirection:"column", gap:8,
+              }}>
+                <span style={{ fontSize:26 }}>{c.emoji}</span>
+                <p style={{
+                  fontWeight:800, fontSize:13, color:TX, lineHeight:1.3,
+                  display:"-webkit-box", WebkitLineClamp:2, WebkitBoxOrient:"vertical",
+                  overflow:"hidden",
+                } as React.CSSProperties}>{c.name}</p>
+                <p style={{ fontSize:11, color:MU }}>📍 {c.area}</p>
                 <span style={{
-                  fontSize:11, fontWeight:700, padding:"4px 10px", borderRadius:999,
+                  fontSize:10, fontWeight:700, padding:"3px 8px", borderRadius:999,
                   background:"white", border:`1px solid ${c.border}`, color:c.tagColor,
-                  flexShrink:0, whiteSpace:"nowrap",
+                  alignSelf:"flex-start",
                 }}>{c.tag}</span>
               </div>
             ))}

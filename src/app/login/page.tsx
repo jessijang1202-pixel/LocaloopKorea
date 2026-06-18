@@ -8,66 +8,114 @@ export default function LoginPage() {
   const [state, action, pending] = useActionState(loginAction, { error: "" });
 
   return (
-    <main className="min-h-dvh flex flex-col px-6 pt-12 pb-8 max-w-[430px] mx-auto">
-      <Link href="/" className="text-[var(--muted-foreground)] text-sm mb-8 inline-block">
-        ← Back
-      </Link>
+    <main style={{
+      minHeight: "100dvh",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      background: "#f0fdfe",
+      padding: "24px 20px",
+    }}>
+      <div style={{
+        width: "100%",
+        maxWidth: 460,
+        background: "#ffffff",
+        borderRadius: 28,
+        padding: "48px 40px",
+        boxShadow: "0 4px 40px rgba(6,182,212,0.10)",
+        border: "1px solid #e2f4f7",
+      }}>
+        {/* Logo */}
+        <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:32 }}>
+          <span style={{
+            width:38, height:38, borderRadius:11, fontSize:18,
+            background:"linear-gradient(135deg,#06B6D4,#0891B2)",
+            display:"flex", alignItems:"center", justifyContent:"center",
+          }}>🗺️</span>
+          <span style={{ fontSize:18, fontWeight:900, color:"#0f172a", letterSpacing:"-0.02em" }}>
+            Localoop<span style={{ color:"#06B6D4" }}>Korea</span>
+          </span>
+        </div>
 
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-[var(--foreground)] mb-1">Welcome back</h1>
-        <p className="text-[var(--muted-foreground)] text-sm">Log in to your Localoop account</p>
+        <div style={{ marginBottom:28 }}>
+          <h1 style={{ fontSize:24, fontWeight:800, color:"#0f172a", marginBottom:6 }}>Welcome back</h1>
+          <p style={{ fontSize:14, color:"#64748b" }}>Log in to your Localoop account</p>
+        </div>
+
+        <form action={action} style={{ display:"flex", flexDirection:"column", gap:16 }}>
+          <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+            <label htmlFor="email" style={{ fontSize:13, fontWeight:600, color:"#0f172a" }}>
+              Email
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              placeholder="you@example.com"
+              style={{
+                height:48, padding:"0 16px", borderRadius:14,
+                border:"1.5px solid #e2f4f7", background:"#f8fbfc",
+                color:"#0f172a", fontSize:15, outline:"none",
+              }}
+            />
+          </div>
+
+          <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+            <label htmlFor="password" style={{ fontSize:13, fontWeight:600, color:"#0f172a" }}>
+              Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autoComplete="current-password"
+              required
+              placeholder="••••••••"
+              style={{
+                height:48, padding:"0 16px", borderRadius:14,
+                border:"1.5px solid #e2f4f7", background:"#f8fbfc",
+                color:"#0f172a", fontSize:15, outline:"none",
+              }}
+            />
+          </div>
+
+          {state?.error && (
+            <p style={{ fontSize:13, color:"#ef4444", background:"#fff1f2", borderRadius:12, padding:"12px 16px" }}>
+              {state.error}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={pending}
+            style={{
+              marginTop:4, height:50, borderRadius:16,
+              background:"linear-gradient(135deg,#06B6D4,#0891B2)",
+              color:"white", fontWeight:700, fontSize:15,
+              border:"none", cursor:"pointer",
+              opacity: pending ? 0.6 : 1,
+              transition:"opacity 0.15s",
+            }}
+          >
+            {pending ? "Logging in…" : "Log in"}
+          </button>
+        </form>
+
+        <p style={{ textAlign:"center", fontSize:13, color:"#64748b", marginTop:24 }}>
+          Don{"'"}t have an account?{" "}
+          <Link href="/signup" style={{ color:"#06B6D4", fontWeight:600, textDecoration:"none" }}>
+            Sign up
+          </Link>
+        </p>
+
+        <div style={{ textAlign:"center", marginTop:16 }}>
+          <Link href="/" style={{ fontSize:12, color:"#94a3b8", textDecoration:"none" }}>
+            ← Back to home
+          </Link>
+        </div>
       </div>
-
-      <form action={action} className="flex flex-col gap-4 flex-1">
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="email" className="text-sm font-medium text-[var(--foreground)]">
-            Email
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-            placeholder="you@example.com"
-            className="h-12 px-4 rounded-xl border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] text-base outline-none focus:border-[var(--primary)] transition-colors placeholder:text-[var(--muted-foreground)]"
-          />
-        </div>
-
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="password" className="text-sm font-medium text-[var(--foreground)]">
-            Password
-          </label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            autoComplete="current-password"
-            required
-            placeholder="••••••••"
-            className="h-12 px-4 rounded-xl border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] text-base outline-none focus:border-[var(--primary)] transition-colors placeholder:text-[var(--muted-foreground)]"
-          />
-        </div>
-
-        {state?.error && (
-          <p className="text-sm text-red-500 bg-red-50 rounded-xl px-4 py-3">{state.error}</p>
-        )}
-
-        <button
-          type="submit"
-          disabled={pending}
-          className="mt-2 h-12 rounded-2xl bg-[var(--primary)] text-white font-semibold text-base disabled:opacity-60 transition-opacity hover:opacity-90 active:opacity-80"
-        >
-          {pending ? "Logging in…" : "Log in"}
-        </button>
-      </form>
-
-      <p className="text-center text-sm text-[var(--muted-foreground)] mt-6">
-        Don't have an account?{" "}
-        <Link href="/signup" className="text-[var(--primary)] font-medium">
-          Sign up
-        </Link>
-      </p>
     </main>
   );
 }

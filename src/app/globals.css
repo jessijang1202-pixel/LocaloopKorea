@@ -633,26 +633,15 @@ html {
   .lp-grid-2  { gap: 96px; }
 }
 
-/* 9-card showcase strip below hero */
+/* 9-card showcase — always 3-column grid */
 .lp-showcase-grid {
-  display: flex;
-  overflow-x: auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
-  padding-bottom: 4px;
-  scrollbar-width: none;
 }
-.lp-showcase-grid::-webkit-scrollbar { display: none; }
-.lp-showcase-grid > * { flex-shrink: 0; min-width: 280px; }
 @media (min-width: 768px) {
-  .lp-showcase-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    overflow-x: visible;
-  }
-  .lp-showcase-grid > * { min-width: 0; }
+  .lp-showcase-grid { gap: 16px; }
 }
-.lp-showcase-grid .lp-hero-card { margin-bottom: 0; }
 
 /* Landing hero grid ordering: map first on mobile, right on PC */
 .lp-hero-left  { order: 2; }
