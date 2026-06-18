@@ -6,6 +6,7 @@ import { StepTypeSelect } from "@/components/onboarding/StepTypeSelect";
 import { StepRegionSelect } from "@/components/onboarding/StepRegionSelect";
 import { StepInterestsSelect } from "@/components/onboarding/StepInterestsSelect";
 import { StepBio } from "@/components/onboarding/StepBio";
+import { OnboardingHero } from "@/components/onboarding/OnboardingHero";
 import { SEED_REGIONS, SEED_INTERESTS } from "@/data/seed";
 import { saveOnboarding } from "./actions";
 
@@ -42,64 +43,85 @@ export default function OnboardingPage() {
   }
 
   return (
-    <main className="min-h-dvh flex flex-col">
-      {/* Progress bar */}
-      <div className="h-1 bg-[var(--muted)]">
-        <div
-          className="h-full bg-[var(--primary)] transition-all duration-300"
-          style={{ width: `${(step / TOTAL_STEPS) * 100}%` }}
-        />
+    <main style={{ minHeight:"100dvh", display:"flex", flexDirection:"column" }}
+      className="md:flex-row">
+
+      {/* ── Left panel: progress + step content ── */}
+      <div style={{ flex:1, display:"flex", flexDirection:"column" }}>
+        {/* Progress bar */}
+        <div style={{ height:4, background:"var(--muted)" }}>
+          <div
+            style={{
+              height:"100%",
+              background:"var(--primary)",
+              width:`${(step / TOTAL_STEPS) * 100}%`,
+              transition:"width 0.3s ease",
+            }}
+          />
+        </div>
+
+        {/* Hero image — mobile only (top) */}
+        <div className="md:hidden" style={{ height:240, flexShrink:0 }}>
+          <OnboardingHero />
+        </div>
+
+        {/* Step counter */}
+        <div style={{ padding:"16px 24px 8px" }}>
+          <p style={{ fontSize:12, color:"var(--muted-foreground)" }}>
+            Step {step} of {TOTAL_STEPS}
+          </p>
+        </div>
+
+        {/* Step content */}
+        {step === 1 && (
+          <StepTypeSelect
+            value={data.userType}
+            onChange={(userType) => {
+              setData((d) => ({ ...d, userType }));
+              next();
+            }}
+          />
+        )}
+        {step === 2 && (
+          <StepRegionSelect
+            regions={SEED_REGIONS}
+            value={data.regionId}
+            onChange={(regionId) => {
+              setData((d) => ({ ...d, regionId }));
+              next();
+            }}
+            onBack={() => setStep(1)}
+          />
+        )}
+        {step === 3 && (
+          <StepInterestsSelect
+            interests={SEED_INTERESTS}
+            value={data.interestIds}
+            onChange={(interestIds) => {
+              setData((d) => ({ ...d, interestIds }));
+              next();
+            }}
+            onBack={() => setStep(2)}
+          />
+        )}
+        {step === 4 && (
+          <StepBio
+            value={{ displayName: data.displayName, bio: data.bio }}
+            onChange={(vals) => setData((d) => ({ ...d, ...vals }))}
+            onBack={() => setStep(3)}
+            onFinish={() => finish(data)}
+            saving={saving}
+          />
+        )}
       </div>
 
-      <div className="px-6 pt-4 pb-2">
-        <p className="text-xs text-[var(--muted-foreground)]">
-          Step {step} of {TOTAL_STEPS}
-        </p>
+      {/* ── Right panel: hero (PC only) ── */}
+      <div
+        className="hidden md:block"
+        style={{ width:"45%", maxWidth:540, position:"sticky", top:0, height:"100dvh", overflow:"hidden" }}
+      >
+        <OnboardingHero />
       </div>
-
-      {step === 1 && (
-        <StepTypeSelect
-          value={data.userType}
-          onChange={(userType) => {
-            setData((d) => ({ ...d, userType }));
-            next();
-          }}
-        />
-      )}
-
-      {step === 2 && (
-        <StepRegionSelect
-          regions={SEED_REGIONS}
-          value={data.regionId}
-          onChange={(regionId) => {
-            setData((d) => ({ ...d, regionId }));
-            next();
-          }}
-          onBack={() => setStep(1)}
-        />
-      )}
-
-      {step === 3 && (
-        <StepInterestsSelect
-          interests={SEED_INTERESTS}
-          value={data.interestIds}
-          onChange={(interestIds) => {
-            setData((d) => ({ ...d, interestIds }));
-            next();
-          }}
-          onBack={() => setStep(2)}
-        />
-      )}
-
-      {step === 4 && (
-        <StepBio
-          value={{ displayName: data.displayName, bio: data.bio }}
-          onChange={(vals) => setData((d) => ({ ...d, ...vals }))}
-          onBack={() => setStep(3)}
-          onFinish={() => finish(data)}
-          saving={saving}
-        />
-      )}
     </main>
   );
 }
