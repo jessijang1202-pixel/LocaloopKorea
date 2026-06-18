@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 const COLORS: Record<string, string> = {
   place:  "#C2410C",
   food:   "#0F766E",
@@ -9,9 +7,8 @@ const COLORS: Record<string, string> = {
 
 type IconDef = { cat: string; size: number; left: number; top: number; delay: number };
 
-// food > place > guide > meetup (count), more icons = smaller size, meetup = largest
+// food > place > guide > meetup (count), more = smaller, meetup = largest
 const ICONS: IconDef[] = [
-  // food: 7 icons, size 14 (most = smallest)
   { cat:"food",   size:14, left:22, top:36, delay:0.0  },
   { cat:"food",   size:14, left:46, top:20, delay:0.5  },
   { cat:"food",   size:14, left:70, top:28, delay:1.0  },
@@ -19,17 +16,14 @@ const ICONS: IconDef[] = [
   { cat:"food",   size:14, left:54, top:52, delay:0.8  },
   { cat:"food",   size:14, left:62, top:70, delay:1.3  },
   { cat:"food",   size:14, left:83, top:53, delay:0.6  },
-  // place: 5 icons, size 18
   { cat:"place",  size:18, left:34, top:32, delay:0.2  },
   { cat:"place",  size:18, left:66, top:24, delay:0.7  },
   { cat:"place",  size:18, left:42, top:60, delay:1.2  },
   { cat:"place",  size:18, left:74, top:60, delay:1.7  },
   { cat:"place",  size:18, left:26, top:68, delay:0.4  },
-  // guide: 3 icons, size 23
   { cat:"guide",  size:23, left:50, top:34, delay:0.15 },
   { cat:"guide",  size:23, left:24, top:50, delay:0.9  },
   { cat:"guide",  size:23, left:78, top:68, delay:1.6  },
-  // meetup: 2 icons, size 30 (fewest = largest)
   { cat:"meetup", size:30, left:37, top:49, delay:0.6  },
   { cat:"meetup", size:30, left:62, top:43, delay:1.4  },
 ];
@@ -51,34 +45,36 @@ function PinSVG({ color, size }: { color: string; size: number }) {
 
 export function OnboardingHero() {
   return (
-    <div style={{ position:"relative", width:"100%", height:"100%", minHeight:"220px", overflow:"hidden" }}>
-      <Image
-        src="/seoul-map.jpeg"
-        alt="Seoul map"
-        fill
-        style={{ objectFit:"cover", objectPosition:"center 38%" }}
-        priority
-      />
-
-      {/* Bottom fade for mobile blend */}
+    <div style={{
+      position: "relative",
+      width: "100%",
+      height: "100%",
+      minHeight: 220,
+      overflow: "hidden",
+      backgroundImage: "url('/seoul-map.jpeg')",
+      backgroundSize: "cover",
+      backgroundPosition: "center 38%",
+    }}>
+      {/* Bottom fade */}
       <div style={{
-        position:"absolute", bottom:0, left:0, right:0, height:72,
-        background:"linear-gradient(to bottom, transparent, rgba(255,255,255,0.95) 85%, #ffffff)",
-        pointerEvents:"none",
+        position: "absolute", bottom: 0, left: 0, right: 0, height: 72,
+        background: "linear-gradient(to bottom, transparent, rgba(255,255,255,0.95) 85%, #ffffff)",
+        pointerEvents: "none",
+        zIndex: 20,
       }} />
 
-      {/* Floating location pins */}
+      {/* Floating pins */}
       {ICONS.map((icon, i) => (
         <div
           key={i}
           style={{
-            position:"absolute",
-            left:`${icon.left}%`,
-            top:`${icon.top}%`,
-            animation:"pin-bob 2.6s ease-in-out infinite",
-            animationDelay:`${icon.delay}s`,
-            filter:"drop-shadow(0 2px 5px rgba(0,0,0,0.28))",
-            zIndex:10,
+            position: "absolute",
+            left: `${icon.left}%`,
+            top: `${icon.top}%`,
+            animation: "pin-bob 2.6s ease-in-out infinite",
+            animationDelay: `${icon.delay}s`,
+            filter: "drop-shadow(0 2px 5px rgba(0,0,0,0.28))",
+            zIndex: 10,
           }}
         >
           <PinSVG color={COLORS[icon.cat]} size={icon.size} />
