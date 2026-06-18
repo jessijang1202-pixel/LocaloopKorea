@@ -1,15 +1,18 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fafaf8;
-  --foreground: #1a1a1a;
-  --primary: #e85d26;
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --primary: #06B6D4;
+  --primary-dark: #0891B2;
+  --primary-light: #e0f9fc;
   --primary-foreground: #ffffff;
-  --secondary: #f5f0ea;
-  --muted: #f0ece6;
-  --muted-foreground: #6b6560;
-  --border: #e8e2da;
+  --secondary: #f0fdfe;
+  --muted: #f8fbfc;
+  --muted-foreground: #64748b;
+  --border: #e2f4f7;
   --card: #ffffff;
+  --accent: #22d3ee;
 }
 
 @theme inline {
@@ -22,17 +25,7 @@
   --color-card: var(--card);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #141210;
-    --foreground: #f0ece6;
-    --secondary: #1e1c18;
-    --muted: #252220;
-    --muted-foreground: #9a9490;
-    --border: #2a2822;
-    --card: #1a1814;
-  }
-}
+/* Dark mode: intentionally minimal — landing page stays light */
 
 * {
   box-sizing: border-box;
