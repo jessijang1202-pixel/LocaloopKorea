@@ -43,36 +43,33 @@ export default function OnboardingPage() {
   }
 
   return (
-    <main style={{ minHeight:"100dvh", display:"flex", flexDirection:"column" }}
-      className="md:flex-row">
-
+    <main className="ob-shell">
       {/* ── Left panel: progress + step content ── */}
-      <div style={{ flex:1, display:"flex", flexDirection:"column" }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
         {/* Progress bar */}
-        <div style={{ height:4, background:"var(--muted)" }}>
+        <div style={{ height: 4, background: "var(--muted)" }}>
           <div
             style={{
-              height:"100%",
-              background:"var(--primary)",
-              width:`${(step / TOTAL_STEPS) * 100}%`,
-              transition:"width 0.3s ease",
+              height: "100%",
+              background: "var(--primary)",
+              width: `${(step / TOTAL_STEPS) * 100}%`,
+              transition: "width 0.3s ease",
             }}
           />
         </div>
 
-        {/* Hero image — mobile only (top) */}
-        <div className="md:hidden" style={{ height:240, flexShrink:0 }}>
+        {/* Hero image — mobile only */}
+        <div className="ob-hero-mobile">
           <OnboardingHero />
         </div>
 
         {/* Step counter */}
-        <div style={{ padding:"16px 24px 8px" }}>
-          <p style={{ fontSize:12, color:"var(--muted-foreground)" }}>
+        <div style={{ padding: "16px 24px 8px" }}>
+          <p style={{ fontSize: 12, color: "var(--muted-foreground)" }}>
             Step {step} of {TOTAL_STEPS}
           </p>
         </div>
 
-        {/* Step content */}
         {step === 1 && (
           <StepTypeSelect
             value={data.userType}
@@ -116,10 +113,7 @@ export default function OnboardingPage() {
       </div>
 
       {/* ── Right panel: hero (PC only) ── */}
-      <div
-        className="hidden md:block"
-        style={{ width:"45%", maxWidth:540, position:"sticky", top:0, height:"100dvh", overflow:"hidden" }}
-      >
+      <div className="ob-hero-desktop">
         <OnboardingHero />
       </div>
     </main>
