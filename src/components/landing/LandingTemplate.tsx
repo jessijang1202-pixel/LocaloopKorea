@@ -74,23 +74,143 @@ function Nav({ d }: { d: LandingData }) {
   );
 }
 
+// ── Seoul Map Panel ───────────────────────────────────────────
+const MAP_PIN_COLORS: Record<string,string> = {
+  place:  "#C2410C",
+  food:   "#0F766E",
+  guide:  "#1D4ED8",
+  meetup: "#6D28D9",
+};
+type PinDef = { cat:string; size:number; left:number; top:number; delay:number };
+const MAP_PINS: PinDef[] = [
+  // food: 21 icons, size 12
+  { cat:"food", size:12, left:12, top:22, delay:0.00 },
+  { cat:"food", size:12, left:26, top:18, delay:0.12 },
+  { cat:"food", size:12, left:40, top:24, delay:0.24 },
+  { cat:"food", size:12, left:56, top:16, delay:0.36 },
+  { cat:"food", size:12, left:72, top:20, delay:0.48 },
+  { cat:"food", size:12, left:16, top:38, delay:0.60 },
+  { cat:"food", size:12, left:30, top:42, delay:0.72 },
+  { cat:"food", size:12, left:44, top:36, delay:0.84 },
+  { cat:"food", size:12, left:58, top:40, delay:0.96 },
+  { cat:"food", size:12, left:70, top:34, delay:1.08 },
+  { cat:"food", size:12, left:84, top:38, delay:1.20 },
+  { cat:"food", size:12, left:14, top:58, delay:1.32 },
+  { cat:"food", size:12, left:28, top:54, delay:1.44 },
+  { cat:"food", size:12, left:42, top:60, delay:1.56 },
+  { cat:"food", size:12, left:56, top:56, delay:1.68 },
+  { cat:"food", size:12, left:68, top:62, delay:1.80 },
+  { cat:"food", size:12, left:82, top:56, delay:1.92 },
+  { cat:"food", size:12, left:20, top:74, delay:2.04 },
+  { cat:"food", size:12, left:36, top:70, delay:2.16 },
+  { cat:"food", size:12, left:52, top:76, delay:2.28 },
+  { cat:"food", size:12, left:66, top:72, delay:2.40 },
+  // place: 15 icons, size 16
+  { cat:"place", size:16, left:20, top:28, delay:0.06 },
+  { cat:"place", size:16, left:36, top:32, delay:0.23 },
+  { cat:"place", size:16, left:52, top:26, delay:0.40 },
+  { cat:"place", size:16, left:68, top:28, delay:0.57 },
+  { cat:"place", size:16, left:10, top:46, delay:0.74 },
+  { cat:"place", size:16, left:26, top:50, delay:0.91 },
+  { cat:"place", size:16, left:48, top:48, delay:1.08 },
+  { cat:"place", size:16, left:74, top:46, delay:1.25 },
+  { cat:"place", size:16, left:22, top:64, delay:1.42 },
+  { cat:"place", size:16, left:38, top:66, delay:1.59 },
+  { cat:"place", size:16, left:54, top:68, delay:1.76 },
+  { cat:"place", size:16, left:78, top:64, delay:1.93 },
+  { cat:"place", size:16, left:32, top:80, delay:2.10 },
+  { cat:"place", size:16, left:48, top:82, delay:2.27 },
+  { cat:"place", size:16, left:64, top:78, delay:2.44 },
+  // guide: 9 icons, size 22
+  { cat:"guide", size:22, left:18, top:32, delay:0.04 },
+  { cat:"guide", size:22, left:44, top:28, delay:0.34 },
+  { cat:"guide", size:22, left:70, top:24, delay:0.64 },
+  { cat:"guide", size:22, left:24, top:52, delay:0.94 },
+  { cat:"guide", size:22, left:50, top:54, delay:1.24 },
+  { cat:"guide", size:22, left:76, top:50, delay:1.54 },
+  { cat:"guide", size:22, left:30, top:74, delay:1.84 },
+  { cat:"guide", size:22, left:56, top:72, delay:2.14 },
+  { cat:"guide", size:22, left:80, top:70, delay:2.44 },
+  // meetup: 6 icons, size 29
+  { cat:"meetup", size:29, left:34, top:44, delay:0.08 },
+  { cat:"meetup", size:29, left:58, top:38, delay:0.58 },
+  { cat:"meetup", size:29, left:80, top:44, delay:1.08 },
+  { cat:"meetup", size:29, left:26, top:62, delay:1.58 },
+  { cat:"meetup", size:29, left:46, top:60, delay:2.08 },
+  { cat:"meetup", size:29, left:68, top:66, delay:2.38 },
+];
+
+function SeoulMapPanel({ stats }: { stats: { num:string; label:string }[] }) {
+  return (
+    <div className="lp-seoul-wrap">
+      {/* Background image */}
+      <div style={{
+        position:"absolute", inset:0,
+        backgroundImage:"url('/seoul-map.jpeg')",
+        backgroundSize:"cover",
+        backgroundPosition:"center 38%",
+      }} />
+
+      {/* Bottom fade */}
+      <div style={{
+        position:"absolute", bottom:0, left:0, right:0, height:80,
+        background:"linear-gradient(to bottom, transparent, rgba(240,253,254,0.97) 85%, #f0fdfe)",
+        pointerEvents:"none", zIndex:20,
+      }} />
+
+      {/* Floating pins */}
+      {MAP_PINS.map((pin, i) => (
+        <div key={i} style={{
+          position:"absolute",
+          left:`${pin.left}%`,
+          top:`${pin.top}%`,
+          animation:"pin-bob 2.6s ease-in-out infinite",
+          animationDelay:`${pin.delay}s`,
+          filter:"drop-shadow(0 2px 4px rgba(0,0,0,0.25))",
+          zIndex:10,
+        }}>
+          <svg width={pin.size} height={Math.round(pin.size*1.45)} viewBox="0 0 24 35"
+            fill={MAP_PIN_COLORS[pin.cat]} style={{ display:"block" }}>
+            <path d="M12 0C7.16 0 3 4.16 3 9C3 15.75 12 28 12 28C12 28 21 15.75 21 9C21 4.16 16.84 0 12 0ZM12 12.5C10.07 12.5 8.5 10.93 8.5 9C8.5 7.07 10.07 5.5 12 5.5C13.93 5.5 15.5 7.07 15.5 9C15.5 10.93 13.93 12.5 12 12.5Z"/>
+            <ellipse cx="12" cy="32" rx="3" ry="1.5" opacity="0.2"/>
+          </svg>
+        </div>
+      ))}
+
+      {/* Stats overlay at bottom */}
+      <div style={{
+        position:"absolute", bottom:10, left:0, right:0,
+        display:"flex", justifyContent:"center", gap:8,
+        zIndex:30,
+      }}>
+        {stats.map(({ num, label }) => (
+          <div key={label} style={{
+            background:"rgba(255,255,255,0.9)",
+            backdropFilter:"blur(6px)",
+            borderRadius:12, padding:"8px 14px",
+            border:"1px solid #e2f4f7",
+            textAlign:"center",
+          }}>
+            <p style={{ fontSize:16, fontWeight:900, color:"#06B6D4", lineHeight:1 }}>{num}</p>
+            <p style={{ fontSize:10, fontWeight:600, color:"#64748b", marginTop:2 }}>{label}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── Hero ─────────────────────────────────────────────────────
 function Hero({ d }: { d: LandingData }) {
   const h = d.hero;
   return (
     <section className="lp-hero">
-      <div style={{
-        position:"absolute", top:0, right:0,
-        width:480, height:480, borderRadius:"50%",
-        background:`radial-gradient(circle,${P}28,transparent 70%)`,
-        transform:"translate(30%,-20%)", pointerEvents:"none",
-      }} />
       <div className="lp-section lp-hero-pad">
         <div className="lp-container">
           <div className="lp-grid-2">
 
-            {/* Left */}
-            <div>
+            {/* Left: text */}
+            <div className="lp-hero-left">
               <div className="lp-badge" style={{ background:PL, color:PD }}>{h.badge}</div>
 
               <h1 className="lp-title" style={{ color:TX }}>
@@ -121,34 +241,11 @@ function Hero({ d }: { d: LandingData }) {
               </div>
             </div>
 
-            {/* Right: Cards */}
-            <div>
-              {h.cards.map((c) => (
-                <div key={c.name} className="lp-hero-card" style={{ background:c.bg, borderColor:c.border }}>
-                  <div className="lp-hero-card-icon">{c.emoji}</div>
-                  <div style={{ flex:1, minWidth:0 }}>
-                    <p style={{ fontWeight:700, fontSize:14, color:TX, marginBottom:3, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
-                      {c.name}
-                    </p>
-                    <p style={{ fontSize:12, color:MU }}>📍 {c.area}</p>
-                  </div>
-                  <span style={{
-                    fontSize:11, fontWeight:700, padding:"4px 10px", borderRadius:999,
-                    background:"white", border:`1px solid ${c.border}`, color:c.tagColor,
-                    flexShrink:0, whiteSpace:"nowrap",
-                  }}>{c.tag}</span>
-                </div>
-              ))}
-
-              <div className="lp-stat-grid">
-                {h.stats.map(({ num, label }) => (
-                  <div key={label} className="lp-stat-box">
-                    <p style={{ fontSize:22, fontWeight:900, color:P, marginBottom:2 }}>{num}</p>
-                    <p style={{ fontSize:11, fontWeight:600, color:MU }}>{label}</p>
-                  </div>
-                ))}
-              </div>
+            {/* Right: Seoul map */}
+            <div className="lp-hero-right">
+              <SeoulMapPanel stats={h.stats} />
             </div>
+
           </div>
         </div>
       </div>

@@ -623,6 +623,29 @@ html {
   display: none;
 }
 
+/* Landing hero grid ordering: map first on mobile, right on PC */
+.lp-hero-left  { order: 2; }
+.lp-hero-right { order: 1; }
+@media (min-width: 768px) {
+  .lp-hero-left  { order: 1; }
+  .lp-hero-right { order: 2; }
+}
+
+/* Seoul map container inside hero */
+.lp-seoul-wrap {
+  height: 260px;
+  border-radius: 24px;
+  overflow: hidden;
+  position: relative;
+}
+@media (min-width: 768px) {
+  .lp-seoul-wrap {
+    height: 100%;
+    min-height: 460px;
+    border-radius: 28px;
+  }
+}
+
 /* Onboarding page responsive layout */
 .ob-shell {
   display: flex;
