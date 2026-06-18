@@ -85,7 +85,7 @@ function Hero({ d }: { d: LandingData }) {
         background:`radial-gradient(circle,${P}28,transparent 70%)`,
         transform:"translate(30%,-20%)", pointerEvents:"none",
       }} />
-      <div className="lp-section" style={{ paddingTop:32, paddingBottom:16 }}>
+      <div className="lp-section lp-hero-pad">
         <div className="lp-container">
           <div className="lp-grid-2">
 
@@ -164,7 +164,7 @@ function Steps({ d }: { d: LandingData }) {
     <section id="how" style={{ background:P }}>
       <div className="lp-section">
         <div className="lp-container">
-          <div style={{ textAlign:"center", marginBottom:48 }}>
+          <div className="lp-sec-hdr">
             <span style={{ fontSize:11, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", color:PL, display:"block", marginBottom:12 }}>
               {s.label}
             </span>
@@ -220,7 +220,7 @@ function Features({ d }: { d: LandingData }) {
     <section id="features" style={{ background:"#ffffff" }}>
       <div className="lp-section">
         <div className="lp-container">
-          <div style={{ textAlign:"center", marginBottom:48 }}>
+          <div className="lp-sec-hdr">
             <span className="lp-section-label" style={{ color:P }}>{f.label}</span>
             <h2 className="lp-section-title" style={{ color:TX }}>
               {f.title} <span style={{ color:P }}>{f.titleAccent}</span>
@@ -262,7 +262,7 @@ function Areas({ d }: { d: LandingData }) {
     <section id="areas" style={{ background:"#f8fbfc" }}>
       <div className="lp-section">
         <div className="lp-container">
-          <div style={{ textAlign:"center", marginBottom:48 }}>
+          <div className="lp-sec-hdr">
             <span className="lp-section-label" style={{ color:P }}>{a.label}</span>
             <h2 className="lp-section-title" style={{ color:TX }}>
               {a.title} <span style={{ color:P }}>{a.titleAccent}</span>
@@ -299,19 +299,16 @@ function Tips({ d }: { d: LandingData }) {
               <h2 className="lp-section-title" style={{ color:TX }}>
                 {t.title} <span style={{ color:P }}>{t.titleAccent}</span>
               </h2>
-              <p style={{ fontSize:"clamp(0.85rem,2vw,1rem)", color:MU, lineHeight:1.65, marginBottom:32 }}>{t.desc}</p>
+              <p className="lp-tips-desc" style={{ color:MU }}>{t.desc}</p>
               <Link href="/signup" className="lp-btn-primary"
                 style={{ background:`linear-gradient(135deg,${P},${PD})`, display:"inline-flex" }}>
                 {t.cta}
               </Link>
             </div>
 
-            <div style={{ background:PL, borderRadius:24, padding:32, border:`2px solid #bae6fd` }}>
-              <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:24 }}>
-                <div style={{
-                  width:44, height:44, borderRadius:12, background:P,
-                  display:"flex", alignItems:"center", justifyContent:"center", fontSize:20,
-                }}>💡</div>
+            <div className="lp-tips-box" style={{ background:PL }}>
+              <div className="lp-tips-box-hdr">
+                <div className="lp-tips-icon" style={{ background:P }}>💡</div>
                 <div>
                   <p style={{ fontWeight:800, fontSize:15, color:TX, marginBottom:2 }}>{t.boxTitle}</p>
                   <p style={{ fontSize:12, color:MU }}>{t.boxDesc}</p>
@@ -339,34 +336,22 @@ function CTABanner({ d }: { d: LandingData }) {
       <div style={{ position:"absolute", top:0, left:0, width:320, height:320, borderRadius:"50%", background:"rgba(255,255,255,0.08)", transform:"translate(-40%,-40%)", pointerEvents:"none" }} />
       <div style={{ position:"absolute", bottom:0, right:0, width:400, height:400, borderRadius:"50%", background:"rgba(255,255,255,0.07)", transform:"translate(35%,35%)", pointerEvents:"none" }} />
 
-      <div className="lp-section" style={{ position:"relative", zIndex:1, textAlign:"center" }}>
+      <div className="lp-section" style={{ position:"relative", zIndex:1 }}>
         <div className="lp-container">
-          <div style={{ maxWidth:600, margin:"0 auto" }}>
-            <div style={{
-              width:64, height:64, borderRadius:18,
-              background:"rgba(255,255,255,0.2)",
-              display:"flex", alignItems:"center", justifyContent:"center",
-              fontSize:28, margin:"0 auto 24px",
-            }}>🗺️</div>
-            <span style={{ fontSize:11, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", color:PL, display:"block", marginBottom:16 }}>
+          <div className="lp-cta-inner">
+            <div className="lp-cta-icon">🗺️</div>
+            <span style={{ fontSize:11, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", color:PL, display:"block", marginBottom:14 }}>
               {c.label}
             </span>
             <h2 style={{
               fontWeight:900, color:"#ffffff",
-              fontSize:"clamp(1.8rem,5vw,3rem)",
-              lineHeight:1.1, marginBottom:16, letterSpacing:"-0.02em",
+              fontSize:"clamp(1.7rem,5vw,3rem)",
+              lineHeight:1.1, marginBottom:14, letterSpacing:"-0.02em",
               whiteSpace:"pre-line",
             }}>{c.title}</h2>
-            <p style={{ fontSize:"clamp(0.9rem,2vw,1.1rem)", color:PL, lineHeight:1.65, margin:"0 auto 36px", maxWidth:400 }}>{c.desc}</p>
-            <Link href="/signup" style={{
-              display:"inline-flex", alignItems:"center", gap:8,
-              background:"white", color:PD,
-              fontWeight:800, fontSize:"clamp(0.95rem,2vw,1.1rem)",
-              padding:"18px 40px", borderRadius:16,
-              textDecoration:"none",
-              boxShadow:"0 8px 32px rgba(0,0,0,0.15)",
-            }}>{c.btn}</Link>
-            <p style={{ marginTop:20, fontSize:13, color:PL }}>
+            <p className="lp-cta-desc" style={{ color:PL }}>{c.desc}</p>
+            <Link href="/signup" className="lp-cta-btn" style={{ color:PD }}>{c.btn}</Link>
+            <p className="lp-cta-login" style={{ color:PL }}>
               {c.loginText}{" "}
               <Link href="/login" style={{ color:"white", fontWeight:700, textDecoration:"underline" }}>
                 {c.loginLink}
@@ -383,10 +368,10 @@ function CTABanner({ d }: { d: LandingData }) {
 function Footer({ d }: { d: LandingData }) {
   return (
     <footer style={{ background:TX, borderTop:"1px solid #1e293b" }}>
-      <div className="lp-section" style={{ paddingTop:36, paddingBottom:36 }}>
+      <div className="lp-section lp-footer-pad">
         <div className="lp-container">
-          <div style={{ display:"flex", flexWrap:"wrap", justifyContent:"space-between", alignItems:"center", gap:16 }}>
-            <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+          <div className="lp-footer-inner">
+            <div className="lp-footer-logo">
               <span style={{ width:30, height:30, borderRadius:8, background:P, display:"flex", alignItems:"center", justifyContent:"center", fontSize:14 }}>🗺️</span>
               <span style={{ fontWeight:900, color:"white", fontSize:16 }}>Localoop<span style={{ color:P }}>Korea</span></span>
             </div>
