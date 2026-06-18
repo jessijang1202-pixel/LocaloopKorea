@@ -623,6 +623,37 @@ html {
   display: none;
 }
 
+/* Desktop width baseline: 1440px primary, 1200px container max */
+@media (min-width: 1280px) {
+  .lp-section { padding: 96px 48px; }
+  .lp-grid-2  { gap: 80px; }
+}
+@media (min-width: 1440px) {
+  .lp-section { padding: 112px 60px; }
+  .lp-grid-2  { gap: 96px; }
+}
+
+/* 9-card showcase strip below hero */
+.lp-showcase-grid {
+  display: flex;
+  overflow-x: auto;
+  gap: 12px;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.lp-showcase-grid::-webkit-scrollbar { display: none; }
+.lp-showcase-grid > * { flex-shrink: 0; min-width: 280px; }
+@media (min-width: 768px) {
+  .lp-showcase-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    overflow-x: visible;
+  }
+  .lp-showcase-grid > * { min-width: 0; }
+}
+.lp-showcase-grid .lp-hero-card { margin-bottom: 0; }
+
 /* Landing hero grid ordering: map first on mobile, right on PC */
 .lp-hero-left  { order: 2; }
 .lp-hero-right { order: 1; }

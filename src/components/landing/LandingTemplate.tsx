@@ -140,7 +140,7 @@ const MAP_PINS: PinDef[] = [
   { cat:"meetup", size:29, left:68, top:66, delay:2.38 },
 ];
 
-function SeoulMapPanel({ stats }: { stats: { num:string; label:string }[] }) {
+function SeoulMapPanel() {
   return (
     <div className="lp-seoul-wrap">
       {/* Background image */}
@@ -177,25 +177,6 @@ function SeoulMapPanel({ stats }: { stats: { num:string; label:string }[] }) {
         </div>
       ))}
 
-      {/* Stats overlay at bottom */}
-      <div style={{
-        position:"absolute", bottom:10, left:0, right:0,
-        display:"flex", justifyContent:"center", gap:8,
-        zIndex:30,
-      }}>
-        {stats.map(({ num, label }) => (
-          <div key={label} style={{
-            background:"rgba(255,255,255,0.9)",
-            backdropFilter:"blur(6px)",
-            borderRadius:12, padding:"8px 14px",
-            border:"1px solid #e2f4f7",
-            textAlign:"center",
-          }}>
-            <p style={{ fontSize:16, fontWeight:900, color:"#06B6D4", lineHeight:1 }}>{num}</p>
-            <p style={{ fontSize:10, fontWeight:600, color:"#64748b", marginTop:2 }}>{label}</p>
-          </div>
-        ))}
-      </div>
     </div>
   );
 }
@@ -243,9 +224,50 @@ function Hero({ d }: { d: LandingData }) {
 
             {/* Right: Seoul map */}
             <div className="lp-hero-right">
-              <SeoulMapPanel stats={h.stats} />
+              <SeoulMapPanel />
             </div>
 
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── HeroCards ─────────────────────────────────────────────────
+function HeroCards({ d }: { d: LandingData }) {
+  const { cards, stats } = d.hero;
+  return (
+    <section style={{ background:"#f8fbfc" }}>
+      <div className="lp-section" style={{ paddingTop:40, paddingBottom:48 }}>
+        <div className="lp-container">
+          <div className="lp-showcase-grid">
+            {cards.map((c) => (
+              <div key={c.name} className="lp-hero-card" style={{ background:c.bg, borderColor:c.border }}>
+                <div className="lp-hero-card-icon">{c.emoji}</div>
+                <div style={{ flex:1, minWidth:0 }}>
+                  <p style={{ fontWeight:700, fontSize:14, color:TX, marginBottom:3, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
+                    {c.name}
+                  </p>
+                  <p style={{ fontSize:12, color:MU }}>📍 {c.area}</p>
+                </div>
+                <span style={{
+                  fontSize:11, fontWeight:700, padding:"4px 10px", borderRadius:999,
+                  background:"white", border:`1px solid ${c.border}`, color:c.tagColor,
+                  flexShrink:0, whiteSpace:"nowrap",
+                }}>{c.tag}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Stats row */}
+          <div className="lp-stat-grid" style={{ marginTop:24, maxWidth:400, marginLeft:"auto", marginRight:"auto" }}>
+            {stats.map(({ num, label }) => (
+              <div key={label} className="lp-stat-box">
+                <p style={{ fontSize:22, fontWeight:900, color:P, marginBottom:2 }}>{num}</p>
+                <p style={{ fontSize:11, fontWeight:600, color:MU }}>{label}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -485,9 +507,10 @@ function Footer({ d }: { d: LandingData }) {
 export default function LandingTemplate({ data }: { data: LandingData }) {
   return (
     <div style={{ background:"#ffffff", minHeight:"100dvh" }}>
-      <Nav      d={data} />
-      <Hero     d={data} />
-      <Steps    d={data} />
+      <Nav        d={data} />
+      <Hero       d={data} />
+      <HeroCards  d={data} />
+      <Steps      d={data} />
       <Features d={data} />
       <Areas    d={data} />
       <Tips     d={data} />
