@@ -62,7 +62,10 @@ html {
 /* ── Landing page layout classes ─────────────────────────── */
 
 .lp-section {
-  padding: 64px 20px;
+  padding: 40px 16px;
+}
+@media (min-width: 390px) {
+  .lp-section { padding: 40px 20px; }
 }
 .lp-container {
   max-width: 1200px;
@@ -104,7 +107,10 @@ html {
   border-radius: 999px;
   font-size: 11px;
   font-weight: 700;
-  margin-bottom: 24px;
+  margin-bottom: 14px;
+}
+@media (min-width: 480px) {
+  .lp-badge { margin-bottom: 24px; }
 }
 .lp-title {
   font-weight: 900;
@@ -114,9 +120,12 @@ html {
   margin-bottom: 16px;
 }
 .lp-subtitle {
-  font-size: clamp(0.9rem, 2vw, 1.1rem);
-  line-height: 1.65;
-  margin-bottom: 32px;
+  font-size: clamp(0.88rem, 3.5vw, 1.1rem);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+@media (min-width: 480px) {
+  .lp-subtitle { margin-bottom: 32px; }
 }
 .lp-section-label {
   font-size: 11px;
@@ -133,9 +142,9 @@ html {
   margin-bottom: 12px;
 }
 .lp-section-desc {
-  font-size: clamp(0.85rem, 1.8vw, 1rem);
+  font-size: clamp(0.85rem, 3vw, 1rem);
   line-height: 1.6;
-  margin-bottom: 48px;
+  margin-bottom: 28px;
 }
 .lp-btn-primary {
   display: inline-flex;
@@ -262,6 +271,57 @@ html {
 }
 .lp-nav-link:hover { color: #06B6D4; }
 
+/* Nav right-side buttons */
+.lp-nav-lang {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 600;
+  color: #64748b;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid #e2f4f7;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.lp-nav-login {
+  display: none; /* hidden on xs < 360px */
+  font-size: 10px;
+  font-weight: 600;
+  color: #64748b;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid #e2f4f7;
+  text-decoration: none;
+  align-items: center;
+  white-space: nowrap;
+}
+.lp-nav-cta {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 999px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+/* Show login from 360px+ (fits alongside lang + cta) */
+@media (min-width: 360px) {
+  .lp-nav-login { display: inline-flex; }
+}
+@media (min-width: 480px) {
+  .lp-nav-lang  { font-size: 12px; padding: 6px 12px; }
+  .lp-nav-login { font-size: 12px; padding: 6px 12px; border-width: 1.5px; }
+  .lp-nav-cta   { font-size: 12px; padding: 7px 16px; }
+}
+@media (min-width: 768px) {
+  .lp-nav-lang  { font-size: 13px; padding: 7px 14px; }
+  .lp-nav-login { font-size: 13px; padding: 7px 14px; border-width: 2px; }
+  .lp-nav-cta   { font-size: 13px; padding: 9px 20px; }
+}
+
 /* Nav specific */
 .lp-nav {
   position: fixed;
@@ -374,7 +434,10 @@ html {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-top: 32px;
+  margin-top: 20px;
+}
+@media (min-width: 480px) {
+  .lp-avatars { margin-top: 32px; }
 }
 .lp-avatar-stack {
   display: flex;
@@ -448,11 +511,25 @@ html {
 .lp-btn-row {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 32px;
+  gap: 10px;
+  margin-bottom: 24px;
 }
 @media (min-width: 480px) {
-  .lp-btn-row { flex-direction: row; }
+  .lp-btn-row { flex-direction: row; gap: 12px; margin-bottom: 32px; }
+}
+
+/* Hero CTA buttons: compact on mobile */
+.lp-btn-primary {
+  padding: 13px 22px;
+  font-size: 0.95rem;
+}
+.lp-btn-outline {
+  padding: 13px 22px;
+  font-size: 0.95rem;
+}
+@media (min-width: 480px) {
+  .lp-btn-primary { padding: 16px 32px; font-size: 1rem; }
+  .lp-btn-outline { padding: 16px 32px; font-size: 1rem; }
 }
 
 /* ── Responsive helpers added for mobile spacing ─────────── */
@@ -637,7 +714,10 @@ html {
 .lp-showcase-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  gap: 8px;
+}
+@media (min-width: 480px) {
+  .lp-showcase-grid { gap: 12px; }
 }
 @media (min-width: 768px) {
   .lp-showcase-grid { gap: 16px; }
@@ -710,4 +790,18 @@ html {
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: 8px;
+}
+
+/* Auth pages (login / signup) card */
+.auth-card {
+  width: 100%;
+  max-width: 460px;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 28px 22px;
+  box-shadow: 0 4px 40px rgba(6,182,212,0.10);
+  border: 1px solid #e2f4f7;
+}
+@media (min-width: 480px) {
+  .auth-card { border-radius: 28px; padding: 48px 40px; }
 }

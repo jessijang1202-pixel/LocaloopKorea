@@ -48,26 +48,18 @@ function Nav({ d }: { d: LandingData }) {
           ))}
         </nav>
 
-        <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+        <div style={{ display:"flex", alignItems:"center", gap:6 }}>
           {/* Language toggle */}
-          <a href={d.altLangPath} style={{
-            fontSize:12, fontWeight:600, color:MU,
-            padding:"6px 12px", borderRadius:999,
-            border:`1px solid #e2f4f7`, textDecoration:"none",
-          }}>
+          <a href={d.altLangPath} className="lp-nav-lang">
             {d.altLang}
           </a>
-          <Link href="/login" style={{
-            fontSize:13, fontWeight:600, color:MU,
-            padding:"8px 16px", borderRadius:999,
-            border:`2px solid #e2f4f7`, textDecoration:"none",
-          }}>{d.nav.login}</Link>
-          <Link href="/signup" style={{
-            fontSize:13, fontWeight:700, color:"#fff",
-            padding:"9px 20px", borderRadius:999,
-            background:`linear-gradient(135deg,${P},${PD})`,
-            textDecoration:"none",
-          }}>{d.nav.cta}</Link>
+          <Link href="/login" className="lp-nav-login">
+            {d.nav.login}
+          </Link>
+          <Link href="/signup" className="lp-nav-cta"
+            style={{ background:`linear-gradient(135deg,${P},${PD})` }}>
+            {d.nav.cta}
+          </Link>
         </div>
       </div>
     </header>
@@ -83,7 +75,7 @@ const MAP_PIN_COLORS: Record<string,string> = {
 };
 type PinDef = { cat:string; size:number; left:number; top:number; delay:number };
 const MAP_PINS: PinDef[] = [
-  // food: 21 icons, size 12
+  // food: 63 icons (3×), size 12
   { cat:"food", size:12, left:12, top:22, delay:0.00 },
   { cat:"food", size:12, left:26, top:18, delay:0.12 },
   { cat:"food", size:12, left:40, top:24, delay:0.24 },
@@ -105,7 +97,49 @@ const MAP_PINS: PinDef[] = [
   { cat:"food", size:12, left:36, top:70, delay:2.16 },
   { cat:"food", size:12, left:52, top:76, delay:2.28 },
   { cat:"food", size:12, left:66, top:72, delay:2.40 },
-  // place: 15 icons, size 16
+  { cat:"food", size:12, left:8,  top:12, delay:2.52 },
+  { cat:"food", size:12, left:18, top:14, delay:2.58 },
+  { cat:"food", size:12, left:32, top:12, delay:2.64 },
+  { cat:"food", size:12, left:48, top:14, delay:2.70 },
+  { cat:"food", size:12, left:62, top:12, delay:2.76 },
+  { cat:"food", size:12, left:76, top:10, delay:2.82 },
+  { cat:"food", size:12, left:88, top:14, delay:2.88 },
+  { cat:"food", size:12, left:6,  top:20, delay:2.94 },
+  { cat:"food", size:12, left:34, top:20, delay:3.00 },
+  { cat:"food", size:12, left:50, top:18, delay:3.06 },
+  { cat:"food", size:12, left:64, top:22, delay:3.12 },
+  { cat:"food", size:12, left:80, top:24, delay:3.18 },
+  { cat:"food", size:12, left:10, top:30, delay:3.24 },
+  { cat:"food", size:12, left:22, top:34, delay:3.30 },
+  { cat:"food", size:12, left:50, top:30, delay:3.36 },
+  { cat:"food", size:12, left:62, top:34, delay:3.42 },
+  { cat:"food", size:12, left:78, top:30, delay:3.48 },
+  { cat:"food", size:12, left:86, top:32, delay:3.54 },
+  { cat:"food", size:12, left:8,  top:44, delay:3.60 },
+  { cat:"food", size:12, left:22, top:46, delay:3.66 },
+  { cat:"food", size:12, left:36, top:40, delay:3.72 },
+  { cat:"food", size:12, left:64, top:44, delay:3.78 },
+  { cat:"food", size:12, left:76, top:42, delay:3.84 },
+  { cat:"food", size:12, left:88, top:46, delay:3.90 },
+  { cat:"food", size:12, left:18, top:52, delay:3.96 },
+  { cat:"food", size:12, left:32, top:50, delay:4.02 },
+  { cat:"food", size:12, left:46, top:52, delay:4.08 },
+  { cat:"food", size:12, left:74, top:52, delay:4.14 },
+  { cat:"food", size:12, left:88, top:52, delay:4.20 },
+  { cat:"food", size:12, left:8,  top:62, delay:4.26 },
+  { cat:"food", size:12, left:38, top:64, delay:4.32 },
+  { cat:"food", size:12, left:62, top:60, delay:4.38 },
+  { cat:"food", size:12, left:76, top:66, delay:4.44 },
+  { cat:"food", size:12, left:86, top:62, delay:4.50 },
+  { cat:"food", size:12, left:10, top:70, delay:4.56 },
+  { cat:"food", size:12, left:24, top:76, delay:4.62 },
+  { cat:"food", size:12, left:44, top:72, delay:4.68 },
+  { cat:"food", size:12, left:58, top:76, delay:4.74 },
+  { cat:"food", size:12, left:72, top:78, delay:4.80 },
+  { cat:"food", size:12, left:86, top:74, delay:4.86 },
+  { cat:"food", size:12, left:16, top:82, delay:4.92 },
+  { cat:"food", size:12, left:78, top:84, delay:4.98 },
+  // place: 30 icons (2×), size 16
   { cat:"place", size:16, left:20, top:28, delay:0.06 },
   { cat:"place", size:16, left:36, top:32, delay:0.23 },
   { cat:"place", size:16, left:52, top:26, delay:0.40 },
@@ -121,6 +155,21 @@ const MAP_PINS: PinDef[] = [
   { cat:"place", size:16, left:32, top:80, delay:2.10 },
   { cat:"place", size:16, left:48, top:82, delay:2.27 },
   { cat:"place", size:16, left:64, top:78, delay:2.44 },
+  { cat:"place", size:16, left:8,  top:24, delay:2.61 },
+  { cat:"place", size:16, left:44, top:22, delay:2.78 },
+  { cat:"place", size:16, left:60, top:30, delay:2.95 },
+  { cat:"place", size:16, left:86, top:26, delay:3.12 },
+  { cat:"place", size:16, left:14, top:42, delay:3.29 },
+  { cat:"place", size:16, left:34, top:44, delay:3.46 },
+  { cat:"place", size:16, left:58, top:50, delay:3.63 },
+  { cat:"place", size:16, left:84, top:50, delay:3.80 },
+  { cat:"place", size:16, left:16, top:62, delay:3.97 },
+  { cat:"place", size:16, left:42, top:70, delay:4.14 },
+  { cat:"place", size:16, left:66, top:62, delay:4.31 },
+  { cat:"place", size:16, left:88, top:68, delay:4.48 },
+  { cat:"place", size:16, left:20, top:78, delay:4.65 },
+  { cat:"place", size:16, left:56, top:82, delay:4.82 },
+  { cat:"place", size:16, left:80, top:76, delay:4.99 },
   // guide: 9 icons, size 22
   { cat:"guide", size:22, left:18, top:32, delay:0.04 },
   { cat:"guide", size:22, left:44, top:28, delay:0.34 },

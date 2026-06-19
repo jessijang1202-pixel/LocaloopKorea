@@ -16,15 +16,7 @@ export default function LoginPage() {
       background: "#f0fdfe",
       padding: "24px 20px",
     }}>
-      <div style={{
-        width: "100%",
-        maxWidth: 460,
-        background: "#ffffff",
-        borderRadius: 28,
-        padding: "48px 40px",
-        boxShadow: "0 4px 40px rgba(6,182,212,0.10)",
-        border: "1px solid #e2f4f7",
-      }}>
+      <div className="auth-card">
         {/* Logo */}
         <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:32 }}>
           <span style={{
