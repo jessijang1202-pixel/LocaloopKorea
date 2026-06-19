@@ -170,7 +170,7 @@ const MAP_PINS: PinDef[] = [
   { cat:"place", size:16, left:20, top:78, delay:4.65 },
   { cat:"place", size:16, left:56, top:82, delay:4.82 },
   { cat:"place", size:16, left:80, top:76, delay:4.99 },
-  // guide: 9 icons, size 22
+  // guide: 18 icons (2×), size 22 — 9 spread + 9 concentrated Mapo/Yongsan
   { cat:"guide", size:22, left:18, top:32, delay:0.04 },
   { cat:"guide", size:22, left:44, top:28, delay:0.34 },
   { cat:"guide", size:22, left:70, top:24, delay:0.64 },
@@ -180,6 +180,15 @@ const MAP_PINS: PinDef[] = [
   { cat:"guide", size:22, left:30, top:74, delay:1.84 },
   { cat:"guide", size:22, left:56, top:72, delay:2.14 },
   { cat:"guide", size:22, left:80, top:70, delay:2.44 },
+  { cat:"guide", size:22, left:28, top:36, delay:2.74 },
+  { cat:"guide", size:22, left:36, top:32, delay:3.04 },
+  { cat:"guide", size:22, left:44, top:38, delay:3.34 },
+  { cat:"guide", size:22, left:40, top:54, delay:3.64 },
+  { cat:"guide", size:22, left:48, top:52, delay:3.94 },
+  { cat:"guide", size:22, left:52, top:60, delay:4.24 },
+  { cat:"guide", size:22, left:34, top:58, delay:4.54 },
+  { cat:"guide", size:22, left:46, top:46, delay:4.84 },
+  { cat:"guide", size:22, left:54, top:46, delay:5.14 },
   // meetup: 6 icons, size 29
   { cat:"meetup", size:29, left:34, top:44, delay:0.08 },
   { cat:"meetup", size:29, left:58, top:38, delay:0.58 },
@@ -187,6 +196,103 @@ const MAP_PINS: PinDef[] = [
   { cat:"meetup", size:29, left:26, top:62, delay:1.58 },
   { cat:"meetup", size:29, left:46, top:60, delay:2.08 },
   { cat:"meetup", size:29, left:68, top:66, delay:2.38 },
+  // place: additional 30 (×2 total=60) — concentrated Mapo/Yongsan/Myeongdong
+  { cat:"place", size:16, left:25, top:32, delay:5.16 },
+  { cat:"place", size:16, left:31, top:28, delay:5.33 },
+  { cat:"place", size:16, left:37, top:34, delay:5.50 },
+  { cat:"place", size:16, left:43, top:30, delay:5.67 },
+  { cat:"place", size:16, left:29, top:40, delay:5.84 },
+  { cat:"place", size:16, left:35, top:36, delay:6.01 },
+  { cat:"place", size:16, left:41, top:42, delay:6.18 },
+  { cat:"place", size:16, left:27, top:44, delay:6.35 },
+  { cat:"place", size:16, left:33, top:46, delay:6.52 },
+  { cat:"place", size:16, left:39, top:54, delay:6.69 },
+  { cat:"place", size:16, left:45, top:52, delay:6.86 },
+  { cat:"place", size:16, left:51, top:56, delay:7.03 },
+  { cat:"place", size:16, left:57, top:54, delay:7.20 },
+  { cat:"place", size:16, left:43, top:60, delay:7.37 },
+  { cat:"place", size:16, left:49, top:58, delay:7.54 },
+  { cat:"place", size:16, left:55, top:62, delay:7.71 },
+  { cat:"place", size:16, left:41, top:66, delay:7.88 },
+  { cat:"place", size:16, left:47, top:64, delay:8.05 },
+  { cat:"place", size:16, left:44, top:44, delay:8.22 },
+  { cat:"place", size:16, left:48, top:46, delay:8.39 },
+  { cat:"place", size:16, left:52, top:44, delay:8.56 },
+  { cat:"place", size:16, left:56, top:46, delay:8.73 },
+  { cat:"place", size:16, left:46, top:50, delay:8.90 },
+  { cat:"place", size:16, left:50, top:52, delay:9.07 },
+  { cat:"place", size:16, left:54, top:50, delay:9.24 },
+  { cat:"place", size:16, left:32, top:48, delay:9.41 },
+  { cat:"place", size:16, left:36, top:52, delay:9.58 },
+  { cat:"place", size:16, left:40, top:50, delay:9.75 },
+  { cat:"place", size:16, left:42, top:46, delay:9.92 },
+  { cat:"place", size:16, left:38, top:44, delay:10.09 },
+  // food: additional 63 (×2 total=126) — concentrated Mapo/Yongsan/Myeongdong
+  { cat:"food", size:12, left:23, top:28, delay:5.04 },
+  { cat:"food", size:12, left:27, top:30, delay:5.10 },
+  { cat:"food", size:12, left:31, top:28, delay:5.16 },
+  { cat:"food", size:12, left:35, top:32, delay:5.22 },
+  { cat:"food", size:12, left:39, top:28, delay:5.28 },
+  { cat:"food", size:12, left:43, top:30, delay:5.34 },
+  { cat:"food", size:12, left:24, top:34, delay:5.40 },
+  { cat:"food", size:12, left:28, top:32, delay:5.46 },
+  { cat:"food", size:12, left:32, top:36, delay:5.52 },
+  { cat:"food", size:12, left:36, top:32, delay:5.58 },
+  { cat:"food", size:12, left:40, top:36, delay:5.64 },
+  { cat:"food", size:12, left:44, top:32, delay:5.70 },
+  { cat:"food", size:12, left:23, top:40, delay:5.76 },
+  { cat:"food", size:12, left:27, top:38, delay:5.82 },
+  { cat:"food", size:12, left:31, top:42, delay:5.88 },
+  { cat:"food", size:12, left:35, top:38, delay:5.94 },
+  { cat:"food", size:12, left:39, top:42, delay:6.00 },
+  { cat:"food", size:12, left:43, top:38, delay:6.06 },
+  { cat:"food", size:12, left:25, top:46, delay:6.12 },
+  { cat:"food", size:12, left:29, top:44, delay:6.18 },
+  { cat:"food", size:12, left:33, top:48, delay:6.24 },
+  { cat:"food", size:12, left:37, top:44, delay:6.30 },
+  { cat:"food", size:12, left:37, top:52, delay:6.36 },
+  { cat:"food", size:12, left:41, top:50, delay:6.42 },
+  { cat:"food", size:12, left:45, top:54, delay:6.48 },
+  { cat:"food", size:12, left:49, top:50, delay:6.54 },
+  { cat:"food", size:12, left:53, top:54, delay:6.60 },
+  { cat:"food", size:12, left:57, top:50, delay:6.66 },
+  { cat:"food", size:12, left:38, top:58, delay:6.72 },
+  { cat:"food", size:12, left:42, top:56, delay:6.78 },
+  { cat:"food", size:12, left:46, top:60, delay:6.84 },
+  { cat:"food", size:12, left:50, top:56, delay:6.90 },
+  { cat:"food", size:12, left:54, top:60, delay:6.96 },
+  { cat:"food", size:12, left:37, top:64, delay:7.02 },
+  { cat:"food", size:12, left:41, top:62, delay:7.08 },
+  { cat:"food", size:12, left:45, top:66, delay:7.14 },
+  { cat:"food", size:12, left:49, top:62, delay:7.20 },
+  { cat:"food", size:12, left:53, top:66, delay:7.26 },
+  { cat:"food", size:12, left:39, top:68, delay:7.32 },
+  { cat:"food", size:12, left:43, top:66, delay:7.38 },
+  { cat:"food", size:12, left:47, top:68, delay:7.44 },
+  { cat:"food", size:12, left:51, top:64, delay:7.50 },
+  { cat:"food", size:12, left:55, top:66, delay:7.56 },
+  { cat:"food", size:12, left:45, top:42, delay:7.62 },
+  { cat:"food", size:12, left:47, top:44, delay:7.68 },
+  { cat:"food", size:12, left:49, top:42, delay:7.74 },
+  { cat:"food", size:12, left:51, top:44, delay:7.80 },
+  { cat:"food", size:12, left:53, top:42, delay:7.86 },
+  { cat:"food", size:12, left:55, top:44, delay:7.92 },
+  { cat:"food", size:12, left:45, top:48, delay:8.04 },
+  { cat:"food", size:12, left:47, top:50, delay:8.10 },
+  { cat:"food", size:12, left:49, top:48, delay:8.16 },
+  { cat:"food", size:12, left:51, top:50, delay:8.22 },
+  { cat:"food", size:12, left:53, top:48, delay:8.28 },
+  { cat:"food", size:12, left:55, top:50, delay:8.34 },
+  { cat:"food", size:12, left:44, top:54, delay:8.40 },
+  { cat:"food", size:12, left:48, top:52, delay:8.46 },
+  { cat:"food", size:12, left:52, top:54, delay:8.52 },
+  { cat:"food", size:12, left:56, top:52, delay:8.58 },
+  { cat:"food", size:12, left:46, top:54, delay:8.64 },
+  { cat:"food", size:12, left:50, top:54, delay:8.70 },
+  { cat:"food", size:12, left:54, top:52, delay:8.76 },
+  { cat:"food", size:12, left:35, top:50, delay:8.82 },
+  { cat:"food", size:12, left:33, top:54, delay:8.88 },
+  { cat:"food", size:12, left:57, top:48, delay:8.94 },
 ];
 
 function SeoulMapPanel() {
@@ -271,9 +377,17 @@ function Hero({ d }: { d: LandingData }) {
               </div>
             </div>
 
-            {/* Right: Seoul map */}
+            {/* Right: Seoul map + stats below */}
             <div className="lp-hero-right">
               <SeoulMapPanel />
+              <div className="lp-stat-grid" style={{ marginTop:14 }}>
+                {h.stats.map(({ num, label }) => (
+                  <div key={label} className="lp-stat-box">
+                    <p style={{ fontSize:20, fontWeight:900, color:P, marginBottom:2 }}>{num}</p>
+                    <p style={{ fontSize:10, fontWeight:600, color:MU }}>{label}</p>
+                  </div>
+                ))}
+              </div>
             </div>
 
           </div>
@@ -285,7 +399,7 @@ function Hero({ d }: { d: LandingData }) {
 
 // ── HeroCards ─────────────────────────────────────────────────
 function HeroCards({ d }: { d: LandingData }) {
-  const { cards, stats } = d.hero;
+  const { cards } = d.hero;
   return (
     <section style={{ background:"#f8fbfc" }}>
       <div className="lp-section" style={{ paddingTop:40, paddingBottom:48 }}>
@@ -313,15 +427,6 @@ function HeroCards({ d }: { d: LandingData }) {
             ))}
           </div>
 
-          {/* Stats row */}
-          <div className="lp-stat-grid" style={{ marginTop:24, maxWidth:400, marginLeft:"auto", marginRight:"auto" }}>
-            {stats.map(({ num, label }) => (
-              <div key={label} className="lp-stat-box">
-                <p style={{ fontSize:22, fontWeight:900, color:P, marginBottom:2 }}>{num}</p>
-                <p style={{ fontSize:11, fontWeight:600, color:MU }}>{label}</p>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
       <WaveDown />
