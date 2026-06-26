@@ -545,7 +545,7 @@ html {
 
 /* Features section title — prevent line-break on mobile */
 @media (max-width: 767px) {
-  #features .lp-section-title { font-size: clamp(1.05rem, 3.8vw, 1.6rem); }
+  #features .lp-section-title { font-size: clamp(1.57rem, 4vw, 2.6rem); }
 }
 
 /* Hero section: override lp-section vertical padding */
