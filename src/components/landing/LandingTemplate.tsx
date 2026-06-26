@@ -371,9 +371,7 @@ function Hero({ d }: { d: LandingData }) {
                     <span key={i}>{f}</span>
                   ))}
                 </div>
-                <span style={{ fontSize:13, color:MU }}>
-                  <strong style={{ color:TX }}>1,200+</strong> {h.proof}
-                </span>
+                <span style={{ fontSize:13, color:MU }}>{h.proof}</span>
               </div>
             </div>
 
@@ -430,6 +428,58 @@ function HeroCards({ d }: { d: LandingData }) {
         </div>
       </div>
       <WaveDown />
+    </section>
+  );
+}
+
+// ── AI Engines ────────────────────────────────────────────────
+function AIEngines({ d }: { d: LandingData }) {
+  const ae = d.aiEngines;
+  return (
+    <section style={{ background:"#f0fdfe" }}>
+      <div className="lp-section">
+        <div className="lp-container">
+          <div className="lp-sec-hdr">
+            <span className="lp-section-label" style={{ color:P }}>{ae.label}</span>
+            <h2 className="lp-section-title" style={{ color:TX }}>
+              {ae.title} <span style={{ color:P }}>{ae.titleAccent}</span>
+            </h2>
+            <p style={{ fontSize:"clamp(0.85rem,2vw,1rem)", color:MU, lineHeight:1.6 }}>{ae.desc}</p>
+          </div>
+
+          <div className="lp-grid-3">
+            {ae.items.map((item) => (
+              <div key={item.title} style={{
+                background:"#ffffff", border:"1.5px solid #b2f0f7",
+                borderRadius:20, padding:"28px 24px",
+                position:"relative", overflow:"hidden",
+              }}>
+                {/* Patent badge */}
+                <span style={{
+                  position:"absolute", top:16, right:16,
+                  fontSize:10, fontWeight:700, letterSpacing:"0.04em",
+                  background:"#fffbeb", color:"#d97706",
+                  border:"1px solid #fde68a",
+                  borderRadius:999, padding:"3px 10px",
+                  whiteSpace:"nowrap",
+                }}>{item.badge}</span>
+
+                <div style={{
+                  width:52, height:52, borderRadius:16,
+                  background:`linear-gradient(135deg,${PL},#b2f0f7)`,
+                  display:"flex", alignItems:"center", justifyContent:"center",
+                  fontSize:24, marginBottom:18,
+                  border:`1px solid #b2f0f7`,
+                }}>{item.emoji}</div>
+
+                <p style={{ fontSize:11, fontWeight:700, color:MU, marginBottom:6, letterSpacing:"0.06em", textTransform:"uppercase" }}>{item.ko}</p>
+                <p style={{ fontSize:17, fontWeight:900, color:TX, marginBottom:12, lineHeight:1.25 }}>{item.title}</p>
+                <p style={{ fontSize:13, color:MU, lineHeight:1.6 }}>{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </section>
   );
 }
@@ -505,7 +555,8 @@ function Features({ d }: { d: LandingData }) {
             <p style={{ fontSize:"clamp(0.85rem,2vw,1rem)", color:MU, lineHeight:1.6 }}>{f.desc}</p>
           </div>
 
-          <div className="lp-grid-4">
+          <div id="tasks" /><div id="local" /><div id="community" />
+          <div className="lp-grid-3">
             {f.items.map((item) => (
               <Link key={item.title} href={item.href} className="lp-card"
                 style={{ background:item.bg, borderColor:item.border, textDecoration:"none", display:"block" }}>
@@ -668,6 +719,7 @@ export default function LandingTemplate({ data }: { data: LandingData }) {
       <Nav        d={data} />
       <Hero       d={data} />
       <HeroCards  d={data} />
+      <AIEngines  d={data} />
       <Steps      d={data} />
       <Features d={data} />
       <Areas    d={data} />

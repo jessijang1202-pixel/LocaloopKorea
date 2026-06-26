@@ -9,6 +9,7 @@ export interface FeatureItem {
 }
 export interface AreaItem   { name: string; ko: string; desc: string; emoji: string; bg: string; border: string; }
 export interface TipItem    { emoji: string; text: string; }
+export interface AIEngineItem { emoji: string; title: string; ko: string; desc: string; badge: string; }
 
 export interface LandingData {
   lang: "ko" | "en";
@@ -20,6 +21,10 @@ export interface LandingData {
     subtitle: string; ctaPrimary: string; ctaSecondary: string; proof: string;
     cards: HeroCard[];
     stats: { num: string; label: string }[];
+  };
+  aiEngines: {
+    label: string; title: string; titleAccent: string; desc: string;
+    items: AIEngineItem[];
   };
   steps: {
     label: string; title: string; desc: string;
@@ -52,22 +57,25 @@ export const KO: LandingData = {
   altLangPath: "/en",
   nav: {
     links: [
-      { href: "#features", label: "기능" },
-      { href: "#areas",    label: "지역" },
-      { href: "#how",      label: "이용 방법" },
+      { href: "#features",  label: "기능" },
+      { href: "#tasks",     label: "생활 과업" },
+      { href: "#local",     label: "로컬 탐방" },
+      { href: "#community", label: "커뮤니티" },
+      { href: "#areas",     label: "지역" },
+      { href: "#how",       label: "이용 방법" },
     ],
     login: "로그인",
     cta: "시작하기 →",
   },
   hero: {
-    badge: "🇰🇷  외국인을 위한 한국 생활 가이드",
-    titleLight:  "한국의",
-    titleAccent: "진짜 로컬을",
-    titleBold:   "경험하세요",
-    subtitle:    "외국인 친화 장소, 음식 가이드, 생활 정보, 밋업—\n한국 생활이 편해지는 모든 것이 한 곳에.",
+    badge: "🇰🇷  외국인을 위한 AI 기반 한국 생활 내비게이션",
+    titleLight:  "AI가 안내하는",
+    titleAccent: "나의",
+    titleBold:   "한국 생활",
+    subtitle:    "로컬루프 코리아는 당신의 위치·언어 수준·체류 단계를 실시간으로 반영해\n지금 가장 필요한 생활 안내와 로컬 경험을 자동으로 연결합니다.",
     ctaPrimary:   "무료로 시작하기 🚀",
     ctaSecondary: "더 알아보기",
-    proof: "명의 외국인 & 로컬이 함께해요",
+    proof: "278만+ 외국인이 한국에 산다 — 그들을 위한 AI 플랫폼",
     cards: [
       { emoji:"☕", name:"Fritz Coffee Company",     area:"성수동 Seongsu",  tag:"영어 메뉴 OK",  bg:"#FFF7ED", border:"#FED7AA", tagColor:"#EA580C" },
       { emoji:"🍜", name:"Tteokbokki 101 가이드",    area:"음식 가이드",     tag:"초보자 추천",    bg:"#F0FDFA", border:"#99F6E4", tagColor:"#0D9488" },
@@ -81,31 +89,44 @@ export const KO: LandingData = {
     ],
     stats: [{ num:"200+", label:"Places" }, { num:"50+", label:"Guides" }, { num:"6", label:"Areas" }],
   },
+  aiEngines: {
+    label: "AI Technology",
+    title: "3종 특허 기반",
+    titleAccent: "AI 엔진",
+    desc: "단순 앱이 아닙니다. 당신의 상황을 읽고 필요한 것을 자동으로 연결하는 AI 시스템입니다.",
+    items: [
+      { emoji:"🧠", title:"Life Task Graph Engine",             ko:"생활 태스크 그래프 엔진",       desc:"위치·언어 수준·기해결 과업을 반영해 지금 해야 할 일을 동적으로 산출합니다.",                                           badge:"특허 출원 중" },
+      { emoji:"📍", title:"Auto Friendliness Rating Engine",    ko:"외국인 친화도 자동 등급화 엔진", desc:"공개 웹 데이터 NLP 분석으로 장소별 외국인 친화도를 S~D 5단계로 자동 등급화합니다.",                                   badge:"특허 출원 중" },
+      { emoji:"🗺️", title:"Local Course Recommendation Engine", ko:"로컬 코스 추천 엔진",           desc:"한국인 소비 데이터 기반 로컬성 지수로 언어 수준·예산·모험 성향에 맞는 개인화 코스를 자동 조합합니다.", badge:"특허 출원 중" },
+    ],
+  },
   steps: {
     label: "How it works",
-    title: "한국 탐험 순서",
-    desc:  "딱 4단계면 한국 로컬처럼 생활할 수 있어요",
+    title: "로컬루프 코리아 이용 방법",
+    desc:  "4단계로 한국 생활을 스마트하게 시작하세요",
     items: [
-      { num:"01", emoji:"📝", title:"가입하기",       desc:"이름과 관심 지역 입력 후 시작. 1분도 안 걸려요." },
-      { num:"02", emoji:"📍", title:"지역 탐색",      desc:"내 근처 외국인 친화 장소와 로컬 맛집을 확인하세요." },
-      { num:"03", emoji:"🍜", title:"음식 도전",      desc:"초보자 맞춤 메뉴 가이드로 자신 있게 주문하세요." },
-      { num:"04", emoji:"🤝", title:"커뮤니티 참여",  desc:"밋업 참여하고 같은 관심사의 사람들을 만나요." },
+      { num:"01", emoji:"📲", title:"가입 & 프로필 설정",    desc:"외국인/한국인 모드 선택. 위치·언어 수준·체류 목적을 설정하면 AI가 즉시 개인화를 시작합니다." },
+      { num:"02", emoji:"📋", title:"생활 과업 안내 받기",   desc:"체류 단계에 따라 지금 해야 할 일을 자동으로 안내합니다. 은행 계좌 개설부터 동네 탐색까지." },
+      { num:"03", emoji:"🗺️", title:"외국인 친화 장소 탐색", desc:"S~D 등급으로 평가된 외국인 친화 장소를 탐색하세요. 언어 지원·결제 편의성·현지인 추천을 지도 한 곳에서 확인할 수 있습니다." },
+      { num:"04", emoji:"👥", title:"연결 & 로컬 경험",      desc:"모임에 참여하고 언어 교환 파트너를 찾고, 나만의 로컬 경험 코스를 받아보세요. 현지인처럼 한국을 경험합니다." },
     ],
   },
   features: {
     label: "What we offer",
-    title: "로컬을 경험하는",
-    titleAccent: "4가지 방법",
-    desc: "관광객이 아닌 로컬처럼 한국을 즐기는 데 필요한 모든 것",
+    title: "한국 생활을 위한",
+    titleAccent: "6가지 핵심 기능",
+    desc: "위치·언어·체류 단계에 맞게 자동으로 조정되는 AI 생활 플랫폼",
     items: [
-      { emoji:"📍", title:"Places", ko:"로컬 스팟",      desc:"외국인 친화 태그가 달린 카페, 식당, 마켓을 지역별로 탐색하세요.",      tags:["영어 메뉴","카드 결제","혼밥 OK"],      bg:"#FFF7ED", border:"#FED7AA", accent:"#EA580C", href:"/places" },
-      { emoji:"🍜", title:"Food",   ko:"음식 가이드",    desc:"매운맛 단계, 주문 팁, 메뉴 설명으로 자신 있게 도전하세요.",           tags:["초보자 추천","매운맛 표시","채식 표시"],  bg:"#F0FDFA", border:"#99F6E4", accent:"#0D9488", href:"/food"   },
-      { emoji:"📖", title:"Guides", ko:"생활 가이드",    desc:"은행 개설부터 대중교통까지—한국 정착에 필요한 모든 정보.",             tags:["교통카드","병원 이용","주거 계약"],       bg:"#EFF6FF", border:"#BFDBFE", accent:"#2563EB", href:"/guides" },
-      { emoji:"🤝", title:"Meetups",ko:"밋업 & 커뮤니티",desc:"언어 교환, 동네 모임, 커뮤니티 이벤트로 사람들과 연결되세요.",        tags:["언어 교환","동네 모임","무료 이벤트"],   bg:"#F5F3FF", border:"#DDD6FE", accent:"#7C3AED", href:"/meetups"},
+      { emoji:"📍", title:"Location-Based Living Search",         ko:"위치 기반 생활정보 탐색",        desc:"주변 장소·음식점·편의시설을 탐색하고 외국어 지원·결제 방법·외국인 이용 가능 여부를 한눈에 확인하세요.",                            tags:["영어 메뉴","카드 결제","혼밥 OK"],         bg:"#FFF7ED", border:"#FED7AA", accent:"#EA580C", href:"/places"  },
+      { emoji:"🏅", title:"Auto Foreigner-Friendliness Rating",   ko:"외국인 친화도 자동 등급화",       desc:"웹 데이터 NLP 분석으로 모든 장소를 S~D 5단계로 자동 등급화합니다. 방문 전에 이용 가능 여부를 미리 확인하세요.",                    tags:["S~D 등급","자동 업데이트","NLP 기반"],     bg:"#F0FDFA", border:"#99F6E4", accent:"#0D9488", href:"/places"  },
+      { emoji:"📋", title:"Step-by-Step Life Task Guide",         ko:"생활 과업 단계별 안내",           desc:"도착 첫날부터 장기 정착까지 — 체류 단계에 맞게 지금 해야 할 일을 패키지 형태로 안내합니다.",                                     tags:["개인화","단계별","자동 업데이트"],          bg:"#EFF6FF", border:"#BFDBFE", accent:"#2563EB", href:"/guides"  },
+      { emoji:"🗺️", title:"Personalized Local Experience Courses",ko:"개인화 로컬 경험 코스 추천",     desc:"한국인 소비 데이터 기반 로컬성 지수로, 언어 수준·예산·모험 성향에 맞는 나만의 로컬 코스를 자동으로 받아보세요.",                    tags:["AI 큐레이션","예산 맞춤","반나절·하루"],    bg:"#F0FDF4", border:"#BBF7D0", accent:"#16A34A", href:"/places"  },
+      { emoji:"👥", title:"Meetup & People Connection",           ko:"Meetup · People 커뮤니티 연결",  desc:"언어 교환·취미·지역 탐방 모임을 개설하거나 참여하세요. 관심사·언어·거주 지역 기반으로 교류 상대를 자동 추천합니다.",                 tags:["언어 교환","취미 그룹","자동 매칭"],        bg:"#F5F3FF", border:"#DDD6FE", accent:"#7C3AED", href:"/meetups" },
+      { emoji:"💬", title:"Real-Time Multilingual Chat",          ko:"실시간 다국어 번역 채팅",        desc:"각자의 언어로 입력하면 상대방 언어로 자동 번역됩니다. 원문과 번역문을 함께 표시해 번역 품질을 직접 확인할 수 있습니다.",             tags:["자동 번역","다국어","원문·번역 동시"],      bg:"#FFF1F2", border:"#FECDD3", accent:"#E11D48", href:"/meetups" },
     ],
   },
   areas: {
-    label: "Korea Areas",
+    label: "한국 지역",
     title: "당신의 동네를",
     titleAccent: "찾아보세요",
     desc: "한국 주요 동네별 큐레이션 가이드",
@@ -138,13 +159,13 @@ export const KO: LandingData = {
   cta: {
     label: "Join Localoop Korea",
     title: "한국 생활,\n지금 시작하세요",
-    desc:  "가입 무료 · 광고 없음 · 외국인을 위해 직접 큐레이션한 콘텐츠",
+    desc:  "가입 무료 · 광고 없음 · AI가 큐레이션한 한국 생활 콘텐츠",
     btn:   "무료로 시작하기 🚀",
     loginText: "이미 계정이 있나요?",
     loginLink: "로그인",
   },
   footer: {
-    desc:  "외국인과 한국인을 위한 한국 지역 기반 생활 네비게이션",
+    desc:  "외국인과 한국인을 위한 AI 기반 생활 내비게이션 & 커뮤니티 플랫폼. 특허 출원 3건.",
     copy:  "© 2024 Localoop Korea",
   },
 };
@@ -157,56 +178,72 @@ export const EN: LandingData = {
   altLangPath: "/",
   nav: {
     links: [
-      { href: "#features", label: "Features" },
-      { href: "#areas",    label: "Areas" },
-      { href: "#how",      label: "How it works" },
+      { href: "#features",  label: "Features" },
+      { href: "#tasks",     label: "Life Tasks" },
+      { href: "#local",     label: "Local Digging" },
+      { href: "#community", label: "Community" },
+      { href: "#areas",     label: "Areas" },
+      { href: "#how",       label: "How it works" },
     ],
     login: "Log in",
     cta: "Get started →",
   },
   hero: {
-    badge: "🇰🇷  Korea living guide for foreigners",
-    titleLight:  "Experience",
-    titleAccent: "real local",
+    badge: "🇰🇷  AI-powered life navigation for foreigners in Korea",
+    titleLight:  "Your AI guide to",
+    titleAccent: "life in",
     titleBold:   "Korea",
-    subtitle:    "Foreigner-friendly spots, food guides, life tips, meetups—\neverything that makes living in Korea easier, in one place.",
+    subtitle:    "Localoop Korea reads your location, language level, and stage of stay —\nthen guides you to exactly what you need right now.\nPlaces, tasks, local experiences, and real connections.",
     ctaPrimary:   "Get started free 🚀",
     ctaSecondary: "Learn more",
-    proof: "expats & locals have already joined",
+    proof: "2.78M+ foreigners live in Korea — built for all of them",
     cards: [
-      { emoji:"☕", name:"Fritz Coffee Company",      area:"Seongsu, Korea",   tag:"English menu",     bg:"#FFF7ED", border:"#FED7AA", tagColor:"#EA580C" },
+      { emoji:"☕", name:"Fritz Coffee Company",      area:"Seongsu, Korea",   tag:"English menu",      bg:"#FFF7ED", border:"#FED7AA", tagColor:"#EA580C" },
       { emoji:"🍜", name:"Tteokbokki 101 Guide",     area:"Food guide",        tag:"Beginner-friendly", bg:"#F0FDFA", border:"#99F6E4", tagColor:"#0D9488" },
-      { emoji:"🤝", name:"Korean Language Exchange",  area:"Hongdae, Korea",   tag:"12 going",         bg:"#F5F3FF", border:"#DDD6FE", tagColor:"#7C3AED" },
-      { emoji:"🍺", name:"Craftworks Taproom",        area:"Itaewon, Korea",   tag:"English OK",       bg:"#EFF6FF", border:"#BFDBFE", tagColor:"#2563EB" },
-      { emoji:"📖", name:"Korea Metro Survival",      area:"Transport guide",  tag:"Must read",        bg:"#EFF6FF", border:"#BFDBFE", tagColor:"#2563EB" },
+      { emoji:"🤝", name:"Korean Language Exchange",  area:"Hongdae, Korea",   tag:"12 going",          bg:"#F5F3FF", border:"#DDD6FE", tagColor:"#7C3AED" },
+      { emoji:"🍺", name:"Craftworks Taproom",        area:"Itaewon, Korea",   tag:"English OK",        bg:"#EFF6FF", border:"#BFDBFE", tagColor:"#2563EB" },
+      { emoji:"📖", name:"Korea Metro Survival",      area:"Transport guide",  tag:"Must read",         bg:"#EFF6FF", border:"#BFDBFE", tagColor:"#2563EB" },
       { emoji:"🍱", name:"Convenience Store Guide",   area:"Food guide",       tag:"Budget-friendly",   bg:"#F0FDFA", border:"#99F6E4", tagColor:"#0D9488" },
       { emoji:"🏪", name:"Olive Young Shopping Tips", area:"Myeongdong, Korea",tag:"Expat favorite",    bg:"#FFF7ED", border:"#FED7AA", tagColor:"#EA580C" },
-      { emoji:"🌙", name:"Han River Picnic Crew",     area:"Han River Park",   tag:"23 going",         bg:"#F5F3FF", border:"#DDD6FE", tagColor:"#7C3AED" },
-      { emoji:"🍖", name:"Korean BBQ for Beginners",  area:"Food guide",       tag:"Solo-friendly",    bg:"#FFF7ED", border:"#FED7AA", tagColor:"#EA580C" },
+      { emoji:"🌙", name:"Han River Picnic Crew",     area:"Han River Park",   tag:"23 going",          bg:"#F5F3FF", border:"#DDD6FE", tagColor:"#7C3AED" },
+      { emoji:"🍖", name:"Korean BBQ for Beginners",  area:"Food guide",       tag:"Solo-friendly",     bg:"#FFF7ED", border:"#FED7AA", tagColor:"#EA580C" },
     ],
     stats: [{ num:"200+", label:"Places" }, { num:"50+", label:"Guides" }, { num:"6", label:"Areas" }],
   },
+  aiEngines: {
+    label: "AI Technology",
+    title: "Powered by 3",
+    titleAccent: "Patented AI Engines",
+    desc: "Not just an app — an AI system that reads your situation and connects you to what you need.",
+    items: [
+      { emoji:"🧠", title:"Life Task Graph Engine",             ko:"생활 태스크 그래프 엔진",       desc:"Dynamically calculates what you need to do right now — based on your location, language level, and completed tasks.",                            badge:"Patent Pending" },
+      { emoji:"📍", title:"Auto Friendliness Rating Engine",    ko:"외국인 친화도 자동 등급화 엔진", desc:"NLP analysis of public web data auto-rates every place from S to D — updated continuously.",                                                   badge:"Patent Pending" },
+      { emoji:"🗺️", title:"Local Course Recommendation Engine", ko:"로컬 코스 추천 엔진",           desc:"Builds personalized local courses from Korean consumer data, matched to your language, budget, and adventure level.",                            badge:"Patent Pending" },
+    ],
+  },
   steps: {
     label: "How it works",
-    title: "Your Korea Journey",
-    desc:  "Just 4 steps to start living like a Korea local",
+    title: "How Localoop Korea Works",
+    desc:  "4 steps to start your life in Korea the smart way",
     items: [
-      { num:"01", emoji:"📝", title:"Sign up",        desc:"Enter your name and area of interest. Takes less than a minute." },
-      { num:"02", emoji:"📍", title:"Explore nearby", desc:"Discover foreigner-friendly spots and local restaurants near you." },
-      { num:"03", emoji:"🍜", title:"Try local food", desc:"Order with confidence using our beginner-friendly menu guides." },
-      { num:"04", emoji:"🤝", title:"Join the community", desc:"Attend meetups and connect with people who share your interests." },
+      { num:"01", emoji:"📲", title:"Sign Up & Set Your Profile",        desc:"Choose foreigner or Korean mode. Set your location, language level, and purpose of stay. The AI starts personalizing from here." },
+      { num:"02", emoji:"📋", title:"Get Your Life Task Guide",          desc:"Based on your stage of stay, the app tells you exactly what to do right now — from setting up a bank account to finding your neighborhood." },
+      { num:"03", emoji:"🗺️", title:"Explore Foreigner-Friendly Places", desc:"Browse places rated S~D for foreigner friendliness. See language support, payment options, and local picks — all on one map." },
+      { num:"04", emoji:"👥", title:"Connect & Experience Local Korea",  desc:"Join meetups, find language exchange partners, and get a personalized local course built just for you. Experience Korea the way locals do." },
     ],
   },
   features: {
     label: "What we offer",
-    title: "4 ways to experience",
-    titleAccent: "Korea like a local",
-    desc: "Everything you need to go from tourist to local",
+    title: "6 Features Built for",
+    titleAccent: "Your Life in Korea",
+    desc: "An AI platform that adjusts automatically to your location, language, and stage of stay",
     items: [
-      { emoji:"📍", title:"Places", ko:"Local Spots",       desc:"Browse foreigner-friendly cafés, restaurants, and markets tagged by area.",    tags:["English menu","Card OK","Solo-friendly"],   bg:"#FFF7ED", border:"#FED7AA", accent:"#EA580C", href:"/places" },
-      { emoji:"🍜", title:"Food",   ko:"Food Guide",         desc:"Spice level guides, ordering tips, and menu explanations for every dish.",     tags:["Beginner picks","Spice levels","Veg options"],bg:"#F0FDFA", border:"#99F6E4", accent:"#0D9488", href:"/food"   },
-      { emoji:"📖", title:"Guides", ko:"Life Guides",        desc:"From opening a bank account to riding the subway—practical tips for life in Korea.", tags:["Transit","Healthcare","Housing"],      bg:"#EFF6FF", border:"#BFDBFE", accent:"#2563EB", href:"/guides" },
-      { emoji:"🤝", title:"Meetups",ko:"Meetups & Community",desc:"Language exchanges, neighborhood events, and community gatherings.",          tags:["Lang exchange","Free events","Locals"],     bg:"#F5F3FF", border:"#DDD6FE", accent:"#7C3AED", href:"/meetups"},
+      { emoji:"📍", title:"Location-Based Living Search",          ko:"Places",       desc:"Find nearby places, restaurants, and facilities — with language support, payment info, and foreigner accessibility all in one view.",                    tags:["English menu","Card OK","Solo-friendly"],        bg:"#FFF7ED", border:"#FED7AA", accent:"#EA580C", href:"/places"  },
+      { emoji:"🏅", title:"Auto Foreigner-Friendliness Rating",    ko:"AI Rating",    desc:"Every place is auto-rated S~D using NLP analysis of web data — so you always know what to expect before you arrive.",                                  tags:["S~D Rating","Auto-updated","NLP-powered"],       bg:"#F0FDFA", border:"#99F6E4", accent:"#0D9488", href:"/places"  },
+      { emoji:"📋", title:"Step-by-Step Life Task Guide",          ko:"Life Tasks",   desc:"From the day you arrive to long-term settlement — the app tells you what to do right now, packaged as simple task bundles.",                          tags:["Personalized","Stage-based","Auto-updated"],     bg:"#EFF6FF", border:"#BFDBFE", accent:"#2563EB", href:"/guides"  },
+      { emoji:"🗺️", title:"Personalized Local Experience Courses", ko:"Local Digging",desc:"Built from real Korean consumer data, your local course is matched to your language level, budget, and sense of adventure.",                          tags:["AI-curated","Budget-matched","Half-day & full-day"],bg:"#F0FDF4",border:"#BBF7D0", accent:"#16A34A", href:"/places"  },
+      { emoji:"👥", title:"Meetup & People Connection",            ko:"Community",    desc:"Join or create local meetups — language exchanges, hobby groups, neighborhood tours. Find people who match your interests and location.",              tags:["Language exchange","Hobby groups","Auto-matching"],bg:"#F5F3FF", border:"#DDD6FE", accent:"#7C3AED", href:"/meetups" },
+      { emoji:"💬", title:"Real-Time Multilingual Chat",           ko:"Chat",         desc:"Type in your language — the other person reads it in theirs. Original and translated messages shown side by side for full transparency.",             tags:["Auto-translate","Multilingual","Side-by-side"],  bg:"#FFF1F2", border:"#FECDD3", accent:"#E11D48", href:"/meetups" },
     ],
   },
   areas: {
@@ -243,13 +280,13 @@ export const EN: LandingData = {
   cta: {
     label: "Join Localoop Korea",
     title: "Your Korea life\nstarts here",
-    desc:  "Free to join · No ads · Curated by hand for foreigners",
+    desc:  "Free to join · No ads · AI-curated content for foreigners in Korea",
     btn:   "Get started free 🚀",
     loginText: "Already have an account?",
     loginLink: "Log in",
   },
   footer: {
-    desc:  "Region-based living navigation for foreigners and Koreans in Korea.",
+    desc:  "AI-powered life navigation & community platform for foreigners and Koreans in Korea. 3 patents pending.",
     copy:  "© 2024 Localoop Korea",
   },
 };

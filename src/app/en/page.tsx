@@ -2,8 +2,9 @@ import LandingTemplate from "@/components/landing/LandingTemplate";
 import { EN } from "@/components/landing/content";
 
 export const metadata = {
-  title: "Localoop Korea — Seoul living guide for foreigners",
-  description: "Find foreigner-friendly places, food guides, life tips, and meetups in Seoul. Free.",
+  title: "Localoop Korea — AI Life Navigation for Foreigners in Korea",
+  description: "AI-powered platform for foreigners in Korea. Foreigner-friendly places rated S~D, step-by-step life task guides, local experience courses, and real community connections.",
+  themeColor: "#15b6c1",
 };
 
 export default function EnglishLandingPage() {
