@@ -305,6 +305,82 @@ const MAP_PINS: PinDef[] = [
 
   // ── Dongtan (left:51-58, top:92-95) ──
   { cat:"food",   size:12, left:52, top:93, delay:12.54 },
+
+  // ── Paju (left:22-34, top:14-24) ──
+  { cat:"food",   size:12, left:24, top:17, delay:12.60 },
+  { cat:"food",   size:12, left:28, top:21, delay:12.66 },
+  { cat:"place",  size:16, left:26, top:19, delay:12.72 },
+  { cat:"place",  size:16, left:32, top:23, delay:12.78 },
+  { cat:"guide",  size:22, left:30, top:20, delay:12.84 },
+
+  // ── Gimpo (left:14-24, top:38-46) ──
+  { cat:"food",   size:12, left:15, top:40, delay:12.90 },
+  { cat:"food",   size:12, left:19, top:44, delay:12.96 },
+  { cat:"place",  size:16, left:17, top:42, delay:13.02 },
+  { cat:"place",  size:16, left:22, top:45, delay:13.08 },
+  { cat:"guide",  size:22, left:20, top:41, delay:13.14 },
+
+  // ── Gwangmyeong (left:32-40, top:60-68) ──
+  { cat:"food",   size:12, left:33, top:62, delay:13.20 },
+  { cat:"food",   size:12, left:37, top:65, delay:13.26 },
+  { cat:"place",  size:16, left:35, top:63, delay:13.32 },
+  { cat:"place",  size:16, left:39, top:67, delay:13.38 },
+  { cat:"guide",  size:22, left:36, top:65, delay:13.44 },
+
+  // ── Siheung (left:20-28, top:68-76) ──
+  { cat:"food",   size:12, left:21, top:70, delay:13.50 },
+  { cat:"food",   size:12, left:25, top:73, delay:13.56 },
+  { cat:"place",  size:16, left:23, top:71, delay:13.62 },
+  { cat:"place",  size:16, left:27, top:75, delay:13.68 },
+
+  // ── Hanam (left:66-74, top:55-63) ──
+  { cat:"food",   size:12, left:67, top:57, delay:13.74 },
+  { cat:"food",   size:12, left:70, top:60, delay:13.80 },
+  { cat:"place",  size:16, left:68, top:58, delay:13.86 },
+  { cat:"place",  size:16, left:73, top:62, delay:13.92 },
+  { cat:"guide",  size:22, left:71, top:59, delay:13.98 },
+
+  // ── Guri / Namyangju (left:64-80, top:40-50) ──
+  { cat:"food",   size:12, left:65, top:42, delay:14.04 },
+  { cat:"food",   size:12, left:69, top:46, delay:14.10 },
+  { cat:"food",   size:12, left:75, top:43, delay:14.16 },
+  { cat:"place",  size:16, left:67, top:44, delay:14.22 },
+  { cat:"place",  size:16, left:78, top:48, delay:14.28 },
+  { cat:"guide",  size:22, left:73, top:45, delay:14.34 },
+
+  // ── Yongin (left:62-72, top:72-82) ──
+  { cat:"food",   size:12, left:63, top:74, delay:14.40 },
+  { cat:"food",   size:12, left:67, top:78, delay:14.46 },
+  { cat:"food",   size:12, left:71, top:80, delay:14.52 },
+  { cat:"place",  size:16, left:65, top:76, delay:14.58 },
+  { cat:"guide",  size:22, left:69, top:79, delay:14.64 },
+
+  // ── Yangju (left:44-52, top:14-22) ──
+  { cat:"food",   size:12, left:45, top:15, delay:14.70 },
+  { cat:"food",   size:12, left:49, top:19, delay:14.76 },
+  { cat:"place",  size:16, left:47, top:17, delay:14.82 },
+  { cat:"guide",  size:22, left:51, top:20, delay:14.88 },
+
+  // ── Hwaseong (left:43-50, top:84-92) ──
+  { cat:"food",   size:12, left:44, top:86, delay:14.94 },
+  { cat:"food",   size:12, left:47, top:89, delay:15.00 },
+  { cat:"place",  size:16, left:45, top:87, delay:15.06 },
+  { cat:"place",  size:16, left:49, top:91, delay:15.12 },
+
+  // ── Pyeongtaek (left:39-47, top:93-99) ──
+  { cat:"food",   size:12, left:40, top:94, delay:15.18 },
+  { cat:"place",  size:16, left:43, top:97, delay:15.24 },
+  { cat:"guide",  size:22, left:46, top:95, delay:15.30 },
+
+  // ── Gwacheon (left:54-60, top:65-70) ──
+  { cat:"food",   size:12, left:55, top:67, delay:15.36 },
+  { cat:"place",  size:16, left:58, top:69, delay:15.42 },
+  { cat:"guide",  size:22, left:56, top:68, delay:15.48 },
+
+  // ── Gunpo / Uiwang (left:38-46, top:78-84) ──
+  { cat:"food",   size:12, left:39, top:80, delay:15.54 },
+  { cat:"place",  size:16, left:42, top:82, delay:15.60 },
+  { cat:"guide",  size:22, left:44, top:79, delay:15.66 },
 ];
 
 function KoreaMapPanel() {
