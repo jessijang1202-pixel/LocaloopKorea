@@ -489,7 +489,7 @@ function HeroCards({ d }: { d: LandingData }) {
           <div className="lp-showcase-grid">
             {cards.map((c) => (
               <div key={c.name} style={{
-                background:c.bg, border:`2px solid ${c.border}`,
+                background:c.bg, border:"2px solid white",
                 borderRadius:18, padding:"16px 14px",
                 display:"flex", flexDirection:"column", gap:8,
               }}>
@@ -501,7 +501,7 @@ function HeroCards({ d }: { d: LandingData }) {
                 <p style={{ fontSize:11, color:MU }}>📍 {c.area}</p>
                 <span style={{
                   fontSize:10, fontWeight:700, padding:"3px 8px", borderRadius:999,
-                  background:"white", border:`1px solid ${c.border}`, color:c.tagColor,
+                  background:"white", border:"1px solid white", color:c.tagColor,
                   alignSelf:"flex-start",
                 }}>{c.tag}</span>
               </div>
@@ -533,7 +533,7 @@ function AIEngines({ d }: { d: LandingData }) {
           <div className="lp-grid-3">
             {ae.items.map((item) => (
               <div key={item.title} style={{
-                background:"#ffffff", border:"1.5px solid #D6F5F5",
+                background:"#ffffff", border:"1.5px solid white",
                 borderRadius:20, padding:"28px 24px",
                 position:"relative", overflow:"hidden",
               }}>
@@ -632,13 +632,13 @@ function Features({ d }: { d: LandingData }) {
           <div className="lp-grid-3">
             {f.items.map((item) => (
               <Link key={item.title} href={item.href} className="lp-card"
-                style={{ background:item.bg, borderColor:item.border, textDecoration:"none", display:"block" }}>
+                style={{ background:item.bg, borderColor:"white", textDecoration:"none", display:"block" }}>
                 <p style={{ fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em", color:item.accent, marginBottom:6 }}>{item.ko}</p>
                 <p style={{ fontSize:18, fontWeight:900, color:TX, marginBottom:10 }}>{item.title}</p>
                 <p style={{ fontSize:13, color:MU, lineHeight:1.6, marginBottom:16 }}>{item.desc}</p>
                 <div>
                   {item.tags.map((t) => (
-                    <span key={t} className="lp-feature-tag" style={{ borderColor:item.border, color:item.accent }}>{t}</span>
+                    <span key={t} className="lp-feature-tag" style={{ borderColor:"white", color:item.accent }}>{t}</span>
                   ))}
                 </div>
               </Link>
@@ -667,7 +667,7 @@ function Areas({ d }: { d: LandingData }) {
 
           <div className="lp-area-grid">
             {a.items.map((area) => (
-              <div key={area.name} className="lp-card" style={{ background:area.bg, borderColor:area.border, cursor:"pointer" }}>
+              <div key={area.name} className="lp-card" style={{ background:area.bg, borderColor:"white", cursor:"pointer" }}>
                 <p style={{ fontSize:11, fontWeight:700, color:MU, marginBottom:4 }}>{area.ko}</p>
                 <p style={{ fontSize:17, fontWeight:900, color:TX, marginBottom:6 }}>{area.name}</p>
                 <p style={{ fontSize:12, color:MU, lineHeight:1.55 }}>{area.desc}</p>
