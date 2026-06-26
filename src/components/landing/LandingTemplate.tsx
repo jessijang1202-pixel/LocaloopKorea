@@ -32,11 +32,6 @@ function Nav({ d }: { d: LandingData }) {
     <header className="lp-nav">
       <div className="lp-nav-inner">
         <a href="/" style={{ display:"flex", alignItems:"center", gap:10, textDecoration:"none" }}>
-          <span style={{
-            width:34, height:34, borderRadius:10, fontSize:16,
-            background:`linear-gradient(135deg,${P},${PD})`,
-            display:"flex", alignItems:"center", justifyContent:"center",
-          }}>🗺️</span>
           <span style={{ fontSize:17, fontWeight:900, color:TX, letterSpacing:"-0.02em" }}>
             Localoop<span style={{ color:P }}>Korea</span>
           </span>
@@ -384,11 +379,6 @@ function Hero({ d }: { d: LandingData }) {
               </div>
 
               <div className="lp-avatars">
-                <div className="lp-avatar-stack">
-                  {["🇺🇸","🇬🇧","🇯🇵","🇩🇪","🇨🇳","🇫🇷"].map((f, i) => (
-                    <span key={i}>{f}</span>
-                  ))}
-                </div>
                 <span style={{ fontSize:13, color:MU }}>{h.proof}</span>
               </div>
             </div>
@@ -427,7 +417,6 @@ function HeroCards({ d }: { d: LandingData }) {
                 borderRadius:18, padding:"16px 14px",
                 display:"flex", flexDirection:"column", gap:8,
               }}>
-                <span style={{ fontSize:26 }}>{c.emoji}</span>
                 <p style={{
                   fontWeight:800, fontSize:13, color:TX, lineHeight:1.3,
                   display:"-webkit-box", WebkitLineClamp:2, WebkitBoxOrient:"vertical",
@@ -482,14 +471,6 @@ function AIEngines({ d }: { d: LandingData }) {
                   whiteSpace:"nowrap",
                 }}>{item.badge}</span>
 
-                <div style={{
-                  width:52, height:52, borderRadius:16,
-                  background:`linear-gradient(135deg,${PL},#D6F5F5)`,
-                  display:"flex", alignItems:"center", justifyContent:"center",
-                  fontSize:24, marginBottom:18,
-                  border:`1px solid #D6F5F5`,
-                }}>{item.emoji}</div>
-
                 <p style={{ fontSize:11, fontWeight:700, color:MU, marginBottom:6, letterSpacing:"0.06em", textTransform:"uppercase" }}>{item.ko}</p>
                 <p style={{ fontSize:17, fontWeight:900, color:TX, marginBottom:12, lineHeight:1.25 }}>{item.title}</p>
                 <p style={{ fontSize:13, color:MU, lineHeight:1.6 }}>{item.desc}</p>
@@ -522,7 +503,6 @@ function Steps({ d }: { d: LandingData }) {
             {s.items.map((step, i) => (
               <div key={step.num} style={{ display:"flex", alignItems:"flex-start" }}>
                 <div className="lp-step-desktop">
-                  <div className="lp-step-desktop-icon">{step.emoji}</div>
                   <span style={{ display:"inline-block", background:PD, color:"white", borderRadius:999, padding:"3px 12px", fontSize:11, fontWeight:800, marginBottom:12 }}>
                     {step.num}
                   </span>
@@ -538,7 +518,6 @@ function Steps({ d }: { d: LandingData }) {
           <div className="lp-steps-mobile">
             {s.items.map((step) => (
               <div key={step.num} className="lp-step-card">
-                <div className="lp-step-icon">{step.emoji}</div>
                 <div>
                   <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
                     <span style={{ background:PD, color:"white", borderRadius:999, padding:"2px 10px", fontSize:10, fontWeight:800 }}>
@@ -578,12 +557,6 @@ function Features({ d }: { d: LandingData }) {
             {f.items.map((item) => (
               <Link key={item.title} href={item.href} className="lp-card"
                 style={{ background:item.bg, borderColor:item.border, textDecoration:"none", display:"block" }}>
-                <div style={{
-                  width:48, height:48, borderRadius:14, background:"white",
-                  display:"flex", alignItems:"center", justifyContent:"center",
-                  fontSize:22, border:`1px solid ${item.border}`,
-                  marginBottom:16, boxShadow:"0 1px 4px rgba(0,0,0,0.04)",
-                }}>{item.emoji}</div>
                 <p style={{ fontSize:10, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em", color:item.accent, marginBottom:6 }}>{item.ko}</p>
                 <p style={{ fontSize:18, fontWeight:900, color:TX, marginBottom:10 }}>{item.title}</p>
                 <p style={{ fontSize:13, color:MU, lineHeight:1.6, marginBottom:16 }}>{item.desc}</p>
@@ -619,7 +592,6 @@ function Areas({ d }: { d: LandingData }) {
           <div className="lp-area-grid">
             {a.items.map((area) => (
               <div key={area.name} className="lp-card" style={{ background:area.bg, borderColor:area.border, cursor:"pointer" }}>
-                <div style={{ fontSize:36, marginBottom:14 }}>{area.emoji}</div>
                 <p style={{ fontSize:11, fontWeight:700, color:MU, marginBottom:4 }}>{area.ko}</p>
                 <p style={{ fontSize:17, fontWeight:900, color:TX, marginBottom:6 }}>{area.name}</p>
                 <p style={{ fontSize:12, color:MU, lineHeight:1.55 }}>{area.desc}</p>
@@ -654,7 +626,6 @@ function Tips({ d }: { d: LandingData }) {
 
             <div className="lp-tips-box" style={{ background:PL }}>
               <div className="lp-tips-box-hdr">
-                <div className="lp-tips-icon" style={{ background:P }}>💡</div>
                 <div>
                   <p style={{ fontWeight:800, fontSize:15, color:TX, marginBottom:2 }}>{t.boxTitle}</p>
                   <p style={{ fontSize:12, color:MU }}>{t.boxDesc}</p>
@@ -662,7 +633,6 @@ function Tips({ d }: { d: LandingData }) {
               </div>
               {t.items.map((tip) => (
                 <div key={tip.text} className="lp-tip-item">
-                  <span style={{ fontSize:15, flexShrink:0, marginTop:1 }}>{tip.emoji}</span>
                   <span style={{ color:TX, lineHeight:1.5 }}>{tip.text}</span>
                 </div>
               ))}
@@ -685,7 +655,6 @@ function CTABanner({ d }: { d: LandingData }) {
       <div className="lp-section" style={{ position:"relative", zIndex:1 }}>
         <div className="lp-container">
           <div className="lp-cta-inner">
-            <div className="lp-cta-icon">🗺️</div>
             <span style={{ fontSize:11, fontWeight:700, letterSpacing:"0.1em", textTransform:"uppercase", color:PL, display:"block", marginBottom:14 }}>
               {c.label}
             </span>
@@ -718,7 +687,6 @@ function Footer({ d }: { d: LandingData }) {
         <div className="lp-container">
           <div className="lp-footer-inner">
             <div className="lp-footer-logo">
-              <span style={{ width:30, height:30, borderRadius:8, background:P, display:"flex", alignItems:"center", justifyContent:"center", fontSize:14 }}>🗺️</span>
               <span style={{ fontWeight:900, color:"white", fontSize:16 }}>Localoop<span style={{ color:P }}>Korea</span></span>
             </div>
             <p style={{ fontSize:12, color:"#4A6467", textAlign:"center" }}>{d.footer.desc}</p>

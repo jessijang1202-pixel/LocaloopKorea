@@ -18,7 +18,6 @@ export default function SignupPage() {
         padding: "24px 20px",
       }}>
         <div className="auth-card" style={{ textAlign: "center" }}>
-          <div style={{ fontSize: 48, marginBottom: 20 }}>📬</div>
           <h2 style={{ fontSize: 22, fontWeight: 800, color: "#1A2B2C", marginBottom: 8 }}>
             Check your email
           </h2>
@@ -45,11 +44,6 @@ export default function SignupPage() {
       <div className="auth-card">
         {/* Logo */}
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 32 }}>
-          <span style={{
-            width: 38, height: 38, borderRadius: 11, fontSize: 18,
-            background: "linear-gradient(135deg,#1EC8C8,#17A0A0)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-          }}>🗺️</span>
           <span style={{ fontSize: 18, fontWeight: 900, color: "#1A2B2C", letterSpacing: "-0.02em" }}>
             Localoop<span style={{ color: "#1EC8C8" }}>Korea</span>
           </span>
