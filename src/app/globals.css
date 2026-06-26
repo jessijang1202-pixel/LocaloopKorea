@@ -543,6 +543,11 @@ html {
   .lp-sec-hdr { margin-bottom: 48px; }
 }
 
+/* Features section title — prevent line-break on mobile */
+@media (max-width: 767px) {
+  #features .lp-section-title { font-size: clamp(1.05rem, 3.8vw, 1.6rem); }
+}
+
 /* Hero section: override lp-section vertical padding */
 .lp-hero-pad {
   padding-top: 24px;
@@ -710,17 +715,20 @@ html {
   .lp-grid-2  { gap: 96px; }
 }
 
-/* 9-card showcase — always 3-column grid */
+/* 6-card showcase — 2-col mobile, 3-col desktop */
 .lp-showcase-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 8px;
 }
 @media (min-width: 480px) {
   .lp-showcase-grid { gap: 12px; }
 }
 @media (min-width: 768px) {
-  .lp-showcase-grid { gap: 16px; }
+  .lp-showcase-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
 }
 
 /* Landing hero grid ordering: map first on mobile, right on PC */

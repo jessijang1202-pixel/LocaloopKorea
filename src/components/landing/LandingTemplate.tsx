@@ -498,7 +498,7 @@ function HeroCards({ d }: { d: LandingData }) {
                   display:"-webkit-box", WebkitLineClamp:2, WebkitBoxOrient:"vertical",
                   overflow:"hidden",
                 } as React.CSSProperties}>{c.name}</p>
-                <p style={{ fontSize:11, color:MU }}>📍 {c.area}</p>
+                <p style={{ fontSize:11, color:MU }}>{c.area}</p>
                 <span style={{
                   fontSize:10, fontWeight:700, padding:"3px 8px", borderRadius:999,
                   background:"white", border:"1px solid white", color:c.tagColor,
@@ -669,7 +669,7 @@ function Areas({ d }: { d: LandingData }) {
             {a.items.map((area) => (
               <div key={area.name} className="lp-card" style={{ background:area.bg, borderColor:"white", cursor:"pointer" }}>
                 <p style={{ fontSize:11, fontWeight:700, color:MU, marginBottom:4 }}>{area.ko}</p>
-                <p style={{ fontSize:17, fontWeight:900, color:TX, marginBottom:6 }}>{area.name}</p>
+                <p style={{ fontSize:17, fontWeight:900, color:TX, marginBottom:6 }}>📍 {area.name}</p>
                 <p style={{ fontSize:12, color:MU, lineHeight:1.55 }}>{area.desc}</p>
               </div>
             ))}
