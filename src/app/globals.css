@@ -1,16 +1,16 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 :root {
   --background: #ffffff;
-  --foreground: #0f172a;
-  --primary: #06B6D4;
-  --primary-dark: #0891B2;
-  --primary-light: #e0f9fc;
+  --foreground: #1A2B2C;
+  --primary: #1EC8C8;
+  --primary-dark: #17A0A0;
+  --primary-light: #D6F5F5;
   --primary-foreground: #ffffff;
-  --secondary: #f0fdfe;
-  --muted: #f8fbfc;
-  --muted-foreground: #64748b;
-  --border: #e2f4f7;
+  --secondary: #F0FAFA;
+  --muted: #F0FAFA;
+  --muted-foreground: #4A6467;
+  --border: #E0E8EA;
   --card: #ffffff;
   --accent: #22d3ee;
 }
@@ -97,7 +97,7 @@ html {
 }
 .lp-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(6, 182, 212, 0.15);
+  box-shadow: 0 12px 40px rgba(30, 200, 200, 0.15);
 }
 .lp-badge {
   display: inline-flex;
@@ -158,7 +158,7 @@ html {
   color: #fff;
   text-decoration: none;
   transition: opacity 0.15s, transform 0.15s;
-  box-shadow: 0 4px 20px rgba(6, 182, 212, 0.35);
+  box-shadow: 0 4px 20px rgba(30, 200, 200, 0.35);
 }
 .lp-btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
 
@@ -171,12 +171,12 @@ html {
   border-radius: 16px;
   font-weight: 600;
   font-size: 1rem;
-  color: #64748b;
+  color: #4A6467;
   text-decoration: none;
-  border: 2px solid #e2f4f7;
+  border: 2px solid #E0E8EA;
   transition: border-color 0.15s, color 0.15s;
 }
-.lp-btn-outline:hover { border-color: #06B6D4; color: #06B6D4; }
+.lp-btn-outline:hover { border-color: #1EC8C8; color: #1EC8C8; }
 
 .lp-step-card {
   display: flex;
@@ -265,11 +265,11 @@ html {
 .lp-nav-link {
   font-size: 14px;
   font-weight: 600;
-  color: #64748b;
+  color: #4A6467;
   text-decoration: none;
   transition: color 0.15s;
 }
-.lp-nav-link:hover { color: #06B6D4; }
+.lp-nav-link:hover { color: #1EC8C8; }
 
 /* Nav right-side buttons */
 .lp-nav-lang {
@@ -277,10 +277,10 @@ html {
   align-items: center;
   font-size: 10px;
   font-weight: 600;
-  color: #64748b;
+  color: #4A6467;
   padding: 4px 8px;
   border-radius: 999px;
-  border: 1px solid #e2f4f7;
+  border: 1px solid #E0E8EA;
   text-decoration: none;
   white-space: nowrap;
 }
@@ -288,10 +288,10 @@ html {
   display: none; /* hidden on xs < 360px */
   font-size: 10px;
   font-weight: 600;
-  color: #64748b;
+  color: #4A6467;
   padding: 4px 8px;
   border-radius: 999px;
-  border: 1px solid #e2f4f7;
+  border: 1px solid #E0E8EA;
   text-decoration: none;
   align-items: center;
   white-space: nowrap;
@@ -332,8 +332,8 @@ html {
   background: rgba(255,255,255,0.95);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border-bottom: 1px solid #e2f4f7;
-  box-shadow: 0 1px 12px rgba(6,182,212,0.08);
+  border-bottom: 1px solid #E0E8EA;
+  box-shadow: 0 1px 12px rgba(30,200,200,0.08);
 }
 .lp-nav-inner {
   max-width: 1200px;
@@ -355,7 +355,7 @@ html {
 .lp-hero {
   padding-top: 80px;
   padding-bottom: 0;
-  background: linear-gradient(180deg, #f0fdfe 0%, #ffffff 80%);
+  background: linear-gradient(180deg, #F0FAFA 0%, #ffffff 80%);
   overflow: hidden;
   position: relative;
 }
@@ -425,8 +425,8 @@ html {
   border-radius: 14px;
   padding: 14px 8px;
   text-align: center;
-  border: 2px solid #e2f4f7;
-  background: #e0f9fc;
+  border: 2px solid #E0E8EA;
+  background: #D6F5F5;
 }
 
 /* Proof avatars */
@@ -447,7 +447,7 @@ html {
   height: 30px;
   border-radius: 999px;
   border: 2px solid white;
-  background: #e0f9fc;
+  background: #D6F5F5;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -465,7 +465,7 @@ html {
   background: white;
   border-radius: 12px;
   padding: 14px 16px;
-  border: 1px solid #e2f4f7;
+  border: 1px solid #E0E8EA;
   margin-bottom: 10px;
   font-size: 13px;
 }
@@ -799,8 +799,8 @@ html {
   background: #ffffff;
   border-radius: 20px;
   padding: 28px 22px;
-  box-shadow: 0 4px 40px rgba(6,182,212,0.10);
-  border: 1px solid #e2f4f7;
+  box-shadow: 0 4px 40px rgba(30,200,200,0.10);
+  border: 1px solid #E0E8EA;
 }
 @media (min-width: 480px) {
   .auth-card { border-radius: 28px; padding: 48px 40px; }

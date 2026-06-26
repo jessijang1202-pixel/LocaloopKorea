@@ -1,11 +1,11 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import type { LandingData } from "./content";
 
-const P  = "#06B6D4";
-const PD = "#0891B2";
-const PL = "#e0f9fc";
-const TX = "#0f172a";
-const MU = "#64748b";
+const P  = "#1EC8C8";
+const PD = "#17A0A0";
+const PL = "#D6F5F5";
+const TX = "#1A2B2C";
+const MU = "#4A6467";
 
 function WaveDown() {
   return (
@@ -321,13 +321,13 @@ function KoreaMapPanel() {
         backgroundImage:"url('/korea-map.png')",
         backgroundSize:"cover",
         backgroundPosition:"50% 50%",
-        backgroundColor:"#f0fdfe",
+        backgroundColor:"#F0FAFA",
       }} />
 
       {/* Bottom fade */}
       <div style={{
         position:"absolute", bottom:0, left:0, right:0, height:80,
-        background:"linear-gradient(to bottom, transparent, rgba(240,253,254,0.97) 85%, #f0fdfe)",
+        background:"linear-gradient(to bottom, transparent, rgba(240,253,254,0.97) 85%, #F0FAFA)",
         pointerEvents:"none", zIndex:20,
       }} />
 
@@ -417,7 +417,7 @@ function Hero({ d }: { d: LandingData }) {
 function HeroCards({ d }: { d: LandingData }) {
   const { cards } = d.hero;
   return (
-    <section style={{ background:"#f8fbfc" }}>
+    <section style={{ background:"#F0FAFA" }}>
       <div className="lp-section" style={{ paddingTop:40, paddingBottom:48 }}>
         <div className="lp-container">
           <div className="lp-showcase-grid">
@@ -454,7 +454,7 @@ function HeroCards({ d }: { d: LandingData }) {
 function AIEngines({ d }: { d: LandingData }) {
   const ae = d.aiEngines;
   return (
-    <section style={{ background:"#f0fdfe" }}>
+    <section style={{ background:"#F0FAFA" }}>
       <div className="lp-section">
         <div className="lp-container">
           <div className="lp-sec-hdr">
@@ -468,7 +468,7 @@ function AIEngines({ d }: { d: LandingData }) {
           <div className="lp-grid-3">
             {ae.items.map((item) => (
               <div key={item.title} style={{
-                background:"#ffffff", border:"1.5px solid #b2f0f7",
+                background:"#ffffff", border:"1.5px solid #D6F5F5",
                 borderRadius:20, padding:"28px 24px",
                 position:"relative", overflow:"hidden",
               }}>
@@ -484,10 +484,10 @@ function AIEngines({ d }: { d: LandingData }) {
 
                 <div style={{
                   width:52, height:52, borderRadius:16,
-                  background:`linear-gradient(135deg,${PL},#b2f0f7)`,
+                  background:`linear-gradient(135deg,${PL},#D6F5F5)`,
                   display:"flex", alignItems:"center", justifyContent:"center",
                   fontSize:24, marginBottom:18,
-                  border:`1px solid #b2f0f7`,
+                  border:`1px solid #D6F5F5`,
                 }}>{item.emoji}</div>
 
                 <p style={{ fontSize:11, fontWeight:700, color:MU, marginBottom:6, letterSpacing:"0.06em", textTransform:"uppercase" }}>{item.ko}</p>
@@ -605,7 +605,7 @@ function Features({ d }: { d: LandingData }) {
 function Areas({ d }: { d: LandingData }) {
   const a = d.areas;
   return (
-    <section id="areas" style={{ background:"#f8fbfc" }}>
+    <section id="areas" style={{ background:"#F0FAFA" }}>
       <div className="lp-section">
         <div className="lp-container">
           <div className="lp-sec-hdr">
@@ -721,8 +721,8 @@ function Footer({ d }: { d: LandingData }) {
               <span style={{ width:30, height:30, borderRadius:8, background:P, display:"flex", alignItems:"center", justifyContent:"center", fontSize:14 }}>🗺️</span>
               <span style={{ fontWeight:900, color:"white", fontSize:16 }}>Localoop<span style={{ color:P }}>Korea</span></span>
             </div>
-            <p style={{ fontSize:12, color:"#64748b", textAlign:"center" }}>{d.footer.desc}</p>
-            <p style={{ fontSize:12, color:"#475569" }}>{d.footer.copy}</p>
+            <p style={{ fontSize:12, color:"#4A6467", textAlign:"center" }}>{d.footer.desc}</p>
+            <p style={{ fontSize:12, color:"#4A6467" }}>{d.footer.copy}</p>
           </div>
         </div>
       </div>
