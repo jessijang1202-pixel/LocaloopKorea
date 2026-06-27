@@ -5,11 +5,11 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "/home", label: "Home", icon: "🏠" },
-  { href: "/places", label: "Places", icon: "📍" },
-  { href: "/food", label: "Food", icon: "🍜" },
-  { href: "/meetups", label: "Meetups", icon: "🤝" },
-  { href: "/community", label: "People", icon: "👥" },
+  { href: "/map",       label: "지도",      icon: "🗺️" },
+  { href: "/places",   label: "Places",    icon: "📍" },
+  { href: "/guides",   label: "Guides",    icon: "📋" },
+  { href: "/meetups",  label: "Meetups",   icon: "🤝" },
+  { href: "/home",     label: "홈",         icon: "🏠" },
 ];
 
 export function BottomNav() {
