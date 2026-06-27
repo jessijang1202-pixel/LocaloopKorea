@@ -1,4 +1,6 @@
-﻿import LandingTemplate from "@/components/landing/LandingTemplate";
+﻿import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import LandingTemplate from "@/components/landing/LandingTemplate";
 import { KO } from "@/components/landing/content";
 
 export const metadata = {
@@ -7,6 +9,10 @@ export const metadata = {
   themeColor: "#1EC8C8",
 };
 
-export default function KoreanLandingPage() {
+export default async function KoreanLandingPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) redirect("/map");
+
   return <LandingTemplate data={KO} />;
 }
