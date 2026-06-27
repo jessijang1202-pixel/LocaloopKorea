@@ -1,7 +1,6 @@
-﻿import { redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import LandingTemplate from "@/components/landing/LandingTemplate";
-import { KO } from "@/components/landing/content";
+import { AppPreview } from "@/components/landing/AppPreview";
 
 export const metadata = {
   title: "로컬루프 코리아 — 외국인을 위한 AI 한국 생활 내비게이션",
@@ -9,10 +8,10 @@ export const metadata = {
   themeColor: "#1EC8C8",
 };
 
-export default async function KoreanLandingPage() {
+export default async function HomePage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (user) redirect("/map");
 
-  return <LandingTemplate data={KO} />;
+  return <AppPreview />;
 }
