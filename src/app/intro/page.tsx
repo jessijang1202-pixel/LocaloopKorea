@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-const SLIDES = [
+const SLIDES_KO = [
   {
     icon: "🗺️",
     tag: "Localoop Korea",
-    titleLines: ["이왔어!", "한국이 처음이지?"],
+    titleLines: ["어서와!", "한국에 온걸 환영해"],
     highlightLine: 1,
     desc: "언어 장벽, 낯선 동네, 새로운 일상.\n이제 AI가 당신의 한국 생활을\n단계별로 안내해드려요.",
   },
@@ -42,20 +42,58 @@ const SLIDES = [
   },
 ];
 
+const SLIDES_EN = [
+  {
+    icon: "🗺️",
+    tag: "Localoop Korea",
+    titleLines: ["Welcome to Korea!", "Your new life starts here"],
+    highlightLine: 0,
+    desc: "New city. New language. New life.\nLet AI guide your Korea journey\nstep by step.",
+  },
+  {
+    icon: "📍",
+    tag: "Feature 01",
+    titleLines: ["Find foreigner-friendly", "places near you"],
+    highlightLine: 1,
+    desc: "See S~D friendliness ratings\ndirectly on the map.\nEnglish menu, card payment —\nall at a glance.",
+  },
+  {
+    icon: "📋",
+    tag: "Feature 02",
+    titleLines: ["AI tells you exactly", "what to do right now"],
+    highlightLine: 1,
+    desc: "From day one to long-term settlement.\nBased on your visa stage,\nwe automatically guide you\nthrough your next steps.",
+  },
+  {
+    icon: "🏃",
+    tag: "Feature 03",
+    titleLines: ["Local courses only", "insiders know about"],
+    highlightLine: 1,
+    desc: "Skip the tourist traps.\nAI builds a half-day local course\nmatched to your language level,\nhobbies, and interests.",
+  },
+  {
+    icon: "🤝",
+    tag: "Features 04 · 05 · 06",
+    titleLines: ["Make real friends —", "locals & expats alike"],
+    highlightLine: 1,
+    desc: "Language exchange, hobby meetups,\nneighborhood hangouts.\nReal-time chat translation\nbreaks every barrier.",
+  },
+];
+
 export default function IntroPage() {
   const [slide, setSlide] = useState(0);
   const [ready, setReady] = useState(false);
+  const [isKorean, setIsKorean] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
+    const lang = navigator.language || "";
+    setIsKorean(lang.startsWith("ko"));
+
     const supabase = createClient();
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) {
         router.replace("/map");
-        return;
-      }
-      if (localStorage.getItem("hasSeenIntro")) {
-        router.replace("/login");
         return;
       }
       setReady(true);
@@ -64,7 +102,7 @@ export default function IntroPage() {
 
   function finish() {
     localStorage.setItem("hasSeenIntro", "1");
-    router.push("/login");
+    router.push("/");
   }
 
   function next() {
@@ -72,10 +110,16 @@ export default function IntroPage() {
     else finish();
   }
 
-  if (!ready) return null;
-
+  const SLIDES = isKorean ? SLIDES_KO : SLIDES_EN;
   const s = SLIDES[slide];
   const isLast = slide === SLIDES.length - 1;
+
+  if (!ready) return (
+    <div style={{ minHeight: "100dvh", display: "flex", alignItems: "center", justifyContent: "center", background: "#fff" }}>
+      <div style={{ width: 28, height: 28, borderRadius: "50%", border: "3px solid #E0E8EA", borderTopColor: "#1EC8C8", animation: "spin 0.8s linear infinite" }} />
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+    </div>
+  );
 
   return (
     <main style={{
@@ -124,17 +168,13 @@ export default function IntroPage() {
           ))}
         </h1>
 
-        <p style={{
-          fontSize: 14, color: "#4A6467", lineHeight: 1.75,
-          whiteSpace: "pre-line",
-        }}>
+        <p style={{ fontSize: 14, color: "#4A6467", lineHeight: 1.75, whiteSpace: "pre-line" }}>
           {s.desc}
         </p>
       </div>
 
       {/* Footer */}
       <div style={{ padding: "0 24px 40px", flexShrink: 0 }}>
-        {/* Progress dots */}
         <div style={{ display: "flex", justifyContent: "center", gap: 6, marginBottom: 22 }}>
           {SLIDES.map((_, i) => (
             <div
@@ -160,7 +200,7 @@ export default function IntroPage() {
               fontSize: 15, fontWeight: 700, border: "none", cursor: "pointer",
             }}
           >
-            지금 시작하기
+            {isKorean ? "지금 시작하기" : "Get started"}
           </button>
         ) : (
           <>
@@ -173,16 +213,13 @@ export default function IntroPage() {
                 marginBottom: 14,
               }}
             >
-              다음
+              {isKorean ? "다음" : "Next"}
             </button>
             <div
               onClick={finish}
-              style={{
-                textAlign: "center", fontSize: 13,
-                color: "#94a3b8", cursor: "pointer", padding: "4px",
-              }}
+              style={{ textAlign: "center", fontSize: 13, color: "#94a3b8", cursor: "pointer", padding: "4px" }}
             >
-              건너뛰기
+              {isKorean ? "건너뛰기" : "Skip"}
             </div>
           </>
         )}
