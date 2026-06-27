@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useActionState } from "react";
 import { signupAction } from "./actions";
+import { SocialButtons } from "@/components/auth/SocialButtons";
 
 export default function SignupPage() {
   const [state, action, pending] = useActionState(signupAction, { error: "", success: false });
@@ -49,11 +50,19 @@ export default function SignupPage() {
           </span>
         </div>
 
-        <div style={{ marginBottom: 28 }}>
+        <div style={{ marginBottom: 24 }}>
           <h1 style={{ fontSize: 24, fontWeight: 800, color: "#1A2B2C", marginBottom: 6 }}>
             Create your account
           </h1>
           <p style={{ fontSize: 14, color: "#4A6467" }}>Join the Localoop community</p>
+        </div>
+
+        <SocialButtons />
+
+        <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "20px 0" }}>
+          <div style={{ flex: 1, height: 1, background: "#E0E8EA" }} />
+          <span style={{ fontSize: 12, color: "#4A6467", whiteSpace: "nowrap" }}>또는 이메일로 가입하기</span>
+          <div style={{ flex: 1, height: 1, background: "#E0E8EA" }} />
         </div>
 
         <form action={action} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
