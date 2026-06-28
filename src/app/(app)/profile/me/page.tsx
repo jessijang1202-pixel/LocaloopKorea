@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useLang } from "@/lib/lang";
 
 const C = { teal: "#15b6c1", tealLight: "#d4f4f6", tealDark: "#0b7a82", dark: "#0B1E2D", text: "#1a2b2c", sub: "#4a6467", border: "#e0e8ea" };
 
@@ -140,14 +141,13 @@ function Card({ children }: { children: React.ReactNode }) {
 
 export default function MePage() {
   const router = useRouter();
-  const [isKo, setIsKo] = useState(false);
+  const isKo = useLang();
   const [form, setForm] = useState<FormState>(INIT);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    setIsKo(navigator.language.startsWith("ko"));
     const supabase = createClient();
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return;

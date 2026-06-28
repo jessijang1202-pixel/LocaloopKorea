@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useLang } from "@/lib/lang";
 
 type Tab = { href: string; icon: string; labelKo: string; labelEn: string };
 
@@ -16,11 +16,7 @@ const TABS: Tab[] = [
 
 export function AppNav() {
   const pathname = usePathname();
-  const [isKo, setIsKo] = useState(false);
-
-  useEffect(() => {
-    setIsKo(navigator.language.startsWith("ko"));
-  }, []);
+  const isKo = useLang();
 
   function isActive(href: string) {
     return pathname === href || pathname.startsWith(href + "/");

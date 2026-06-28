@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import { useLang } from "@/lib/lang";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -236,9 +237,9 @@ function PcSlidePanel({ s, idx, total, isKo, fading, onDot, onNext, onLogin }: {
 // ─── Main ──────────────────────────────────────────────────────────────────────
 
 export default function IntroPage() {
+  const isKo = useLang();
   const [slide, setSlide] = useState(0);
   const [ready, setReady] = useState(false);
-  const [isKo, setIsKo] = useState(false);
   const [isPC, setIsPC] = useState(false);
   const [pcDone, setPcDone] = useState(false);
   const [fading, setFading] = useState(false);
@@ -253,8 +254,6 @@ export default function IntroPage() {
   const mouseX = useRef<number | null>(null);
 
   useEffect(() => {
-    const ko = navigator.language.startsWith("ko");
-    setIsKo(ko);
     const checkPC = () => setIsPC(window.innerWidth >= 900);
     checkPC();
     window.addEventListener("resize", checkPC);

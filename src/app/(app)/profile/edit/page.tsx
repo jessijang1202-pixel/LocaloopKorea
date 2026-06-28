@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useLang } from "@/lib/lang";
 
 const C = { teal: "#15b6c1", dark: "#0B1E2D", text: "#1a2b2c", sub: "#4a6467", border: "#e0e8ea", bg: "#f8fcfc" };
 
@@ -39,14 +40,13 @@ const T = {
 
 export default function EditProfilePage() {
   const router = useRouter();
-  const [isKo, setIsKo] = useState(false);
+  const isKo = useLang();
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
   const [form, setForm] = useState({ display_name: "", bio: "", nationality: "" });
 
   useEffect(() => {
-    setIsKo(navigator.language.startsWith("ko"));
     const supabase = createClient();
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return;

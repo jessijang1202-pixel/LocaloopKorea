@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useLang } from "@/lib/lang";
 
 type Message = {
   id: string;
@@ -48,14 +49,10 @@ const T = {
 };
 
 export default function ChatPage() {
-  const [isKo, setIsKo] = useState(false);
+  const isKo = useLang();
   const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
   const [input, setInput] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setIsKo(navigator.language.startsWith("ko"));
-  }, []);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });

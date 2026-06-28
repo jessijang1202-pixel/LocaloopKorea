@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useLang } from "@/lib/lang";
 
 const STAGES = {
   en: ["Arrival", "Early Life", "Settlement", "Community", "Long-term"],
@@ -69,14 +70,10 @@ const T = {
 };
 
 export default function TasksPage() {
-  const [isKo, setIsKo] = useState(false);
+  const isKo = useLang();
   const [checked, setChecked] = useState<Record<string, boolean>>({
     t1: true, t2: true,
   });
-
-  useEffect(() => {
-    setIsKo(navigator.language.startsWith("ko"));
-  }, []);
 
   const t = isKo ? T.ko : T.en;
   const stages = isKo ? STAGES.ko : STAGES.en;

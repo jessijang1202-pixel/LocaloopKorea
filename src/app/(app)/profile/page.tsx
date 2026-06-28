@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/is-configured";
+import { useLang } from "@/lib/lang";
 
 const T = {
   ko: {
@@ -82,13 +83,12 @@ type ProfileData = {
 };
 
 export default function ProfilePage() {
-  const [isKo, setIsKo] = useState(false);
+  const isKo = useLang();
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [loggingOut, setLoggingOut] = useState(false);
 
   useEffect(() => {
-    setIsKo(navigator.language.startsWith("ko"));
 
     if (!isSupabaseConfigured()) {
       setLoading(false);

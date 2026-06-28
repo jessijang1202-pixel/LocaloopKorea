@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useLang } from "@/lib/lang";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { SEED_PLACES } from "@/data/seed";
@@ -99,16 +100,15 @@ const EN = {
 };
 
 export function AppPreview() {
+  const isKo = useLang();
   const [showModal, setShowModal] = useState(false);
   const [isMobile, setIsMobile] = useState(true);
-  const [isKo, setIsKo] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState<Place>(SEED_PLACES[0]);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
     check();
     window.addEventListener("resize", check);
-    setIsKo(navigator.language.startsWith("ko"));
     return () => window.removeEventListener("resize", check);
   }, []);
 

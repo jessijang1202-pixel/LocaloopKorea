@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { Suspense } from "react";
+import { useLang } from "@/lib/lang";
 import Link from "next/link";
 import { useActionState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -34,13 +35,9 @@ const T = {
 
 function LoginForm() {
   const [state, action, pending] = useActionState(loginAction, { error: "" });
-  const [isKo, setIsKo] = useState(false);
+  const isKo = useLang();
   const searchParams = useSearchParams();
   const next = searchParams.get("next") ?? "";
-
-  useEffect(() => {
-    setIsKo(navigator.language.startsWith("ko"));
-  }, []);
 
   const t = isKo ? T.ko : T.en;
 

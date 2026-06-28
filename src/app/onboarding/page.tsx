@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
+import { useLang, getLang } from "@/lib/lang";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { saveOnboarding } from "./actions";
@@ -139,7 +140,7 @@ function OnboardingInner() {
   const searchParams = useSearchParams();
   const nextPath = searchParams.get("next") ?? "/map";
 
-  const [isKo, setIsKo] = useState(false);
+  const isKo = useLang();
   const [ready, setReady] = useState(false);
   const [data, setData] = useState<OnboardingData>(INIT);
   const [stepIdx, setStepIdx] = useState(0);
@@ -147,8 +148,7 @@ function OnboardingInner() {
   const [done, setDone] = useState(false);
 
   useEffect(() => {
-    const ko = navigator.language.startsWith("ko");
-    setIsKo(ko);
+    const ko = getLang() === "ko";
     const supabase = createClient();
     supabase.auth.getUser().then(({ data: { user } }) => {
       const name = user?.user_metadata?.full_name || user?.user_metadata?.name || "";

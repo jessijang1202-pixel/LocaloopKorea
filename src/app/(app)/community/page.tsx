@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useLang } from "@/lib/lang";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/is-configured";
 
@@ -118,15 +119,11 @@ type SupabaseProfile = {
 };
 
 export default function CommunityPage() {
-  const [isKo, setIsKo] = useState(false);
+  const isKo = useLang();
   const [tab, setTab] = useState<"meetup" | "people">("meetup");
   const [joined, setJoined] = useState<Record<string, boolean>>({});
   const [profiles, setProfiles] = useState<SupabaseProfile[]>([]);
   const [loadingProfiles, setLoadingProfiles] = useState(false);
-
-  useEffect(() => {
-    setIsKo(navigator.language.startsWith("ko"));
-  }, []);
 
   useEffect(() => {
     if (tab !== "people" || !isSupabaseConfigured()) return;

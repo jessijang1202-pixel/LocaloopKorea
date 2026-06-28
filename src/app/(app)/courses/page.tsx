@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useLang } from "@/lib/lang";
 
 const FILTERS = {
   en: ["AI Pick", "Half-Day", "Full Day", "Food", "Culture", "Nature"],
@@ -72,12 +73,8 @@ const T = {
 };
 
 export default function CoursesPage() {
-  const [isKo, setIsKo] = useState(false);
-  const [activeFilter, setActiveFilter] = useState(0); // 0 = All
-
-  useEffect(() => {
-    setIsKo(navigator.language.startsWith("ko"));
-  }, []);
+  const isKo = useLang();
+  const [activeFilter, setActiveFilter] = useState(0);
 
   const t = isKo ? T.ko : T.en;
   const filters = isKo ? FILTERS.ko : FILTERS.en;

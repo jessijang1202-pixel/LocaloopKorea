@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useLang } from "@/lib/lang";
 import { createClient } from "@/lib/supabase/client";
 
 type Provider = "google" | "kakao" | "apple";
@@ -33,12 +33,8 @@ const STYLES: Record<Provider, { bg: string; color: string; border: string }> = 
 };
 
 export function SocialButtons() {
-  const [isKo, setIsKo] = useState(false);
+  const isKo = useLang();
   const supabase = createClient();
-
-  useEffect(() => {
-    setIsKo(navigator.language.startsWith("ko"));
-  }, []);
 
   const labels: Record<Provider, string> = isKo
     ? { google: "Google로 계속하기", kakao: "카카오로 계속하기", apple: "Apple로 계속하기" }

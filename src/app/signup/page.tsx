@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useLang } from "@/lib/lang";
 import Link from "next/link";
 import { useActionState } from "react";
 import { signupAction } from "./actions";
@@ -49,11 +50,7 @@ const T = {
 
 export default function SignupPage() {
   const [state, action, pending] = useActionState(signupAction, { error: "", success: false });
-  const [isKo, setIsKo] = useState(false);
-
-  useEffect(() => {
-    setIsKo(navigator.language.startsWith("ko"));
-  }, []);
+  const isKo = useLang();
 
   const t = isKo ? T.ko : T.en;
 

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useLang } from "@/lib/lang";
 import dynamic from "next/dynamic";
 import { SEED_PLACES } from "@/data/seed";
 import type { Place } from "@/types";
@@ -54,13 +55,9 @@ type ChipKey = "all" | "S" | "A" | "restaurant" | "cafe" | "market";
 const CHIP_KEYS: ChipKey[] = ["all", "S", "A", "restaurant", "cafe", "market"];
 
 export default function MapPage() {
-  const [isKo, setIsKo] = useState(false);
+  const isKo = useLang();
   const [selectedPlace, setSelectedPlace] = useState<Place>(SEED_PLACES[0]);
   const [chip, setChip] = useState<ChipKey>("all");
-
-  useEffect(() => {
-    setIsKo(navigator.language.startsWith("ko"));
-  }, []);
 
   const t = isKo ? T.ko : T.en;
 
