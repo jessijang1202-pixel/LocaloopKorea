@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import Link from "next/link";
 import { SEED_PLACES } from "@/data/seed";
 import type { Place } from "@/types";
 
@@ -11,118 +10,199 @@ const KakaoMap = dynamic(
   { ssr: false, loading: () => <div style={{ width: "100%", height: "100%", background: "#E8F4F8" }} /> }
 );
 
-const RATING_LABELS: Record<string, string> = { S: "S등급", A: "A등급", B: "B등급", C: "C등급", D: "D등급" };
+const ITAEWON = { lat: 37.534, lng: 126.9946 };
 
-const ITAEWON = { lat: 37.5340, lng: 126.9946 };
+const CAT_ICONS: Record<string, string> = {
+  cafe: "☕", restaurant: "🍽️", bar: "🍺", market: "🛍️",
+  shopping: "🛒", activity: "🏃", health: "🏥", transport: "🚌",
+};
+
+function getRating(p: Place): "S" | "A" | "B" | "C" {
+  if (p.english_support && p.card_payment && p.solo_friendly) return "S";
+  if (p.english_support && p.card_payment) return "A";
+  if (p.card_payment) return "B";
+  return "C";
+}
+
+const RATING_STYLE: Record<string, { bg: string; color: string }> = {
+  S: { bg: "#D6F5F5", color: "#0B7A82" },
+  A: { bg: "#E8F4FF", color: "#1565C0" },
+  B: { bg: "#FFF9C4", color: "#A56000" },
+  C: { bg: "#F5F5F5", color: "#666" },
+};
+
+const T = {
+  ko: {
+    title: "장소 탐색",
+    searchPh: "장소, 동네 검색...",
+    chips: ["전체", "S등급", "A등급", "음식점", "카페", "시장"],
+    grade: "등급",
+    english: "영어 OK",
+    card: "카드 OK",
+    solo: "혼자 OK",
+  },
+  en: {
+    title: "Place Discovery",
+    searchPh: "Search places, neighborhoods...",
+    chips: ["All", "S-rated", "A-rated", "Restaurant", "Café", "Market"],
+    grade: "-rated",
+    english: "English OK",
+    card: "Card OK",
+    solo: "Solo OK",
+  },
+};
+
+type ChipKey = "all" | "S" | "A" | "restaurant" | "cafe" | "market";
+const CHIP_KEYS: ChipKey[] = ["all", "S", "A", "restaurant", "cafe", "market"];
 
 export default function MapPage() {
+  const [isKo, setIsKo] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState<Place>(SEED_PLACES[0]);
+  const [chip, setChip] = useState<ChipKey>("all");
+
+  useEffect(() => {
+    setIsKo(navigator.language.startsWith("ko"));
+  }, []);
+
+  const t = isKo ? T.ko : T.en;
+
+  const filtered = SEED_PLACES.filter((p) => {
+    if (chip === "all") return true;
+    if (chip === "S") return getRating(p) === "S";
+    if (chip === "A") return getRating(p) === "A";
+    if (chip === "restaurant") return p.category === "restaurant";
+    if (chip === "cafe") return p.category === "cafe";
+    if (chip === "market") return p.category === "market";
+    return true;
+  });
 
   const pins = SEED_PLACES.filter((p) => p.lat && p.lng).map((p) => ({
-    id: p.id,
-    lat: p.lat!,
-    lng: p.lng!,
-    title: p.name_en,
-    rating: "A",
+    id: p.id, lat: p.lat!, lng: p.lng!, title: p.name_en, rating: getRating(p),
   }));
 
-  function handlePinClick(id: string) {
-    const place = SEED_PLACES.find((p) => p.id === id);
-    if (place) setSelectedPlace(place);
-  }
-
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100dvh", paddingBottom: "env(safe-area-inset-bottom)" }}>
-      {/* ── Header ── */}
-      <div style={{ background: "#1EC8C8", padding: "48px 20px 12px", flexShrink: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-          <span style={{ fontSize: 15, fontWeight: 700, color: "#fff" }}>Localoop Korea</span>
-          <Link href="/profile" style={{
-            width: 32, height: 32, borderRadius: "50%", background: "#FFD600",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 13, fontWeight: 700, color: "#1A2B2C", textDecoration: "none",
-          }}>나</Link>
+    <div className="ll-fullpage" style={{ display: "flex", flexDirection: "column" }}>
+      {/* Header */}
+      <div style={{ background: "#15b6c1", paddingTop: 44, paddingBottom: 12, flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px", marginBottom: 10 }}>
+          <span style={{ fontSize: 17, fontWeight: 800, color: "#fff", letterSpacing: "-0.02em" }}>{t.title}</span>
+          <button style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, padding: "6px 10px", color: "#fff", fontSize: 13, cursor: "pointer" }}>
+            ⚙️
+          </button>
         </div>
-        <div style={{
-          background: "#fff", borderRadius: 10, padding: "9px 14px",
-          fontSize: 13, color: "#aaa", display: "flex", alignItems: "center", gap: 8,
-        }}>
-          <span style={{ fontSize: 14 }}>🔍</span>
-          장소, 동네 검색...
+        <div style={{ margin: "0 16px", background: "#fff", borderRadius: 10, padding: "10px 14px", display: "flex", alignItems: "center", gap: 8 }}>
+          <span>🔍</span>
+          <span style={{ fontSize: 13, color: "#9BB5B8" }}>{t.searchPh}</span>
         </div>
       </div>
 
-      {/* ── Welcome bar ── */}
-      <div style={{ background: "#0B1E2D", padding: "8px 20px", flexShrink: 0 }}>
-        <p style={{ fontSize: 12, fontWeight: 600, color: "#FFD600" }}>Real Korea starts here</p>
-        <p style={{ fontSize: 10, color: "#8BB8C0", marginTop: 2 }}>
-          외국인 친화 S~D 등급 장소를 지도에서 찾아보세요
-        </p>
+      {/* Filter chips */}
+      <div className="scroll-x" style={{ background: "#fff", borderBottom: "1px solid #E0E8EA", padding: "10px 16px", display: "flex", gap: 8, flexShrink: 0 }}>
+        {CHIP_KEYS.map((key, i) => {
+          const active = chip === key;
+          return (
+            <button
+              key={key}
+              onClick={() => setChip(key)}
+              style={{
+                flexShrink: 0,
+                padding: "5px 14px",
+                borderRadius: 20,
+                border: active ? "none" : "1px solid #E0E8EA",
+                background: active ? "#15b6c1" : "#F5F9FA",
+                color: active ? "#fff" : "#4A6467",
+                fontSize: 12,
+                fontWeight: active ? 700 : 400,
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {t.chips[i]}
+            </button>
+          );
+        })}
       </div>
 
-      {/* ── Map ── */}
-      <div style={{ flex: 1, position: "relative", minHeight: 0 }}>
-        <KakaoMap
-          pins={pins}
-          center={ITAEWON}
-          zoom={5}
-          onPinClick={handlePinClick}
-        />
-
-        {/* Legend */}
-        <div style={{
-          position: "absolute", bottom: 8, left: 10, zIndex: 10,
-          background: "#fff", borderRadius: 10, padding: "8px 10px",
-          boxShadow: "0 2px 12px rgba(0,0,0,0.12)", fontSize: 10,
-        }}>
-          <p style={{ fontWeight: 700, color: "#1A2B2C", marginBottom: 4 }}>친화도 등급</p>
-          {[["#1EC8C8", "S / A — 외국인 완전 OK"], ["#4A6467", "B / C — 부분 가능"]].map(([c, l]) => (
-            <div key={l} style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 2 }}>
-              <div style={{ width: 8, height: 8, borderRadius: "50%", background: c, flexShrink: 0 }} />
-              <span style={{ color: "#4A6467" }}>{l}</span>
-            </div>
-          ))}
-        </div>
+      {/* Map */}
+      <div style={{ height: 190, flexShrink: 0, position: "relative" }}>
+        <KakaoMap pins={pins} center={ITAEWON} zoom={5} onPinClick={(id) => {
+          const p = SEED_PLACES.find((x) => x.id === id);
+          if (p) setSelectedPlace(p);
+        }} />
       </div>
 
-      {/* ── Selected place card ── */}
-      {selectedPlace && (
-        <Link href={`/places/${selectedPlace.slug}`} style={{ textDecoration: "none" }}>
-          <div style={{
-            margin: "0 12px 8px",
-            background: "#fff", borderRadius: 16,
-            border: "1px solid #E0E8EA",
-            padding: "10px 12px",
-            display: "flex", alignItems: "center", gap: 10,
-            boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
-          }}>
-            <div style={{
-              width: 44, height: 44, borderRadius: 12,
-              background: "#D6F5F5",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 20, flexShrink: 0,
-            }}>📍</div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <p style={{ fontSize: 13, fontWeight: 700, color: "#1A2B2C", marginBottom: 2 }}>
-                {selectedPlace.name_en}
-              </p>
-              <p style={{ fontSize: 11, color: "#4A6467", marginBottom: 3 }}>
-                {selectedPlace.address ?? selectedPlace.name_ko}
-              </p>
-              <span style={{
-                fontSize: 10, padding: "2px 7px", borderRadius: 6,
-                background: "#D6F5F5", color: "#17A0A0", fontWeight: 600,
-              }}>
-                A등급 · {selectedPlace.english_support ? "영어 가능" : "한국어"}
-              </span>
-            </div>
-            <span style={{ fontSize: 18, color: "#1EC8C8" }}>›</span>
+      {/* Place list */}
+      <div style={{ flex: 1, overflowY: "auto", background: "#F5F9FA", padding: "8px 14px 0" }}>
+        {filtered.length === 0 && (
+          <div style={{ textAlign: "center", padding: "40px 0", color: "#9BB5B8", fontSize: 13 }}>
+            {isKo ? "해당하는 장소가 없어요" : "No places found"}
           </div>
-        </Link>
-      )}
-
-      {/* ── Bottom padding for BottomNav ── */}
-      <div style={{ height: 64, flexShrink: 0 }} />
+        )}
+        {filtered.map((place) => {
+          const rating = getRating(place);
+          const { bg, color } = RATING_STYLE[rating];
+          const isSelected = place.id === selectedPlace?.id;
+          return (
+            <div
+              key={place.id}
+              onClick={() => setSelectedPlace(place)}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                padding: "10px 12px",
+                marginBottom: 8,
+                background: isSelected ? "#EDF9F9" : "#fff",
+                borderRadius: 14,
+                border: isSelected ? "1.5px solid #15b6c1" : "1px solid #E0E8EA",
+                cursor: "pointer",
+                boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
+              }}
+            >
+              <div style={{
+                width: 44, height: 44, borderRadius: 12,
+                background: isSelected ? "#D6F5F5" : "#F0FAFA",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 20, flexShrink: 0,
+              }}>
+                {CAT_ICONS[place.category] ?? "📍"}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: "#1A2B2C" }}>
+                    {isKo ? place.name_ko : place.name_en}
+                  </span>
+                  <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 6px", borderRadius: 6, background: bg, color }}>
+                    {rating}
+                  </span>
+                </div>
+                <p style={{ fontSize: 11, color: "#4A6467", marginBottom: 4 }}>
+                  {place.address ?? place.name_ko}
+                </p>
+                <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+                  {place.english_support && (
+                    <span style={{ fontSize: 9, padding: "2px 6px", borderRadius: 4, background: "#D6F5F5", color: "#0B7A82", fontWeight: 600 }}>
+                      {t.english}
+                    </span>
+                  )}
+                  {place.card_payment && (
+                    <span style={{ fontSize: 9, padding: "2px 6px", borderRadius: 4, background: "#E8F4FF", color: "#1565C0", fontWeight: 600 }}>
+                      {t.card}
+                    </span>
+                  )}
+                  {place.solo_friendly && (
+                    <span style={{ fontSize: 9, padding: "2px 6px", borderRadius: 4, background: "#F0FFF0", color: "#2E7D32", fontWeight: 600 }}>
+                      {t.solo}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <span style={{ color: "#15b6c1", fontSize: 16, flexShrink: 0 }}>›</span>
+            </div>
+          );
+        })}
+        <div style={{ height: 12 }} />
+      </div>
     </div>
   );
 }

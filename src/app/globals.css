@@ -705,6 +705,43 @@ html {
   display: none;
 }
 
+/* ── App shell: responsive sidebar (PC) + bottom nav (mobile) ─ */
+.ll-sidebar {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  width: 220px;
+  background: #0B1E2D;
+  flex-direction: column;
+  z-index: 50;
+  overflow-y: auto;
+}
+.ll-bottomnav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: #fff;
+  border-top: 1px solid #E0E8EA;
+  display: flex;
+  align-items: center;
+  z-index: 50;
+  height: 56px;
+}
+.ll-content {
+  padding-bottom: calc(56px + env(safe-area-inset-bottom));
+  min-height: 100dvh;
+}
+/* Pages that need to fill exactly the available viewport (map, chat) */
+.ll-fullpage {
+  height: calc(100dvh - 56px);
+}
+@media (min-width: 768px) {
+  .app-container { max-width: 100%; margin: 0; }
+  .ll-sidebar { display: flex; }
+  .ll-bottomnav { display: none; }
+  .ll-content { padding-bottom: 0; margin-left: 220px; }
+  .ll-fullpage { height: 100dvh; }
+}
+
 /* Desktop width baseline: 1440px primary, 1200px container max */
 @media (min-width: 1280px) {
   .lp-section { padding: 96px 48px; }

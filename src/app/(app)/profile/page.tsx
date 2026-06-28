@@ -1,129 +1,259 @@
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
-import { isSupabaseConfigured } from "@/lib/supabase/is-configured";
-import { TopBar } from "@/components/layout/TopBar";
-import { PageWrapper } from "@/components/layout/PageWrapper";
-import { Avatar } from "@/components/ui/Avatar";
-import { Badge } from "@/components/ui/Badge";
-import { formatDate } from "@/lib/utils";
-import { LogoutButton } from "./LogoutButton";
+"use client";
 
-export default async function ProfilePage() {
-  if (!isSupabaseConfigured()) {
-    return (
-      <PageWrapper>
-        <TopBar title="My Profile" />
-        <div className="flex flex-col items-center pt-10 px-6 text-center gap-3">
-          <div className="text-4xl">🔌</div>
-          <h2 className="font-bold text-base text-[var(--foreground)]">Connect Supabase to see your profile</h2>
-          <p className="text-sm text-[var(--muted-foreground)] max-w-[260px] leading-relaxed">
-            Add your Supabase URL and anon key to <code className="bg-[var(--muted)] px-1 rounded">.env.local</code> to enable auth and profiles.
-          </p>
-          <Link href="/home" className="mt-2 text-sm text-[var(--primary)] font-semibold">← Back to home</Link>
-        </div>
-      </PageWrapper>
-    );
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase/is-configured";
+
+const T = {
+  ko: {
+    title: "마이페이지",
+    places: "방문 장소",
+    courses: "완료 코스",
+    connections: "연결",
+    tasksDone: "과제 완료",
+    level: "로컬 내기",
+    levelSub: "다음 레벨까지 3개 더 방문",
+    activity: "활동",
+    visited: "방문한 장소",
+    completed: "완료한 코스",
+    joined: "참여한 모임",
+    settings: "설정",
+    editProfile: "프로필 편집",
+    language: "언어 설정",
+    notifications: "알림 설정",
+    logout: "로그아웃",
+    loading: "불러오는 중...",
+    guest: "게스트",
+    foreigner: "외국인 거주자",
+    korean: "한국 현지인",
+  },
+  en: {
+    title: "My Page",
+    places: "Places",
+    courses: "Courses",
+    connections: "Connections",
+    tasksDone: "Tasks Done",
+    level: "Local Newbie",
+    levelSub: "3 more places to next level",
+    activity: "Activity",
+    visited: "Places Visited",
+    completed: "Courses Completed",
+    joined: "Meetups Joined",
+    settings: "Settings",
+    editProfile: "Edit Profile",
+    language: "Language",
+    notifications: "Notifications",
+    logout: "Log out",
+    loading: "Loading...",
+    guest: "Guest",
+    foreigner: "Foreigner",
+    korean: "Korean Local",
+  },
+};
+
+const STATS = [
+  { key: "places", value: 12 },
+  { key: "courses", value: 3 },
+  { key: "connections", value: 8 },
+  { key: "tasksDone", value: 5 },
+] as const;
+
+const ACTIVITY_ROWS = [
+  { icon: "📍", key: "visited", count: 12 },
+  { icon: "🏃", key: "completed", count: 3 },
+  { icon: "👥", key: "joined", count: 2 },
+] as const;
+
+const SETTING_ROWS = [
+  { icon: "✏️", key: "editProfile", href: "/profile/edit" },
+  { icon: "🌐", key: "language", href: "#" },
+  { icon: "🔔", key: "notifications", href: "#" },
+] as const;
+
+type ProfileData = {
+  display_name: string | null;
+  user_type: string | null;
+  nationality: string | null;
+  avatar_url: string | null;
+};
+
+export default function ProfilePage() {
+  const [isKo, setIsKo] = useState(false);
+  const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  useEffect(() => {
+    setIsKo(navigator.language.startsWith("ko"));
+
+    if (!isSupabaseConfigured()) {
+      setLoading(false);
+      return;
+    }
+
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) { setLoading(false); return; }
+      supabase
+        .from("profiles")
+        .select("display_name, user_type, nationality, avatar_url")
+        .eq("id", user.id)
+        .single()
+        .then(({ data }) => {
+          setProfile(data);
+          setLoading(false);
+        });
+    });
+  }, []);
+
+  async function handleLogout() {
+    setLoggingOut(true);
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    window.location.href = "/";
   }
 
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+  const t = isKo ? T.ko : T.en;
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select(`
-      id, display_name, avatar_url, bio, user_type, nationality, languages, language_goal, created_at,
-      region:regions(name_en),
-      interests:user_interests(interest:interests(id, name_en, icon))
-    `)
-    .eq("id", user.id)
-    .single();
-
-  const interests = ((profile?.interests as unknown as { interest: { id: string; name_en: string; icon: string } | null }[]) ?? [])
-    .map((i) => i.interest)
-    .filter(Boolean) as { id: string; name_en: string; icon: string }[];
-
-  const region = (profile?.region as unknown as { name_en: string }) ?? null;
+  const displayName = profile?.display_name ?? t.guest;
+  const initial = displayName.charAt(0).toUpperCase();
+  const userTypeLabel = profile?.user_type === "foreigner" ? t.foreigner
+    : profile?.user_type === "korean" ? t.korean
+    : "";
 
   return (
-    <PageWrapper>
-      <TopBar
-        title="My Profile"
-        right={
-          <Link href="/profile/edit" className="text-sm font-medium text-[var(--primary)]">
-            Edit
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100%" }}>
+      {/* Header */}
+      <div style={{ background: "#0B1E2D", paddingTop: 44, paddingBottom: 20, flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px 16px" }}>
+          <span style={{ fontSize: 17, fontWeight: 800, color: "#fff", letterSpacing: "-0.02em" }}>{t.title}</span>
+          <Link href="/profile/edit" style={{
+            background: "rgba(255,255,255,0.12)", borderRadius: 8,
+            padding: "6px 12px", color: "rgba(255,255,255,0.7)", fontSize: 12,
+            textDecoration: "none",
+          }}>
+            ✏️
           </Link>
-        }
-      />
-
-      {/* Profile header */}
-      <div className="flex flex-col items-center pt-6 pb-5 px-4">
-        <Avatar name={profile?.display_name ?? "You"} src={profile?.avatar_url} size="xl" />
-        <h1 className="text-xl font-bold text-[var(--foreground)] mt-3">
-          {profile?.display_name ?? "Your Name"}
-        </h1>
-        {region && (
-          <p className="text-sm text-[var(--muted-foreground)] mt-0.5">📍 {region.name_en}</p>
-        )}
-        <div className="flex gap-2 mt-3">
-          {profile?.user_type && (
-            <Badge variant={profile.user_type === "foreigner" ? "primary" : "success"} size="md">
-              {profile.user_type === "foreigner" ? "Foreigner" : "Korean"}
-            </Badge>
-          )}
-          {profile?.nationality && <Badge size="md">🌍 {profile.nationality}</Badge>}
         </div>
-      </div>
 
-      {profile?.bio && (
-        <div className="px-4 mb-5">
-          <p className="text-sm text-[var(--foreground)] leading-relaxed text-center">{profile.bio}</p>
-        </div>
-      )}
-
-      {/* Quick links */}
-      <div className="mx-4 mb-5 rounded-2xl border border-[var(--border)] overflow-hidden bg-[var(--card)]">
-        {[
-          { href: "/saved", icon: "🔖", label: "Saved items" },
-          { href: "/meetups", icon: "🤝", label: "My meetups" },
-          { href: "/community", icon: "👥", label: "Community" },
-          { href: "/settings", icon: "⚙️", label: "Settings" },
-        ].map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className="flex items-center gap-3 p-4 border-b border-[var(--border)] last:border-0 active:bg-[var(--muted)] transition-colors"
-          >
-            <span className="text-xl">{item.icon}</span>
-            <span className="text-sm font-medium text-[var(--foreground)]">{item.label}</span>
-            <span className="ml-auto text-[var(--muted-foreground)] text-sm">→</span>
-          </Link>
-        ))}
-      </div>
-
-      {/* Interests */}
-      {interests.length > 0 && (
-        <div className="px-4 mb-5">
-          <p className="text-xs font-semibold text-[var(--muted-foreground)] mb-2">Interests</p>
-          <div className="flex flex-wrap gap-2">
-            {interests.map((i) => (
-              <Badge key={i.id} size="md">{i.icon} {i.name_en}</Badge>
-            ))}
+        {/* Avatar + name */}
+        <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "0 16px 16px" }}>
+          <div style={{
+            width: 56, height: 56, borderRadius: "50%",
+            background: "#FFD600",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: 22, fontWeight: 800, color: "#1A2B2C",
+            border: "2px solid rgba(255,255,255,0.2)",
+          }}>
+            {loading ? "…" : initial}
+          </div>
+          <div>
+            <p style={{ fontSize: 16, fontWeight: 800, color: "#fff", marginBottom: 3 }}>
+              {loading ? t.loading : displayName}
+            </p>
+            {userTypeLabel && (
+              <span style={{
+                fontSize: 10, fontWeight: 700,
+                padding: "2px 8px", borderRadius: 20,
+                background: "rgba(21,182,193,0.2)", color: "#15b6c1",
+              }}>
+                {userTypeLabel}
+              </span>
+            )}
           </div>
         </div>
-      )}
 
-      {profile?.created_at && (
-        <p className="px-4 pb-2 text-xs text-[var(--muted-foreground)] text-center">
-          Member since {formatDate(profile.created_at)}
-        </p>
-      )}
-
-      {/* Logout */}
-      <div className="px-4 pb-6 pt-2">
-        <LogoutButton />
+        {/* Stats row */}
+        <div style={{ display: "flex", padding: "0 12px" }}>
+          {STATS.map(({ key, value }) => (
+            <div key={key} style={{ flex: 1, textAlign: "center", padding: "8px 4px" }}>
+              <p style={{ fontSize: 18, fontWeight: 800, color: "#fff", lineHeight: 1 }}>{value}</p>
+              <p style={{ fontSize: 9, color: "rgba(255,255,255,0.5)", marginTop: 3, lineHeight: 1.2 }}>
+                {t[key]}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
-    </PageWrapper>
+
+      {/* Level progress */}
+      <div style={{ background: "#fff", padding: "14px 16px", borderBottom: "1px solid #E0E8EA" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+          <span style={{ fontSize: 12, fontWeight: 700, color: "#1A2B2C" }}>
+            ⭐ {t.level} Lv.2
+          </span>
+          <span style={{ fontSize: 10, color: "#4A6467" }}>45%</span>
+        </div>
+        <div style={{ height: 6, borderRadius: 3, background: "#E0E8EA", overflow: "hidden" }}>
+          <div style={{ height: "100%", width: "45%", borderRadius: 3, background: "linear-gradient(90deg, #15b6c1, #0B8A91)" }} />
+        </div>
+        <p style={{ fontSize: 10, color: "#9BB5B8", marginTop: 5 }}>{t.levelSub}</p>
+      </div>
+
+      {/* Scrollable content */}
+      <div style={{ flex: 1, overflowY: "auto", background: "#F5F9FA" }}>
+        {/* Activity section */}
+        <div style={{ background: "#fff", margin: "10px 14px", borderRadius: 16, border: "1px solid #E0E8EA", overflow: "hidden" }}>
+          <div style={{ padding: "12px 14px 6px" }}>
+            <p style={{ fontSize: 12, fontWeight: 700, color: "#4A6467", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+              {t.activity}
+            </p>
+          </div>
+          {ACTIVITY_ROWS.map(({ icon, key, count }, i) => (
+            <div key={key} style={{
+              display: "flex", alignItems: "center", justifyContent: "space-between",
+              padding: "12px 14px",
+              borderTop: i === 0 ? "none" : "1px solid #F0F4F5",
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <span style={{ fontSize: 18 }}>{icon}</span>
+                <span style={{ fontSize: 13, color: "#1A2B2C" }}>{t[key]}</span>
+              </div>
+              <span style={{ fontSize: 13, fontWeight: 700, color: "#15b6c1" }}>{count}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Settings section */}
+        <div style={{ background: "#fff", margin: "0 14px 10px", borderRadius: 16, border: "1px solid #E0E8EA", overflow: "hidden" }}>
+          <div style={{ padding: "12px 14px 6px" }}>
+            <p style={{ fontSize: 12, fontWeight: 700, color: "#4A6467", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+              {t.settings}
+            </p>
+          </div>
+          {SETTING_ROWS.map(({ icon, key, href }, i) => (
+            <Link key={key} href={href} style={{
+              display: "flex", alignItems: "center", justifyContent: "space-between",
+              padding: "12px 14px",
+              borderTop: i === 0 ? "none" : "1px solid #F0F4F5",
+              textDecoration: "none",
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <span style={{ fontSize: 18 }}>{icon}</span>
+                <span style={{ fontSize: 13, color: "#1A2B2C" }}>{t[key]}</span>
+              </div>
+              <span style={{ color: "#9BB5B8", fontSize: 16 }}>›</span>
+            </Link>
+          ))}
+          <button
+            onClick={handleLogout}
+            disabled={loggingOut}
+            style={{
+              display: "flex", alignItems: "center", gap: 10,
+              width: "100%", padding: "12px 14px",
+              borderTop: "1px solid #F0F4F5",
+              background: "none", border: "none", cursor: "pointer",
+            }}
+          >
+            <span style={{ fontSize: 18 }}>🚪</span>
+            <span style={{ fontSize: 13, color: "#EF4444", fontWeight: 600 }}>
+              {loggingOut ? "…" : t.logout}
+            </span>
+          </button>
+        </div>
+        <div style={{ height: 16 }} />
+      </div>
+    </div>
   );
 }

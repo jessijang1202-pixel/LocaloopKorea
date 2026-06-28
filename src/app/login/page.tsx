@@ -1,12 +1,45 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useActionState } from "react";
 import { loginAction } from "./actions";
 import { SocialButtons } from "@/components/auth/SocialButtons";
 
+const T = {
+  ko: {
+    sub: "로그인하고 한국 생활을 시작하세요",
+    divider: "또는 이메일로 계속하기",
+    emailPh: "이메일",
+    pwPh: "비밀번호",
+    btnPending: "로그인 중…",
+    btn: "이메일로 로그인",
+    noAccount: "계정이 없으신가요?",
+    signup: "회원가입",
+    back: "← 홈으로 돌아가기",
+  },
+  en: {
+    sub: "Sign in to your account",
+    divider: "or continue with email",
+    emailPh: "Email",
+    pwPh: "Password",
+    btnPending: "Signing in…",
+    btn: "Sign in with email",
+    noAccount: "Don't have an account?",
+    signup: "Sign up",
+    back: "← Back to home",
+  },
+};
+
 export default function LoginPage() {
   const [state, action, pending] = useActionState(loginAction, { error: "" });
+  const [isKo, setIsKo] = useState(false);
+
+  useEffect(() => {
+    setIsKo(navigator.language.startsWith("ko"));
+  }, []);
+
+  const t = isKo ? T.ko : T.en;
 
   return (
     <main style={{
@@ -23,21 +56,16 @@ export default function LoginPage() {
           <span style={{ fontSize: 20, fontWeight: 900, color: "#1A2B2C", letterSpacing: "-0.02em" }}>
             Localoop<span style={{ color: "#1EC8C8" }}>Korea</span>
           </span>
-          <p style={{ fontSize: 14, color: "#4A6467", marginTop: 6 }}>
-            로그인하고 한국 생활을 시작하세요
-          </p>
+          <p style={{ fontSize: 14, color: "#4A6467", marginTop: 6 }}>{t.sub}</p>
         </div>
 
-        {/* Social login buttons */}
+        {/* Social buttons */}
         <SocialButtons />
 
         {/* Divider */}
-        <div style={{
-          display: "flex", alignItems: "center", gap: 12,
-          margin: "20px 0",
-        }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "20px 0" }}>
           <div style={{ flex: 1, height: 1, background: "#E0E8EA" }} />
-          <span style={{ fontSize: 12, color: "#4A6467", whiteSpace: "nowrap" }}>또는 이메일로 계속하기</span>
+          <span style={{ fontSize: 12, color: "#4A6467", whiteSpace: "nowrap" }}>{t.divider}</span>
           <div style={{ flex: 1, height: 1, background: "#E0E8EA" }} />
         </div>
 
@@ -49,7 +77,7 @@ export default function LoginPage() {
             type="email"
             autoComplete="email"
             required
-            placeholder="이메일"
+            placeholder={t.emailPh}
             style={{
               height: 48, padding: "0 16px", borderRadius: 14,
               border: "1.5px solid #E0E8EA", background: "#fff",
@@ -62,7 +90,7 @@ export default function LoginPage() {
             type="password"
             autoComplete="current-password"
             required
-            placeholder="비밀번호"
+            placeholder={t.pwPh}
             style={{
               height: 48, padding: "0 16px", borderRadius: 14,
               border: "1.5px solid #E0E8EA", background: "#fff",
@@ -88,20 +116,20 @@ export default function LoginPage() {
               transition: "opacity 0.15s",
             }}
           >
-            {pending ? "로그인 중…" : "이메일로 로그인"}
+            {pending ? t.btnPending : t.btn}
           </button>
         </form>
 
         <p style={{ textAlign: "center", fontSize: 13, color: "#4A6467", marginTop: 20 }}>
-          계정이 없으신가요?{" "}
+          {t.noAccount}{" "}
           <Link href="/signup" style={{ color: "#1EC8C8", fontWeight: 600, textDecoration: "none" }}>
-            회원가입
+            {t.signup}
           </Link>
         </p>
 
         <div style={{ textAlign: "center", marginTop: 12 }}>
           <Link href="/" style={{ fontSize: 12, color: "#94a3b8", textDecoration: "none" }}>
-            ← 홈으로 돌아가기
+            {t.back}
           </Link>
         </div>
       </div>
