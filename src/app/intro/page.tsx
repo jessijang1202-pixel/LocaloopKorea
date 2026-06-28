@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useLang } from "@/lib/lang";
+import { LangToggleInline } from "@/components/LangToggle";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -337,11 +338,14 @@ export default function IntroPage() {
             <div style={{ width: 22, height: 22, borderRadius: "50%", background: "#15b6c1", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: "#fff" }}>L</div>
             <span style={{ fontSize: 14, fontWeight: 700, color: "#fff" }}>Localoop<span style={{ color: "#15b6c1" }}>Korea</span></span>
           </div>
-          {!pcDone && (
-            <button onClick={() => router.push("/map")} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.45)", fontSize: 13, cursor: "pointer" }}>
-              {isKo ? "건너뛰기" : "Skip"}
-            </button>
-          )}
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <LangToggleInline />
+            {!pcDone && (
+              <button onClick={() => router.push("/map")} style={{ background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.28)", borderRadius: 20, color: "rgba(255,255,255,0.85)", fontSize: 12, fontWeight: 600, padding: "5px 14px", cursor: "pointer" }}>
+                {isKo ? "건너뛰기" : "Skip"}
+              </button>
+            )}
+          </div>
         </div>
         {/* Body */}
         <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>
@@ -403,13 +407,17 @@ export default function IntroPage() {
           </button>
         )}
 
-        {!isLast && (
-          <button onClick={() => router.push("/map")} style={{ position: "absolute", top: showInstallBtn ? 52 : 36, right: 24, background: "rgba(255,255,255,0.1)", border: "none", borderRadius: 20, color: "rgba(255,255,255,0.55)", fontSize: 13, padding: "6px 14px", cursor: "pointer", zIndex: 10 }}>
-            {isKo ? "건너뛰기" : "Skip"}
-          </button>
-        )}
-        <div style={{ position: "absolute", top: showInstallBtn ? 52 : 36, left: 24, zIndex: 10 }}>
+        {/* Top bar: logo left, [lang toggle + skip] right */}
+        <div style={{ position: "absolute", top: showInstallBtn ? 52 : 36, left: 16, right: 16, display: "flex", alignItems: "center", justifyContent: "space-between", zIndex: 10 }}>
           <span style={{ fontSize: 14, fontWeight: 900, color: "#fff" }}>Localoop<span style={{ color: ms.ac }}>Korea</span></span>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <LangToggleInline />
+            {!isLast && (
+              <button onClick={() => router.push("/map")} style={{ background: "rgba(255,255,255,0.14)", border: "1px solid rgba(255,255,255,0.28)", borderRadius: 20, color: "rgba(255,255,255,0.85)", fontSize: 12, fontWeight: 600, padding: "5px 12px", cursor: "pointer" }}>
+                {isKo ? "건너뛰기" : "Skip"}
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Slide content */}

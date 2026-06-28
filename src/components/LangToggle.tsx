@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useLang, setLang } from "@/lib/lang";
 
 const baseStyle: React.CSSProperties = {
@@ -22,9 +23,14 @@ const baseStyle: React.CSSProperties = {
   whiteSpace: "nowrap",
 };
 
-/** Fixed (bottom-left mobile, hidden on PC via CSS) */
+/**
+ * Fixed lang toggle — mobile only (top-left), hidden on PC via CSS.
+ * Hides itself on /intro page because intro has its own inline toggle.
+ */
 export function LangToggle() {
   const isKo = useLang();
+  const pathname = usePathname();
+  if (pathname === "/intro") return null;
   return (
     <button
       onClick={() => setLang(isKo ? "en" : "ko")}
@@ -37,18 +43,14 @@ export function LangToggle() {
   );
 }
 
-/** Inline — use inside flex rows (sidebar, page headers) */
-export function LangToggleInline({ dark }: { dark?: boolean }) {
+/** Inline lang toggle for embedding in flex rows (page headers, PC sidebar). */
+export function LangToggleInline() {
   const isKo = useLang();
   return (
     <button
       onClick={() => setLang(isKo ? "en" : "ko")}
       aria-label="Switch language"
-      style={{
-        ...baseStyle,
-        background: dark ? "rgba(255,255,255,0.12)" : "rgba(11,30,45,0.70)",
-        border: dark ? "1.5px solid rgba(255,255,255,0.25)" : "1.5px solid rgba(21,182,193,0.55)",
-      }}
+      style={baseStyle}
     >
       {isKo ? "EN" : "한국어"}
     </button>

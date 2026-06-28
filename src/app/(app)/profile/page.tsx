@@ -132,11 +132,12 @@ export default function ProfilePage() {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px 16px" }}>
           <span style={{ fontSize: 17, fontWeight: 800, color: "#fff", letterSpacing: "-0.02em" }}>{t.title}</span>
           <Link href="/profile/edit" style={{
-            background: "rgba(255,255,255,0.12)", borderRadius: 8,
-            padding: "6px 12px", color: "rgba(255,255,255,0.7)", fontSize: 12,
-            textDecoration: "none",
+            background: "rgba(21,182,193,0.18)", border: "1.5px solid rgba(21,182,193,0.45)",
+            borderRadius: 10, padding: "6px 14px", color: "#fff", fontSize: 12, fontWeight: 700,
+            textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 5,
+            letterSpacing: "0.02em",
           }}>
-            ✏️
+            ✏️ {t.editProfile}
           </Link>
         </div>
 
