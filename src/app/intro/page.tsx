@@ -199,14 +199,14 @@ function PcSlidePanel({ s, idx, total, fading, onDot, onNext, onLogin }: {
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", padding: "24px 22px 20px" }}>
       <div style={{ flex: 1, opacity: fading ? 0 : 1, transform: fading ? "translateY(8px)" : "translateY(0)", transition: "opacity 0.15s, transform 0.15s" }}>
-        <div style={{ height: 110, width: "100%", position: "relative", marginBottom: 14, display: "flex", alignItems: "center", justifyContent: "center", background: "#0B1E2D", borderRadius: 8, overflow: "hidden" }}>
+        <div style={{ height: 120, width: "100%", position: "relative", marginBottom: 14, display: "flex", alignItems: "center", justifyContent: "center", background: "#fff", borderRadius: 12, overflow: "hidden", border: "1px solid #E0E8EA" }}>
           <img
             src={s.img}
             alt={s.tag}
             style={{
-              height: "90%",
-              width: "auto",
-              objectFit: "contain",
+              height: "100%",
+              width: "100%",
+              objectFit: "cover",
             }}
           />
         </div>
@@ -414,15 +414,28 @@ export default function IntroPage() {
 
         {/* Slide content */}
         <div key={slide} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: `${showInstallBtn ? 88 : 72}px 40px 0`, textAlign: "center", opacity: fading ? 0 : 1, transform: fading ? "translateY(12px)" : "translateY(0)", transition: "opacity 0.16s, transform 0.16s" }}>
-          <div style={{ width: "100%", height: 180, position: "relative", marginBottom: 24, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{
+            width: 280,
+            height: 200,
+            position: "relative",
+            marginBottom: 28,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "#fff",
+            borderRadius: 20,
+            padding: 10,
+            boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
+            overflow: "hidden"
+          }}>
             <img
               src={ms.img}
               alt={ms.tag}
               style={{
-                maxWidth: "100%",
-                maxHeight: "100%",
-                objectFit: "contain",
-                filter: "drop-shadow(0 10px 20px rgba(0,0,0,0.35))",
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                borderRadius: 12
               }}
             />
           </div>
