@@ -1,32 +1,24 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { saveOnboarding } from "./actions";
 
-// ─── types ────────────────────────────────────────────────────────────────────
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 export type OnboardingData = {
   isKorean: boolean;
-  // EN-only
   displayName: string;
   nationality: string;
   mainLanguage: string;
   gender: string;
   purpose: string;
-  arrivalDate: string;
   stayDuration: string;
   region: string;
   living: string;
   koreanLevel: string;
-  // shared
   interests: string[];
-  budget: string;
-  activityStyle: string;
-  hasPet: string;
-  dietaryRestrictions: string[];
-  transportation: string[];
   makeFriends: boolean;
   languageExchange: boolean;
   joinMeetups: boolean;
@@ -41,17 +33,11 @@ const INIT: OnboardingData = {
   mainLanguage: "English",
   gender: "",
   purpose: "",
-  arrivalDate: "",
   stayDuration: "",
   region: "",
   living: "",
   koreanLevel: "",
   interests: [],
-  budget: "",
-  activityStyle: "",
-  hasPet: "",
-  dietaryRestrictions: [],
-  transportation: [],
   makeFriends: true,
   languageExchange: true,
   joinMeetups: false,
@@ -63,430 +49,102 @@ function toggleArr<T>(arr: T[], val: T): T[] {
   return arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val];
 }
 
-// ─── design tokens ────────────────────────────────────────────────────────────
+// ─── Design tokens ────────────────────────────────────────────────────────────
 
 const C = {
   teal: "#15b6c1",
   tealLight: "#d4f4f6",
   tealDark: "#0b7a82",
   yellow: "#ffd600",
+  dark: "#0B1E2D",
   text: "#1a2b2c",
   sub: "#4a6467",
   border: "#e0e8ea",
-  bg: "#f8fcfc",
 };
 
-// ─── UI atoms ─────────────────────────────────────────────────────────────────
+// ─── Reusable atoms ───────────────────────────────────────────────────────────
 
 function Chip({ label, on, onClick }: { label: string; on: boolean; onClick: () => void }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      style={{
-        padding: "7px 14px",
-        borderRadius: 20,
-        border: `1px solid ${on ? C.teal : C.border}`,
-        background: on ? C.tealLight : "#fff",
-        color: on ? C.tealDark : C.sub,
-        fontWeight: on ? 600 : 400,
-        fontSize: 13,
-        cursor: "pointer",
-        transition: "all 0.15s",
-      }}
-    >
+    <button type="button" onClick={onClick} style={{
+      padding: "8px 16px", borderRadius: 20,
+      border: `1.5px solid ${on ? C.teal : C.border}`,
+      background: on ? C.tealLight : "#fff",
+      color: on ? C.tealDark : C.sub,
+      fontWeight: on ? 700 : 400, fontSize: 13,
+      cursor: "pointer", transition: "all 0.15s",
+    }}>
       {label}
     </button>
   );
 }
 
-function SelectCard({
-  label, desc, on, onClick,
-}: {
-  label: string; desc?: string; on: boolean; onClick: () => void;
-}) {
+function SelectCard({ label, desc, on, onClick }: { label: string; desc?: string; on: boolean; onClick: () => void }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      style={{
-        width: "100%",
-        textAlign: "left",
-        padding: "11px 14px",
-        borderRadius: 12,
-        border: `1px solid ${on ? C.teal : C.border}`,
-        background: on ? C.tealLight : "#fff",
-        cursor: "pointer",
-        marginBottom: 8,
-        transition: "all 0.15s",
-      }}
-    >
-      <div style={{ fontSize: 14, fontWeight: 500, color: on ? C.tealDark : C.text }}>{label}</div>
+    <button type="button" onClick={onClick} style={{
+      width: "100%", textAlign: "left",
+      padding: "13px 16px", borderRadius: 14,
+      border: `1.5px solid ${on ? C.teal : C.border}`,
+      background: on ? C.tealLight : "#fff",
+      cursor: "pointer", marginBottom: 8, transition: "all 0.15s",
+    }}>
+      <div style={{ fontSize: 14, fontWeight: 600, color: on ? C.tealDark : C.text }}>{label}</div>
       {desc && <div style={{ fontSize: 12, color: C.sub, marginTop: 2 }}>{desc}</div>}
     </button>
   );
 }
 
-function GridCard({ label, on, onClick }: { label: string; on: boolean; onClick: () => void }) {
+function SectionLabel({ label, style }: { label: string; style?: React.CSSProperties }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      style={{
-        padding: "10px 8px",
-        borderRadius: 10,
-        border: `1px solid ${on ? C.teal : C.border}`,
-        background: on ? C.tealLight : "#fff",
-        color: on ? C.tealDark : C.text,
-        fontWeight: on ? 600 : 400,
-        fontSize: 12,
-        cursor: "pointer",
-        textAlign: "center",
-        transition: "all 0.15s",
-      }}
-    >
+    <p style={{ fontSize: 12, fontWeight: 700, color: C.sub, marginBottom: 8, marginTop: 4, ...style }}>
       {label}
-    </button>
+    </p>
   );
 }
 
-function ToggleSwitch({ on, onChange }: { on: boolean; onChange: () => void }) {
+function Toggle({ on, onChange, label, desc }: { on: boolean; onChange: () => void; label: string; desc?: string }) {
   return (
-    <button
-      type="button"
-      onClick={onChange}
-      role="switch"
-      aria-checked={on}
-      style={{
-        width: 44,
-        height: 24,
-        borderRadius: 12,
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 0", borderBottom: `1px solid ${C.border}` }}>
+      <div>
+        <p style={{ fontSize: 14, fontWeight: 600, color: C.text }}>{label}</p>
+        {desc && <p style={{ fontSize: 12, color: C.sub, marginTop: 2 }}>{desc}</p>}
+      </div>
+      <button type="button" onClick={onChange} role="switch" aria-checked={on} style={{
+        width: 44, height: 24, borderRadius: 12,
         background: on ? C.teal : "#c8d5d7",
-        border: "none",
-        cursor: "pointer",
-        position: "relative",
-        flexShrink: 0,
-        transition: "background 0.2s",
-      }}
-    >
-      <span
-        style={{
-          position: "absolute",
-          top: 3,
-          left: on ? 23 : 3,
-          width: 18,
-          height: 18,
-          borderRadius: "50%",
-          background: "#fff",
-          transition: "left 0.2s",
-          display: "block",
-        }}
-      />
-    </button>
-  );
-}
-
-function Label({ children }: { children: React.ReactNode }) {
-  return (
-    <div style={{ fontSize: 12, fontWeight: 600, color: C.sub, marginBottom: 8 }}>
-      {children}
+        border: "none", cursor: "pointer",
+        position: "relative", flexShrink: 0, transition: "background 0.2s",
+      }}>
+        <span style={{
+          position: "absolute", top: 3, left: on ? 23 : 3,
+          width: 18, height: 18, borderRadius: "50%",
+          background: "#fff", transition: "left 0.2s", display: "block",
+        }} />
+      </button>
     </div>
   );
 }
 
-const INP: React.CSSProperties = {
-  width: "100%",
-  padding: "10px 14px",
-  borderRadius: 10,
-  border: `1px solid ${C.border}`,
-  background: C.bg,
-  fontSize: 14,
-  color: C.text,
-  outline: "none",
-  marginBottom: 16,
-};
+// ─── Step IDs ─────────────────────────────────────────────────────────────────
 
-// ─── step components ──────────────────────────────────────────────────────────
+type StepId = "nickname" | "background" | "purpose" | "stay" | "region" | "koreanlevel" | "interests" | "connect";
 
-function StepBasicInfo({ data, set }: { data: OnboardingData; set: (p: Partial<OnboardingData>) => void }) {
-  const nationalities = [
-    "United States", "Japan", "China", "Vietnam", "Thailand",
-    "France", "Germany", "Australia", "Canada", "United Kingdom",
-    "India", "Philippines", "Indonesia", "Malaysia", "Other",
-  ];
-  const languages = ["English", "Japanese", "Chinese", "Vietnamese", "Thai", "French", "German", "Other"];
-  const genders = ["Male", "Female", "Non-binary", "Prefer not to say"];
+const EN_STEPS: StepId[] = ["nickname", "background", "purpose", "stay", "region", "koreanlevel", "interests", "connect"];
+const KO_STEPS: StepId[] = ["nickname", "region", "interests", "connect"];
 
-  return (
-    <div>
-      <Label>Nickname</Label>
-      <input
-        style={INP}
-        type="text"
-        placeholder="e.g. Alex, Mia, Yuki"
-        value={data.displayName}
-        onChange={(e) => set({ displayName: e.target.value })}
-      />
+// ─── Main inner component ─────────────────────────────────────────────────────
 
-      <Label>Nationality</Label>
-      <select style={INP} value={data.nationality} onChange={(e) => set({ nationality: e.target.value })}>
-        <option value="">Select your country</option>
-        {nationalities.map((n) => <option key={n}>{n}</option>)}
-      </select>
-
-      <Label>Primary Language</Label>
-      <select style={INP} value={data.mainLanguage} onChange={(e) => set({ mainLanguage: e.target.value })}>
-        {languages.map((l) => <option key={l}>{l}</option>)}
-      </select>
-
-      <Label>Gender (optional)</Label>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-        {genders.map((g) => (
-          <GridCard key={g} label={g} on={data.gender === g} onClick={() => set({ gender: data.gender === g ? "" : g })} />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function StepPurpose({ data, set }: { data: OnboardingData; set: (p: Partial<OnboardingData>) => void }) {
-  const purposes = [
-    { icon: "✈️", label: "Tourism / Short visit" },
-    { icon: "📚", label: "Study" },
-    { icon: "💼", label: "Work / Career" },
-    { icon: "💍", label: "Marriage / Family" },
-    { icon: "🏠", label: "Long-term residence" },
-    { icon: "✨", label: "Other" },
-  ];
-  return (
-    <div>
-      {purposes.map(({ icon, label }) => (
-        <SelectCard
-          key={label}
-          label={`${icon}  ${label}`}
-          on={data.purpose === label}
-          onClick={() => set({ purpose: data.purpose === label ? "" : label })}
-        />
-      ))}
-    </div>
-  );
-}
-
-function StepStay({ data, set }: { data: OnboardingData; set: (p: Partial<OnboardingData>) => void }) {
-  const durations = ["Under 1 week", "Under 1 month", "Under 3 months", "Under 6 months", "Under 1 year", "1 year+"];
-  const regions = [
-    { label: "Hongdae (Seoul)", slug: "hongdae" },
-    { label: "Itaewon (Seoul)", slug: "itaewon" },
-    { label: "Gangnam (Seoul)", slug: "gangnam" },
-    { label: "Bukchon (Seoul)", slug: "bukchon" },
-    { label: "Seongsu (Seoul)", slug: "seongsu" },
-    { label: "Haeundae (Busan)", slug: "haeundae" },
-    { label: "Jeonju", slug: "jeonju-hanok" },
-  ];
-  const livings = ["Alone", "With family", "Roommates", "Dormitory"];
-
-  return (
-    <div>
-      <Label>Arrival Date</Label>
-      <input style={INP} type="date" value={data.arrivalDate} onChange={(e) => set({ arrivalDate: e.target.value })} />
-
-      <Label>Intended Stay</Label>
-      <select style={INP} value={data.stayDuration} onChange={(e) => set({ stayDuration: e.target.value })}>
-        <option value="">Select duration</option>
-        {durations.map((d) => <option key={d}>{d}</option>)}
-      </select>
-
-      <Label>Current Neighborhood</Label>
-      <select style={INP} value={data.region} onChange={(e) => set({ region: e.target.value })}>
-        <option value="">Select area</option>
-        {regions.map(({ label, slug }) => <option key={slug} value={slug}>{label}</option>)}
-      </select>
-
-      <Label>Living Situation</Label>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-        {livings.map((l) => (
-          <GridCard key={l} label={l} on={data.living === l} onClick={() => set({ living: data.living === l ? "" : l })} />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function StepKorean({ data, set }: { data: OnboardingData; set: (p: Partial<OnboardingData>) => void }) {
-  const levels = [
-    { label: "No Korean", desc: "I communicate in English only" },
-    { label: "Basics only", desc: "Greetings, numbers, simple signs" },
-    { label: "Daily conversations", desc: "I can handle simple chats" },
-    { label: "Fluent", desc: "Near-native level" },
-  ];
-  return (
-    <div>
-      {levels.map(({ label, desc }) => (
-        <SelectCard
-          key={label}
-          label={label}
-          desc={desc}
-          on={data.koreanLevel === label}
-          onClick={() => set({ koreanLevel: data.koreanLevel === label ? "" : label })}
-        />
-      ))}
-    </div>
-  );
-}
-
-const INTERESTS_EN = [
-  { slug: "food", label: "🍜  Food" },
-  { slug: "coffee", label: "☕  Coffee & Cafes" },
-  { slug: "culture", label: "🎭  K-Culture" },
-  { slug: "hiking", label: "🏔️  Hiking" },
-  { slug: "nightlife", label: "🌙  Nightlife" },
-  { slug: "music", label: "🎵  Music" },
-  { slug: "sport", label: "⚽  Sports" },
-  { slug: "art", label: "🎨  Art" },
-  { slug: "language", label: "💬  Language Exchange" },
-  { slug: "cooking", label: "👨‍🍳  Cooking" },
-  { slug: "photography", label: "📷  Photography" },
-  { slug: "travel", label: "✈️  Travel" },
-];
-
-const INTERESTS_KO = [
-  { slug: "food", label: "🍜  음식 & 카페" },
-  { slug: "culture", label: "🎭  문화 & 역사" },
-  { slug: "coffee", label: "☕  카페 & 디저트" },
-  { slug: "hiking", label: "🏔️  자연 & 등산" },
-  { slug: "nightlife", label: "🌙  나이트라이프" },
-  { slug: "music", label: "🎵  K-팝 & 엔터" },
-  { slug: "sport", label: "⚽  스포츠" },
-  { slug: "art", label: "🎨  예술 & 전시" },
-  { slug: "language", label: "💬  언어 교환" },
-  { slug: "cooking", label: "👨‍🍳  요리" },
-  { slug: "photography", label: "📷  사진" },
-  { slug: "travel", label: "✈️  여행" },
-];
-
-function StepInterests({ data, set, isKo }: { data: OnboardingData; set: (p: Partial<OnboardingData>) => void; isKo: boolean }) {
-  const interests = isKo ? INTERESTS_KO : INTERESTS_EN;
-  const budgets = isKo
-    ? ["💰  저예산", "💰💰  중간", "💰💰💰  여유롭게", "상관없어요"]
-    : ["💰  Budget", "💰💰  Moderate", "💰💰💰  Splurge", "No preference"];
-  const styles = isKo
-    ? ["🏠  실내 선호", "🌿  실외 선호", "🤫  조용하게", "🎉  활발하게"]
-    : ["🏠  Indoors", "🌿  Outdoors", "🤫  Quiet vibe", "🎉  High energy"];
-
-  return (
-    <div>
-      <Label>{isKo ? "관심 카테고리" : "Categories"}</Label>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
-        {interests.map(({ slug, label }) => (
-          <Chip key={slug} label={label} on={data.interests.includes(slug)} onClick={() => set({ interests: toggleArr(data.interests, slug) })} />
-        ))}
-      </div>
-
-      <Label>{isKo ? "예산 수준" : "Budget Level"}</Label>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 20 }}>
-        {budgets.map((b) => (
-          <GridCard key={b} label={b} on={data.budget === b} onClick={() => set({ budget: data.budget === b ? "" : b })} />
-        ))}
-      </div>
-
-      <Label>{isKo ? "활동 성향" : "Activity Style"}</Label>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-        {styles.map((s) => (
-          <GridCard key={s} label={s} on={data.activityStyle === s} onClick={() => set({ activityStyle: data.activityStyle === s ? "" : s })} />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function StepLife({ data, set, isKo }: { data: OnboardingData; set: (p: Partial<OnboardingData>) => void; isKo: boolean }) {
-  const dietary = isKo
-    ? ["없음", "이슬람 (할랄)", "힌두교", "채식주의", "비건", "기타"]
-    : ["None", "Halal", "Hindu", "Vegetarian", "Vegan", "Other"];
-  const transports = isKo
-    ? [{ slug: "transit", label: "🚌  대중교통" }, { slug: "car", label: "🚗  차량" }, { slug: "walk", label: "🚶  도보" }, { slug: "bike", label: "🚲  자전거" }]
-    : [{ slug: "transit", label: "🚌  Public transit" }, { slug: "car", label: "🚗  Car" }, { slug: "walk", label: "🚶  Walking" }, { slug: "bike", label: "🚲  Bicycle" }];
-
-  return (
-    <div>
-      <Label>{isKo ? "반려동물 동반 여부" : "Do you have a pet?"}</Label>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 20 }}>
-        <GridCard label={isKo ? "🐾  있어요" : "🐾  Yes, I do"} on={data.hasPet === "yes"} onClick={() => set({ hasPet: data.hasPet === "yes" ? "" : "yes" })} />
-        <GridCard label={isKo ? "없어요" : "No pets"} on={data.hasPet === "no"} onClick={() => set({ hasPet: data.hasPet === "no" ? "" : "no" })} />
-      </div>
-
-      <Label>{isKo ? "종교 / 식이 제한 (선택)" : "Dietary / Religious (optional)"}</Label>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
-        {dietary.map((d) => (
-          <Chip key={d} label={d} on={data.dietaryRestrictions.includes(d)} onClick={() => set({ dietaryRestrictions: toggleArr(data.dietaryRestrictions, d) })} />
-        ))}
-      </div>
-
-      <Label>{isKo ? "선호 이동 수단" : "Preferred Transport"}</Label>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-        {transports.map(({ slug, label }) => (
-          <Chip key={slug} label={label} on={data.transportation.includes(slug)} onClick={() => set({ transportation: toggleArr(data.transportation, slug) })} />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-type BoolKey = "makeFriends" | "languageExchange" | "joinMeetups" | "nearbyAlerts" | "marketing";
-
-function StepConnections({ data, set, isKo }: { data: OnboardingData; set: (p: Partial<OnboardingData>) => void; isKo: boolean }) {
-  const items: { key: BoolKey; label: string; desc: string }[] = isKo
-    ? [
-        { key: "makeFriends", label: "한국인 친구 만들기", desc: "관심사 기반 교류 사람 추천" },
-        { key: "languageExchange", label: "언어 교환 관심", desc: "한국어 ↔ 내 언어 교환" },
-        { key: "joinMeetups", label: "모임 참여 의향", desc: "지역 기반 Meetup 알림" },
-        { key: "nearbyAlerts", label: "주변 장소 알림", desc: "S등급 신규 장소 업데이트" },
-        { key: "marketing", label: "마케팅 알림", desc: "이벤트 및 혜택 정보" },
-      ]
-    : [
-        { key: "makeFriends", label: "Make Korean friends", desc: "Interest-based friend suggestions" },
-        { key: "languageExchange", label: "Language exchange", desc: "Korean ↔ your language swap" },
-        { key: "joinMeetups", label: "Join meetups", desc: "Local event notifications" },
-        { key: "nearbyAlerts", label: "Nearby place alerts", desc: "New S-rated places near you" },
-        { key: "marketing", label: "Marketing notifications", desc: "Events & promotions" },
-      ];
-
-  return (
-    <div>
-      {items.map(({ key, label, desc }, i) => (
-        <div
-          key={key}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 14,
-            padding: "14px 0",
-            borderBottom: i < items.length - 1 ? `1px solid ${C.border}` : "none",
-          }}
-        >
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 14, fontWeight: 500, color: C.text }}>{label}</div>
-            <div style={{ fontSize: 12, color: C.sub, marginTop: 2 }}>{desc}</div>
-          </div>
-          <ToggleSwitch
-            on={data[key]}
-            onChange={() => set({ [key]: !data[key] } as Partial<OnboardingData>)}
-          />
-        </div>
-      ))}
-    </div>
-  );
-}
-
-// ─── main page ────────────────────────────────────────────────────────────────
-
-export default function OnboardingPage() {
+function OnboardingInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const nextPath = searchParams.get("next") ?? "/map";
+
   const [isKo, setIsKo] = useState(false);
   const [ready, setReady] = useState(false);
-  const [step, setStep] = useState(0);
   const [data, setData] = useState<OnboardingData>(INIT);
+  const [stepIdx, setStepIdx] = useState(0);
   const [saving, setSaving] = useState(false);
+  const [done, setDone] = useState(false);
 
   useEffect(() => {
     const ko = navigator.language.startsWith("ko");
@@ -499,237 +157,450 @@ export default function OnboardingPage() {
     });
   }, []);
 
-  function set(patch: Partial<OnboardingData>) {
-    setData((d) => ({ ...d, ...patch }));
+  const steps = isKo ? KO_STEPS : EN_STEPS;
+  const totalSteps = steps.length;
+  const currentStep = steps[stepIdx];
+  const isLast = stepIdx === totalSteps - 1;
+
+  function set<K extends keyof OnboardingData>(key: K, val: OnboardingData[K]) {
+    setData((d) => ({ ...d, [key]: val }));
   }
 
-  const totalSteps = isKo ? 3 : 7;
-  const isDone = step >= totalSteps;
-
-  async function finish() {
-    setSaving(true);
-    try {
+  async function handleNext() {
+    if (isLast) {
+      setSaving(true);
       await saveOnboarding(data);
-    } finally {
-      router.push("/map");
+      setSaving(false);
+      setDone(true);
+    } else {
+      setStepIdx((i) => i + 1);
     }
   }
 
-  if (!ready) return null;
+  // ── Labels ──────────────────────────────────────────────────────────────────
 
-  // ── done screen ──────────────────────────────────────────────────────────────
-  if (isDone) {
-    const cards = isKo
-      ? [
-          { icon: "📍", text: "주변 <strong>S등급 장소 12곳</strong>이 있어요" },
-          { icon: "📋", text: "<strong>할 일 과제 5개</strong>를 준비했어요" },
-          { icon: "🗺️", text: "<strong>맞춤 로컬 코스</strong>가 기다려요" },
-        ]
-      : [
-          { icon: "📍", text: "<strong>12 S-rated places</strong> near you" },
-          { icon: "📋", text: "<strong>5 tasks</strong> ready for your checklist" },
-          { icon: "🗺️", text: "<strong>Your local course</strong> is waiting" },
-        ];
+  const T = {
+    ko: {
+      hero: "나를 알려주세요",
+      heroSub: "내 정보를 입력하면 로컬루프가 더 잘 도와줄 수 있어요",
+      back: "이전", next: "다음", finish: "시작하기", saving: "저장 중…",
+      doneTitle: "준비 완료!", doneSub: "이제 이태원 로컬 생활을 시작해볼까요?", doneBtn: "지도로 이동하기",
+      steps: {
+        nickname: { title: "어떻게 불릴까요?", sub: "앱에 표시될 이름이에요", namePh: "이름 또는 닉네임" },
+        background: { title: "나에 대해 알려주세요", sub: "국적, 언어, 성별을 선택해 주세요" },
+        purpose: { title: "한국에 온 목적은요?", sub: "가장 잘 맞는 항목을 선택해 주세요" },
+        stay: { title: "얼마나 계실 건가요?", sub: "체류 기간을 선택해 주세요" },
+        region: { title: "주로 어디서 지내세요?", sub: "가장 가까운 지역을 선택해 주세요" },
+        koreanlevel: { title: "한국어 실력은?", sub: "현재 수준을 선택해 주세요" },
+        interests: { title: "어떤 걸 좋아하세요?", sub: "관심 있는 항목을 모두 선택해 주세요" },
+        connect: { title: "어떻게 연결되고 싶으세요?", sub: "원하는 연결 방식을 설정해 주세요" },
+      },
+    },
+    en: {
+      hero: "Tell us about you",
+      heroSub: "Help us personalize your Localoop Korea experience",
+      back: "Back", next: "Next", finish: "Get started", saving: "Saving…",
+      doneTitle: "You're all set!", doneSub: "Time to explore local Korea like a local.", doneBtn: "Go to Map",
+      steps: {
+        nickname: { title: "What should we call you?", sub: "This will be your display name in the app", namePh: "Your name or nickname" },
+        background: { title: "Tell us about yourself", sub: "Select your nationality, language, and gender" },
+        purpose: { title: "Why are you in Korea?", sub: "Pick the option that fits best" },
+        stay: { title: "How long are you staying?", sub: "Select your expected stay duration" },
+        region: { title: "Where are you based?", sub: "Pick the area closest to where you live" },
+        koreanlevel: { title: "What's your Korean level?", sub: "Choose your current level" },
+        interests: { title: "What are you into?", sub: "Select everything that interests you" },
+        connect: { title: "How do you want to connect?", sub: "Customize how Localoop connects you with others" },
+      },
+    },
+  };
 
+  const t = isKo ? T.ko : T.en;
+
+  // ── Options ──────────────────────────────────────────────────────────────────
+
+  const NATIONALITIES = isKo
+    ? ["미국", "일본", "중국", "영국", "캐나다", "호주", "프랑스", "독일", "베트남", "태국", "인도", "기타"]
+    : ["USA", "Japan", "China", "UK", "Canada", "Australia", "France", "Germany", "Vietnam", "Thailand", "India", "Other"];
+
+  const LANGUAGES = isKo
+    ? ["영어", "일본어", "중국어", "베트남어", "태국어", "프랑스어", "독일어", "기타"]
+    : ["English", "Japanese", "Chinese", "Vietnamese", "Thai", "French", "German", "Other"];
+
+  const GENDERS = isKo
+    ? ["남성", "여성", "논바이너리", "무응답"]
+    : ["Male", "Female", "Non-binary", "Prefer not to say"];
+
+  const PURPOSES = isKo
+    ? [
+        { label: "💼 직장 / 비즈니스", desc: "취업, 원격근무, 비즈니스" },
+        { label: "📚 학업", desc: "어학원, 대학교, 교환학생" },
+        { label: "✈️ 여행", desc: "단기 방문, 관광" },
+        { label: "💬 언어 학습", desc: "한국어 공부가 주목적" },
+        { label: "🎭 문화 체험", desc: "K-culture, 음식, 생활" },
+        { label: "🔎 기타", desc: "" },
+      ]
+    : [
+        { label: "💼 Work / Business", desc: "Employment, remote work, business" },
+        { label: "📚 Study", desc: "Language school, university, exchange" },
+        { label: "✈️ Travel", desc: "Short-term visit, tourism" },
+        { label: "💬 Language learning", desc: "Learning Korean is the main goal" },
+        { label: "🎭 Cultural experience", desc: "K-culture, food, lifestyle" },
+        { label: "🔎 Other", desc: "" },
+      ];
+
+  const DURATIONS = isKo
+    ? ["1개월 미만", "1~3개월", "3~6개월", "6개월~1년", "1년 이상", "미정"]
+    : ["< 1 month", "1–3 months", "3–6 months", "6–12 months", "1+ year", "Not sure"];
+
+  const REGIONS = isKo
+    ? ["홍대", "이태원", "강남", "북촌 / 인사동", "성수", "해운대 (부산)", "전주 한옥마을", "기타"]
+    : ["Hongdae", "Itaewon", "Gangnam", "Bukchon / Insadong", "Seongsu", "Haeundae (Busan)", "Jeonju Hanok", "Other"];
+
+  const REGION_SLUGS = ["hongdae", "itaewon", "gangnam", "bukchon", "seongsu", "haeundae", "jeonju-hanok", "other"];
+
+  const LIVING = isKo
+    ? ["고시원", "원룸 / 오피스텔", "쉐어하우스", "에어비앤비", "친구 / 가족 집", "기타"]
+    : ["Goshiwon", "Studio / Officetel", "Share house", "Airbnb", "Friend / Family", "Other"];
+
+  const KOREAN_LEVELS = isKo
+    ? [
+        { label: "전혀 못해요", desc: "한국어를 전혀 모르거나 거의 몰라요" },
+        { label: "초급", desc: "기본 인사 정도만 해요" },
+        { label: "생활 한국어", desc: "편의점, 카페 등에서 소통 가능" },
+        { label: "일상 대화", desc: "간단한 대화는 어렵지 않아요" },
+        { label: "유창해요", desc: "한국어로 자유롭게 대화해요" },
+      ]
+    : [
+        { label: "None", desc: "I don't know any Korean yet" },
+        { label: "Beginner", desc: "Just basic greetings" },
+        { label: "Daily use", desc: "Can manage convenience stores, cafés" },
+        { label: "Conversational", desc: "Comfortable in everyday conversations" },
+        { label: "Fluent", desc: "Speak Korean freely" },
+      ];
+
+  const INTERESTS = [
+    { slug: "food", label: isKo ? "🍜 음식" : "🍜 Food" },
+    { slug: "language", label: isKo ? "💬 언어 교환" : "💬 Language Exchange" },
+    { slug: "kculture", label: isKo ? "🎭 한국 문화" : "🎭 K-Culture" },
+    { slug: "hiking", label: isKo ? "🏔️ 등산" : "🏔️ Hiking" },
+    { slug: "music", label: isKo ? "🎵 음악" : "🎵 Music" },
+    { slug: "art", label: isKo ? "🎨 예술" : "🎨 Art" },
+    { slug: "sport", label: isKo ? "⚽ 스포츠" : "⚽ Sports" },
+    { slug: "coffee", label: isKo ? "☕ 카페" : "☕ Coffee & Cafés" },
+    { slug: "nightlife", label: isKo ? "🌙 야경 / 바" : "🌙 Nightlife" },
+    { slug: "cooking", label: isKo ? "👨‍🍳 요리" : "👨‍🍳 Cooking" },
+    { slug: "photography", label: isKo ? "📷 사진" : "📷 Photography" },
+    { slug: "travel", label: isKo ? "✈️ 국내 여행" : "✈️ Travel in Korea" },
+  ];
+
+  // ── Shared styles ─────────────────────────────────────────────────────────────
+
+  const sTitle: React.CSSProperties = { fontSize: 22, fontWeight: 800, color: C.text, marginBottom: 6, letterSpacing: "-0.02em", lineHeight: 1.25 };
+  const sSub: React.CSSProperties = { fontSize: 14, color: C.sub, marginBottom: 20, lineHeight: 1.55 };
+  const sChipWrap: React.CSSProperties = { display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 8 };
+  const sInput: React.CSSProperties = {
+    width: "100%", padding: "13px 16px", borderRadius: 14,
+    border: `1.5px solid ${C.border}`, background: "#fff",
+    fontSize: 16, color: C.text, outline: "none", boxSizing: "border-box",
+  };
+
+  // ── Step renderer ─────────────────────────────────────────────────────────────
+
+  function renderStep() {
+    const st = t.steps[currentStep];
+
+    switch (currentStep) {
+      case "nickname":
+        return (
+          <div>
+            <h2 style={sTitle}>{st.title}</h2>
+            <p style={sSub}>{st.sub}</p>
+            <input
+              type="text"
+              value={data.displayName}
+              onChange={(e) => set("displayName", e.target.value)}
+              placeholder={"namePh" in st ? st.namePh : ""}
+              autoFocus
+              style={sInput}
+            />
+          </div>
+        );
+
+      case "background":
+        return (
+          <div>
+            <h2 style={sTitle}>{st.title}</h2>
+            <p style={sSub}>{st.sub}</p>
+            <SectionLabel label={isKo ? "국적" : "Nationality"} />
+            <div style={sChipWrap}>
+              {NATIONALITIES.map((n) => (
+                <Chip key={n} label={n} on={data.nationality === n} onClick={() => set("nationality", n)} />
+              ))}
+            </div>
+            <SectionLabel label={isKo ? "주요 언어" : "Primary language"} style={{ marginTop: 16 }} />
+            <div style={sChipWrap}>
+              {LANGUAGES.map((l) => (
+                <Chip key={l} label={l} on={data.mainLanguage === l} onClick={() => set("mainLanguage", l)} />
+              ))}
+            </div>
+            <SectionLabel label={isKo ? "성별" : "Gender"} style={{ marginTop: 16 }} />
+            <div style={sChipWrap}>
+              {GENDERS.map((g) => (
+                <Chip key={g} label={g} on={data.gender === g} onClick={() => set("gender", g)} />
+              ))}
+            </div>
+          </div>
+        );
+
+      case "purpose":
+        return (
+          <div>
+            <h2 style={sTitle}>{st.title}</h2>
+            <p style={sSub}>{st.sub}</p>
+            {PURPOSES.map((p) => (
+              <SelectCard key={p.label} label={p.label} desc={p.desc} on={data.purpose === p.label} onClick={() => set("purpose", p.label)} />
+            ))}
+          </div>
+        );
+
+      case "stay":
+        return (
+          <div>
+            <h2 style={sTitle}>{st.title}</h2>
+            <p style={sSub}>{st.sub}</p>
+            <div style={sChipWrap}>
+              {DURATIONS.map((d) => (
+                <Chip key={d} label={d} on={data.stayDuration === d} onClick={() => set("stayDuration", d)} />
+              ))}
+            </div>
+          </div>
+        );
+
+      case "region":
+        return (
+          <div>
+            <h2 style={sTitle}>{st.title}</h2>
+            <p style={sSub}>{st.sub}</p>
+            <div style={sChipWrap}>
+              {REGIONS.map((r, i) => (
+                <Chip key={r} label={r} on={data.region === REGION_SLUGS[i]} onClick={() => set("region", REGION_SLUGS[i])} />
+              ))}
+            </div>
+            <SectionLabel label={isKo ? "어디서 생활하고 계세요?" : "What's your living situation?"} style={{ marginTop: 20 }} />
+            <div style={sChipWrap}>
+              {LIVING.map((l) => (
+                <Chip key={l} label={l} on={data.living === l} onClick={() => set("living", l)} />
+              ))}
+            </div>
+          </div>
+        );
+
+      case "koreanlevel":
+        return (
+          <div>
+            <h2 style={sTitle}>{st.title}</h2>
+            <p style={sSub}>{st.sub}</p>
+            {KOREAN_LEVELS.map((k) => (
+              <SelectCard key={k.label} label={k.label} desc={k.desc} on={data.koreanLevel === k.label} onClick={() => set("koreanLevel", k.label)} />
+            ))}
+          </div>
+        );
+
+      case "interests":
+        return (
+          <div>
+            <h2 style={sTitle}>{st.title}</h2>
+            <p style={sSub}>{st.sub}</p>
+            <div style={sChipWrap}>
+              {INTERESTS.map(({ slug, label }) => (
+                <Chip key={slug} label={label} on={data.interests.includes(slug)} onClick={() => set("interests", toggleArr(data.interests, slug))} />
+              ))}
+            </div>
+          </div>
+        );
+
+      case "connect":
+        return (
+          <div>
+            <h2 style={sTitle}>{st.title}</h2>
+            <p style={sSub}>{st.sub}</p>
+            <div style={{ marginTop: 8 }}>
+              <Toggle
+                on={data.makeFriends}
+                onChange={() => set("makeFriends", !data.makeFriends)}
+                label={isKo ? "새 친구 사귀기" : "Make new friends"}
+                desc={isKo ? "주변 외국인·한국인과 연결해드려요" : "Connect with locals and expats nearby"}
+              />
+              <Toggle
+                on={data.languageExchange}
+                onChange={() => set("languageExchange", !data.languageExchange)}
+                label={isKo ? "언어 교환" : "Language exchange"}
+                desc={isKo ? "한국어↔외국어 파트너 매칭" : "Match with Korean ↔ foreign language partners"}
+              />
+              <Toggle
+                on={data.joinMeetups}
+                onChange={() => set("joinMeetups", !data.joinMeetups)}
+                label={isKo ? "모임 참여 알림" : "Meetup notifications"}
+                desc={isKo ? "내 관심사 기반 모임 추천" : "Get notified about relevant meetups"}
+              />
+              <Toggle
+                on={data.nearbyAlerts}
+                onChange={() => set("nearbyAlerts", !data.nearbyAlerts)}
+                label={isKo ? "주변 알림" : "Nearby alerts"}
+                desc={isKo ? "근처 새 장소·이벤트 알림" : "Alerts for new places and events near you"}
+              />
+              <Toggle
+                on={data.marketing}
+                onChange={() => set("marketing", !data.marketing)}
+                label={isKo ? "마케팅 수신 동의 (선택)" : "Marketing emails (optional)"}
+                desc={isKo ? "새 기능 소식 및 혜택 안내" : "News about features and offers"}
+              />
+            </div>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  }
+
+  // ── Done screen ───────────────────────────────────────────────────────────────
+
+  if (done) {
     return (
-      <main
-        style={{
-          minHeight: "100dvh",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "#f0fafa",
-          padding: "24px 20px",
-        }}
-      >
-        <div
-          style={{
-            width: 72,
-            height: 72,
-            borderRadius: "50%",
-            background: C.tealLight,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 36,
-            marginBottom: 20,
-          }}
-        >
+      <div style={{
+        minHeight: "100dvh", display: "flex", flexDirection: "column",
+        alignItems: "center", justifyContent: "center",
+        background: `linear-gradient(160deg, ${C.dark} 0%, #1a3a4a 100%)`,
+        padding: 24,
+      }}>
+        <div style={{
+          width: 72, height: 72, borderRadius: "50%",
+          background: C.teal, display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 36, marginBottom: 24,
+          boxShadow: `0 0 0 12px rgba(21,182,193,0.2)`,
+        }}>
           ✓
         </div>
-        <h1 style={{ fontSize: 24, fontWeight: 700, color: C.text, marginBottom: 8, textAlign: "center" }}>
-          {isKo ? "준비 완료!" : "You're all set!"}
-        </h1>
-        <p style={{ fontSize: 14, color: C.sub, lineHeight: 1.65, maxWidth: 280, margin: "0 auto 28px", textAlign: "center" }}>
-          {isKo
-            ? "AI가 맞춤 설정을 완료했어요. 이제부터 Real Korea를 시작해보세요."
-            : "Your profile is ready. Start exploring Real Korea with personalized recommendations."}
+        <h2 style={{ fontSize: 24, fontWeight: 900, color: "#fff", marginBottom: 8, textAlign: "center" }}>
+          {t.doneTitle}
+        </h2>
+        <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)", marginBottom: 40, textAlign: "center" }}>
+          {t.doneSub}
         </p>
-
-        <div style={{ width: "100%", maxWidth: 420, marginBottom: 28 }}>
-          {cards.map(({ icon, text }) => (
-            <div
-              key={icon}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                background: "#fff",
-                borderRadius: 12,
-                padding: "12px 16px",
-                marginBottom: 8,
-                border: `1px solid ${C.border}`,
-              }}
-            >
-              <div
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: 10,
-                  background: C.tealLight,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: 18,
-                  flexShrink: 0,
-                }}
-              >
-                {icon}
-              </div>
-              <div style={{ fontSize: 13, color: C.sub }} dangerouslySetInnerHTML={{ __html: text }} />
-            </div>
-          ))}
-        </div>
-
         <button
-          onClick={finish}
-          disabled={saving}
+          onClick={() => router.push(nextPath)}
           style={{
-            width: "100%",
-            maxWidth: 420,
-            padding: "14px",
-            borderRadius: 16,
-            background: C.yellow,
-            color: C.text,
-            fontWeight: 700,
-            fontSize: 16,
-            border: "none",
-            cursor: saving ? "default" : "pointer",
-            opacity: saving ? 0.7 : 1,
+            background: C.yellow, color: C.dark, border: "none", borderRadius: 16,
+            padding: "16px 48px", fontSize: 16, fontWeight: 800, cursor: "pointer",
           }}
         >
-          {saving ? (isKo ? "저장 중…" : "Saving…") : (isKo ? "지도로 이동하기" : "Go to Map")}
+          {t.doneBtn}
         </button>
-      </main>
+      </div>
     );
   }
 
-  // ── step labels ──────────────────────────────────────────────────────────────
-  const enSteps = [
-    { title: "About You", sub: "Let's personalize your experience" },
-    { title: "Why Korea?", sub: "What brings you here?" },
-    { title: "Your Stay", sub: "Tell us more for better recommendations" },
-    { title: "Korean Level", sub: "We'll tailor places to your language skills" },
-    { title: "Interests", sub: "Pick topics you love — select as many as you like" },
-    { title: "Your Lifestyle", sub: "Better place recommendations with your preferences" },
-    { title: "Stay Connected", sub: "You can change these anytime in Settings" },
-  ];
-
-  const koSteps = [
-    { title: "관심사 & 성향", sub: "좋아하는 항목을 골라주세요. 여러 개 선택 가능해요." },
-    { title: "생활 설정", sub: "더 정확한 장소 추천에 활용돼요." },
-    { title: "연결 설정", sub: "언제든지 설정에서 변경할 수 있어요." },
-  ];
-
-  const stepInfo = (isKo ? koSteps : enSteps)[step];
-  const progress = ((step + 1) / totalSteps) * 100;
-  const isLast = step === totalSteps - 1;
-
-  function renderContent() {
-    if (isKo) {
-      if (step === 0) return <StepInterests data={data} set={set} isKo />;
-      if (step === 1) return <StepLife data={data} set={set} isKo />;
-      if (step === 2) return <StepConnections data={data} set={set} isKo />;
-    } else {
-      if (step === 0) return <StepBasicInfo data={data} set={set} />;
-      if (step === 1) return <StepPurpose data={data} set={set} />;
-      if (step === 2) return <StepStay data={data} set={set} />;
-      if (step === 3) return <StepKorean data={data} set={set} />;
-      if (step === 4) return <StepInterests data={data} set={set} isKo={false} />;
-      if (step === 5) return <StepLife data={data} set={set} isKo={false} />;
-      if (step === 6) return <StepConnections data={data} set={set} isKo={false} />;
-    }
-    return null;
+  if (!ready) {
+    return (
+      <div style={{ minHeight: "100dvh", display: "flex", alignItems: "center", justifyContent: "center", background: C.dark }}>
+        <div style={{
+          width: 40, height: 40, borderRadius: "50%",
+          border: `3px solid ${C.teal}`, borderTopColor: "transparent",
+          animation: "spin 0.8s linear infinite",
+        }} />
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
   }
 
+  const progress = ((stepIdx + 1) / totalSteps) * 100;
+
   return (
-    <main
-      style={{
-        minHeight: "100dvh",
-        background: "#fff",
-        display: "flex",
-        flexDirection: "column",
-        maxWidth: 480,
-        margin: "0 auto",
-      }}
-    >
-      {/* header */}
-      <div style={{ background: C.teal, padding: "14px 18px 12px", flexShrink: 0 }}>
-        <div style={{ fontSize: 11, color: "rgba(255,255,255,0.7)", marginBottom: 10, fontWeight: 600, letterSpacing: "0.05em" }}>
-          LOCALOOP KOREA
+    <div style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", background: "#fff" }}>
+      {/* Top bar */}
+      <div style={{ background: C.dark, paddingTop: 48, paddingBottom: 20, paddingInline: 20, flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+          <span style={{ fontSize: 13, fontWeight: 800, color: "#fff" }}>
+            Localoop<span style={{ color: C.teal }}>Korea</span>
+          </span>
+          <span style={{ fontSize: 12, color: "rgba(255,255,255,0.45)" }}>
+            {stepIdx + 1} / {totalSteps}
+          </span>
         </div>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          {step > 0 ? (
-            <button
-              type="button"
-              onClick={() => setStep((s) => s - 1)}
-              style={{ background: "none", border: "none", color: "rgba(255,255,255,0.9)", fontSize: 13, cursor: "pointer", padding: 0 }}
-            >
-              ← {isKo ? "뒤로" : "Back"}
-            </button>
-          ) : <span />}
-          <span style={{ fontSize: 12, color: "#fff", fontWeight: 600 }}>{step + 1} / {totalSteps}</span>
+
+        <h1 style={{ fontSize: 20, fontWeight: 900, color: "#fff", marginBottom: 4 }}>
+          {t.hero}
+        </h1>
+        <p style={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}>
+          {t.heroSub}
+        </p>
+
+        {/* Progress bar */}
+        <div style={{ marginTop: 16, height: 4, borderRadius: 4, background: "rgba(255,255,255,0.1)" }}>
+          <div style={{ height: "100%", borderRadius: 4, background: C.teal, width: `${progress}%`, transition: "width 0.3s ease" }} />
+        </div>
+
+        {/* Step dots */}
+        <div style={{ display: "flex", gap: 6, marginTop: 10 }}>
+          {steps.map((_, i) => (
+            <div key={i} style={{
+              width: i === stepIdx ? 20 : 6, height: 6, borderRadius: 3,
+              background: i <= stepIdx ? C.teal : "rgba(255,255,255,0.15)",
+              transition: "all 0.3s",
+            }} />
+          ))}
+        </div>
+      </div>
+
+      {/* Step content */}
+      <div style={{ flex: 1, overflowY: "auto", padding: "28px 20px 0" }}>
+        {renderStep()}
+      </div>
+
+      {/* Bottom buttons */}
+      <div style={{
+        padding: "16px 20px",
+        paddingBottom: "calc(16px + env(safe-area-inset-bottom))",
+        borderTop: `1px solid ${C.border}`,
+        background: "#fff", display: "flex", gap: 10,
+      }}>
+        {stepIdx > 0 && (
           <button
-            type="button"
-            onClick={() => setStep((s) => s + 1)}
-            style={{ background: "none", border: "none", color: "rgba(255,255,255,0.65)", fontSize: 12, cursor: "pointer", padding: 0 }}
+            onClick={() => setStepIdx((i) => Math.max(0, i - 1))}
+            style={{
+              flex: 0, padding: "0 20px", height: 50, borderRadius: 14,
+              border: `1.5px solid ${C.border}`, background: "#fff", color: C.sub,
+              fontWeight: 600, fontSize: 14, cursor: "pointer",
+            }}
           >
-            {isKo ? "건너뛰기" : "Skip"}
+            {t.back}
           </button>
-        </div>
-        <div style={{ height: 3, background: "rgba(255,255,255,0.25)", borderRadius: 2, marginTop: 10 }}>
-          <div style={{ height: "100%", background: C.yellow, borderRadius: 2, width: `${progress}%`, transition: "width 0.3s ease" }} />
-        </div>
-      </div>
-
-      {/* body */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "22px 20px 8px" }}>
-        <h1 style={{ fontSize: 21, fontWeight: 700, color: C.text, marginBottom: 4 }}>{stepInfo?.title}</h1>
-        <p style={{ fontSize: 13, color: C.sub, marginBottom: 22, lineHeight: 1.5 }}>{stepInfo?.sub}</p>
-        {renderContent()}
-      </div>
-
-      {/* footer */}
-      <div style={{ padding: "14px 20px 36px", flexShrink: 0 }}>
+        )}
         <button
-          type="button"
-          onClick={() => setStep((s) => s + 1)}
+          onClick={handleNext}
+          disabled={saving}
           style={{
-            width: "100%",
-            padding: "14px",
-            borderRadius: 14,
-            background: C.teal,
-            color: "#fff",
-            fontWeight: 600,
-            fontSize: 15,
-            border: "none",
-            cursor: "pointer",
+            flex: 1, height: 50, borderRadius: 14, border: "none",
+            background: `linear-gradient(135deg, ${C.teal}, ${C.tealDark})`,
+            color: "#fff", fontWeight: 700, fontSize: 15,
+            cursor: saving ? "default" : "pointer", opacity: saving ? 0.7 : 1,
+            transition: "opacity 0.15s",
           }}
         >
-          {isLast ? (isKo ? "완료" : "Finish") : (isKo ? "다음" : "Next")}
+          {saving ? t.saving : isLast ? t.finish : t.next}
         </button>
       </div>
-    </main>
+
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+    </div>
+  );
+}
+
+export default function OnboardingPage() {
+  return (
+    <Suspense>
+      <OnboardingInner />
+    </Suspense>
   );
 }

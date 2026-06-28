@@ -1,58 +1,77 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+const PROTECTED = [
+  "/tasks", "/courses", "/community", "/chat", "/profile",
+  "/places", "/guides", "/food", "/meetups", "/settings", "/saved",
+];
+
+const ONBOARDING_GATED = ["/tasks", "/courses", "/community"];
+
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          );
-          supabaseResponse = NextResponse.next({ request });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          );
-        },
-      },
-    }
-  );
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const pathname = request.nextUrl.pathname;
-
-  const isAuthRoute = pathname.startsWith("/auth/") || pathname === "/login" || pathname === "/signup";
-  const isOnboarding = pathname.startsWith("/onboarding");
-  const isAppRoute = pathname.startsWith("/home") ||
-    pathname.startsWith("/places") ||
-    pathname.startsWith("/guides") ||
-    pathname.startsWith("/food") ||
-    pathname.startsWith("/meetups") ||
-    pathname.startsWith("/community") ||
-    pathname.startsWith("/profile") ||
-    pathname.startsWith("/settings") ||
-    pathname.startsWith("/saved");
-
-  if (!user && (isAppRoute || isOnboarding)) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
+  // Demo mode — skip auth
+  if (!url.startsWith("https://") || key.length < 20) {
+    return supabaseResponse;
   }
 
-  if (user && isAuthRoute) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/home";
-    return NextResponse.redirect(url);
+  const supabase = createServerClient(url, key, {
+    cookies: {
+      getAll() {
+        return request.cookies.getAll();
+      },
+      setAll(cookiesToSet) {
+        cookiesToSet.forEach(({ name, value }) =>
+          request.cookies.set(name, value)
+        );
+        supabaseResponse = NextResponse.next({ request });
+        cookiesToSet.forEach(({ name, value, options }) =>
+          supabaseResponse.cookies.set(name, value, options)
+        );
+      },
+    },
+  });
+
+  const { data: { user } } = await supabase.auth.getUser();
+  const pathname = request.nextUrl.pathname;
+
+  const isAuthPage = pathname === "/login" || pathname === "/signup";
+  const isProtected = PROTECTED.some((p) => pathname.startsWith(p));
+  const isOnboardingGated = ONBOARDING_GATED.some((p) => pathname.startsWith(p));
+
+  // Redirect unauthenticated users away from protected routes
+  if (!user && isProtected) {
+    const dest = request.nextUrl.clone();
+    dest.pathname = "/login";
+    dest.searchParams.set("next", pathname);
+    return NextResponse.redirect(dest);
+  }
+
+  // Redirect authenticated users away from auth pages
+  if (user && isAuthPage) {
+    const dest = request.nextUrl.clone();
+    dest.pathname = "/map";
+    return NextResponse.redirect(dest);
+  }
+
+  // Onboarding gate: redirect to onboarding if profile not complete
+  if (user && isOnboardingGated) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("onboarding_done")
+      .eq("id", user.id)
+      .single();
+
+    if (profile && !profile.onboarding_done) {
+      const dest = request.nextUrl.clone();
+      dest.pathname = "/onboarding";
+      dest.searchParams.set("next", pathname);
+      return NextResponse.redirect(dest);
+    }
   }
 
   return supabaseResponse;

@@ -1,7 +1,6 @@
 import { AppNav } from "@/components/layout/AppNav";
 
-// Auth + onboarding protection is handled by middleware.ts
-export default function AppLayout({ children }: { children: React.ReactNode }) {
+export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="app-container">
       <AppNav />

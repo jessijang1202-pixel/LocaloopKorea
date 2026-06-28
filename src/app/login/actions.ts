@@ -18,5 +18,7 @@ export async function loginAction(_prev: { error: string }, formData: FormData) 
     return { error: error.message };
   }
 
-  redirect("/home");
+  // Redirect to `next` param if provided, otherwise go to map
+  const next = formData.get("next") as string | null;
+  redirect(next && next.startsWith("/") ? next : "/map");
 }

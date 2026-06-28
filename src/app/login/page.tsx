@@ -31,9 +31,13 @@ const T = {
   },
 };
 
+import { useSearchParams } from "next/navigation";
+
 export default function LoginPage() {
   const [state, action, pending] = useActionState(loginAction, { error: "" });
   const [isKo, setIsKo] = useState(false);
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next") ?? "";
 
   useEffect(() => {
     setIsKo(navigator.language.startsWith("ko"));
@@ -71,6 +75,7 @@ export default function LoginPage() {
 
         {/* Email / password form */}
         <form action={action} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          {next && <input type="hidden" name="next" value={next} />}
           <input
             id="email"
             name="email"

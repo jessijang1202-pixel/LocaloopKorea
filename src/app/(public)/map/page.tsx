@@ -36,7 +36,6 @@ const T = {
     title: "장소 탐색",
     searchPh: "장소, 동네 검색...",
     chips: ["전체", "S등급", "A등급", "음식점", "카페", "시장"],
-    grade: "등급",
     english: "영어 OK",
     card: "카드 OK",
     solo: "혼자 OK",
@@ -45,7 +44,6 @@ const T = {
     title: "Place Discovery",
     searchPh: "Search places, neighborhoods...",
     chips: ["All", "S-rated", "A-rated", "Restaurant", "Café", "Market"],
-    grade: "-rated",
     english: "English OK",
     card: "Card OK",
     solo: "Solo OK",
@@ -105,16 +103,12 @@ export default function MapPage() {
               key={key}
               onClick={() => setChip(key)}
               style={{
-                flexShrink: 0,
-                padding: "5px 14px",
-                borderRadius: 20,
+                flexShrink: 0, padding: "5px 14px", borderRadius: 20,
                 border: active ? "none" : "1px solid #E0E8EA",
                 background: active ? "#15b6c1" : "#F5F9FA",
                 color: active ? "#fff" : "#4A6467",
-                fontSize: 12,
-                fontWeight: active ? 700 : 400,
-                cursor: "pointer",
-                whiteSpace: "nowrap",
+                fontSize: 12, fontWeight: active ? 700 : 400,
+                cursor: "pointer", whiteSpace: "nowrap",
               }}
             >
               {t.chips[i]}
@@ -147,16 +141,12 @@ export default function MapPage() {
               key={place.id}
               onClick={() => setSelectedPlace(place)}
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                padding: "10px 12px",
-                marginBottom: 8,
+                display: "flex", alignItems: "center", gap: 12,
+                padding: "10px 12px", marginBottom: 8,
                 background: isSelected ? "#EDF9F9" : "#fff",
                 borderRadius: 14,
                 border: isSelected ? "1.5px solid #15b6c1" : "1px solid #E0E8EA",
-                cursor: "pointer",
-                boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
+                cursor: "pointer", boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
               }}
             >
               <div style={{
