@@ -67,7 +67,7 @@ export async function updateSession(request: NextRequest) {
       .eq("id", user.id)
       .single();
 
-    if (profile && !profile.onboarding_done) {
+    if (!profile || !profile.onboarding_done) {
       const dest = request.nextUrl.clone();
       dest.pathname = "/onboarding";
       dest.searchParams.set("next", pathname);
