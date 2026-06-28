@@ -5,6 +5,7 @@ import { useLang, getLang } from "@/lib/lang";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { saveOnboarding } from "./actions";
+import { AppNav } from "@/components/layout/AppNav";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -468,35 +469,38 @@ function OnboardingInner() {
 
   if (done) {
     return (
-      <div style={{
-        minHeight: "100dvh", display: "flex", flexDirection: "column",
-        alignItems: "center", justifyContent: "center",
-        background: `linear-gradient(160deg, ${C.dark} 0%, #1a3a4a 100%)`,
-        padding: 24,
-      }}>
-        <div style={{
-          width: 72, height: 72, borderRadius: "50%",
-          background: C.teal, display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: 36, marginBottom: 24,
-          boxShadow: `0 0 0 12px rgba(21,182,193,0.2)`,
+      <div className="app-container">
+        <AppNav />
+        <div className="ll-content" style={{
+          display: "flex", flexDirection: "column",
+          alignItems: "center", justifyContent: "center",
+          background: `linear-gradient(160deg, ${C.dark} 0%, #1a3a4a 100%)`,
+          padding: 24,
         }}>
-          ✓
+          <div style={{
+            width: 72, height: 72, borderRadius: "50%",
+            background: C.teal, display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: 36, marginBottom: 24,
+            boxShadow: `0 0 0 12px rgba(21,182,193,0.2)`,
+          }}>
+            ✓
+          </div>
+          <h2 style={{ fontSize: 24, fontWeight: 900, color: "#fff", marginBottom: 8, textAlign: "center" }}>
+            {t.doneTitle}
+          </h2>
+          <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)", marginBottom: 40, textAlign: "center" }}>
+            {t.doneSub}
+          </p>
+          <button
+            onClick={() => { window.location.href = "/map"; }}
+            style={{
+              background: C.yellow, color: C.dark, border: "none", borderRadius: 16,
+              padding: "16px 48px", fontSize: 16, fontWeight: 800, cursor: "pointer",
+            }}
+          >
+            {t.doneBtn}
+          </button>
         </div>
-        <h2 style={{ fontSize: 24, fontWeight: 900, color: "#fff", marginBottom: 8, textAlign: "center" }}>
-          {t.doneTitle}
-        </h2>
-        <p style={{ fontSize: 14, color: "rgba(255,255,255,0.6)", marginBottom: 40, textAlign: "center" }}>
-          {t.doneSub}
-        </p>
-        <button
-          onClick={() => router.push(nextPath)}
-          style={{
-            background: C.yellow, color: C.dark, border: "none", borderRadius: 16,
-            padding: "16px 48px", fontSize: 16, fontWeight: 800, cursor: "pointer",
-          }}
-        >
-          {t.doneBtn}
-        </button>
       </div>
     );
   }
