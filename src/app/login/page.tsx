@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useActionState } from "react";
+import { useSearchParams } from "next/navigation";
 import { loginAction } from "./actions";
 import { SocialButtons } from "@/components/auth/SocialButtons";
 
@@ -31,9 +32,7 @@ const T = {
   },
 };
 
-import { useSearchParams } from "next/navigation";
-
-export default function LoginPage() {
+function LoginForm() {
   const [state, action, pending] = useActionState(loginAction, { error: "" });
   const [isKo, setIsKo] = useState(false);
   const searchParams = useSearchParams();
@@ -55,7 +54,6 @@ export default function LoginPage() {
       padding: "24px 20px",
     }}>
       <div className="auth-card">
-        {/* Logo */}
         <div style={{ textAlign: "center", marginBottom: 28 }}>
           <span style={{ fontSize: 20, fontWeight: 900, color: "#1A2B2C", letterSpacing: "-0.02em" }}>
             Localoop<span style={{ color: "#1EC8C8" }}>Korea</span>
@@ -63,44 +61,25 @@ export default function LoginPage() {
           <p style={{ fontSize: 14, color: "#4A6467", marginTop: 6 }}>{t.sub}</p>
         </div>
 
-        {/* Social buttons */}
         <SocialButtons />
 
-        {/* Divider */}
         <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "20px 0" }}>
           <div style={{ flex: 1, height: 1, background: "#E0E8EA" }} />
           <span style={{ fontSize: 12, color: "#4A6467", whiteSpace: "nowrap" }}>{t.divider}</span>
           <div style={{ flex: 1, height: 1, background: "#E0E8EA" }} />
         </div>
 
-        {/* Email / password form */}
         <form action={action} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {next && <input type="hidden" name="next" value={next} />}
           <input
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
+            id="email" name="email" type="email" autoComplete="email" required
             placeholder={t.emailPh}
-            style={{
-              height: 48, padding: "0 16px", borderRadius: 14,
-              border: "1.5px solid #E0E8EA", background: "#fff",
-              color: "#1A2B2C", fontSize: 15, outline: "none",
-            }}
+            style={{ height: 48, padding: "0 16px", borderRadius: 14, border: "1.5px solid #E0E8EA", background: "#fff", color: "#1A2B2C", fontSize: 15, outline: "none" }}
           />
           <input
-            id="password"
-            name="password"
-            type="password"
-            autoComplete="current-password"
-            required
+            id="password" name="password" type="password" autoComplete="current-password" required
             placeholder={t.pwPh}
-            style={{
-              height: 48, padding: "0 16px", borderRadius: 14,
-              border: "1.5px solid #E0E8EA", background: "#fff",
-              color: "#1A2B2C", fontSize: 15, outline: "none",
-            }}
+            style={{ height: 48, padding: "0 16px", borderRadius: 14, border: "1.5px solid #E0E8EA", background: "#fff", color: "#1A2B2C", fontSize: 15, outline: "none" }}
           />
 
           {state?.error && (
@@ -110,16 +89,8 @@ export default function LoginPage() {
           )}
 
           <button
-            type="submit"
-            disabled={pending}
-            style={{
-              height: 50, borderRadius: 14,
-              background: "linear-gradient(135deg,#1EC8C8,#17A0A0)",
-              color: "white", fontWeight: 700, fontSize: 15,
-              border: "none", cursor: "pointer",
-              opacity: pending ? 0.6 : 1,
-              transition: "opacity 0.15s",
-            }}
+            type="submit" disabled={pending}
+            style={{ height: 50, borderRadius: 14, background: "linear-gradient(135deg,#1EC8C8,#17A0A0)", color: "white", fontWeight: 700, fontSize: 15, border: "none", cursor: "pointer", opacity: pending ? 0.6 : 1, transition: "opacity 0.15s" }}
           >
             {pending ? t.btnPending : t.btn}
           </button>
@@ -127,17 +98,21 @@ export default function LoginPage() {
 
         <p style={{ textAlign: "center", fontSize: 13, color: "#4A6467", marginTop: 20 }}>
           {t.noAccount}{" "}
-          <Link href="/signup" style={{ color: "#1EC8C8", fontWeight: 600, textDecoration: "none" }}>
-            {t.signup}
-          </Link>
+          <Link href="/signup" style={{ color: "#1EC8C8", fontWeight: 600, textDecoration: "none" }}>{t.signup}</Link>
         </p>
 
         <div style={{ textAlign: "center", marginTop: 12 }}>
-          <Link href="/" style={{ fontSize: 12, color: "#94a3b8", textDecoration: "none" }}>
-            {t.back}
-          </Link>
+          <Link href="/" style={{ fontSize: 12, color: "#94a3b8", textDecoration: "none" }}>{t.back}</Link>
         </div>
       </div>
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   );
 }
