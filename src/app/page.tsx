@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { AppPreview } from "@/components/landing/AppPreview";
+import { isSupabaseConfigured } from "@/lib/supabase/is-configured";
 
 export const metadata = {
   title: "로컬루프 코리아 — 외국인을 위한 AI 한국 생활 내비게이션",
@@ -9,9 +9,10 @@ export const metadata = {
 };
 
 export default async function HomePage() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (user) redirect("/map");
-
-  return <AppPreview />;
+  if (isSupabaseConfigured()) {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) redirect("/map");
+  }
+  redirect("/intro");
 }

@@ -40,6 +40,7 @@ export async function updateSession(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   const isAuthPage = pathname === "/login" || pathname === "/signup";
+  const isIntroPage = pathname === "/intro" || pathname === "/";
   const isProtected = PROTECTED.some((p) => pathname.startsWith(p));
   const isOnboardingGated = ONBOARDING_GATED.some((p) => pathname.startsWith(p));
 
@@ -51,8 +52,8 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(dest);
   }
 
-  // Redirect authenticated users away from auth pages
-  if (user && isAuthPage) {
+  // Logged-in users skip intro/auth pages → go to map
+  if (user && (isAuthPage || isIntroPage)) {
     const dest = request.nextUrl.clone();
     dest.pathname = "/map";
     return NextResponse.redirect(dest);
