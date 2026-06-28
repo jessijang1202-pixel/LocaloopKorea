@@ -15,7 +15,7 @@ export function StepRegionSelect({ regions, value, onChange, onBack }: StepRegio
       </button>
       <h2 className="text-2xl font-bold text-[var(--foreground)] mb-2">Where are you based?</h2>
       <p className="text-sm text-[var(--muted-foreground)] mb-6">
-        We'll show you places and people near you
+        We&apos;ll show you places and people near you
       </p>
 
       <div className="flex flex-col gap-2 overflow-y-auto">

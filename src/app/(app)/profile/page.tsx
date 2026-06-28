@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/is-configured";
 import { useLang } from "@/lib/lang";
+import { LangToggleInline } from "@/components/LangToggle";
 
 const T = {
   ko: {
@@ -85,15 +86,11 @@ type ProfileData = {
 export default function ProfilePage() {
   const isKo = useLang();
   const [profile, setProfile] = useState<ProfileData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(isSupabaseConfigured);
   const [loggingOut, setLoggingOut] = useState(false);
 
   useEffect(() => {
-
-    if (!isSupabaseConfigured()) {
-      setLoading(false);
-      return;
-    }
+    if (!isSupabaseConfigured()) return;
 
     const supabase = createClient();
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -131,14 +128,17 @@ export default function ProfilePage() {
       <div style={{ background: "#0B1E2D", paddingTop: 44, paddingBottom: 20, flexShrink: 0 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px 16px" }}>
           <span style={{ fontSize: 17, fontWeight: 800, color: "#fff", letterSpacing: "-0.02em" }}>{t.title}</span>
-          <Link href="/profile/edit" style={{
-            background: "rgba(21,182,193,0.18)", border: "1.5px solid rgba(21,182,193,0.45)",
-            borderRadius: 10, padding: "6px 14px", color: "#fff", fontSize: 12, fontWeight: 700,
-            textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 5,
-            letterSpacing: "0.02em",
-          }}>
-            ✏️ {t.editProfile}
-          </Link>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <LangToggleInline />
+            <Link href="/profile/edit" style={{
+              background: "rgba(21,182,193,0.18)", border: "1.5px solid rgba(21,182,193,0.45)",
+              borderRadius: 10, padding: "6px 14px", color: "#fff", fontSize: 12, fontWeight: 700,
+              textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 5,
+              letterSpacing: "0.02em",
+            }}>
+              ✏️ {t.editProfile}
+            </Link>
+          </div>
         </div>
 
         {/* Avatar + name */}

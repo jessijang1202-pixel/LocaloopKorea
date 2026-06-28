@@ -116,10 +116,17 @@ export default function MapPage() {
 
       {/* Map */}
       <div style={{ height: 190, flexShrink: 0, position: "relative" }}>
-        <KakaoMap pins={pins} center={ITAEWON} zoom={5} onPinClick={(id) => {
-          const p = SEED_PLACES.find((x) => x.id === id);
-          if (p) setSelectedPlace(p);
-        }} />
+        <KakaoMap
+          key={isKo ? "ko" : "en"}
+          lang={isKo ? "ko" : "en"}
+          pins={pins}
+          center={ITAEWON}
+          zoom={5}
+          onPinClick={(id) => {
+            const p = SEED_PLACES.find((x) => x.id === id);
+            if (p) setSelectedPlace(p);
+          }}
+        />
       </div>
 
       {/* Place list */}

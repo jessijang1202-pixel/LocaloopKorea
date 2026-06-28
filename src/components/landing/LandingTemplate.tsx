@@ -31,11 +31,11 @@ function Nav({ d }: { d: LandingData }) {
   return (
     <header className="lp-nav">
       <div className="lp-nav-inner">
-        <a href="/" style={{ display:"flex", alignItems:"center", gap:10, textDecoration:"none" }}>
+        <Link href="/" style={{ display:"flex", alignItems:"center", gap:10, textDecoration:"none" }}>
           <span style={{ fontSize:17, fontWeight:900, color:TX, letterSpacing:"-0.02em" }}>
             Localoop<span style={{ color:P }}>Korea</span>
           </span>
-        </a>
+        </Link>
 
         <nav className="lp-nav-links">
           {d.nav.links.map(({ href, label }) => (

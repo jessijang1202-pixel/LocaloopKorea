@@ -30,7 +30,7 @@ export function JoinMeetupButton({ meetupId, isFull }: JoinMeetupButtonProps) {
   if (joined) {
     return (
       <div className="w-full h-12 rounded-2xl bg-green-100 border border-green-300 flex items-center justify-center text-green-700 font-semibold text-sm">
-        ✓ You're going!
+        ✓ You&apos;re going!
       </div>
     );
   }

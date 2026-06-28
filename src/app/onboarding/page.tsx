@@ -2,7 +2,6 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useLang, getLang } from "@/lib/lang";
-import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { saveOnboarding } from "./actions";
 import { AppNav } from "@/components/layout/AppNav";
@@ -137,9 +136,7 @@ const KO_STEPS: StepId[] = ["nickname", "region", "interests", "connect"];
 // ─── Main inner component ─────────────────────────────────────────────────────
 
 function OnboardingInner() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const nextPath = searchParams.get("next") ?? "/map";
+
 
   const isKo = useLang();
   const [ready, setReady] = useState(false);

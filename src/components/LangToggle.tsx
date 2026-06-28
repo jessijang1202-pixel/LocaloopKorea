@@ -30,7 +30,8 @@ const baseStyle: React.CSSProperties = {
 export function LangToggle() {
   const isKo = useLang();
   const pathname = usePathname();
-  if (pathname === "/intro") return null;
+  // These pages render lang toggle inline next to their own action button
+  if (pathname === "/intro" || pathname.startsWith("/profile")) return null;
   return (
     <button
       onClick={() => setLang(isKo ? "en" : "ko")}
