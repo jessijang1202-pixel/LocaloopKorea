@@ -242,6 +242,11 @@ export default function IntroPage() {
   const [isPC, setIsPC] = useState(false);
   const [pcDone, setPcDone] = useState(false);
   const [fading, setFading] = useState(false);
+  // PWA install
+  const [deferredPrompt, setDeferredPrompt] = useState<Event & { prompt: () => void; userChoice: Promise<{ outcome: string }> } | null>(null);
+  const [isIOS, setIsIOS] = useState(false);
+  const [isInstalled, setIsInstalled] = useState(false);
+  const [showIOSHint, setShowIOSHint] = useState(false);
   const router = useRouter();
   const touchX = useRef<number | null>(null);
   const touchY = useRef<number | null>(null);
@@ -253,13 +258,34 @@ export default function IntroPage() {
     const checkPC = () => setIsPC(window.innerWidth >= 900);
     checkPC();
     window.addEventListener("resize", checkPC);
+
+    // PWA detection
+    if (window.matchMedia("(display-mode: standalone)").matches) setIsInstalled(true);
+    const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as Window & { MSStream?: unknown }).MSStream;
+    setIsIOS(!!ios);
+    const onPrompt = (e: Event) => { e.preventDefault(); setDeferredPrompt(e as typeof deferredPrompt); };
+    window.addEventListener("beforeinstallprompt", onPrompt);
+
     const supabase = createClient();
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) { router.replace("/map"); return; }
       setReady(true);
     });
-    return () => window.removeEventListener("resize", checkPC);
+    return () => {
+      window.removeEventListener("resize", checkPC);
+      window.removeEventListener("beforeinstallprompt", onPrompt);
+    };
   }, [router]);
+
+  async function handleInstall() {
+    if (isIOS) { setShowIOSHint(true); return; }
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === "accepted") setDeferredPrompt(null);
+  }
+
+  const showInstallBtn = !isInstalled && !isPC && (!!deferredPrompt || isIOS);
 
   function goTo(idx: number) {
     if (fading || idx === slide) return;
@@ -354,16 +380,29 @@ export default function IntroPage() {
       }}
     >
       <div style={{ width: "100%", maxWidth: 520, display: "flex", flexDirection: "column", position: "relative" }}>
+
+        {/* Install button — top center */}
+        {showInstallBtn && (
+          <button
+            onClick={handleInstall}
+            style={{ position: "absolute", top: 14, left: "50%", transform: "translateX(-50%)", zIndex: 20, background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 20, color: "#fff", fontSize: 12, fontWeight: 500, padding: "6px 14px", cursor: "pointer", display: "flex", alignItems: "center", gap: 5, whiteSpace: "nowrap" }}
+          >
+            <span style={{ fontSize: 14 }}>📲</span>
+            {isKo ? "바탕화면에 저장" : "Add to Home Screen"}
+          </button>
+        )}
+
         {!isLast && (
-          <button onClick={() => router.push("/map")} style={{ position: "absolute", top: 52, right: 24, background: "rgba(255,255,255,0.1)", border: "none", borderRadius: 20, color: "rgba(255,255,255,0.55)", fontSize: 13, padding: "6px 14px", cursor: "pointer", zIndex: 10 }}>
+          <button onClick={() => router.push("/map")} style={{ position: "absolute", top: showInstallBtn ? 52 : 36, right: 24, background: "rgba(255,255,255,0.1)", border: "none", borderRadius: 20, color: "rgba(255,255,255,0.55)", fontSize: 13, padding: "6px 14px", cursor: "pointer", zIndex: 10 }}>
             {isKo ? "건너뛰기" : "Skip"}
           </button>
         )}
-        <div style={{ position: "absolute", top: 52, left: 24, zIndex: 10 }}>
+        <div style={{ position: "absolute", top: showInstallBtn ? 52 : 36, left: 24, zIndex: 10 }}>
           <span style={{ fontSize: 14, fontWeight: 900, color: "#fff" }}>Localoop<span style={{ color: ms.ac }}>Korea</span></span>
         </div>
+
         {/* Slide content */}
-        <div key={slide} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "80px 40px 0", textAlign: "center", opacity: fading ? 0 : 1, transform: fading ? "translateY(12px)" : "translateY(0)", transition: "opacity 0.16s, transform 0.16s" }}>
+        <div key={slide} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: `${showInstallBtn ? 88 : 72}px 40px 0`, textAlign: "center", opacity: fading ? 0 : 1, transform: fading ? "translateY(12px)" : "translateY(0)", transition: "opacity 0.16s, transform 0.16s" }}>
           <div style={{ fontSize: 76, lineHeight: 1, marginBottom: 28, filter: "drop-shadow(0 8px 24px rgba(0,0,0,0.3))" }}>{ms.icon}</div>
           <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", color: ms.ac === "#ffd600" ? "#0B1E2D" : "#0B7A82", background: ms.ac === "#ffd600" ? "#ffd600" : "#D4F4F6", padding: "4px 14px", borderRadius: 20, marginBottom: 20 }}>{ms.tag}</div>
           <h1 style={{ fontSize: 28, fontWeight: 800, lineHeight: 1.3, marginBottom: 18, letterSpacing: "-0.02em" }}>
@@ -390,6 +429,35 @@ export default function IntroPage() {
         </div>
       </div>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+
+      {/* iOS hint bottom sheet */}
+      {showIOSHint && (
+        <div
+          onClick={() => setShowIOSHint(false)}
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", zIndex: 200, display: "flex", flexDirection: "column", justifyContent: "flex-end" }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{ background: "#1A2B2C", borderRadius: "20px 20px 0 0", padding: "24px 24px calc(32px + env(safe-area-inset-bottom))" }}
+          >
+            <div style={{ width: 36, height: 4, borderRadius: 2, background: "rgba(255,255,255,0.2)", margin: "0 auto 18px" }} />
+            <p style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginBottom: 10 }}>
+              {isKo ? "홈 화면에 추가하는 방법" : "How to add to Home Screen"}
+            </p>
+            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 1.7, whiteSpace: "pre-line" }}>
+              {isKo
+                ? "1. Safari 하단의 공유 버튼 ↑ 을 탭하세요\n2. 스크롤 후 \"홈 화면에 추가\"를 탭하세요\n3. 오른쪽 상단 \"추가\"를 탭하면 완료!"
+                : "1. Tap the Share button ↑ at the bottom of Safari\n2. Scroll down and tap \"Add to Home Screen\"\n3. Tap \"Add\" in the top right — done!"}
+            </p>
+            <button
+              onClick={() => setShowIOSHint(false)}
+              style={{ marginTop: 20, width: "100%", padding: 13, borderRadius: 12, background: "#15b6c1", color: "#fff", fontSize: 14, fontWeight: 700, border: "none", cursor: "pointer" }}
+            >
+              {isKo ? "확인" : "Got it"}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
