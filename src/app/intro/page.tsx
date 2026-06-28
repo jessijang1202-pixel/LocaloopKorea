@@ -9,36 +9,36 @@ type Highlight = "place" | "task" | "course" | "people";
 
 // ─── Mobile slides ─────────────────────────────────────────────────────────────
 const MOB_KO = [
-  { icon: "🗺️", tag: "Localoop Korea", lines: ["어서와!", "한국에 온걸 환영해"], hi: 1, desc: "언어 장벽, 낯선 동네, 새로운 일상.\n이제 AI가 당신의 한국 생활을\n단계별로 안내해드려요.", bg: "#0B1E2D", ac: "#15b6c1" },
-  { icon: "📍", tag: "기능 01", lines: ["내 주변", "외국인 친화 장소 찾기"], hi: 1, desc: "지도에서 바로 확인하는 S~C 외국인 친화도 등급.\n영어 메뉴, 카드 결제 여부도 한눈에 볼 수 있어요.", bg: "#0a2233", ac: "#15b6c1" },
-  { icon: "📋", tag: "기능 02", lines: ["지금 뭘 해야 하는지", "AI가 알려줘"], hi: 1, desc: "도착 첫날부터 장기 정착까지.\n체류 단계에 맞게 \"지금 해야 할 일\"을\n자동으로 안내해드려요.", bg: "#0B1E2D", ac: "#ffd600" },
-  { icon: "🏃", tag: "기능 03", lines: ["현지인만 아는", "로컬 코스 추천"], hi: 1, desc: "관광지 말고 진짜 한국.\n내 언어 수준·취향에 맞는 반나절 로컬 코스를\nAI가 자동으로 짜드려요.", bg: "#0a2233", ac: "#15b6c1" },
-  { icon: "🤝", tag: "기능 04 · 05", lines: ["외국인·한국인", "진짜 친구 만들기"], hi: 1, desc: "언어 교환, 취미 모임, 동네 파티.\n실시간 번역 채팅으로\n언어 장벽 없이 자연스럽게 연결돼요.", bg: "#0B1E2D", ac: "#ffd600" },
+  { icon: "🗺️", img: "/onboarding_welcome.png", tag: "Localoop Korea", lines: ["어서와!", "한국에 온걸 환영해"], hi: 1, desc: "언어 장벽, 낯선 동네, 새로운 일상.\n이제 AI가 당신의 한국 생활을\n단계별로 안내해드려요.", bg: "#0B1E2D", ac: "#15b6c1" },
+  { icon: "📍", img: "/onboarding_places.png", tag: "기능 01", lines: ["내 주변", "외국인 친화 장소 찾기"], hi: 1, desc: "지도에서 바로 확인하는 S~C 외국인 친화도 등급.\n영어 메뉴, 카드 결제 여부도 한눈에 볼 수 있어요.", bg: "#0a2233", ac: "#15b6c1" },
+  { icon: "📋", img: "/onboarding_tasks.png", tag: "기능 02", lines: ["지금 뭘 해야 하는지", "AI가 알려줘"], hi: 1, desc: "도착 첫날부터 장기 정착까지.\n체류 단계에 맞게 \"지금 해야 할 일\"을\n자동으로 안내해드려요.", bg: "#0B1E2D", ac: "#ffd600" },
+  { icon: "🏃", img: "/onboarding_courses.png", tag: "기능 03", lines: ["현지인만 아는", "로컬 코스 추천"], hi: 1, desc: "관광지 말고 진짜 한국.\n내 언어 수준·취향에 맞는 반나절 로컬 코스를\nAI가 자동으로 짜드려요.", bg: "#0a2233", ac: "#15b6c1" },
+  { icon: "🤝", img: "/onboarding_connect.png", tag: "기능 04 · 05", lines: ["외국인·한국인", "진짜 친구 만들기"], hi: 1, desc: "언어 교환, 취미 모임, 동네 파티.\n실시간 번역 채팅으로\n언어 장벽 없이 자연스럽게 연결돼요.", bg: "#0B1E2D", ac: "#ffd600" },
 ];
 const MOB_EN = [
-  { icon: "🗺️", tag: "Localoop Korea", lines: ["Welcome to Korea!", "Your new life starts here"], hi: 0, desc: "New city. New language. New life.\nLet AI guide your Korea journey\nstep by step.", bg: "#0B1E2D", ac: "#15b6c1" },
-  { icon: "📍", tag: "Feature 01", lines: ["Find foreigner-friendly", "places near you"], hi: 1, desc: "See S~C friendliness ratings directly on the map.\nEnglish menu, card payment — all at a glance.", bg: "#0a2233", ac: "#15b6c1" },
-  { icon: "📋", tag: "Feature 02", lines: ["AI tells you exactly", "what to do right now"], hi: 1, desc: "From day one to long-term settlement.\nBased on your visa stage, we automatically\nguide you through your next steps.", bg: "#0B1E2D", ac: "#ffd600" },
-  { icon: "🏃", tag: "Feature 03", lines: ["Local courses only", "insiders know about"], hi: 1, desc: "Skip the tourist traps.\nAI builds a half-day local course matched\nto your language level and interests.", bg: "#0a2233", ac: "#15b6c1" },
-  { icon: "🤝", tag: "Features 04 · 05", lines: ["Make real friends —", "locals & expats alike"], hi: 1, desc: "Language exchange, hobby meetups, hangouts.\nReal-time chat translation breaks every barrier.", bg: "#0B1E2D", ac: "#ffd600" },
+  { icon: "🗺️", img: "/onboarding_welcome.png", tag: "Localoop Korea", lines: ["Welcome to Korea!", "Your new life starts here"], hi: 0, desc: "New city. New language. New life.\nLet AI guide your Korea journey\nstep by step.", bg: "#0B1E2D", ac: "#15b6c1" },
+  { icon: "📍", img: "/onboarding_places.png", tag: "Feature 01", lines: ["Find foreigner-friendly", "places near you"], hi: 1, desc: "See S~C friendliness ratings directly on the map.\nEnglish menu, card payment — all at a glance.", bg: "#0a2233", ac: "#15b6c1" },
+  { icon: "📋", img: "/onboarding_tasks.png", tag: "Feature 02", lines: ["AI tells you exactly", "what to do right now"], hi: 1, desc: "From day one to long-term settlement.\nBased on your visa stage, we automatically\nguide you through your next steps.", bg: "#0B1E2D", ac: "#ffd600" },
+  { icon: "🏃", img: "/onboarding_courses.png", tag: "Feature 03", lines: ["Local courses only", "insiders know about"], hi: 1, desc: "Skip the tourist traps.\nAI builds a half-day local course matched\nto your language level and interests.", bg: "#0a2233", ac: "#15b6c1" },
+  { icon: "🤝", img: "/onboarding_connect.png", tag: "Features 04 · 05", lines: ["Make real friends —", "locals & expats alike"], hi: 1, desc: "Language exchange, hobby meetups, hangouts.\nReal-time chat translation breaks every barrier.", bg: "#0B1E2D", ac: "#ffd600" },
 ];
 
 // ─── PC slides ─────────────────────────────────────────────────────────────────
-type PCSlide = { icon: string; tag: string; title: string[]; hi: number; desc: string; highlight: Highlight; cta?: string; next?: string; login?: string; };
+type PCSlide = { icon: string; img: string; tag: string; title: string[]; hi: number; desc: string; highlight: Highlight; cta?: string; next?: string; login?: string; };
 
 const PC_KO: PCSlide[] = [
-  { icon: "🗺️", tag: "Localoop Korea", title: ["Real Korea", "starts here"], hi: 0, desc: "언어 장벽, 낯선 동네, 새로운 일상.\nAI가 당신의 체류 목적과 언어 수준을 읽고\n지금 가장 필요한 것을 자동으로 안내합니다.\n\n오른쪽 지도에서 이태원 주변\n외국인 친화 장소를 미리 확인해보세요.", highlight: "place", cta: "시작하기", login: "이미 계정이 있어요" },
-  { icon: "📍", tag: "기능 01", title: ["외국인 친화 장소를", "S~C 등급으로 확인"], hi: 1, desc: "지도 위 모든 장소에 외국인 친화도 등급이 표시됩니다.\n\nS = 영어 응대, 카드 결제 OK, 외국인 환영\nC = 이용 어려울 수 있음\n\nAI가 웹 데이터를 자동 분석해 매일 업데이트합니다.", highlight: "place", next: "다음" },
-  { icon: "📋", tag: "기능 02 · 03", title: ["지금 해야 할 일을", "AI가 알려줘"], hi: 1, desc: "도착 첫날부터 장기 정착까지.\n외국인 등록증 신청, 은행 계좌 개설, 건강보험 가입 등\n체류 단계에 맞는 과제를 자동으로 안내합니다.\n\n오른쪽에서 진행 중인 과제 목록을 확인해보세요.", highlight: "task", next: "다음" },
-  { icon: "🏃", tag: "기능 04", title: ["현지인만 아는", "로컬 코스 추천"], hi: 1, desc: "관광지 말고 진짜 한국.\n한국인 방문 데이터를 분석해 외국인이 편하게\n이용할 수 있는 로컬 맛집·카페·문화 장소를\n코스로 자동 조합합니다.\n\n오른쪽에서 AI 추천 코스를 미리보세요.", highlight: "course", next: "다음" },
-  { icon: "🤝", tag: "기능 05 · 06", title: ["외국인·한국인", "진짜 연결"], hi: 1, desc: "언어 교환, 취미 모임, 동네 파방.\n관심사와 거주 지역 기반으로 교류 상대를 자동 추천하고\n실시간 번역 채팅으로 언어 장벽 없이 소통합니다.\n\n오른쪽에서 주변 연결 추천을 확인해보세요.", highlight: "people", cta: "무료로 시작하기", login: "이미 계정이 있어요" },
+  { icon: "🗺️", img: "/onboarding_welcome.png", tag: "Localoop Korea", title: ["Real Korea", "starts here"], hi: 0, desc: "언어 장벽, 낯선 동네, 새로운 일상.\nAI가 당신의 체류 목적과 언어 수준을 읽고\n지금 가장 필요한 것을 자동으로 안내합니다.\n\n오른쪽 지도에서 이태원 주변\n외국인 친화 장소를 미리 확인해보세요.", highlight: "place", cta: "시작하기", login: "이미 계정이 있어요" },
+  { icon: "📍", img: "/onboarding_places.png", tag: "기능 01", title: ["외국인 친화 장소를", "S~C 등급으로 확인"], hi: 1, desc: "지도 위 모든 장소에 외국인 친화도 등급이 표시됩니다.\n\nS = 영어 응대, 카드 결제 OK, 외국인 환영\nC = 이용 어려울 수 있음\n\nAI가 웹 데이터를 자동 분석해 매일 업데이트합니다.", highlight: "place", next: "다음" },
+  { icon: "📋", img: "/onboarding_tasks.png", tag: "기능 02 · 03", title: ["지금 해야 할 일을", "AI가 알려줘"], hi: 1, desc: "도착 첫날부터 장기 정착까지.\n외국인 등록증 신청, 은행 계좌 개설, 건강보험 가입 등\n체류 단계에 맞는 과제를 자동으로 안내합니다.\n\n오른쪽에서 진행 중인 과제 목록을 확인해보세요.", highlight: "task", next: "다음" },
+  { icon: "🏃", img: "/onboarding_courses.png", tag: "기능 04", title: ["현지인만 아는", "로컬 코스 추천"], hi: 1, desc: "관광지 말고 진짜 한국.\n한국인 방문 데이터를 분석해 외국인이 편하게\n이용할 수 있는 로컬 맛집·카페·문화 장소를\n코스로 자동 조합합니다.\n\n오른쪽에서 AI 추천 코스를 미리보세요.", highlight: "course", next: "다음" },
+  { icon: "🤝", img: "/onboarding_connect.png", tag: "기능 05 · 06", title: ["외국인·한국인", "진짜 연결"], hi: 1, desc: "언어 교환, 취미 모임, 동네 파방.\n관심사와 거주 지역 기반으로 교류 상대를 자동 추천하고\n실시간 번역 채팅으로 언어 장벽 없이 소통합니다.\n\n오른쪽에서 주변 연결 추천을 확인해보세요.", highlight: "people", cta: "무료로 시작하기", login: "이미 계정이 있어요" },
 ];
 const PC_EN: PCSlide[] = [
-  { icon: "🗺️", tag: "Localoop Korea", title: ["Real Korea", "starts here"], hi: 0, desc: "New city. New language. New life.\nAI reads your stay purpose and language level\nto guide you through what you need most.\n\nPreview foreigner-friendly spots near Itaewon\non the map to your right.", highlight: "place", cta: "Get started", login: "I already have an account" },
-  { icon: "📍", tag: "Feature 01", title: ["Find foreigner-friendly", "places — S~C rated"], hi: 1, desc: "Every place on the map shows a friendliness rating.\n\nS = English OK, card payment, foreigner-welcome\nC = May be difficult to use\n\nAI auto-analyzes web data and updates daily.", highlight: "place", next: "Next" },
-  { icon: "📋", tag: "Feature 02 · 03", title: ["AI tells you exactly", "what to do right now"], hi: 1, desc: "From day one to long-term settlement.\nForeigner registration, bank account setup,\nhealth insurance — all guided automatically\nbased on your visa stage.\n\nPreview your task list on the right.", highlight: "task", next: "Next" },
-  { icon: "🏃", tag: "Feature 04", title: ["Local courses only", "insiders know about"], hi: 1, desc: "Skip the tourist traps.\nAI analyzes where locals actually go and auto-builds\nhalf-day courses with foreigner-friendly spots.\n\nPreview an AI course on the right.", highlight: "course", next: "Next" },
-  { icon: "🤝", tag: "Features 05 · 06", title: ["Connect with locals", "and expats alike"], hi: 1, desc: "Language exchange, hobby meetups, neighborhood hangouts.\nAI auto-matches you based on interests and location.\nReal-time chat translation breaks every barrier.\n\nPreview nearby connections on the right.", highlight: "people", cta: "Start for free", login: "I already have an account" },
+  { icon: "🗺️", img: "/onboarding_welcome.png", tag: "Localoop Korea", title: ["Real Korea", "starts here"], hi: 0, desc: "New city. New language. New life.\nAI reads your stay purpose and language level\nto guide you through what you need most.\n\nPreview foreigner-friendly spots near Itaewon\non the map to your right.", highlight: "place", cta: "Get started", login: "I already have an account" },
+  { icon: "📍", img: "/onboarding_places.png", tag: "Feature 01", title: ["Find foreigner-friendly", "places — S~C rated"], hi: 1, desc: "Every place on the map shows a friendliness rating.\n\nS = English OK, card payment, foreigner-welcome\nC = May be difficult to use\n\nAI auto-analyzes web data and updates daily.", highlight: "place", next: "Next" },
+  { icon: "📋", img: "/onboarding_tasks.png", tag: "Feature 02 · 03", title: ["AI tells you exactly", "what to do right now"], hi: 1, desc: "From day one to long-term settlement.\nForeigner registration, bank account setup,\nhealth insurance — all guided automatically\nbased on your visa stage.\n\nPreview your task list on the right.", highlight: "task", next: "Next" },
+  { icon: "🏃", img: "/onboarding_courses.png", tag: "Feature 04", title: ["Local courses only", "insiders know about"], hi: 1, desc: "Skip the tourist traps.\nAI analyzes where locals actually go and auto-builds\nhalf-day courses with foreigner-friendly spots.\n\nPreview an AI course on the right.", highlight: "course", next: "Next" },
+  { icon: "🤝", img: "/onboarding_connect.png", tag: "Features 05 · 06", title: ["Connect with locals", "and expats alike"], hi: 1, desc: "Language exchange, hobby meetups, neighborhood hangouts.\nAI auto-matches you based on interests and location.\nReal-time chat translation breaks every barrier.\n\nPreview nearby connections on the right.", highlight: "people", cta: "Start for free", login: "I already have an account" },
 ];
 
 // ─── Map preview (right panel) ─────────────────────────────────────────────────
@@ -191,15 +191,25 @@ function PcDonePanel({ isKo, onGo }: { isKo: boolean; onGo: () => void }) {
 
 // ─── PC Slide panel ────────────────────────────────────────────────────────────
 
-function PcSlidePanel({ s, idx, total, isKo, fading, onDot, onNext, onLogin }: {
-  s: PCSlide; idx: number; total: number; isKo: boolean; fading: boolean;
+function PcSlidePanel({ s, idx, total, fading, onDot, onNext, onLogin }: {
+  s: PCSlide; idx: number; total: number; fading: boolean;
   onDot: (i: number) => void; onNext: () => void; onLogin: () => void;
 }) {
   const isLast = idx === total - 1;
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", padding: "24px 22px 20px" }}>
       <div style={{ flex: 1, opacity: fading ? 0 : 1, transform: fading ? "translateY(8px)" : "translateY(0)", transition: "opacity 0.15s, transform 0.15s" }}>
-        <div style={{ fontSize: 42, lineHeight: 1, marginBottom: 14 }}>{s.icon}</div>
+        <div style={{ height: 110, width: "100%", position: "relative", marginBottom: 14, display: "flex", alignItems: "center", justifyContent: "center", background: "#0B1E2D", borderRadius: 8, overflow: "hidden" }}>
+          <img
+            src={s.img}
+            alt={s.tag}
+            style={{
+              height: "90%",
+              width: "auto",
+              objectFit: "contain",
+            }}
+          />
+        </div>
         <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.07em", color: "#0B7A82", background: "#D4F4F6", padding: "3px 10px", borderRadius: 12, display: "inline-block", marginBottom: 12 }}>{s.tag}</div>
         <h2 style={{ fontSize: 18, fontWeight: 800, lineHeight: 1.35, marginBottom: 12, letterSpacing: "-0.02em" }}>
           {s.title.map((line, i) => (
@@ -255,13 +265,15 @@ export default function IntroPage() {
 
   useEffect(() => {
     const checkPC = () => setIsPC(window.innerWidth >= 900);
-    checkPC();
     window.addEventListener("resize", checkPC);
 
-    // PWA detection
-    if (window.matchMedia("(display-mode: standalone)").matches) setIsInstalled(true);
-    const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as Window & { MSStream?: unknown }).MSStream;
-    setIsIOS(!!ios);
+    setTimeout(() => {
+      setIsPC(window.innerWidth >= 900);
+      if (window.matchMedia("(display-mode: standalone)").matches) setIsInstalled(true);
+      const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as Window & { MSStream?: unknown }).MSStream;
+      setIsIOS(!!ios);
+    }, 0);
+
     const onPrompt = (e: Event) => { e.preventDefault(); setDeferredPrompt(e as typeof deferredPrompt); };
     window.addEventListener("beforeinstallprompt", onPrompt);
 
@@ -337,7 +349,7 @@ export default function IntroPage() {
           <div style={{ width: 300, flexShrink: 0, borderRight: "1px solid #E0E8EA", display: "flex", flexDirection: "column", background: "#fff" }}>
             {pcDone
               ? <PcDonePanel isKo={isKo} onGo={() => router.push("/map")} />
-              : <PcSlidePanel s={s} idx={slide} total={pcSlides.length} isKo={isKo} fading={fading} onDot={goTo} onNext={handleNext} onLogin={() => router.push("/login")} />
+              : <PcSlidePanel s={s} idx={slide} total={pcSlides.length} fading={fading} onDot={goTo} onNext={handleNext} onLogin={() => router.push("/login")} />
             }
           </div>
           {/* Right: map */}
@@ -402,7 +414,18 @@ export default function IntroPage() {
 
         {/* Slide content */}
         <div key={slide} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: `${showInstallBtn ? 88 : 72}px 40px 0`, textAlign: "center", opacity: fading ? 0 : 1, transform: fading ? "translateY(12px)" : "translateY(0)", transition: "opacity 0.16s, transform 0.16s" }}>
-          <div style={{ fontSize: 76, lineHeight: 1, marginBottom: 28, filter: "drop-shadow(0 8px 24px rgba(0,0,0,0.3))" }}>{ms.icon}</div>
+          <div style={{ width: "100%", height: 180, position: "relative", marginBottom: 24, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <img
+              src={ms.img}
+              alt={ms.tag}
+              style={{
+                maxWidth: "100%",
+                maxHeight: "100%",
+                objectFit: "contain",
+                filter: "drop-shadow(0 10px 20px rgba(0,0,0,0.35))",
+              }}
+            />
+          </div>
           <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", color: ms.ac === "#ffd600" ? "#0B1E2D" : "#0B7A82", background: ms.ac === "#ffd600" ? "#ffd600" : "#D4F4F6", padding: "4px 14px", borderRadius: 20, marginBottom: 20 }}>{ms.tag}</div>
           <h1 style={{ fontSize: 28, fontWeight: 800, lineHeight: 1.3, marginBottom: 18, letterSpacing: "-0.02em" }}>
             {ms.lines.map((line, i) => (
