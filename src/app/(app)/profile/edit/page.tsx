@@ -2,153 +2,158 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { TopBar } from "@/components/layout/TopBar";
-import { PageWrapper } from "@/components/layout/PageWrapper";
 import { createClient } from "@/lib/supabase/client";
-import { SEED_REGIONS } from "@/data/seed";
-import { LANGUAGES } from "@/lib/constants";
+
+const C = { teal: "#15b6c1", dark: "#0B1E2D", text: "#1a2b2c", sub: "#4a6467", border: "#e0e8ea", bg: "#f8fcfc" };
+
+const T = {
+  ko: {
+    title: "프로필 편집",
+    back: "마이페이지",
+    name: "이름 / 닉네임",
+    namePh: "앱에서 표시될 이름",
+    bio: "한 줄 소개",
+    bioPh: "자신을 간단히 소개해보세요 (최대 100자)",
+    nationality: "국적",
+    nationalityPh: "예: 미국, 일본, 영국",
+    save: "저장하기",
+    saving: "저장 중…",
+    saved: "저장됐어요!",
+    nameRequired: "이름을 입력해주세요",
+  },
+  en: {
+    title: "Edit Profile",
+    back: "My Page",
+    name: "Name / Nickname",
+    namePh: "How you appear in the app",
+    bio: "Bio",
+    bioPh: "A short intro about yourself (max 100 chars)",
+    nationality: "Nationality",
+    nationalityPh: "e.g. American, Japanese, British",
+    save: "Save changes",
+    saving: "Saving…",
+    saved: "Saved!",
+    nameRequired: "Please enter your name",
+  },
+};
 
 export default function EditProfilePage() {
   const router = useRouter();
+  const [isKo, setIsKo] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
-  const [form, setForm] = useState({
-    display_name: "",
-    bio: "",
-    nationality: "",
-    region_id: "",
-    language_goal: "",
-    languages: [] as string[],
-  });
+  const [form, setForm] = useState({ display_name: "", bio: "", nationality: "" });
 
   useEffect(() => {
+    setIsKo(navigator.language.startsWith("ko"));
     const supabase = createClient();
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) return;
       supabase
         .from("profiles")
-        .select("display_name, bio, nationality, region_id, language_goal, languages")
+        .select("display_name, bio, nationality")
         .eq("id", user.id)
         .single()
         .then(({ data }) => {
-          if (data) {
-            setForm({
-              display_name: data.display_name ?? "",
-              bio: data.bio ?? "",
-              nationality: data.nationality ?? "",
-              region_id: data.region_id ?? "",
-              language_goal: data.language_goal ?? "",
-              languages: data.languages ?? [],
-            });
-          }
+          if (data) setForm({ display_name: data.display_name ?? "", bio: data.bio ?? "", nationality: data.nationality ?? "" });
         });
     });
   }, []);
 
+  const t = isKo ? T.ko : T.en;
+
   async function handleSave() {
+    if (!form.display_name.trim()) { setError(t.nameRequired); return; }
     setSaving(true);
     setError("");
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
-
-    const { error: updateError } = await supabase
+    const { error: err } = await supabase
       .from("profiles")
-      .update({
-        display_name: form.display_name,
-        bio: form.bio || null,
-        nationality: form.nationality || null,
-        region_id: form.region_id || null,
-        language_goal: form.language_goal || null,
-        languages: form.languages,
-        updated_at: new Date().toISOString(),
-      })
+      .update({ display_name: form.display_name.trim(), bio: form.bio || null, nationality: form.nationality || null, updated_at: new Date().toISOString() })
       .eq("id", user.id);
-
-    if (updateError) {
-      setError(updateError.message);
-    } else {
-      router.push("/profile");
-    }
     setSaving(false);
+    if (err) { setError(err.message); return; }
+    setSaved(true);
+    setTimeout(() => { setSaved(false); router.push("/profile"); }, 900);
   }
 
-  const inputClass = "h-12 px-4 rounded-xl border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] text-base outline-none focus:border-[var(--primary)] transition-colors placeholder:text-[var(--muted-foreground)] w-full";
+  const sLabel: React.CSSProperties = { fontSize: 12, fontWeight: 700, color: C.sub, marginBottom: 6 };
+  const sInput: React.CSSProperties = { width: "100%", padding: "13px 16px", borderRadius: 14, border: `1.5px solid ${C.border}`, background: "#fff", fontSize: 15, color: C.text, outline: "none", boxSizing: "border-box" };
 
   return (
-    <PageWrapper>
-      <TopBar title="Edit Profile" showBack backHref="/profile" />
-
-      <div className="flex flex-col gap-5 px-4 pt-4 pb-8">
-        <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-[var(--foreground)]">Display name</label>
-          <input
-            type="text"
-            value={form.display_name}
-            onChange={(e) => setForm({ ...form, display_name: e.target.value })}
-            className={inputClass}
-          />
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100%" }}>
+      {/* Header */}
+      <div style={{ background: C.dark, paddingTop: 44, paddingBottom: 16, flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "0 16px" }}>
+          <button onClick={() => router.push("/profile")} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.55)", fontSize: 13, cursor: "pointer", padding: 0 }}>
+            ← {t.back}
+          </button>
         </div>
-
-        <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-[var(--foreground)]">Bio</label>
-          <textarea
-            value={form.bio}
-            onChange={(e) => setForm({ ...form, bio: e.target.value })}
-            rows={3}
-            maxLength={200}
-            className="px-4 py-3 rounded-xl border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] text-base outline-none focus:border-[var(--primary)] transition-colors placeholder:text-[var(--muted-foreground)] resize-none leading-relaxed"
-          />
+        <div style={{ padding: "12px 16px 0" }}>
+          <h1 style={{ fontSize: 20, fontWeight: 800, color: "#fff", letterSpacing: "-0.02em" }}>{t.title}</h1>
         </div>
+      </div>
 
-        <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-[var(--foreground)]">Nationality</label>
-          <input
-            type="text"
-            value={form.nationality}
-            onChange={(e) => setForm({ ...form, nationality: e.target.value })}
-            placeholder="e.g. American"
-            className={inputClass}
-          />
+      {/* Form */}
+      <div style={{ flex: 1, overflowY: "auto", background: C.bg, padding: "20px 16px 100px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+          {/* Name */}
+          <div>
+            <p style={sLabel}>{t.name}</p>
+            <input
+              type="text"
+              value={form.display_name}
+              onChange={(e) => setForm({ ...form, display_name: e.target.value })}
+              placeholder={t.namePh}
+              style={sInput}
+            />
+          </div>
+
+          {/* Bio */}
+          <div>
+            <p style={sLabel}>{t.bio}</p>
+            <textarea
+              value={form.bio}
+              onChange={(e) => setForm({ ...form, bio: e.target.value })}
+              placeholder={t.bioPh}
+              maxLength={100}
+              rows={3}
+              style={{ ...sInput, height: "auto", resize: "none", lineHeight: 1.6, padding: "13px 16px" }}
+            />
+            <p style={{ fontSize: 11, color: C.sub, textAlign: "right", marginTop: 4 }}>{form.bio.length}/100</p>
+          </div>
+
+          {/* Nationality */}
+          <div>
+            <p style={sLabel}>{t.nationality}</p>
+            <input
+              type="text"
+              value={form.nationality}
+              onChange={(e) => setForm({ ...form, nationality: e.target.value })}
+              placeholder={t.nationalityPh}
+              style={sInput}
+            />
+          </div>
+
+          {error && (
+            <p style={{ fontSize: 13, color: "#ef4444", background: "#fff1f2", borderRadius: 12, padding: "12px 16px" }}>{error}</p>
+          )}
         </div>
+      </div>
 
-        <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-[var(--foreground)]">Region</label>
-          <select
-            value={form.region_id}
-            onChange={(e) => setForm({ ...form, region_id: e.target.value })}
-            className={inputClass}
-          >
-            <option value="">Select region</option>
-            {SEED_REGIONS.map((r) => (
-              <option key={r.id} value={r.id}>{r.name_en} — {r.city}</option>
-            ))}
-          </select>
-        </div>
-
-        <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-[var(--foreground)]">Language goal</label>
-          <input
-            type="text"
-            value={form.language_goal}
-            onChange={(e) => setForm({ ...form, language_goal: e.target.value })}
-            placeholder="e.g. Learning Korean for daily conversations"
-            className={inputClass}
-          />
-        </div>
-
-        {error && (
-          <p className="text-sm text-red-500 bg-red-50 rounded-xl px-4 py-3">{error}</p>
-        )}
-
+      {/* Save button — fixed bottom */}
+      <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "#fff", borderTop: `1px solid ${C.border}`, padding: "14px 16px", paddingBottom: "calc(14px + env(safe-area-inset-bottom))", zIndex: 50 }}>
         <button
           onClick={handleSave}
-          disabled={saving || !form.display_name.trim()}
-          className="h-12 rounded-2xl bg-[var(--primary)] text-white font-semibold text-base disabled:opacity-60 transition-opacity hover:opacity-90"
+          disabled={saving || saved}
+          style={{ width: "100%", height: 50, borderRadius: 14, background: saved ? "#1D9E75" : `linear-gradient(135deg, ${C.teal}, #0b7a82)`, color: "#fff", fontWeight: 700, fontSize: 15, border: "none", cursor: saving || saved ? "default" : "pointer", opacity: saving ? 0.7 : 1, transition: "background 0.2s" }}
         >
-          {saving ? "Saving…" : "Save changes"}
+          {saved ? "✓ " + t.saved : saving ? t.saving : t.save}
         </button>
       </div>
-    </PageWrapper>
+    </div>
   );
 }

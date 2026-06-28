@@ -20,6 +20,7 @@ const T = {
     joined: "참여한 모임",
     settings: "설정",
     editProfile: "프로필 편집",
+    aboutMe: "나를 알려주세요",
     language: "언어 설정",
     notifications: "알림 설정",
     logout: "로그아웃",
@@ -42,6 +43,7 @@ const T = {
     joined: "Meetups Joined",
     settings: "Settings",
     editProfile: "Edit Profile",
+    aboutMe: "About Me",
     language: "Language",
     notifications: "Notifications",
     logout: "Log out",
@@ -67,6 +69,7 @@ const ACTIVITY_ROWS = [
 
 const SETTING_ROWS = [
   { icon: "✏️", key: "editProfile", href: "/profile/edit" },
+  { icon: "🙋", key: "aboutMe", href: "/profile/me" },
   { icon: "🌐", key: "language", href: "#" },
   { icon: "🔔", key: "notifications", href: "#" },
 ] as const;
