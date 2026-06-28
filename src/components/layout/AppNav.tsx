@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useLang } from "@/lib/lang";
+import { useLang, setLang } from "@/lib/lang";
 
 type Tab = { href: string; icon: string; labelKo: string; labelEn: string };
 
@@ -33,7 +33,7 @@ export function AppNav() {
           <div style={{ fontSize: 10, color: "#8BB8C0", marginTop: 2 }}>Real Korea starts here</div>
         </div>
 
-        <nav style={{ flex: 1, paddingTop: 8 }}>
+        <nav style={{ flex: 1, paddingTop: 8, display: "flex", flexDirection: "column" }}>
           {TABS.map((tab) => {
             const active = isActive(tab.href);
             return (
@@ -58,6 +58,16 @@ export function AppNav() {
               </Link>
             );
           })}
+          {/* Lang toggle — sidebar bottom (PC only) */}
+          <div style={{ marginTop: "auto", padding: "16px 20px", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+            <button
+              onClick={() => setLang(isKo ? "en" : "ko")}
+              style={{ display: "flex", alignItems: "center", gap: 8, background: "rgba(21,182,193,0.12)", border: "1.5px solid rgba(21,182,193,0.35)", borderRadius: 10, padding: "9px 14px", color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer", width: "100%", letterSpacing: "0.02em" }}
+            >
+              <span style={{ fontSize: 14 }}>🌐</span>
+              <span>{isKo ? "Switch to English" : "한국어로 변경"}</span>
+            </button>
+          </div>
         </nav>
       </aside>
 
