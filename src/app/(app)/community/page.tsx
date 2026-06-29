@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useLang } from "@/lib/lang";
+import { useTheme } from "@/lib/theme";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/is-configured";
 
@@ -27,6 +28,7 @@ type SupabaseProfile = { id: string; display_name: string | null; user_type: str
 
 export default function CommunityPage() {
   const isKo = useLang();
+  const isDark = useTheme() === "dark";
   const [tab, setTab] = useState<"meetup" | "people">("meetup");
   const [joined, setJoined] = useState<Record<string, boolean>>({});
   const [profiles, setProfiles] = useState<SupabaseProfile[]>([]);
@@ -88,9 +90,9 @@ export default function CommunityPage() {
   );
 
   const tabBar = (
-    <div style={{ background: "#0B1E2D", display: "flex", flexShrink: 0 }}>
+    <div style={{ background: isDark ? "#0B1E2D" : "var(--card)", display: "flex", flexShrink: 0, borderBottom: isDark ? "none" : "1px solid var(--border)" }}>
       {(["meetup", "people"] as const).map((key) => (
-        <button key={key} onClick={() => switchTab(key)} style={{ flex: 1, padding: "11px 0", background: "none", border: "none", borderBottom: tab === key ? "2px solid #15b6c1" : "2px solid transparent", color: tab === key ? "#15b6c1" : "rgba(255,255,255,0.35)", fontWeight: tab === key ? 700 : 400, fontSize: 13, cursor: "pointer" }}>
+        <button key={key} onClick={() => switchTab(key)} style={{ flex: 1, padding: "11px 0", background: "none", border: "none", borderBottom: tab === key ? "2px solid #15b6c1" : "2px solid transparent", color: tab === key ? "#15b6c1" : isDark ? "rgba(255,255,255,0.35)" : "var(--muted-foreground)", fontWeight: tab === key ? 700 : 400, fontSize: 13, cursor: "pointer" }}>
           {key === "meetup" ? t.meetup : t.people}
         </button>
       ))}

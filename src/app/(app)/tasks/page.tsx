@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useLang } from "@/lib/lang";
+import { useTheme } from "@/lib/theme";
 
 const STAGES = {
   en: ["Arrival", "Early Life", "Settlement", "Community", "Long-term"],
@@ -49,6 +50,7 @@ const T = {
 
 export default function TasksPage() {
   const isKo = useLang();
+  const isDark = useTheme() === "dark";
   const [checked, setChecked] = useState<Record<string, boolean>>({ t1: true, t2: true });
   const [selectedId, setSelectedId] = useState("t3");
   const [search, setSearch] = useState("");
@@ -71,12 +73,12 @@ export default function TasksPage() {
   }
 
   const stageBar = (
-    <div style={{ background: "#0B1E2D", paddingTop: 12, paddingBottom: 16, paddingInline: 16, flexShrink: 0 }}>
+    <div style={{ background: isDark ? "#0B1E2D" : "var(--card)", paddingTop: 12, paddingBottom: 16, paddingInline: 16, flexShrink: 0, borderBottom: isDark ? "none" : "1px solid var(--border)" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-        <span style={{ fontSize: 11, color: "#8BB8C0" }}>
-          {t.currentStage}: <span style={{ color: "#FFD600", fontWeight: 700 }}>{stages[CURRENT_STAGE]}</span>
+        <span style={{ fontSize: 11, color: isDark ? "#8BB8C0" : "var(--muted-foreground)" }}>
+          {t.currentStage}: <span style={{ color: "#15b6c1", fontWeight: 700 }}>{stages[CURRENT_STAGE]}</span>
         </span>
-        <span style={{ fontSize: 11, color: "#8BB8C0" }}>
+        <span style={{ fontSize: 11, color: isDark ? "#8BB8C0" : "var(--muted-foreground)" }}>
           {t.doneCount(doneCount)} / {t.remaining(total - doneCount)}
         </span>
       </div>
@@ -86,8 +88,8 @@ export default function TasksPage() {
           const isCurrent = i === CURRENT_STAGE;
           return (
             <div key={stage} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
-              <div style={{ height: 4, borderRadius: 4, width: "100%", background: isDone ? "#15b6c1" : isCurrent ? "rgba(21,182,193,0.4)" : "rgba(255,255,255,0.1)" }} />
-              <span style={{ fontSize: 9, color: isDone ? "#15b6c1" : isCurrent ? "#FFD600" : "rgba(255,255,255,0.3)", fontWeight: isCurrent ? 700 : 400, textAlign: "center", lineHeight: 1.2 }}>
+              <div style={{ height: 4, borderRadius: 4, width: "100%", background: isDone ? "#15b6c1" : isCurrent ? "rgba(21,182,193,0.4)" : isDark ? "rgba(255,255,255,0.1)" : "var(--border)" }} />
+              <span style={{ fontSize: 9, color: isDone ? "#15b6c1" : isCurrent ? "#15b6c1" : isDark ? "rgba(255,255,255,0.3)" : "var(--muted-foreground)", fontWeight: isCurrent ? 700 : 400, textAlign: "center", lineHeight: 1.2 }}>
                 {stage}
               </span>
             </div>

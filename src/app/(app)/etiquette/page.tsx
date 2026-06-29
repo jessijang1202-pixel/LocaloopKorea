@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useLang } from "@/lib/lang";
+import { useTheme } from "@/lib/theme";
 
 function Section({ title, emoji, children }: { title: string; emoji: string; children: React.ReactNode }) {
   return (
@@ -15,13 +16,17 @@ function Section({ title, emoji, children }: { title: string; emoji: string; chi
   );
 }
 
-function Card({ children, accent = false }: { children: React.ReactNode; accent?: boolean }) {
+function Card({ children, accent = false, isDark = false }: { children: React.ReactNode; accent?: boolean; isDark?: boolean }) {
   return (
     <div style={{
-      background: accent ? "linear-gradient(135deg, #0B1E2D 0%, #0a3044 100%)" : "var(--card)",
+      background: accent
+        ? isDark
+          ? "linear-gradient(135deg, #0B1E2D 0%, #0a3044 100%)"
+          : "linear-gradient(135deg, #E0F5F6 0%, #C8EDF0 100%)"
+        : "var(--card)",
       borderRadius: 16, padding: "16px",
       border: accent ? "none" : "1px solid var(--border)",
-      boxShadow: accent ? "0 4px 20px rgba(11,30,45,0.15)" : "0 1px 5px rgba(0,0,0,0.04)",
+      boxShadow: accent ? "0 4px 20px rgba(11,30,45,0.08)" : "0 1px 5px rgba(0,0,0,0.04)",
       marginBottom: 12,
     }}>
       {children}
@@ -71,6 +76,7 @@ const CATEGORIES = [
 
 export default function EtiquettePage() {
   const isKo = useLang();
+  const isDark = useTheme() === "dark";
   const [activeTab, setActiveTab] = useState("all");
 
   function show(cat: string) {
@@ -80,14 +86,14 @@ export default function EtiquettePage() {
   return (
     <div className="ll-fullpage" style={{ display: "flex", flexDirection: "column", background: "var(--content-bg)" }}>
       {/* Hero */}
-      <div style={{ background: "linear-gradient(135deg, #0B1E2D 0%, #0a3550 100%)", paddingTop: 16, paddingBottom: 24, paddingInline: 20, flexShrink: 0 }}>
+      <div style={{ background: isDark ? "linear-gradient(135deg, #0B1E2D 0%, #0a3550 100%)" : "linear-gradient(135deg, #E0F5F6 0%, #C4EBF0 100%)", paddingTop: 16, paddingBottom: 24, paddingInline: 20, flexShrink: 0, borderBottom: isDark ? "none" : "1px solid var(--border)" }}>
         <div style={{ fontSize: 11, fontWeight: 700, color: "#15b6c1", letterSpacing: "0.08em", marginBottom: 6 }}>
           LOCALOOP KOREA
         </div>
-        <h1 style={{ fontSize: 24, fontWeight: 900, color: "#fff", letterSpacing: "-0.03em", lineHeight: 1.2, marginBottom: 8 }}>
+        <h1 style={{ fontSize: 24, fontWeight: 900, color: isDark ? "#fff" : "var(--foreground)", letterSpacing: "-0.03em", lineHeight: 1.2, marginBottom: 8 }}>
           {isKo ? "문화 & 에티켓 가이드" : "Culture & Etiquette Guide"}
         </h1>
-        <p style={{ fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 1.6 }}>
+        <p style={{ fontSize: 13, color: isDark ? "rgba(255,255,255,0.65)" : "var(--muted-foreground)", lineHeight: 1.6 }}>
           {isKo
             ? "한국에서 실수 없이 생활하는 법 — 현지 문화를 이해하면 한국 생활이 훨씬 즐거워집니다"
             : "How to live in Korea without awkward mistakes — understanding local culture makes everything smoother"}
@@ -101,8 +107,8 @@ export default function EtiquettePage() {
               onClick={() => setActiveTab(cat.id)}
               style={{
                 padding: "6px 14px", borderRadius: 20, fontSize: 11, fontWeight: 700, flexShrink: 0,
-                background: activeTab === cat.id ? "#15b6c1" : "rgba(255,255,255,0.1)",
-                color: activeTab === cat.id ? "#fff" : "rgba(255,255,255,0.7)",
+                background: activeTab === cat.id ? "#15b6c1" : isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.07)",
+                color: activeTab === cat.id ? "#fff" : isDark ? "rgba(255,255,255,0.7)" : "var(--muted-foreground)",
                 border: "none", cursor: "pointer",
               }}
             >
@@ -118,11 +124,11 @@ export default function EtiquettePage() {
         {/* GREETINGS */}
         {show("greeting") && (
           <Section emoji="🙇" title={isKo ? "인사 & 기본 예절" : "Greetings & Basic Manners"}>
-            <Card accent>
+            <Card accent isDark={isDark}>
               <div style={{ fontSize: 13, fontWeight: 800, color: "#15b6c1", marginBottom: 6 }}>
                 {isKo ? "인사의 나라 — 고개 숙임(절)이 핵심" : "The Bowing Nation — the bow is everything"}
               </div>
-              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.85)", lineHeight: 1.65 }}>
+              <p style={{ fontSize: 13, color: isDark ? "rgba(255,255,255,0.85)" : "var(--foreground)", lineHeight: 1.65 }}>
                 {isKo
                   ? "한국에서는 처음 만나는 사람에게 가볍게 고개를 숙여 인사합니다. 각도가 클수록 더 큰 존경을 나타냅니다. 15° 가벼운 인사, 30° 일반적 인사, 45° 깊은 감사나 사죄."
                   : "In Korea, you bow your head slightly when greeting someone for the first time. The deeper the bow, the more respect it conveys. 15° light acknowledgment, 30° standard greeting, 45° deep gratitude or apology."}
@@ -238,11 +244,11 @@ export default function EtiquettePage() {
         {/* SOCIAL */}
         {show("social") && (
           <Section emoji="👥" title={isKo ? "사회생활 & 인간관계" : "Social Life & Relationships"}>
-            <Card accent>
+            <Card accent isDark={isDark}>
               <div style={{ fontSize: 13, fontWeight: 800, color: "#15b6c1", marginBottom: 6 }}>
                 {isKo ? "나이와 직급이 중요한 나라" : "Age and rank matter a lot here"}
               </div>
-              <p style={{ fontSize: 13, color: "rgba(255,255,255,0.85)", lineHeight: 1.65 }}>
+              <p style={{ fontSize: 13, color: isDark ? "rgba(255,255,255,0.85)" : "var(--foreground)", lineHeight: 1.65 }}>
                 {isKo
                   ? "한국은 나이와 직급에 따라 언어(존댓말/반말)와 행동이 달라지는 문화입니다. 처음 만나는 사람에게는 항상 존댓말을 사용하고, 친해진 후 상대방이 반말을 제안하면 편하게 받아들이면 됩니다."
                   : "In Korea, language and behavior shift based on age and rank. Always use formal speech (존댓말) with strangers. If someone you've gotten close to suggests switching to casual speech (반말), that's a sign they see you as a friend."}
@@ -304,9 +310,9 @@ export default function EtiquettePage() {
         )}
 
         {/* Quick Reference Card */}
-        <div style={{ background: "linear-gradient(135deg, #0B1E2D 0%, #0a3550 100%)", borderRadius: 18, padding: "20px 16px", textAlign: "center", marginBottom: 8 }}>
+        <div style={{ background: isDark ? "linear-gradient(135deg, #0B1E2D 0%, #0a3550 100%)" : "linear-gradient(135deg, #E0F5F6 0%, #C4EBF0 100%)", borderRadius: 18, padding: "20px 16px", textAlign: "center", marginBottom: 8, border: isDark ? "none" : "1px solid var(--border)" }}>
           <div style={{ fontSize: 20, marginBottom: 8 }}>🤝</div>
-          <div style={{ fontSize: 15, fontWeight: 800, color: "#fff", marginBottom: 6 }}>
+          <div style={{ fontSize: 15, fontWeight: 800, color: isDark ? "#fff" : "var(--foreground)", marginBottom: 6 }}>
             {isKo ? "핵심 표현 빠른 참고" : "Key Phrases Quick Reference"}
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 14 }}>
@@ -318,10 +324,10 @@ export default function EtiquettePage() {
               { ko: "잘 먹겠습니다", rom: "Jal meokgesseumnida", en: "I will eat well" },
               { ko: "잘 먹었습니다", rom: "Jal meogeosseumnida", en: "I ate well" },
             ].map((p) => (
-              <div key={p.ko} style={{ background: "rgba(255,255,255,0.07)", borderRadius: 12, padding: "10px 8px" }}>
-                <div style={{ fontSize: 13, fontWeight: 800, color: "#fff", marginBottom: 2 }}>{p.ko}</div>
+              <div key={p.ko} style={{ background: isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.05)", borderRadius: 12, padding: "10px 8px" }}>
+                <div style={{ fontSize: 13, fontWeight: 800, color: isDark ? "#fff" : "var(--foreground)", marginBottom: 2 }}>{p.ko}</div>
                 <div style={{ fontSize: 9, color: "#15b6c1", fontWeight: 600, marginBottom: 3 }}>{p.rom}</div>
-                <div style={{ fontSize: 10, color: "rgba(255,255,255,0.5)" }}>{p.en}</div>
+                <div style={{ fontSize: 10, color: isDark ? "rgba(255,255,255,0.5)" : "var(--muted-foreground)" }}>{p.en}</div>
               </div>
             ))}
           </div>
