@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useLang } from "@/lib/lang";
-import { PageHeader } from "@/components/layout/PageHeader";
 import dynamic from "next/dynamic";
 import { SEED_PLACES } from "@/data/seed";
 import type { Place } from "@/types";
@@ -79,19 +78,16 @@ export default function MapPage() {
 
   return (
     <div className="ll-fullpage" style={{ display: "flex", flexDirection: "column" }}>
-      {/* Header */}
-      <PageHeader
-        right={
-          <Link href="/guide" style={{ display: "inline-flex", alignItems: "center", padding: "5px 12px", borderRadius: 20, background: "rgba(11,30,45,0.82)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", border: "1.5px solid rgba(21,182,193,0.55)", color: "#fff", fontSize: 11, fontWeight: 700, textDecoration: "none", whiteSpace: "nowrap", letterSpacing: "0.04em", boxShadow: "0 2px 8px rgba(0,0,0,0.25)" }}>
-            {isKo ? "사용가이드" : "Guide"}
-          </Link>
-        }
-      >
-        <div style={{ margin: "0 16px", background: "rgba(255,255,255,0.9)", borderRadius: 10, padding: "10px 14px", display: "flex", alignItems: "center", gap: 8 }}>
+      {/* Search bar + Guide button */}
+      <div style={{ background: "var(--card)", borderBottom: "1px solid var(--border)", padding: "8px 14px", display: "flex", gap: 8, alignItems: "center", flexShrink: 0 }}>
+        <div style={{ flex: 1, background: "var(--content-bg)", borderRadius: 10, padding: "10px 14px", display: "flex", alignItems: "center", gap: 8 }}>
           <span>🔍</span>
-          <span style={{ fontSize: 13, color: "#9BB5B8" }}>{t.searchPh}</span>
+          <span style={{ fontSize: 13, color: "var(--muted-foreground)" }}>{t.searchPh}</span>
         </div>
-      </PageHeader>
+        <Link href="/guide" style={{ display: "inline-flex", alignItems: "center", padding: "5px 12px", borderRadius: 20, background: "#0B1E2D", border: "1.5px solid rgba(21,182,193,0.55)", color: "#fff", fontSize: 11, fontWeight: 700, textDecoration: "none", whiteSpace: "nowrap", letterSpacing: "0.04em" }}>
+          {isKo ? "가이드" : "Guide"}
+        </Link>
+      </div>
 
       {/* Filter chips */}
       <div className="scroll-x" style={{ background: "var(--card)", borderBottom: "1px solid var(--border)", padding: "10px 16px", display: "flex", gap: 8, flexShrink: 0 }}>

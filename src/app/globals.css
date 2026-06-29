@@ -765,8 +765,9 @@ html {
   min-height: 100dvh;
 }
 /* Pages that need to fill exactly the available viewport (map, chat) */
+/* 56px = bottom nav, 50px = shared PageHeader on mobile */
 .ll-fullpage {
-  height: calc(100dvh - 56px);
+  height: calc(100dvh - 56px - 50px);
 }
 @media (min-width: 768px) {
   .app-container { max-width: 100%; margin: 0; }

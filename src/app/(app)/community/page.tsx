@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useLang } from "@/lib/lang";
-import { PageHeader } from "@/components/layout/PageHeader";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/is-configured";
 
@@ -151,8 +150,6 @@ export default function CommunityPage() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100%" }}>
-      {/* Header */}
-      <PageHeader />
       {/* Tab bar */}
       <div style={{ background: "#0B1E2D", display: "flex", padding: "0 16px", flexShrink: 0 }}>
         {(["meetup", "people"] as const).map((key) => (

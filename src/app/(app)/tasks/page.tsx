@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useLang } from "@/lib/lang";
-import { PageHeader } from "@/components/layout/PageHeader";
 
 const STAGES = {
   en: ["Arrival", "Early Life", "Settlement", "Community", "Long-term"],
@@ -87,15 +86,6 @@ export default function TasksPage() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100%" }}>
-      {/* Header */}
-      <PageHeader
-        right={
-          <button style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, padding: "5px 9px", color: "#fff", fontSize: 13, cursor: "pointer" }}>
-            ℹ️
-          </button>
-        }
-      />
-
       {/* Stage progress */}
       <div style={{ background: "#0B1E2D", paddingBottom: 20, paddingInline: 16, flexShrink: 0 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>

@@ -5,7 +5,6 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/is-configured";
 import { useLang } from "@/lib/lang";
-import { PageHeader } from "@/components/layout/PageHeader";
 
 const T = {
   ko: {
@@ -124,9 +123,6 @@ export default function ProfilePage() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100%" }}>
-      {/* Header */}
-      <PageHeader />
-
       {/* Profile info section */}
       <div style={{ background: "#0B1E2D", paddingBottom: 20, flexShrink: 0 }}>
         {/* Avatar + name */}

@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useLang } from "@/lib/lang";
-import { PageHeader } from "@/components/layout/PageHeader";
 
 type Message = {
   id: string;
@@ -78,9 +77,6 @@ export default function ChatPage() {
 
   return (
     <div className="ll-fullpage" style={{ display: "flex", flexDirection: "column" }}>
-      {/* Header */}
-      <PageHeader />
-
       {/* Translation notice */}
       <div style={{
         background: "#E8F9F9",

@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useLang } from "@/lib/lang";
-import { PageHeader } from "@/components/layout/PageHeader";
 
 const FILTERS = {
   en: ["AI Pick", "Half-Day", "Full Day", "Food", "Culture", "Nature"],
@@ -95,20 +94,8 @@ export default function CoursesPage() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100%" }}>
-      {/* Header */}
-      <PageHeader
-        right={
-          <button
-            onClick={() => setActiveFilter(0)}
-            style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, padding: "5px 9px", color: "#fff", fontSize: 13, cursor: "pointer" }}
-          >
-            🔄
-          </button>
-        }
-      />
-
       {/* Filter chips */}
-      <div className="scroll-x" style={{ background: "var(--card)", borderBottom: "1px solid var(--border)", padding: "10px 16px", display: "flex", gap: 8, flexShrink: 0 }}>
+      <div className="scroll-x" style={{ background: "var(--card)", borderBottom: "1px solid var(--border)", padding: "10px 16px", display: "flex", gap: 8, flexShrink: 0, alignItems: "center" }}>
         {filters.map((label, i) => {
           const active = activeFilter === i;
           return (
@@ -132,6 +119,12 @@ export default function CoursesPage() {
             </button>
           );
         })}
+        <button
+          onClick={() => setActiveFilter(0)}
+          style={{ flexShrink: 0, padding: "5px 10px", borderRadius: 20, border: "1px solid var(--border)", background: "var(--content-bg)", color: "var(--muted-foreground)", fontSize: 13, cursor: "pointer" }}
+        >
+          🔄
+        </button>
       </div>
 
       {/* Course list */}
