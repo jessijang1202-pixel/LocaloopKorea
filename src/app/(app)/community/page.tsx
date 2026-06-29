@@ -19,8 +19,8 @@ const STATIC_PEOPLE = [
 ];
 
 const T = {
-  ko: { meetup: "모임", people: "사람", join: "참여", joined: "참여 중", connect: "연결", spots: (n: number) => `${n}자리 남음`, newMeetup: "새 모임 만들기", peopleSub: "내 주변 로컬루퍼", noProfiles: "아직 아무도 없어요", loading: "불러오는 중...", participants: "참여자", location: "장소", about: "소개", create: "모임 만들기", createDesc: "관심사 기반 모임을 만들어 주변 사람들과 연결하세요." },
-  en: { meetup: "Meetup", people: "People", join: "Join", joined: "Joined", connect: "Connect", spots: (n: number) => `${n} spots left`, newMeetup: "Create a meetup", peopleSub: "Local loopers near you", noProfiles: "No one here yet", loading: "Loading...", participants: "Participants", location: "Location", about: "About", create: "Create Meetup", createDesc: "Create an interest-based meetup and connect with people nearby." },
+  ko: { meetup: "모임", people: "사람", join: "참여", joined: "참여 중", connect: "연결", spots: (n: number) => `${n}자리 남음`, newMeetup: "새 모임 만들기", peopleSub: "내 주변 로컬루퍼", loading: "불러오는 중...", participants: "참여자", location: "장소", about: "소개", searchPh: "검색...", noResults: "검색 결과가 없어요" },
+  en: { meetup: "Meetup", people: "People", join: "Join", joined: "Joined", connect: "Connect", spots: (n: number) => `${n} spots left`, newMeetup: "Create a meetup", peopleSub: "Local loopers near you", loading: "Loading...", participants: "Participants", location: "Location", about: "About", searchPh: "Search...", noResults: "No results found" },
 };
 
 type SupabaseProfile = { id: string; display_name: string | null; user_type: string | null; region: { name_en: string; name_ko: string } | null; interests: { interest: { name_en: string; icon: string } | null }[] };
@@ -34,7 +34,7 @@ export default function CommunityPage() {
   const [selectedMeetupId, setSelectedMeetupId] = useState("m1");
   const [selectedPersonId, setSelectedPersonId] = useState("sp1");
   const [connected, setConnected] = useState<Record<string, boolean>>({});
-  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     if (tab !== "people" || !isSupabaseConfigured()) return;
@@ -51,10 +51,46 @@ export default function CommunityPage() {
   const selectedMeetup = MEETUPS.find((m) => m.id === selectedMeetupId) ?? MEETUPS[0];
   const selectedPerson = STATIC_PEOPLE.find((p) => p.id === selectedPersonId) ?? STATIC_PEOPLE[0];
 
+  function switchTab(newTab: "meetup" | "people") {
+    setTab(newTab);
+    setSearch("");
+  }
+
+  const filteredMeetups = MEETUPS.filter((m) => {
+    if (!search) return true;
+    const name = isKo ? m.name.ko : m.name.en;
+    const tag = isKo ? m.tag.ko : m.tag.en;
+    const q = search.toLowerCase();
+    return name.toLowerCase().includes(q) || tag.toLowerCase().includes(q);
+  });
+
+  const filteredPeople = STATIC_PEOPLE.filter((p) => {
+    if (!search) return true;
+    const q = search.toLowerCase();
+    const region = isKo ? p.region.ko : p.region.en;
+    const tags = isKo ? p.tags.ko : p.tags.en;
+    return p.name.toLowerCase().includes(q) || region.toLowerCase().includes(q) || tags.some((tg) => tg.toLowerCase().includes(q));
+  });
+
+  const searchBar = (
+    <div style={{ background: "var(--content-bg)", borderRadius: 10, padding: "8px 12px", display: "flex", alignItems: "center", gap: 7 }}>
+      <span style={{ fontSize: 13, color: "var(--muted-foreground)" }}>🔍</span>
+      <input
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder={t.searchPh}
+        style={{ flex: 1, background: "transparent", border: "none", outline: "none", fontSize: 12, color: "var(--foreground)" }}
+      />
+      {search && (
+        <button onClick={() => setSearch("")} style={{ background: "none", border: "none", color: "var(--muted-foreground)", cursor: "pointer", fontSize: 14, padding: 0, lineHeight: 1 }}>✕</button>
+      )}
+    </div>
+  );
+
   const tabBar = (
     <div style={{ background: "#0B1E2D", display: "flex", flexShrink: 0 }}>
       {(["meetup", "people"] as const).map((key) => (
-        <button key={key} onClick={() => setTab(key)} style={{ flex: 1, padding: "11px 0", background: "none", border: "none", borderBottom: tab === key ? "2px solid #15b6c1" : "2px solid transparent", color: tab === key ? "#15b6c1" : "rgba(255,255,255,0.35)", fontWeight: tab === key ? 700 : 400, fontSize: 13, cursor: "pointer" }}>
+        <button key={key} onClick={() => switchTab(key)} style={{ flex: 1, padding: "11px 0", background: "none", border: "none", borderBottom: tab === key ? "2px solid #15b6c1" : "2px solid transparent", color: tab === key ? "#15b6c1" : "rgba(255,255,255,0.35)", fontWeight: tab === key ? 700 : 400, fontSize: 13, cursor: "pointer" }}>
           {key === "meetup" ? t.meetup : t.people}
         </button>
       ))}
@@ -63,10 +99,11 @@ export default function CommunityPage() {
 
   const meetupList = (compact = false) => (
     <div style={compact ? { flex: 1, overflowY: "auto", minHeight: 0, background: "var(--content-bg)", padding: "10px 12px 0" } : { flex: 1, overflowY: "auto", background: "var(--content-bg)", padding: "12px 14px 0" }}>
-      <button onClick={() => { if (compact) setShowCreateForm(true); }} style={{ width: "100%", marginBottom: 10, padding: "11px 0", background: "#15b6c1", border: "none", borderRadius: 12, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
+      <button style={{ width: "100%", marginBottom: 10, padding: "11px 0", background: "#15b6c1", border: "none", borderRadius: 12, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
         + {t.newMeetup}
       </button>
-      {MEETUPS.map((m) => {
+      {filteredMeetups.length === 0 && <div style={{ textAlign: "center", padding: "30px 0", color: "var(--muted-foreground)", fontSize: 13 }}>{t.noResults}</div>}
+      {filteredMeetups.map((m) => {
         const isJoined = joined[m.id];
         const spotsLeft = m.max - m.joined;
         const isSelected = m.id === selectedMeetupId;
@@ -98,7 +135,8 @@ export default function CommunityPage() {
   const peopleList = (compact = false) => (
     <div style={compact ? { flex: 1, overflowY: "auto", minHeight: 0, background: "var(--content-bg)", padding: "10px 12px 0" } : { flex: 1, overflowY: "auto", background: "var(--content-bg)", padding: "12px 14px 0" }}>
       <p style={{ fontSize: 11, color: "var(--muted-foreground)", marginBottom: 10 }}>{t.peopleSub}</p>
-      {STATIC_PEOPLE.map((person) => {
+      {filteredPeople.length === 0 && <div style={{ textAlign: "center", padding: "30px 0", color: "var(--muted-foreground)", fontSize: 13 }}>{t.noResults}</div>}
+      {filteredPeople.map((person) => {
         const isSelected = person.id === selectedPersonId;
         return (
           <div key={person.id} onClick={() => setSelectedPersonId(person.id)} style={{ background: isSelected ? "var(--card-selected)" : "var(--card)", borderRadius: 12, border: isSelected ? "1.5px solid #15b6c1" : "1px solid var(--border)", padding: "12px", marginBottom: 9, display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}>
@@ -236,11 +274,15 @@ export default function CommunityPage() {
       {/* ── Mobile layout ── */}
       <div className="ll-mobile-only" style={{ display: "flex", flexDirection: "column", minHeight: "100%" }}>
         {tabBar}
+        <div style={{ padding: "8px 14px 6px", background: "var(--card)", borderBottom: "1px solid var(--border)", flexShrink: 0 }}>
+          {searchBar}
+        </div>
         <div style={{ flex: 1, overflowY: "auto", background: "var(--content-bg)", padding: "12px 14px 0" }}>
           {tab === "meetup" && (
             <>
               <button style={{ width: "100%", marginBottom: 12, padding: "12px 0", background: "#15b6c1", border: "none", borderRadius: 14, color: "#fff", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>+ {t.newMeetup}</button>
-              {MEETUPS.map((m) => {
+              {filteredMeetups.length === 0 && <div style={{ textAlign: "center", padding: "30px 0", color: "var(--muted-foreground)", fontSize: 13 }}>{t.noResults}</div>}
+              {filteredMeetups.map((m) => {
                 const isJoined = joined[m.id];
                 const spotsLeft = m.max - m.joined;
                 return (
@@ -269,7 +311,8 @@ export default function CommunityPage() {
           {tab === "people" && (
             <>
               <p style={{ fontSize: 12, color: "var(--muted-foreground)", marginBottom: 10 }}>{t.peopleSub}</p>
-              {STATIC_PEOPLE.map((person) => (
+              {filteredPeople.length === 0 && <div style={{ textAlign: "center", padding: "30px 0", color: "var(--muted-foreground)", fontSize: 13 }}>{t.noResults}</div>}
+              {filteredPeople.map((person) => (
                 <PersonCard key={person.id} initial={person.initial} color={person.color} name={person.name} flag={person.flag} region={isKo ? person.region.ko : person.region.en} level={isKo ? person.level.ko : person.level.en} tags={isKo ? person.tags.ko : person.tags.en} connectLabel={t.connect} />
               ))}
               {loadingProfiles && <p style={{ textAlign: "center", fontSize: 12, color: "#9BB5B8", padding: "12px 0" }}>{t.loading}</p>}
@@ -282,7 +325,10 @@ export default function CommunityPage() {
       {/* ── PC split layout ── */}
       <div className="ll-pc-only ll-split">
         <div className="ll-split-panel">
-          <div className="ll-split-panel-sticky" style={{ padding: 0 }}>{tabBar}</div>
+          <div className="ll-split-panel-sticky" style={{ padding: 0 }}>
+            {tabBar}
+            <div style={{ padding: "8px 12px 6px" }}>{searchBar}</div>
+          </div>
           {tab === "meetup" ? meetupList(true) : peopleList(true)}
         </div>
         <div className="ll-split-main">

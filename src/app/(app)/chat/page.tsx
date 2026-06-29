@@ -29,8 +29,8 @@ const MESSAGES_BY_CV: Record<string, Message[]> = {
 };
 
 const T = {
-  ko: { notice: "실시간 번역 중 · 한국어 ↔ 영어", inputPh: "메시지를 입력하세요...", send: "전송", chats: "채팅 목록", searchPh: "대화 검색..." },
-  en: { notice: "Live translation · Korean ↔ English", inputPh: "Type a message...", send: "Send", chats: "Chats", searchPh: "Search conversations..." },
+  ko: { notice: "실시간 번역 중 · 한국어 ↔ 영어", inputPh: "메시지를 입력하세요...", send: "전송", chats: "채팅 목록", searchPh: "대화 검색...", noResults: "검색 결과가 없어요", back: "목록" },
+  en: { notice: "Live translation · Korean ↔ English", inputPh: "Type a message...", send: "Send", chats: "Chats", searchPh: "Search conversations...", noResults: "No conversations found", back: "List" },
 };
 
 export default function ChatPage() {
@@ -38,6 +38,8 @@ export default function ChatPage() {
   const [activeCv, setActiveCv] = useState("cv1");
   const [messages, setMessages] = useState<Record<string, Message[]>>(MESSAGES_BY_CV);
   const [input, setInput] = useState("");
+  const [search, setSearch] = useState("");
+  const [mobileView, setMobileView] = useState<"list" | "chat">("list");
   const bottomRef = useRef<HTMLDivElement>(null);
   const t = isKo ? T.ko : T.en;
 
@@ -56,48 +58,88 @@ export default function ChatPage() {
   const activeMessages = messages[activeCv] ?? [];
   const activePerson = CONVERSATIONS.find((c) => c.id === activeCv) ?? CONVERSATIONS[0];
 
+  const filteredConversations = CONVERSATIONS.filter((cv) => {
+    if (!search) return true;
+    const q = search.toLowerCase();
+    const lastMsg = isKo ? cv.lastMsg.ko : cv.lastMsg.en;
+    return cv.name.toLowerCase().includes(q) || lastMsg.toLowerCase().includes(q);
+  });
+
+  const searchInput = (
+    <div style={{ background: "var(--content-bg)", borderRadius: 10, padding: "8px 12px", display: "flex", alignItems: "center", gap: 7 }}>
+      <span style={{ fontSize: 13 }}>🔍</span>
+      <input
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder={t.searchPh}
+        style={{ flex: 1, background: "transparent", border: "none", outline: "none", fontSize: 12, color: "var(--foreground)" }}
+      />
+      {search && (
+        <button onClick={() => setSearch("")} style={{ background: "none", border: "none", color: "var(--muted-foreground)", cursor: "pointer", fontSize: 14, padding: 0, lineHeight: 1 }}>✕</button>
+      )}
+    </div>
+  );
+
+  const cvList = (onSelect?: (id: string) => void) => (
+    <>
+      {filteredConversations.length === 0 && (
+        <div style={{ textAlign: "center", padding: "40px 14px", color: "var(--muted-foreground)", fontSize: 13 }}>{t.noResults}</div>
+      )}
+      {filteredConversations.map((cv) => {
+        const isActive = cv.id === activeCv;
+        const lastMsg = isKo ? cv.lastMsg.ko : cv.lastMsg.en;
+        return (
+          <div
+            key={cv.id}
+            onClick={() => { setActiveCv(cv.id); onSelect?.(cv.id); }}
+            style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", borderBottom: "1px solid var(--border)", background: isActive ? "var(--card-selected)" : "transparent", cursor: "pointer", borderLeft: isActive ? "3px solid #15b6c1" : "3px solid transparent" }}
+          >
+            <div style={{ width: 46, height: 46, borderRadius: "50%", background: cv.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, fontWeight: 800, color: "#fff", flexShrink: 0, position: "relative" }}>
+              {cv.initial}
+              <span style={{ position: "absolute", bottom: 0, right: 0, fontSize: 12, lineHeight: 1 }}>{cv.flag}</span>
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 3 }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: "var(--foreground)" }}>{cv.name}</span>
+                <span style={{ fontSize: 10, color: "var(--muted-foreground)" }}>{cv.time}</span>
+              </div>
+              <p style={{ fontSize: 11, color: "var(--muted-foreground)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{lastMsg}</p>
+            </div>
+          </div>
+        );
+      })}
+      <div style={{ padding: "12px 14px" }}>
+        <div style={{ textAlign: "center", padding: "16px 0", background: "var(--icon-bg)", borderRadius: 12, border: "1px dashed var(--border)" }}>
+          <div style={{ fontSize: 11, color: "var(--muted-foreground)" }}>🔄 {isKo ? "AI 번역 ON" : "AI Translation ON"}</div>
+        </div>
+      </div>
+    </>
+  );
+
   const conversationList = (
     <div className="ll-split-panel">
       <div className="ll-split-panel-sticky" style={{ padding: "12px 14px 10px" }}>
         <div style={{ fontSize: 14, fontWeight: 800, color: "var(--foreground)", marginBottom: 10 }}>{t.chats}</div>
-        <div style={{ background: "var(--content-bg)", borderRadius: 10, padding: "8px 12px", display: "flex", alignItems: "center", gap: 7 }}>
-          <span style={{ fontSize: 13 }}>🔍</span>
-          <span style={{ fontSize: 12, color: "var(--muted-foreground)" }}>{t.searchPh}</span>
-        </div>
+        {searchInput}
       </div>
       <div style={{ flex: 1, overflowY: "auto", minHeight: 0 }}>
-        {CONVERSATIONS.map((cv) => {
-          const isActive = cv.id === activeCv;
-          const lastMsg = isKo ? cv.lastMsg.ko : cv.lastMsg.en;
-          return (
-            <div key={cv.id} onClick={() => setActiveCv(cv.id)} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", borderBottom: "1px solid var(--border)", background: isActive ? "var(--card-selected)" : "transparent", cursor: "pointer", borderLeft: isActive ? "3px solid #15b6c1" : "3px solid transparent" }}>
-              <div style={{ width: 46, height: 46, borderRadius: "50%", background: cv.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, fontWeight: 800, color: "#fff", flexShrink: 0, position: "relative" }}>
-                {cv.initial}
-                <span style={{ position: "absolute", bottom: 0, right: 0, fontSize: 12, lineHeight: 1 }}>{cv.flag}</span>
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 3 }}>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: "var(--foreground)" }}>{cv.name}</span>
-                  <span style={{ fontSize: 10, color: "var(--muted-foreground)" }}>{cv.time}</span>
-                </div>
-                <p style={{ fontSize: 11, color: "var(--muted-foreground)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{lastMsg}</p>
-              </div>
-            </div>
-          );
-        })}
-        <div style={{ padding: "12px 14px" }}>
-          <div style={{ textAlign: "center", padding: "16px 0", background: "var(--icon-bg)", borderRadius: 12, border: "1px dashed var(--border)" }}>
-            <div style={{ fontSize: 11, color: "var(--muted-foreground)" }}>🔄 {isKo ? "AI 번역 ON" : "AI Translation ON"}</div>
-          </div>
-        </div>
+        {cvList()}
       </div>
     </div>
   );
 
-  const chatWindow = (showHeader = false) => (
+  const chatWindow = (showHeader = false, onBack?: () => void) => (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       {showHeader && (
         <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 16px", background: "var(--card)", borderBottom: "1px solid var(--border)", flexShrink: 0 }}>
+          {onBack && (
+            <button
+              onClick={onBack}
+              style={{ width: 32, height: 32, borderRadius: "50%", background: "var(--content-bg)", border: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0, fontSize: 18, color: "var(--foreground)", lineHeight: 1 }}
+            >
+              ‹
+            </button>
+          )}
           <div style={{ width: 38, height: 38, borderRadius: "50%", background: activePerson.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 800, color: "#fff" }}>{activePerson.initial}</div>
           <div>
             <div style={{ fontSize: 14, fontWeight: 800, color: "var(--foreground)" }}>{activePerson.name} {activePerson.flag}</div>
@@ -134,9 +176,20 @@ export default function ChatPage() {
 
   return (
     <>
-      {/* ── Mobile layout ── */}
-      <div className="ll-mobile-only" style={{ display: "flex", flexDirection: "column", height: "calc(100dvh - 56px - 50px)" }}>
-        {chatWindow(false)}
+      {/* ── Mobile: Conversation list ── */}
+      <div className="ll-mobile-only" style={{ display: mobileView === "list" ? "flex" : "none", flexDirection: "column", height: "calc(100dvh - 56px - 50px)" }}>
+        <div style={{ padding: "12px 14px 10px", background: "var(--card)", borderBottom: "1px solid var(--border)", flexShrink: 0 }}>
+          <div style={{ fontSize: 14, fontWeight: 800, color: "var(--foreground)", marginBottom: 10 }}>{t.chats}</div>
+          {searchInput}
+        </div>
+        <div style={{ flex: 1, overflowY: "auto", minHeight: 0 }}>
+          {cvList((id) => { setActiveCv(id); setMobileView("chat"); })}
+        </div>
+      </div>
+
+      {/* ── Mobile: Chat window ── */}
+      <div className="ll-mobile-only" style={{ display: mobileView === "chat" ? "flex" : "none", flexDirection: "column", height: "calc(100dvh - 56px - 50px)" }}>
+        {chatWindow(true, () => setMobileView("list"))}
       </div>
 
       {/* ── PC split layout ── */}
