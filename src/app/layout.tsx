@@ -4,7 +4,6 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Localoop Korea — Dig into local Korea",
   description: "Region-based living navigation and community platform for foreigners and Koreans",
-  manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
