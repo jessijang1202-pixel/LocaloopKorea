@@ -225,9 +225,9 @@ function PcDonePanel({ isKo, onGo }: { isKo: boolean; onGo: () => void }) {
 
 // ─── PC Slide panel ────────────────────────────────────────────────────────────
 
-function PcSlidePanel({ s, idx, total, fading, onDot, onNext, onLogin }: {
+function PcSlidePanel({ s, idx, total, fading, onDot, onNext, onLogin, onSkip, isKo }: {
   s: PCSlide; idx: number; total: number; fading: boolean;
-  onDot: (i: number) => void; onNext: () => void; onLogin: () => void;
+  onDot: (i: number) => void; onNext: () => void; onLogin: () => void; onSkip: () => void; isKo: boolean;
 }) {
   const isLast = idx === total - 1;
   return (
@@ -270,8 +270,13 @@ function PcSlidePanel({ s, idx, total, fading, onDot, onNext, onLogin }: {
         </button>
       )}
       {s.login && (
-        <button onClick={onLogin} style={{ width: "100%", padding: 9, borderRadius: 10, background: "#F5F9FA", color: "#1A2B2C", fontSize: 12, border: "1px solid #E0E8EA", cursor: "pointer" }}>
+        <button onClick={onLogin} style={{ width: "100%", padding: 9, borderRadius: 10, background: "#F5F9FA", color: "#1A2B2C", fontSize: 12, border: "1px solid #E0E8EA", cursor: "pointer", marginBottom: 6 }}>
           {s.login}
+        </button>
+      )}
+      {!isLast && (
+        <button onClick={onSkip} style={{ width: "100%", padding: 8, borderRadius: 10, background: "transparent", color: "#B0C4C8", fontSize: 12, border: "none", cursor: "pointer" }}>
+          {isKo ? "건너뛰기" : "Skip"}
         </button>
       )}
     </div>
@@ -376,11 +381,6 @@ export default function IntroPage() {
             <Link href="/login" style={{ display: "inline-flex", alignItems: "center", padding: "5px 12px", borderRadius: 20, background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.28)", color: "rgba(255,255,255,0.85)", fontSize: 12, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>
               {isKo ? "로그인" : "Login"}
             </Link>
-            {!pcDone && (
-              <button onClick={() => router.push("/map")} style={{ background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.28)", borderRadius: 20, color: "rgba(255,255,255,0.85)", fontSize: 12, fontWeight: 600, padding: "5px 14px", cursor: "pointer" }}>
-                {isKo ? "건너뛰기" : "Skip"}
-              </button>
-            )}
           </div>
         </div>
         {/* Body */}
@@ -389,7 +389,7 @@ export default function IntroPage() {
           <div style={{ width: 300, flexShrink: 0, borderRight: "1px solid #E0E8EA", display: "flex", flexDirection: "column", background: "#fff" }}>
             {pcDone
               ? <PcDonePanel isKo={isKo} onGo={() => router.push("/map")} />
-              : <PcSlidePanel s={s} idx={slide} total={pcSlides.length} fading={fading} onDot={goTo} onNext={handleNext} onLogin={() => router.push("/login")} />
+              : <PcSlidePanel s={s} idx={slide} total={pcSlides.length} fading={fading} onDot={goTo} onNext={handleNext} onLogin={() => router.push("/login")} onSkip={() => router.push("/map")} isKo={isKo} />
             }
           </div>
           {/* Right: map */}
@@ -451,11 +451,6 @@ export default function IntroPage() {
             <Link href="/login" style={{ display: "inline-flex", alignItems: "center", padding: "5px 10px", borderRadius: 20, background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.28)", color: "rgba(255,255,255,0.85)", fontSize: 11, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>
               {isKo ? "로그인" : "Login"}
             </Link>
-            {!isLast && (
-              <button onClick={() => router.push("/map")} style={{ background: "rgba(255,255,255,0.14)", border: "1px solid rgba(255,255,255,0.28)", borderRadius: 20, color: "rgba(255,255,255,0.85)", fontSize: 11, fontWeight: 600, padding: "5px 10px", cursor: "pointer" }}>
-                {isKo ? "건너뛰기" : "Skip"}
-              </button>
-            )}
           </div>
         </div>
 
@@ -547,6 +542,11 @@ export default function IntroPage() {
           <button onClick={handleNext} style={{ width: "100%", padding: 17, borderRadius: 16, background: isLast ? "#ffd600" : ms.ac, color: isLast ? "#0B1E2D" : "#fff", fontSize: 16, fontWeight: 700, border: "none", cursor: "pointer", boxShadow: "0 4px 20px rgba(0,0,0,0.25)" }}>
             {isLast ? (isKo ? "지금 시작하기 →" : "Get started →") : (isKo ? "다음" : "Next")}
           </button>
+          {!isLast && (
+            <button onClick={() => router.push("/map")} style={{ width: "100%", padding: 13, marginTop: 10, borderRadius: 14, background: "transparent", color: "rgba(255,255,255,0.45)", fontSize: 14, fontWeight: 500, border: "1px solid rgba(255,255,255,0.15)", cursor: "pointer" }}>
+              {isKo ? "건너뛰기" : "Skip"}
+            </button>
+          )}
           <div style={{ textAlign: "center", marginTop: 16 }}>
             <span style={{ fontSize: 13, color: "rgba(255,255,255,0.35)" }}>{isKo ? "이미 계정이 있으신가요? " : "Already have an account? "}</span>
             <button onClick={() => router.push("/login")} style={{ fontSize: 13, fontWeight: 600, color: ms.ac, background: "none", border: "none", cursor: "pointer", padding: 0 }}>{isKo ? "로그인" : "Log in"}</button>
