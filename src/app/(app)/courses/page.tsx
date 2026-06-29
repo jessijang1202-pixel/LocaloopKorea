@@ -114,7 +114,7 @@ export default function CoursesPage() {
       </div>
 
       {/* Filter chips */}
-      <div className="scroll-x" style={{ background: "#fff", borderBottom: "1px solid #E0E8EA", padding: "10px 16px", display: "flex", gap: 8, flexShrink: 0 }}>
+      <div className="scroll-x" style={{ background: "var(--card)", borderBottom: "1px solid var(--border)", padding: "10px 16px", display: "flex", gap: 8, flexShrink: 0 }}>
         {filters.map((label, i) => {
           const active = activeFilter === i;
           return (
@@ -125,9 +125,9 @@ export default function CoursesPage() {
                 flexShrink: 0,
                 padding: "5px 14px",
                 borderRadius: 20,
-                border: active ? "none" : "1px solid #E0E8EA",
-                background: active ? "#15b6c1" : "#F5F9FA",
-                color: active ? "#fff" : "#4A6467",
+                border: active ? "none" : "1px solid var(--border)",
+                background: active ? "#15b6c1" : "var(--content-bg)",
+                color: active ? "#fff" : "var(--muted-foreground)",
                 fontSize: 12,
                 fontWeight: active ? 700 : 400,
                 cursor: "pointer",
@@ -141,9 +141,9 @@ export default function CoursesPage() {
       </div>
 
       {/* Course list */}
-      <div style={{ flex: 1, overflowY: "auto", background: "#F5F9FA", padding: "12px 14px 0" }}>
+      <div style={{ flex: 1, overflowY: "auto", background: "var(--content-bg)", padding: "12px 14px 0" }}>
         {filtered.length === 0 && (
-          <div style={{ textAlign: "center", padding: "40px 0", color: "#9BB5B8", fontSize: 13 }}>
+          <div style={{ textAlign: "center", padding: "40px 0", color: "var(--muted-foreground)", fontSize: 13 }}>
             {t.noResults}
           </div>
         )}
@@ -156,9 +156,9 @@ export default function CoursesPage() {
             <div
               key={course.id}
               style={{
-                background: "#fff",
+                background: "var(--card)",
                 borderRadius: 16,
-                border: "1px solid #E0E8EA",
+                border: "1px solid var(--border)",
                 marginBottom: 12,
                 overflow: "hidden",
                 boxShadow: "0 1px 6px rgba(0,0,0,0.05)",
@@ -194,15 +194,15 @@ export default function CoursesPage() {
                     {t.localScore} {course.score}
                   </span>
                 </div>
-                <p style={{ fontSize: 14, fontWeight: 700, color: "#1A2B2C", marginBottom: 3 }}>{name}</p>
-                <p style={{ fontSize: 11, color: "#4A6467", marginBottom: 8 }}>{meta}</p>
+                <p style={{ fontSize: 14, fontWeight: 700, color: "var(--foreground)", marginBottom: 3 }}>{name}</p>
+                <p style={{ fontSize: 11, color: "var(--muted-foreground)", marginBottom: 8 }}>{meta}</p>
 
                 {/* Stops */}
                 <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 12, flexWrap: "wrap" }}>
-                  <span style={{ fontSize: 10, color: "#4A6467", fontWeight: 600 }}>{t.stops}:</span>
+                  <span style={{ fontSize: 10, color: "var(--muted-foreground)", fontWeight: 600 }}>{t.stops}:</span>
                   {stops.map((stop, i) => (
                     <span key={i} style={{ display: "flex", alignItems: "center", gap: 3 }}>
-                      <span style={{ fontSize: 10, color: "#1A2B2C", fontWeight: 600, background: "#F5F9FA", padding: "2px 6px", borderRadius: 4 }}>
+                      <span style={{ fontSize: 10, color: "var(--foreground)", fontWeight: 600, background: "var(--content-bg)", padding: "2px 6px", borderRadius: 4 }}>
                         {stop}
                       </span>
                       {i < stops.length - 1 && <span style={{ fontSize: 9, color: "#9BB5B8" }}>→</span>}

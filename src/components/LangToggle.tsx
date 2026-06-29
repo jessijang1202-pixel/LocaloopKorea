@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLang, setLang } from "@/lib/lang";
 import { useTheme, toggleTheme } from "@/lib/theme";
@@ -46,14 +45,22 @@ export function LangToggle() {
   );
 }
 
-/** Inline lang toggle for embedding in flex rows (page headers, PC sidebar). */
+/** Inline lang toggle — subtle, blends into header. */
 export function LangToggleInline() {
   const isKo = useLang();
   return (
     <button
       onClick={() => setLang(isKo ? "en" : "ko")}
       aria-label="Switch language"
-      style={baseStyle}
+      style={{
+        display: "inline-flex", alignItems: "center",
+        padding: "5px 10px", borderRadius: 20, fontSize: 11,
+        fontWeight: 500, cursor: "pointer", lineHeight: 1, whiteSpace: "nowrap",
+        background: "transparent",
+        border: "1px solid rgba(255,255,255,0.22)",
+        color: "rgba(255,255,255,0.6)",
+        userSelect: "none",
+      }}
     >
       {isKo ? "EN" : "한국어"}
     </button>
@@ -89,24 +96,12 @@ export function TopActions() {
         style={{
           display: "inline-flex", alignItems: "center", justifyContent: "center",
           padding: "5px 9px", borderRadius: 20, lineHeight: 1, fontSize: 14,
-          background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.30)",
+          background: "transparent", border: "1px solid rgba(255,255,255,0.22)",
           cursor: "pointer",
         }}
       >
         {theme === "dark" ? "☀️" : "🌙"}
       </button>
-      <Link
-        href="/login"
-        style={{
-          display: "inline-flex", alignItems: "center", padding: "5px 10px",
-          borderRadius: 20, background: "rgba(255,255,255,0.15)",
-          border: "1px solid rgba(255,255,255,0.28)", color: "#fff",
-          fontSize: 11, fontWeight: 600, textDecoration: "none",
-          whiteSpace: "nowrap", letterSpacing: "0.04em", lineHeight: 1,
-        }}
-      >
-        {isKo ? "로그인" : "Login"}
-      </Link>
       <button
         onClick={handleInstall}
         style={{

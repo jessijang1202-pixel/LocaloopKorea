@@ -138,7 +138,7 @@ export default function TasksPage() {
       </div>
 
       {/* Task list */}
-      <div style={{ flex: 1, overflowY: "auto", background: "#F5F9FA", padding: "12px 14px 0" }}>
+      <div style={{ flex: 1, overflowY: "auto", background: "var(--content-bg)", padding: "12px 14px 0" }}>
         {TASKS.map((task) => {
           const isChecked = checked[task.id] ?? task.done;
           const info = isKo ? task.ko : task.en;
@@ -151,9 +151,9 @@ export default function TasksPage() {
                 gap: 12,
                 padding: "14px 14px",
                 marginBottom: 8,
-                background: "#fff",
+                background: "var(--card)",
                 borderRadius: 14,
-                border: task.urgent ? "1.5px solid #FFCDD2" : "1px solid #E0E8EA",
+                border: task.urgent ? "1.5px solid #FFCDD2" : "1px solid var(--border)",
                 boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
                 opacity: isChecked ? 0.7 : 1,
               }}
@@ -163,7 +163,7 @@ export default function TasksPage() {
                 onClick={() => toggle(task.id)}
                 style={{
                   width: 24, height: 24, borderRadius: 8, border: "none",
-                  background: isChecked ? "#15b6c1" : "#E0E8EA",
+                  background: isChecked ? "#15b6c1" : "var(--border)",
                   display: "flex", alignItems: "center", justifyContent: "center",
                   cursor: "pointer", flexShrink: 0, marginTop: 1,
                   fontSize: 13, color: "#fff",
@@ -176,7 +176,7 @@ export default function TasksPage() {
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 3, flexWrap: "wrap" }}>
                   <span style={{
-                    fontSize: 13, fontWeight: 700, color: "#1A2B2C",
+                    fontSize: 13, fontWeight: 700, color: "var(--foreground)",
                     textDecoration: isChecked ? "line-through" : "none",
                   }}>
                     {info.name}
@@ -202,7 +202,7 @@ export default function TasksPage() {
                     </span>
                   )}
                 </div>
-                <p style={{ fontSize: 11, color: "#4A6467", lineHeight: 1.5 }}>{info.desc}</p>
+                <p style={{ fontSize: 11, color: "var(--muted-foreground)", lineHeight: 1.5 }}>{info.desc}</p>
               </div>
             </div>
           );

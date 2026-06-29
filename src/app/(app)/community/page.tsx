@@ -179,7 +179,7 @@ export default function CommunityPage() {
       </div>
 
       {/* Content */}
-      <div style={{ flex: 1, overflowY: "auto", background: "#F5F9FA", padding: "12px 14px 0" }}>
+      <div style={{ flex: 1, overflowY: "auto", background: "var(--content-bg)", padding: "12px 14px 0" }}>
         {tab === "meetup" && (
           <>
             <button style={{
@@ -195,13 +195,13 @@ export default function CommunityPage() {
               const spotsLeft = m.max - m.joined;
               return (
                 <div key={m.id} style={{
-                  background: "#fff", borderRadius: 16, border: "1px solid #E0E8EA",
+                  background: "var(--card)", borderRadius: 16, border: "1px solid var(--border)",
                   padding: "14px", marginBottom: 10, boxShadow: "0 1px 5px rgba(0,0,0,0.04)",
                 }}>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
                     <div style={{
                       width: 44, height: 44, borderRadius: 12,
-                      background: "#F0FAFA",
+                      background: "var(--icon-bg)",
                       display: "flex", alignItems: "center", justifyContent: "center",
                       fontSize: 22, flexShrink: 0,
                     }}>
@@ -209,7 +209,7 @@ export default function CommunityPage() {
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 3, flexWrap: "wrap" }}>
-                        <span style={{ fontSize: 13, fontWeight: 700, color: "#1A2B2C" }}>
+                        <span style={{ fontSize: 13, fontWeight: 700, color: "var(--foreground)" }}>
                           {isKo ? m.name.ko : m.name.en}
                         </span>
                         <span style={{
@@ -220,11 +220,11 @@ export default function CommunityPage() {
                           {isKo ? m.tag.ko : m.tag.en}
                         </span>
                       </div>
-                      <p style={{ fontSize: 11, color: "#4A6467", marginBottom: 8 }}>
+                      <p style={{ fontSize: 11, color: "var(--muted-foreground)", marginBottom: 8 }}>
                         {isKo ? m.time.ko : m.time.en}
                       </p>
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                        <span style={{ fontSize: 11, color: "#9BB5B8" }}>
+                        <span style={{ fontSize: 11, color: "var(--muted-foreground)" }}>
                           {m.joined}/{m.max} · {t.spots(spotsLeft)}
                         </span>
                         <button
@@ -250,7 +250,7 @@ export default function CommunityPage() {
 
         {tab === "people" && (
           <>
-            <p style={{ fontSize: 12, color: "#4A6467", marginBottom: 10 }}>{t.peopleSub}</p>
+            <p style={{ fontSize: 12, color: "var(--muted-foreground)", marginBottom: 10 }}>{t.peopleSub}</p>
             {STATIC_PEOPLE.map((person) => (
               <PersonCard
                 key={person.id}
@@ -308,7 +308,7 @@ function PersonCard({
   const [connected, setConnected] = useState(false);
   return (
     <div style={{
-      background: "#fff", borderRadius: 16, border: "1px solid #E0E8EA",
+      background: "var(--card)", borderRadius: 16, border: "1px solid var(--border)",
       padding: "14px", marginBottom: 10,
       display: "flex", alignItems: "center", gap: 12,
       boxShadow: "0 1px 5px rgba(0,0,0,0.04)",
@@ -323,10 +323,10 @@ function PersonCard({
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 2 }}>
-          <span style={{ fontSize: 13, fontWeight: 700, color: "#1A2B2C" }}>{name}</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: "var(--foreground)" }}>{name}</span>
           <span>{flag}</span>
         </div>
-        <p style={{ fontSize: 11, color: "#4A6467", marginBottom: 5 }}>
+        <p style={{ fontSize: 11, color: "var(--muted-foreground)", marginBottom: 5 }}>
           {region} · {level}
         </p>
         <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
@@ -334,7 +334,7 @@ function PersonCard({
             <span key={tag} style={{
               fontSize: 9, fontWeight: 600,
               padding: "2px 6px", borderRadius: 4,
-              background: "#F0FAFA", color: "#4A6467",
+              background: "var(--icon-bg)", color: "var(--muted-foreground)",
             }}>
               {tag}
             </span>

@@ -87,7 +87,7 @@ export default function MapPage() {
           </span>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <TopActions />
-            <Link href="/guide" style={{ display: "inline-flex", alignItems: "center", padding: "5px 11px", borderRadius: 8, background: "rgba(255,255,255,0.2)", color: "#fff", fontSize: 11, fontWeight: 700, textDecoration: "none", whiteSpace: "nowrap" }}>
+            <Link href="/guide" style={{ display: "inline-flex", alignItems: "center", padding: "5px 12px", borderRadius: 20, background: "rgba(11,30,45,0.82)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", border: "1.5px solid rgba(21,182,193,0.55)", color: "#fff", fontSize: 11, fontWeight: 700, textDecoration: "none", whiteSpace: "nowrap", letterSpacing: "0.04em", boxShadow: "0 2px 8px rgba(0,0,0,0.25)" }}>
               {isKo ? "사용가이드" : "Guide"}
             </Link>
           </div>
@@ -99,7 +99,7 @@ export default function MapPage() {
       </div>
 
       {/* Filter chips */}
-      <div className="scroll-x" style={{ background: "#fff", borderBottom: "1px solid #E0E8EA", padding: "10px 16px", display: "flex", gap: 8, flexShrink: 0 }}>
+      <div className="scroll-x" style={{ background: "var(--card)", borderBottom: "1px solid var(--border)", padding: "10px 16px", display: "flex", gap: 8, flexShrink: 0 }}>
         {CHIP_KEYS.map((key, i) => {
           const active = chip === key;
           return (
@@ -108,9 +108,9 @@ export default function MapPage() {
               onClick={() => setChip(key)}
               style={{
                 flexShrink: 0, padding: "5px 14px", borderRadius: 20,
-                border: active ? "none" : "1px solid #E0E8EA",
-                background: active ? "#15b6c1" : "#F5F9FA",
-                color: active ? "#fff" : "#4A6467",
+                border: active ? "none" : "1px solid var(--border)",
+                background: active ? "#15b6c1" : "var(--content-bg)",
+                color: active ? "#fff" : "var(--muted-foreground)",
                 fontSize: 12, fontWeight: active ? 700 : 400,
                 cursor: "pointer", whiteSpace: "nowrap",
               }}
@@ -137,9 +137,9 @@ export default function MapPage() {
       </div>
 
       {/* Place list */}
-      <div style={{ flex: 1, overflowY: "auto", background: "#F5F9FA", padding: "8px 14px 0" }}>
+      <div style={{ flex: 1, overflowY: "auto", background: "var(--content-bg)", padding: "8px 14px 0" }}>
         {filtered.length === 0 && (
-          <div style={{ textAlign: "center", padding: "40px 0", color: "#9BB5B8", fontSize: 13 }}>
+          <div style={{ textAlign: "center", padding: "40px 0", color: "var(--muted-foreground)", fontSize: 13 }}>
             {isKo ? "해당하는 장소가 없어요" : "No places found"}
           </div>
         )}
@@ -154,15 +154,15 @@ export default function MapPage() {
               style={{
                 display: "flex", alignItems: "center", gap: 12,
                 padding: "10px 12px", marginBottom: 8,
-                background: isSelected ? "#EDF9F9" : "#fff",
+                background: isSelected ? "var(--card-selected)" : "var(--card)",
                 borderRadius: 14,
-                border: isSelected ? "1.5px solid #15b6c1" : "1px solid #E0E8EA",
+                border: isSelected ? "1.5px solid #15b6c1" : "1px solid var(--border)",
                 cursor: "pointer", boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
               }}
             >
               <div style={{
                 width: 44, height: 44, borderRadius: 12,
-                background: isSelected ? "#D6F5F5" : "#F0FAFA",
+                background: isSelected ? "#D6F5F5" : "var(--icon-bg)",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 fontSize: 20, flexShrink: 0,
               }}>
@@ -170,14 +170,14 @@ export default function MapPage() {
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: "#1A2B2C" }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: "var(--foreground)" }}>
                     {isKo ? place.name_ko : place.name_en}
                   </span>
                   <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 6px", borderRadius: 6, background: bg, color }}>
                     {rating}
                   </span>
                 </div>
-                <p style={{ fontSize: 11, color: "#4A6467", marginBottom: 4 }}>
+                <p style={{ fontSize: 11, color: "var(--muted-foreground)", marginBottom: 4 }}>
                   {isKo ? (place.address_ko ?? place.name_ko) : (place.address ?? place.name_en)}
                 </p>
                 <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>

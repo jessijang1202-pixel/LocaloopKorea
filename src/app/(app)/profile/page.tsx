@@ -174,25 +174,25 @@ export default function ProfilePage() {
       </div>
 
       {/* Level progress */}
-      <div style={{ background: "#fff", padding: "14px 16px", borderBottom: "1px solid #E0E8EA" }}>
+      <div style={{ background: "var(--card)", padding: "14px 16px", borderBottom: "1px solid var(--border)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-          <span style={{ fontSize: 12, fontWeight: 700, color: "#1A2B2C" }}>
+          <span style={{ fontSize: 12, fontWeight: 700, color: "var(--foreground)" }}>
             ⭐ {t.level} Lv.2
           </span>
-          <span style={{ fontSize: 10, color: "#4A6467" }}>45%</span>
+          <span style={{ fontSize: 10, color: "var(--muted-foreground)" }}>45%</span>
         </div>
-        <div style={{ height: 6, borderRadius: 3, background: "#E0E8EA", overflow: "hidden" }}>
+        <div style={{ height: 6, borderRadius: 3, background: "var(--border)", overflow: "hidden" }}>
           <div style={{ height: "100%", width: "45%", borderRadius: 3, background: "linear-gradient(90deg, #15b6c1, #0B8A91)" }} />
         </div>
-        <p style={{ fontSize: 10, color: "#9BB5B8", marginTop: 5 }}>{t.levelSub}</p>
+        <p style={{ fontSize: 10, color: "var(--muted-foreground)", marginTop: 5 }}>{t.levelSub}</p>
       </div>
 
       {/* Scrollable content */}
-      <div style={{ flex: 1, overflowY: "auto", background: "#F5F9FA" }}>
+      <div style={{ flex: 1, overflowY: "auto", background: "var(--content-bg)" }}>
         {/* Activity section */}
-        <div style={{ background: "#fff", margin: "10px 14px", borderRadius: 16, border: "1px solid #E0E8EA", overflow: "hidden" }}>
+        <div style={{ background: "var(--card)", margin: "10px 14px", borderRadius: 16, border: "1px solid var(--border)", overflow: "hidden" }}>
           <div style={{ padding: "12px 14px 6px" }}>
-            <p style={{ fontSize: 12, fontWeight: 700, color: "#4A6467", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+            <p style={{ fontSize: 12, fontWeight: 700, color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
               {t.activity}
             </p>
           </div>
@@ -200,11 +200,11 @@ export default function ProfilePage() {
             <div key={key} style={{
               display: "flex", alignItems: "center", justifyContent: "space-between",
               padding: "12px 14px",
-              borderTop: i === 0 ? "none" : "1px solid #F0F4F5",
+              borderTop: i === 0 ? "none" : "1px solid var(--border)",
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <span style={{ fontSize: 18 }}>{icon}</span>
-                <span style={{ fontSize: 13, color: "#1A2B2C" }}>{t[key]}</span>
+                <span style={{ fontSize: 13, color: "var(--foreground)" }}>{t[key]}</span>
               </div>
               <span style={{ fontSize: 13, fontWeight: 700, color: "#15b6c1" }}>{count}</span>
             </div>
@@ -212,9 +212,9 @@ export default function ProfilePage() {
         </div>
 
         {/* Settings section */}
-        <div style={{ background: "#fff", margin: "0 14px 10px", borderRadius: 16, border: "1px solid #E0E8EA", overflow: "hidden" }}>
+        <div style={{ background: "var(--card)", margin: "0 14px 10px", borderRadius: 16, border: "1px solid var(--border)", overflow: "hidden" }}>
           <div style={{ padding: "12px 14px 6px" }}>
-            <p style={{ fontSize: 12, fontWeight: 700, color: "#4A6467", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+            <p style={{ fontSize: 12, fontWeight: 700, color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
               {t.settings}
             </p>
           </div>
@@ -222,14 +222,14 @@ export default function ProfilePage() {
             <Link key={key} href={href} style={{
               display: "flex", alignItems: "center", justifyContent: "space-between",
               padding: "12px 14px",
-              borderTop: i === 0 ? "none" : "1px solid #F0F4F5",
+              borderTop: i === 0 ? "none" : "1px solid var(--border)",
               textDecoration: "none",
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 <span style={{ fontSize: 18 }}>{icon}</span>
-                <span style={{ fontSize: 13, color: "#1A2B2C" }}>{t[key]}</span>
+                <span style={{ fontSize: 13, color: "var(--foreground)" }}>{t[key]}</span>
               </div>
-              <span style={{ color: "#9BB5B8", fontSize: 16 }}>›</span>
+              <span style={{ color: "var(--muted-foreground)", fontSize: 16 }}>›</span>
             </Link>
           ))}
           <button
@@ -238,7 +238,7 @@ export default function ProfilePage() {
             style={{
               display: "flex", alignItems: "center", gap: 10,
               width: "100%", padding: "12px 14px",
-              borderTop: "1px solid #F0F4F5",
+              borderTop: "1px solid var(--border)",
               background: "none", border: "none", cursor: "pointer",
             }}
           >
