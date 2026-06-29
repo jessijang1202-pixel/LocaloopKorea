@@ -777,7 +777,7 @@ html {
     flex-direction: column;
     position: fixed;
     top: 0; left: 0; bottom: 0;
-    width: 72px;
+    width: 168px;
     background: #0B1E2D;
     border-right: 1px solid rgba(255,255,255,0.08);
     box-shadow: 2px 0 12px rgba(0,0,0,0.22);
@@ -786,7 +786,7 @@ html {
   }
   .ll-bottomnav { display: none; }
   .ll-page-header { display: none !important; }
-  .ll-content { padding-bottom: 0; padding-top: 0; margin-left: 72px; height: 100dvh; overflow: hidden; }
+  .ll-content { padding-bottom: 0; padding-top: 0; margin-left: 168px; height: 100dvh; overflow: hidden; }
   .ll-fullpage { height: 100dvh; }
   .ll-mobile-only { display: none !important; }
   .ll-pc-only { display: flex; height: 100%; width: 100%; }
@@ -799,7 +799,7 @@ html {
 }
 
 /* Mobile/PC split utilities */
-.ll-mobile-only { display: contents; }
+/* ll-mobile-only: visible on mobile (inline display style applies), hidden on PC via !important above */
 .ll-pc-only { display: none; }
 
 /* PC split panel layout */

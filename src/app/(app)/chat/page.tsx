@@ -135,7 +135,7 @@ export default function ChatPage() {
   return (
     <>
       {/* ── Mobile layout ── */}
-      <div className="ll-mobile-only" style={{ height: "100%", display: "flex", flexDirection: "column" }}>
+      <div className="ll-mobile-only" style={{ display: "flex", flexDirection: "column", height: "calc(100dvh - 56px - 50px)" }}>
         {chatWindow(false)}
       </div>
 
