@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useLang } from "@/lib/lang";
 import { TopActions } from "@/components/LangToggle";
 import dynamic from "next/dynamic";
@@ -86,9 +87,9 @@ export default function MapPage() {
           </span>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <TopActions />
-            <button style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, padding: "5px 9px", color: "#fff", fontSize: 13, cursor: "pointer" }}>
-              ⚙️
-            </button>
+            <Link href="/guide" style={{ display: "inline-flex", alignItems: "center", padding: "5px 11px", borderRadius: 8, background: "rgba(255,255,255,0.2)", color: "#fff", fontSize: 11, fontWeight: 700, textDecoration: "none", whiteSpace: "nowrap" }}>
+              {isKo ? "사용가이드" : "Guide"}
+            </Link>
           </div>
         </div>
         <div style={{ margin: "0 16px", background: "#fff", borderRadius: 10, padding: "10px 14px", display: "flex", alignItems: "center", gap: 8 }}>
