@@ -5,7 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/is-configured";
 import { useLang } from "@/lib/lang";
-import { LangToggleInline } from "@/components/LangToggle";
+import { TopActions } from "@/components/LangToggle";
 
 const T = {
   ko: {
@@ -125,19 +125,13 @@ export default function ProfilePage() {
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100%" }}>
       {/* Header */}
-      <div style={{ background: "#0B1E2D", paddingTop: 44, paddingBottom: 20, flexShrink: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px 16px" }}>
-          <span style={{ fontSize: 17, fontWeight: 800, color: "#fff", letterSpacing: "-0.02em" }}>{t.title}</span>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <LangToggleInline />
-            <Link href="/login" style={{
-              display: "inline-flex", alignItems: "center", padding: "5px 11px",
-              borderRadius: 20, background: "rgba(255,255,255,0.15)",
-              border: "1px solid rgba(255,255,255,0.28)", color: "#fff",
-              fontSize: 11, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap",
-            }}>
-              {isKo ? "로그인" : "Login"}
-            </Link>
+      <div style={{ background: "#0B1E2D", paddingTop: "calc(env(safe-area-inset-top, 0px) + 3px)", paddingBottom: 20, flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "6px 14px 12px" }}>
+          <span style={{ fontSize: 13, fontWeight: 900, color: "#fff", letterSpacing: "-0.02em", whiteSpace: "nowrap" }}>
+            Localoop<span style={{ color: "#15b6c1" }}>Korea</span>
+          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <TopActions />
             <Link href="/profile/edit" style={{
               background: "rgba(21,182,193,0.18)", border: "1.5px solid rgba(21,182,193,0.45)",
               borderRadius: 10, padding: "6px 14px", color: "#fff", fontSize: 12, fontWeight: 700,

@@ -88,12 +88,14 @@ export default function TasksPage() {
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100%" }}>
       {/* Header */}
-      <div style={{ background: "#0B1E2D", paddingTop: 44, paddingBottom: 16, flexShrink: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px" }}>
-          <span style={{ fontSize: 17, fontWeight: 800, color: "#fff", letterSpacing: "-0.02em" }}>{t.title}</span>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <div style={{ background: "#0B1E2D", paddingTop: "calc(env(safe-area-inset-top, 0px) + 3px)", paddingBottom: 12, flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "6px 14px" }}>
+          <span style={{ fontSize: 13, fontWeight: 900, color: "#fff", letterSpacing: "-0.02em", whiteSpace: "nowrap" }}>
+            Localoop<span style={{ color: "#15b6c1" }}>Korea</span>
+          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <TopActions />
-            <button style={{ background: "rgba(255,255,255,0.12)", border: "none", borderRadius: 8, padding: "6px 10px", color: "#fff", fontSize: 13, cursor: "pointer" }}>
+            <button style={{ background: "rgba(255,255,255,0.12)", border: "none", borderRadius: 8, padding: "5px 9px", color: "#fff", fontSize: 13, cursor: "pointer" }}>
               ℹ️
             </button>
           </div>

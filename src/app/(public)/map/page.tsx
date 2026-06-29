@@ -79,12 +79,14 @@ export default function MapPage() {
   return (
     <div className="ll-fullpage" style={{ display: "flex", flexDirection: "column" }}>
       {/* Header */}
-      <div style={{ background: "#15b6c1", paddingTop: 44, paddingBottom: 12, flexShrink: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px", marginBottom: 10 }}>
-          <span style={{ fontSize: 17, fontWeight: 800, color: "#fff", letterSpacing: "-0.02em" }}>{t.title}</span>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <div style={{ background: "#15b6c1", paddingTop: "calc(env(safe-area-inset-top, 0px) + 3px)", paddingBottom: 10, flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "6px 14px", marginBottom: 8 }}>
+          <span style={{ fontSize: 13, fontWeight: 900, color: "#fff", letterSpacing: "-0.02em", whiteSpace: "nowrap" }}>
+            Localoop<span style={{ opacity: 0.7 }}>Korea</span>
+          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <TopActions />
-            <button style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, padding: "6px 10px", color: "#fff", fontSize: 13, cursor: "pointer" }}>
+            <button style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, padding: "5px 9px", color: "#fff", fontSize: 13, cursor: "pointer" }}>
               ⚙️
             </button>
           </div>

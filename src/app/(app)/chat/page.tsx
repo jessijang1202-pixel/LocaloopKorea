@@ -79,22 +79,11 @@ export default function ChatPage() {
   return (
     <div className="ll-fullpage" style={{ display: "flex", flexDirection: "column" }}>
       {/* Header */}
-      <div style={{ background: "#0B1E2D", paddingTop: 44, paddingBottom: 14, flexShrink: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{
-              width: 36, height: 36, borderRadius: "50%",
-              background: "#15b6c1",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 16, flexShrink: 0,
-            }}>
-              👥
-            </div>
-            <div>
-              <p style={{ fontSize: 14, fontWeight: 700, color: "#fff" }}>{t.title}</p>
-              <p style={{ fontSize: 10, color: "#8BB8C0" }}>Itaewon Language Exchange</p>
-            </div>
-          </div>
+      <div style={{ background: "#0B1E2D", paddingTop: "calc(env(safe-area-inset-top, 0px) + 3px)", paddingBottom: 10, flexShrink: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "6px 14px" }}>
+          <span style={{ fontSize: 13, fontWeight: 900, color: "#fff", letterSpacing: "-0.02em", whiteSpace: "nowrap" }}>
+            Localoop<span style={{ color: "#15b6c1" }}>Korea</span>
+          </span>
           <TopActions />
         </div>
       </div>
