@@ -71,7 +71,7 @@ export default function TasksPage() {
   }
 
   const stageBar = (
-    <div style={{ background: "#0B1E2D", paddingBottom: 16, paddingInline: 16, flexShrink: 0 }}>
+    <div style={{ background: "#0B1E2D", paddingTop: 12, paddingBottom: 16, paddingInline: 16, flexShrink: 0 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
         <span style={{ fontSize: 11, color: "#8BB8C0" }}>
           {t.currentStage}: <span style={{ color: "#FFD600", fontWeight: 700 }}>{stages[CURRENT_STAGE]}</span>

@@ -7,10 +7,10 @@ import { LangToggleInline } from "@/components/LangToggle";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-type Highlight = "place" | "task" | "course" | "people";
+type Highlight = "place" | "task" | "course" | "people" | "culture";
 
 // ─── Mobile slides ─────────────────────────────────────────────────────────────
-type MobSlide = { icon: string; img: string; tag: string; lines: string[]; hi: number; desc: string; bg: string; ac: string; chatPreview?: boolean };
+type MobSlide = { icon: string; img: string; tag: string; lines: string[]; hi: number; desc: string; bg: string; ac: string; chatPreview?: boolean; culturePreview?: boolean };
 const MOB_KO: MobSlide[] = [
   { icon: "🗺️", img: "/onboarding_welcome.png", tag: "Localoop Korea", lines: ["어서와!", "한국에 온걸 환영해"], hi: 1, desc: "언어 장벽, 낯선 동네, 새로운 일상.\n이제 AI가 당신의 한국 생활을\n단계별로 안내해드려요.", bg: "#0B1E2D", ac: "#15b6c1" },
   { icon: "📍", img: "/onboarding_places.png", tag: "기능 01", lines: ["내 주변", "외국인 친화 장소 찾기"], hi: 1, desc: "S~C 외국인 친화도 등급을 지도에서 바로 확인.\n영어 메뉴, 카드 결제 여부도 한눈에!", bg: "#0a2233", ac: "#15b6c1" },
@@ -18,6 +18,7 @@ const MOB_KO: MobSlide[] = [
   { icon: "🏃", img: "/onboarding_courses.png", tag: "기능 03", lines: ["현지인만 아는", "로컬 코스 추천"], hi: 1, desc: "관광지 말고 진짜 한국.\n내 언어 수준·취향에 맞는 반나절 로컬 코스를\nAI가 자동으로 짜드려요.", bg: "#0a2233", ac: "#15b6c1" },
   { icon: "🤝", img: "/onboarding_connect.png", tag: "기능 04", lines: ["외국인·한국인", "진짜 친구 만들기"], hi: 1, desc: "언어 교환, 취미 모임, 동네 파티.\n실시간 번역 채팅으로\n언어 장벽 없이 자연스럽게 연결돼요.", bg: "#0B1E2D", ac: "#ffd600" },
   { icon: "💬", img: "/onboarding_chat.png", tag: "기능 05", lines: ["실시간 번역 채팅으로", "언어 장벽 없애기"], hi: 1, desc: "한국어를 몰라도 괜찮아요.\n메시지를 보내면 AI가 즉시 번역해\n상대방에게 전달해드려요.\n자연스러운 대화, 진짜 연결.", bg: "#08151E", ac: "#15b6c1" },
+  { icon: "🤝", img: "/onboarding_culture.png", tag: "기능 06", lines: ["한국 문화 & 에티켓", "미리 알면 더 편해요"], hi: 0, desc: "식당, 교통, 일상 속 한국 문화 예절.\n모르면 당황할 수 있는 순간을\n에티켓 가이드로 미리 준비하세요.", bg: "#0a1f30", ac: "#15b6c1", culturePreview: true },
 ];
 const MOB_EN: MobSlide[] = [
   { icon: "🗺️", img: "/onboarding_welcome.png", tag: "Localoop Korea", lines: ["Welcome to Korea!", "Your new life starts here"], hi: 0, desc: "New city. New language. New life.\nLet AI guide your Korea journey\nstep by step.", bg: "#0B1E2D", ac: "#15b6c1" },
@@ -26,6 +27,7 @@ const MOB_EN: MobSlide[] = [
   { icon: "🏃", img: "/onboarding_courses.png", tag: "Feature 03", lines: ["Local courses only", "insiders know about"], hi: 1, desc: "Skip the tourist traps.\nAI builds a half-day local course matched\nto your language level and interests.", bg: "#0a2233", ac: "#15b6c1" },
   { icon: "🤝", img: "/onboarding_connect.png", tag: "Feature 04", lines: ["Make real friends —", "locals & expats alike"], hi: 1, desc: "Language exchange, hobby meetups, hangouts.\nReal-time chat translation breaks every barrier.", bg: "#0B1E2D", ac: "#ffd600" },
   { icon: "💬", img: "/onboarding_chat.png", tag: "Feature 05", lines: ["Real-time translation chat —", "no language barrier"], hi: 1, desc: "Don't know Korean? No problem.\nSend a message and AI instantly translates it\nfor the other person.\nNatural conversations, real connections.", bg: "#08151E", ac: "#15b6c1" },
+  { icon: "🤝", img: "/onboarding_culture.png", tag: "Feature 06", lines: ["Korean Culture &", "Etiquette Guide"], hi: 0, desc: "Dining, transit, and everyday social customs.\nKnow what's polite before your\nfirst awkward moment in Korea.", bg: "#0a1f30", ac: "#15b6c1", culturePreview: true },
 ];
 
 // ─── PC slides ─────────────────────────────────────────────────────────────────
@@ -37,7 +39,8 @@ const PC_KO: PCSlide[] = [
   { icon: "📋", img: "/onboarding_tasks.png", tag: "기능 02 · 03", title: ["지금 해야 할 일을", "AI가 알려줘"], hi: 1, desc: "도착 첫날부터 장기 정착까지.\n외국인 등록증 신청, 은행 계좌 개설, 건강보험 가입 등\n체류 단계에 맞는 과제를 자동으로 안내합니다.\n\n오른쪽에서 진행 중인 과제 목록을 확인해보세요.", highlight: "task", next: "다음" },
   { icon: "🏃", img: "/onboarding_courses.png", tag: "기능 04", title: ["현지인만 아는", "로컬 코스 추천"], hi: 1, desc: "관광지 말고 진짜 한국.\n한국인 방문 데이터를 분석해 외국인이 편하게\n이용할 수 있는 로컬 맛집·카페·문화 장소를\n코스로 자동 조합합니다.\n\n오른쪽에서 AI 추천 코스를 미리보세요.", highlight: "course", next: "다음" },
   { icon: "🤝", img: "/onboarding_connect.png", tag: "기능 04 · 05", title: ["외국인·한국인", "진짜 연결"], hi: 1, desc: "언어 교환, 취미 모임, 동네 파방.\n관심사와 거주 지역 기반으로 교류 상대를 자동 추천합니다.\n\n오른쪽에서 주변 연결 추천을 확인해보세요.", highlight: "people", next: "다음" },
-  { icon: "💬", img: "/onboarding_chat.png", tag: "기능 06", title: ["실시간 번역 채팅으로", "언어 장벽 없는 소통"], hi: 1, desc: "한국어를 몰라도 괜찮아요.\n메시지를 보내면 AI가 즉시 번역해 상대방에게 전달해드립니다.\n실시간 번역 채팅으로 자연스럽게 대화해보세요.", highlight: "people", cta: "무료로 시작하기", login: "이미 계정이 있어요" },
+  { icon: "💬", img: "/onboarding_chat.png", tag: "기능 05", title: ["실시간 번역 채팅으로", "언어 장벽 없는 소통"], hi: 1, desc: "한국어를 몰라도 괜찮아요.\n메시지를 보내면 AI가 즉시 번역해 상대방에게 전달해드립니다.\n실시간 번역 채팅으로 자연스럽게 대화해보세요.", highlight: "people", next: "다음" },
+  { icon: "🤝", img: "/onboarding_culture.png", tag: "기능 06", title: ["한국 문화 & 에티켓", "미리 알면 더 편해요"], hi: 0, desc: "절, 식사 예절, 대중교통 매너, 일상 속 사회 문화까지.\n모르면 당황할 수 있는 순간들을\n에티켓 가이드로 미리 준비하고\n한국 생활을 더 즐겁게 시작하세요.", highlight: "culture", cta: "무료로 시작하기", login: "이미 계정이 있어요" },
 ];
 const PC_EN: PCSlide[] = [
   { icon: "🗺️", img: "/onboarding_welcome.png", tag: "Localoop Korea", title: ["Real Korea", "starts here"], hi: 0, desc: "New city. New language. New life.\nAI reads your stay purpose and language level\nto guide you through what you need most.\n\nPreview foreigner-friendly spots near Itaewon\non the map to your right.", highlight: "place", cta: "Get started", login: "I already have an account" },
@@ -45,7 +48,8 @@ const PC_EN: PCSlide[] = [
   { icon: "📋", img: "/onboarding_tasks.png", tag: "Feature 02 · 03", title: ["AI tells you exactly", "what to do right now"], hi: 1, desc: "From day one to long-term settlement.\nForeigner registration, bank account setup,\nhealth insurance — all guided automatically\nbased on your visa stage.\n\nPreview your task list on the right.", highlight: "task", next: "Next" },
   { icon: "🏃", img: "/onboarding_courses.png", tag: "Feature 04", title: ["Local courses only", "insiders know about"], hi: 1, desc: "Skip the tourist traps.\nAI analyzes where locals actually go and auto-builds\nhalf-day courses with foreigner-friendly spots.\n\nPreview an AI course on the right.", highlight: "course", next: "Next" },
   { icon: "🤝", img: "/onboarding_connect.png", tag: "Features 04 · 05", title: ["Connect with locals", "and expats alike"], hi: 1, desc: "Language exchange, hobby meetups, neighborhood hangouts.\nAI auto-matches you based on interests and location.", highlight: "people", next: "Next" },
-  { icon: "💬", img: "/onboarding_chat.png", tag: "Feature 06", title: ["Real-time translation chat —", "no language barrier"], hi: 1, desc: "Don't know Korean? No problem.\nSend a message and AI instantly translates it for the other person.\nNatural conversations, real connections.", highlight: "people", cta: "Start for free", login: "I already have an account" },
+  { icon: "💬", img: "/onboarding_chat.png", tag: "Feature 05", title: ["Real-time translation chat —", "no language barrier"], hi: 1, desc: "Don't know Korean? No problem.\nSend a message and AI instantly translates it for the other person.\nNatural conversations, real connections.", highlight: "people", next: "Next" },
+  { icon: "🤝", img: "/onboarding_culture.png", tag: "Feature 06", title: ["Korean Culture &", "Etiquette Guide"], hi: 0, desc: "Bowing, dining manners, transit etiquette,\nand everyday social customs — explained simply.\nPrep with our guide so every interaction\nin Korea feels natural.", highlight: "culture", cta: "Start for free", login: "I already have an account" },
 ];
 
 // ─── Map preview (right panel) ─────────────────────────────────────────────────
@@ -145,6 +149,29 @@ function MapPreview({ highlight, isKo }: { highlight: Highlight; isKo: boolean }
             ))}
           </div>
           <div style={{ fontSize: 9, color: "#9BB5B8", marginTop: 6 }}>{isKo ? "3시간 · 약 3만원 · 로컬성 92점" : "3 hrs · ~₩30,000 · Local score 92"}</div>
+        </div>
+      )}
+
+      {/* ── Highlight: culture ── */}
+      {highlight === "culture" && (
+        <div style={{ position: "absolute", top: 115, left: 12, background: "#0B1E2D", borderRadius: 9, border: "1px solid rgba(21,182,193,0.25)", padding: "10px 12px", width: 210, boxShadow: "0 2px 12px rgba(0,0,0,0.18)" }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: "#15b6c1", marginBottom: 8 }}>🤝 {isKo ? "문화 & 에티켓 가이드" : "Culture & Etiquette"}</div>
+          {[
+            { ok: true, ko: "두 손으로 주고받기", en: "Use both hands when giving/receiving" },
+            { ok: false, ko: "밥에 젓가락 꽂기 금지", en: "Never stick chopsticks in rice" },
+            { ok: true, ko: "어른 먼저 드신 후 식사 시작", en: "Wait for elders to eat first" },
+            { ok: false, ko: "지하철에서 음식 섭취 자제", en: "Don't eat on the subway" },
+          ].map((item, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 5 }}>
+              <div style={{ width: 14, height: 14, borderRadius: "50%", background: item.ok ? "#15b6c1" : "#FF6B6B", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, color: "#fff", fontWeight: 800, flexShrink: 0 }}>
+                {item.ok ? "✓" : "✕"}
+              </div>
+              <span style={{ fontSize: 9.5, color: "rgba(255,255,255,0.8)", lineHeight: 1.3 }}>{isKo ? item.ko : item.en}</span>
+            </div>
+          ))}
+          <div style={{ marginTop: 8, padding: "5px 8px", background: "rgba(21,182,193,0.15)", borderRadius: 5, fontSize: 9, color: "#15b6c1", fontWeight: 600 }}>
+            → {isKo ? "에티켓 가이드 전체 보기" : "View full etiquette guide"}
+          </div>
         </div>
       )}
 
@@ -441,7 +468,30 @@ export default function IntroPage() {
             background: "#fff", borderRadius: 20, padding: 10,
             boxShadow: "0 10px 30px rgba(0,0,0,0.35)", overflow: "hidden",
           }}>
-            {ms.chatPreview ? (
+            {ms.culturePreview ? (
+              /* Inline culture etiquette mockup */
+              <div style={{ width: "100%", height: "100%", borderRadius: 12, background: "#0B1E2D", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+                <div style={{ background: "#15b6c1", padding: "8px 12px", display: "flex", alignItems: "center", gap: 6 }}>
+                  <span style={{ fontSize: 14 }}>🤝</span>
+                  <span style={{ fontSize: 11, fontWeight: 800, color: "#fff" }}>{isKo ? "문화 & 에티켓 가이드" : "Culture & Etiquette Guide"}</span>
+                </div>
+                <div style={{ flex: 1, padding: "10px 12px", display: "flex", flexDirection: "column", gap: 6, overflowY: "auto" }}>
+                  {[
+                    { ok: true, ko: "두 손으로 물건을 주고받으면 예의 바르게 보여요", en: "Use both hands when giving or receiving things" },
+                    { ok: false, ko: "밥그릇에 젓가락을 꽂으면 절대 안 돼요", en: "Never stick chopsticks upright in rice" },
+                    { ok: true, ko: "어른이 수저를 들기를 기다렸다가 식사 시작해요", en: "Wait for elders to pick up chopsticks first" },
+                    { ok: false, ko: "지하철 안에서 음식을 먹으면 시선이 집중돼요", en: "Don't eat on the subway — it draws stares" },
+                  ].map((item, i) => (
+                    <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 7, background: "rgba(255,255,255,0.06)", borderRadius: 7, padding: "7px 9px" }}>
+                      <div style={{ width: 16, height: 16, borderRadius: "50%", background: item.ok ? "#15b6c1" : "#FF6B6B", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: "#fff", fontWeight: 800, flexShrink: 0, marginTop: 1 }}>
+                        {item.ok ? "✓" : "✕"}
+                      </div>
+                      <span style={{ fontSize: 9, color: "rgba(255,255,255,0.82)", lineHeight: 1.5 }}>{isKo ? item.ko : item.en}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : ms.chatPreview ? (
               /* Inline chat mockup for the translation chat slide */
               <div style={{ width: "100%", height: "100%", borderRadius: 12, background: "#F5F9FA", display: "flex", flexDirection: "column", overflow: "hidden" }}>
                 <div style={{ background: "#0B1E2D", padding: "8px 12px", display: "flex", alignItems: "center", gap: 8 }}>
