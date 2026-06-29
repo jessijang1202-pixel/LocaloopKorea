@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useLang } from "@/lib/lang";
 import dynamic from "next/dynamic";
 import { SEED_PLACES } from "@/data/seed";
@@ -78,15 +77,12 @@ export default function MapPage() {
 
   return (
     <div className="ll-fullpage" style={{ display: "flex", flexDirection: "column" }}>
-      {/* Search bar + Guide button */}
-      <div style={{ background: "var(--card)", borderBottom: "1px solid var(--border)", padding: "8px 14px", display: "flex", gap: 8, alignItems: "center", flexShrink: 0 }}>
-        <div style={{ flex: 1, background: "var(--content-bg)", borderRadius: 10, padding: "10px 14px", display: "flex", alignItems: "center", gap: 8 }}>
+      {/* Search bar */}
+      <div style={{ background: "var(--card)", borderBottom: "1px solid var(--border)", padding: "8px 14px", flexShrink: 0 }}>
+        <div style={{ background: "var(--content-bg)", borderRadius: 10, padding: "10px 14px", display: "flex", alignItems: "center", gap: 8 }}>
           <span>🔍</span>
           <span style={{ fontSize: 13, color: "var(--muted-foreground)" }}>{t.searchPh}</span>
         </div>
-        <Link href="/guide" style={{ display: "inline-flex", alignItems: "center", padding: "5px 12px", borderRadius: 20, background: "#0B1E2D", border: "1.5px solid rgba(21,182,193,0.55)", color: "#fff", fontSize: 11, fontWeight: 700, textDecoration: "none", whiteSpace: "nowrap", letterSpacing: "0.04em" }}>
-          {isKo ? "가이드" : "Guide"}
-        </Link>
       </div>
 
       {/* Filter chips */}

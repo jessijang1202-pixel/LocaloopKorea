@@ -1,8 +1,11 @@
 "use client";
 
+import Link from "next/link";
+import { useLang } from "@/lib/lang";
 import { TopActions } from "@/components/LangToggle";
 
 export function PageHeader() {
+  const isKo = useLang();
   return (
     <div
       className="ll-page-header"
@@ -20,7 +23,23 @@ export function PageHeader() {
         <span style={{ fontSize: 13, fontWeight: 900, color: "#fff", letterSpacing: "-0.02em", whiteSpace: "nowrap" }}>
           Localoop<span style={{ opacity: 0.7 }}>Korea</span>
         </span>
-        <TopActions />
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <Link
+            href="/guide"
+            style={{
+              display: "inline-flex", alignItems: "center",
+              padding: "5px 12px", borderRadius: 20,
+              background: "rgba(11,30,45,0.82)",
+              border: "1.5px solid rgba(21,182,193,0.55)",
+              color: "#fff", fontSize: 11, fontWeight: 700,
+              textDecoration: "none", whiteSpace: "nowrap",
+              letterSpacing: "0.04em",
+            }}
+          >
+            {isKo ? "가이드" : "Guide"}
+          </Link>
+          <TopActions />
+        </div>
       </div>
     </div>
   );
