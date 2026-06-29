@@ -24,6 +24,7 @@ export function PageHeader() {
           Localoop<span style={{ opacity: 0.7 }}>Korea</span>
         </span>
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <TopActions />
           <Link
             href="/guide"
             style={{
@@ -38,7 +39,6 @@ export function PageHeader() {
           >
             {isKo ? "가이드" : "Guide"}
           </Link>
-          <TopActions />
         </div>
       </div>
     </div>
