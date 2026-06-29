@@ -7,19 +7,63 @@ import { useTheme, toggleTheme } from "@/lib/theme";
 
 type Tab = { href: string; icon: string; labelKo: string; labelEn: string };
 
-// PC 사이드바용 탭 (나 포함)
 const SIDEBAR_TABS: Tab[] = [
-  { href: "/map",       icon: "🗺️",  labelKo: "지도",     labelEn: "Map" },
-  { href: "/tasks",     icon: "✅",   labelKo: "과제",     labelEn: "Tasks" },
-  { href: "/courses",   icon: "🏃",   labelKo: "코스",     labelEn: "Courses" },
-  { href: "/community", icon: "👥",   labelKo: "커뮤니티",  labelEn: "Community" },
-  { href: "/chat",      icon: "💬",   labelKo: "채팅",     labelEn: "Chat" },
-  { href: "/etiquette", icon: "🤝",   labelKo: "문화",     labelEn: "Culture" },
-  { href: "/profile",   icon: "👤",   labelKo: "나",       labelEn: "Me" },
+  { href: "/map",       icon: "map",       labelKo: "지도",     labelEn: "Map" },
+  { href: "/tasks",     icon: "tasks",     labelKo: "과제",     labelEn: "Tasks" },
+  { href: "/courses",   icon: "courses",   labelKo: "코스",     labelEn: "Courses" },
+  { href: "/community", icon: "community", labelKo: "커뮤니티",  labelEn: "Community" },
+  { href: "/chat",      icon: "chat",      labelKo: "채팅",     labelEn: "Chat" },
+  { href: "/etiquette", icon: "culture",   labelKo: "문화",     labelEn: "Culture" },
+  { href: "/profile",   icon: "profile",   labelKo: "나",       labelEn: "Me" },
 ];
 
-// 모바일 하단 탭 (나는 헤더에 있으므로 제외, 문화 포함)
 const BOTTOM_TABS: Tab[] = SIDEBAR_TABS.filter(t => t.href !== "/profile");
+
+function TabIcon({ name, size = 22 }: { name: string; size?: number }) {
+  const base = { width: size, height: size, fill: "none", stroke: "currentColor", strokeWidth: 1.75, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+  if (name === "map") return (
+    <svg viewBox="0 0 24 24" {...base}>
+      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+      <circle cx="12" cy="9" r="2.5" />
+    </svg>
+  );
+  if (name === "tasks") return (
+    <svg viewBox="0 0 24 24" {...base}>
+      <rect x="4" y="3" width="16" height="18" rx="2.5" />
+      <path d="M8 9h8M8 13h5M8 17h3" />
+      <path d="M9 3a3 3 0 006 0" />
+    </svg>
+  );
+  if (name === "courses") return (
+    <svg viewBox="0 0 24 24" {...base}>
+      <path d="M8 21h8M12 17v4M5 4h14l-1.5 8a5.5 5.5 0 01-11 0L5 4zM3 4h3M21 4h-3" />
+    </svg>
+  );
+  if (name === "community") return (
+    <svg viewBox="0 0 24 24" {...base}>
+      <circle cx="9" cy="7" r="3" />
+      <path d="M3 21v-2a5 5 0 015-5h4a5 5 0 015 5v2" />
+      <circle cx="17" cy="7" r="2.5" />
+      <path d="M21 21v-2a4 4 0 00-3-3.85" />
+    </svg>
+  );
+  if (name === "chat") return (
+    <svg viewBox="0 0 24 24" {...base}>
+      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+      <circle cx="9" cy="11" r="0.9" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="11" r="0.9" fill="currentColor" stroke="none" />
+      <circle cx="15" cy="11" r="0.9" fill="currentColor" stroke="none" />
+    </svg>
+  );
+  if (name === "culture") return (
+    <svg viewBox="0 0 24 24" {...base}>
+      <path d="M17 8C8 10 5.9 16.17 3.82 19.82" />
+      <path d="M21 3A17 17 0 003.82 19.82" />
+      <path d="M3.82 19.82L4 21" />
+    </svg>
+  );
+  return null;
+}
 
 export function AppNav() {
   const pathname = usePathname();
@@ -32,9 +76,8 @@ export function AppNav() {
 
   return (
     <>
-      {/* PC: icon + label sidebar (168px) */}
+      {/* PC: text-only sidebar */}
       <aside className="ll-sidebar">
-        {/* 로고 — 2줄 */}
         <div style={{ padding: "16px 14px 14px", display: "flex", alignItems: "center", gap: 10, borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
           <div style={{
             width: 36, height: 36, borderRadius: 9,
@@ -50,7 +93,6 @@ export function AppNav() {
           </div>
         </div>
 
-        {/* Nav tabs */}
         <nav style={{ flex: 1, padding: "10px 10px", display: "flex", flexDirection: "column", gap: 2 }}>
           {SIDEBAR_TABS.map((tab) => {
             const active = isActive(tab.href);
@@ -72,7 +114,6 @@ export function AppNav() {
           })}
         </nav>
 
-        {/* Guide link */}
         <div style={{ padding: "0 10px 6px" }}>
           <Link
             href="/guide"
@@ -89,7 +130,6 @@ export function AppNav() {
           </Link>
         </div>
 
-        {/* Bottom: theme + lang */}
         <div style={{ padding: "8px 10px 16px", borderTop: "1px solid rgba(255,255,255,0.07)", display: "flex", gap: 6 }}>
           <button
             onClick={toggleTheme}
@@ -108,17 +148,25 @@ export function AppNav() {
         </div>
       </aside>
 
-      {/* Mobile: bottom tab bar (나 제외, 문화 포함) */}
-      <nav className="ll-bottomnav">
+      {/* Mobile: bottom tab bar — teal background, outline SVG icons */}
+      <nav className="ll-bottomnav" style={{ background: "#15b6c1" }}>
         {BOTTOM_TABS.map((tab) => {
           const active = isActive(tab.href);
           return (
             <Link
               key={tab.href}
               href={tab.href}
-              style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "6px 2px", textDecoration: "none", color: active ? "#15b6c1" : "#9BB5B8" }}
+              style={{
+                flex: 1,
+                display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+                gap: 3, padding: "5px 2px", textDecoration: "none",
+                color: active ? "#ffffff" : "rgba(255,255,255,0.55)",
+              }}
             >
-              <span style={{ fontSize: 11, fontWeight: active ? 700 : 400 }}>{isKo ? tab.labelKo : tab.labelEn}</span>
+              <TabIcon name={tab.icon} size={22} />
+              <span style={{ fontSize: 9, fontWeight: active ? 700 : 400, lineHeight: 1 }}>
+                {isKo ? tab.labelKo : tab.labelEn}
+              </span>
             </Link>
           );
         })}

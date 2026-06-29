@@ -10,7 +10,7 @@ const FILTERS = {
 
 const COURSES = [
   {
-    id: "c1", emoji: "🍔",
+    id: "c1", category: "food",
     badge: { en: "AI Match", ko: "AI 맞춤" }, badgeColor: { bg: "#D6F5F5", color: "#0B7A82" },
     name: { en: "Itaewon Local Food Half-Day", ko: "이태원 로컬 맛집 반나절 코스" },
     meta: { en: "3 spots · ~3 hrs · Budget ₩30,000", ko: "3곳 · 약 3시간 · 예산 3만원" },
@@ -21,7 +21,7 @@ const COURSES = [
     gradient: "linear-gradient(135deg, #D6F5F5, #E8F4FF)",
   },
   {
-    id: "c2", emoji: "🎨",
+    id: "c2", category: "culture",
     badge: { en: "Cultural", ko: "문화" }, badgeColor: { bg: "#E8F4FF", color: "#1565C0" },
     name: { en: "Hannam Gallery & Café Tour", ko: "한남동 갤러리 & 카페 투어" },
     meta: { en: "4 spots · ~4 hrs · Budget ₩20,000", ko: "4곳 · 약 4시간 · 예산 2만원" },
@@ -32,7 +32,7 @@ const COURSES = [
     gradient: "linear-gradient(135deg, #E8F4FF, #EDE7F6)",
   },
   {
-    id: "c3", emoji: "🌙",
+    id: "c3", category: "nightlife",
     badge: { en: "Nightlife", ko: "나이트" }, badgeColor: { bg: "#EDE7F6", color: "#4527A0" },
     name: { en: "Itaewon Night Local Tour", ko: "이태원 나이트 로컬 투어" },
     meta: { en: "3 spots · ~4 hrs · Budget ₩50,000", ko: "3곳 · 약 4시간 · 예산 5만원" },
@@ -43,7 +43,7 @@ const COURSES = [
     gradient: "linear-gradient(135deg, #EDE7F6, #0B1E2D)",
   },
   {
-    id: "c4", emoji: "🏔️",
+    id: "c4", category: "nature",
     badge: { en: "Nature", ko: "자연" }, badgeColor: { bg: "#E8F5E9", color: "#2E7D32" },
     name: { en: "Namsan Mountain Morning Walk", ko: "남산 아침 산책 코스" },
     meta: { en: "2 spots · ~2 hrs · Budget ₩5,000", ko: "2곳 · 약 2시간 · 예산 5천원" },
@@ -76,7 +76,7 @@ export default function CoursesPage() {
         if (fEn === "AI Pick") return c.badge.en === "AI Match";
         if (fEn === "Half-Day") return c.filter === "Half-Day";
         if (fEn === "Full Day") return c.filter === "Full Day";
-        if (fEn === "Food") return c.emoji === "🍔";
+        if (fEn === "Food") return c.category === "food";
         if (fEn === "Culture") return c.filter === "Culture";
         if (fEn === "Nature") return c.filter === "Nature";
         return true;
@@ -92,7 +92,7 @@ export default function CoursesPage() {
 
   const searchInput = (
     <div style={{ background: "var(--content-bg)", borderRadius: 10, padding: "8px 12px", display: "flex", alignItems: "center", gap: 7 }}>
-      <span style={{ fontSize: 13, color: "var(--muted-foreground)" }}>🔍</span>
+      <span style={{ fontSize: 11, color: "var(--muted-foreground)" }}>검색</span>
       <input
         value={search}
         onChange={(e) => setSearch(e.target.value)}
@@ -115,7 +115,7 @@ export default function CoursesPage() {
           </button>
         );
       })}
-      <button onClick={() => setActiveFilter(0)} style={{ flexShrink: 0, padding: "5px 10px", borderRadius: 20, border: "1px solid var(--border)", background: "var(--content-bg)", color: "var(--muted-foreground)", fontSize: 13, cursor: "pointer" }}>🔄</button>
+      <button onClick={() => setActiveFilter(0)} style={{ flexShrink: 0, padding: "5px 10px", borderRadius: 20, border: "1px solid var(--border)", background: "var(--content-bg)", color: "var(--muted-foreground)", fontSize: 11, fontWeight: 600, cursor: "pointer" }}>{isKo ? "초기화" : "Reset"}</button>
     </div>
   );
 
@@ -128,7 +128,7 @@ export default function CoursesPage() {
     if (compact) {
       return (
         <div key={course.id} onClick={() => setSelectedId(course.id)} style={{ background: isSelected ? "var(--card-selected)" : "var(--card)", borderRadius: 14, border: isSelected ? "1.5px solid #15b6c1" : "1px solid var(--border)", marginBottom: 10, overflow: "hidden", boxShadow: "0 1px 5px rgba(0,0,0,0.05)", cursor: "pointer" }}>
-          <div style={{ height: 56, background: course.gradient, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28 }}>{course.emoji}</div>
+          <div style={{ height: 56, background: course.gradient }} />
           <div style={{ padding: "10px 12px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 4 }}>
               <span style={{ fontSize: 9, fontWeight: 700, padding: "2px 7px", borderRadius: 5, background: course.badgeColor.bg, color: course.badgeColor.color }}>{badge}</span>
@@ -150,7 +150,7 @@ export default function CoursesPage() {
     }
     return (
       <div key={course.id} style={{ background: "var(--card)", borderRadius: 16, border: "1px solid var(--border)", marginBottom: 12, overflow: "hidden", boxShadow: "0 1px 6px rgba(0,0,0,0.05)" }}>
-        <div style={{ height: 80, background: course.gradient, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 36 }}>{course.emoji}</div>
+        <div style={{ height: 80, background: course.gradient }} />
         <div style={{ padding: "12px 14px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
             <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 6, background: course.badgeColor.bg, color: course.badgeColor.color }}>{badge}</span>
@@ -183,8 +183,7 @@ export default function CoursesPage() {
     const metaParts = meta.split(" · ");
     return (
       <div style={{ height: "100%", overflowY: "auto", background: "var(--content-bg)" }}>
-        <div style={{ height: 160, background: selectedCourse.gradient, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 64, position: "relative" }}>
-          {selectedCourse.emoji}
+        <div style={{ height: 160, background: selectedCourse.gradient, position: "relative" }}>
           <div style={{ position: "absolute", bottom: 16, left: 24, display: "flex", gap: 6 }}>
             <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 6, background: selectedCourse.badgeColor.bg, color: selectedCourse.badgeColor.color }}>{badge}</span>
             <span style={{ fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 6, background: "#FFF9C4", color: "#A56000" }}>{t.localScore} {selectedCourse.score}</span>
@@ -238,7 +237,7 @@ export default function CoursesPage() {
             const active = activeFilter === i;
             return <button key={label} onClick={() => setActiveFilter(i)} style={{ flexShrink: 0, padding: "5px 14px", borderRadius: 20, border: active ? "none" : "1px solid var(--border)", background: active ? "#15b6c1" : "var(--content-bg)", color: active ? "#fff" : "var(--muted-foreground)", fontSize: 12, fontWeight: active ? 700 : 400, cursor: "pointer", whiteSpace: "nowrap" }}>{label}</button>;
           })}
-          <button onClick={() => setActiveFilter(0)} style={{ flexShrink: 0, padding: "5px 10px", borderRadius: 20, border: "1px solid var(--border)", background: "var(--content-bg)", color: "var(--muted-foreground)", fontSize: 13, cursor: "pointer" }}>🔄</button>
+          <button onClick={() => setActiveFilter(0)} style={{ flexShrink: 0, padding: "5px 10px", borderRadius: 20, border: "1px solid var(--border)", background: "var(--content-bg)", color: "var(--muted-foreground)", fontSize: 11, fontWeight: 600, cursor: "pointer" }}>{isKo ? "초기화" : "Reset"}</button>
         </div>
         <div style={{ flex: 1, overflowY: "auto", background: "var(--content-bg)", padding: "12px 14px 0" }}>
           {filtered.length === 0 && <div style={{ textAlign: "center", padding: "40px 0", color: "var(--muted-foreground)", fontSize: 13 }}>{t.noResults}</div>}

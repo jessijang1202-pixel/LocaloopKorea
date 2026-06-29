@@ -102,18 +102,6 @@ export function TopActions() {
       >
         {theme === "dark" ? "☀️" : "🌙"}
       </button>
-      <button
-        onClick={handleInstall}
-        style={{
-          display: "inline-flex", alignItems: "center", gap: 3, padding: "5px 9px",
-          borderRadius: 20, background: "rgba(255,215,0,0.22)",
-          border: "1px solid rgba(255,215,0,0.5)", color: "#fff",
-          fontSize: 10, fontWeight: 700, cursor: "pointer",
-          whiteSpace: "nowrap", letterSpacing: "0.03em", lineHeight: 1,
-        }}
-      >
-        🏠 {isKo ? "저장" : "Save"}
-      </button>
     </div>
   );
 }

@@ -112,7 +112,7 @@ export default function CommunityPage() {
         return (
           <div key={m.id} onClick={() => setSelectedMeetupId(m.id)} style={{ background: isSelected ? "var(--card-selected)" : "var(--card)", borderRadius: compact ? 12 : 16, border: isSelected ? "1.5px solid #15b6c1" : "1px solid var(--border)", padding: compact ? "12px" : "14px", marginBottom: 9, boxShadow: "0 1px 5px rgba(0,0,0,0.04)", cursor: "pointer" }}>
             <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-              <div style={{ width: compact ? 38 : 44, height: compact ? 38 : 44, borderRadius: 12, background: "var(--icon-bg)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: compact ? 18 : 22, flexShrink: 0 }}>{m.emoji}</div>
+              <div style={{ width: compact ? 38 : 44, height: compact ? 38 : 44, borderRadius: 12, background: "var(--icon-bg)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: "var(--muted-foreground)", flexShrink: 0 }}>{(isKo ? m.tag.ko : m.tag.en).slice(0, 2)}</div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 2, flexWrap: "wrap" }}>
                   <span style={{ fontSize: compact ? 12 : 13, fontWeight: 700, color: "var(--foreground)" }}>{isKo ? m.name.ko : m.name.en}</span>
@@ -146,7 +146,6 @@ export default function CommunityPage() {
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 2 }}>
                 <span style={{ fontSize: 12, fontWeight: 700, color: "var(--foreground)" }}>{person.name}</span>
-                <span>{person.flag}</span>
               </div>
               <p style={{ fontSize: 10, color: "var(--muted-foreground)", marginBottom: 4 }}>{isKo ? person.region.ko : person.region.en} · {isKo ? person.level.ko : person.level.en}</p>
               <div style={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
@@ -173,11 +172,10 @@ export default function CommunityPage() {
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ display: "flex", gap: 4, marginBottom: 2 }}>
                 <span style={{ fontSize: 12, fontWeight: 700, color: "var(--foreground)" }}>{p.display_name ?? "?"}</span>
-                <span>{isForeigner ? "🌏" : "🇰🇷"}</span>
               </div>
               <p style={{ fontSize: 10, color: "var(--muted-foreground)", marginBottom: 4 }}>{isKo ? (region?.name_ko ?? "") : (region?.name_en ?? "")} · {isKo ? (isForeigner ? "외국인" : "한국인") : (isForeigner ? "Foreigner" : "Korean")}</p>
               <div style={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
-                {interests.slice(0, 3).map((i) => <span key={i.name_en} style={{ fontSize: 8, fontWeight: 600, padding: "1px 5px", borderRadius: 4, background: "var(--icon-bg)", color: "var(--muted-foreground)" }}>{i.icon} {i.name_en}</span>)}
+                {interests.slice(0, 3).map((i) => <span key={i.name_en} style={{ fontSize: 8, fontWeight: 600, padding: "1px 5px", borderRadius: 4, background: "var(--icon-bg)", color: "var(--muted-foreground)" }}>{i.name_en}</span>)}
               </div>
             </div>
             <button style={{ flexShrink: 0, padding: "5px 12px", borderRadius: 20, border: "none", background: "#15b6c1", color: "#fff", fontWeight: 700, fontSize: 10, cursor: "pointer" }}>{t.connect}</button>
@@ -194,7 +192,7 @@ export default function CommunityPage() {
     return (
       <div style={{ height: "100%", overflowY: "auto", background: "var(--content-bg)", padding: "32px 40px 40px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24 }}>
-          <div style={{ width: 64, height: 64, borderRadius: 18, background: "var(--icon-bg)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, flexShrink: 0 }}>{selectedMeetup.emoji}</div>
+          <div style={{ width: 64, height: 64, borderRadius: 18, background: "var(--icon-bg)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, color: "var(--muted-foreground)", flexShrink: 0 }}>{(isKo ? selectedMeetup.tag.ko : selectedMeetup.tag.en).slice(0, 2)}</div>
           <div>
             <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 5, background: selectedMeetup.tagColor.bg, color: selectedMeetup.tagColor.color, display: "inline-block", marginBottom: 6 }}>{isKo ? selectedMeetup.tag.ko : selectedMeetup.tag.en}</span>
             <h2 style={{ fontSize: 20, fontWeight: 900, color: "var(--foreground)", lineHeight: 1.2 }}>{isKo ? selectedMeetup.name.ko : selectedMeetup.name.en}</h2>
@@ -202,11 +200,11 @@ export default function CommunityPage() {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 }}>
           <div style={{ background: "var(--card)", borderRadius: 12, padding: "14px", border: "1px solid var(--border)" }}>
-            <div style={{ fontSize: 10, color: "var(--muted-foreground)", marginBottom: 4 }}>📅 {isKo ? "일정" : "When"}</div>
+            <div style={{ fontSize: 10, color: "var(--muted-foreground)", marginBottom: 4 }}>{isKo ? "일정" : "When"}</div>
             <div style={{ fontSize: 13, fontWeight: 700, color: "var(--foreground)" }}>{isKo ? selectedMeetup.time.ko : selectedMeetup.time.en}</div>
           </div>
           <div style={{ background: "var(--card)", borderRadius: 12, padding: "14px", border: "1px solid var(--border)" }}>
-            <div style={{ fontSize: 10, color: "var(--muted-foreground)", marginBottom: 4 }}>📍 {t.location}</div>
+            <div style={{ fontSize: 10, color: "var(--muted-foreground)", marginBottom: 4 }}>{t.location}</div>
             <div style={{ fontSize: 13, fontWeight: 700, color: "var(--foreground)" }}>{isKo ? selectedMeetup.location.ko : selectedMeetup.location.en}</div>
           </div>
         </div>

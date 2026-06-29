@@ -13,9 +13,9 @@ const KakaoMap = dynamic(
 
 const ITAEWON = { lat: 37.534, lng: 126.9946 };
 
-const CAT_ICONS: Record<string, string> = {
-  cafe: "☕", restaurant: "🍽️", bar: "🍺", market: "🛍️",
-  shopping: "🛒", activity: "🏃", health: "🏥", transport: "🚌",
+const CAT_CODES: Record<string, string> = {
+  cafe: "CF", restaurant: "RS", bar: "BR", market: "MK",
+  shopping: "SH", activity: "AC", health: "HL", transport: "TR",
 };
 
 function getRating(p: Place): "S" | "A" | "B" | "C" {
@@ -78,8 +78,8 @@ function PlaceCard({
         cursor: "pointer", boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
       }}
     >
-      <div style={{ width: 44, height: 44, borderRadius: 12, background: isSelected ? "#D6F5F5" : "var(--icon-bg)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0 }}>
-        {CAT_ICONS[place.category] ?? "📍"}
+      <div style={{ width: 44, height: 44, borderRadius: 12, background: isSelected ? "#D6F5F5" : "var(--icon-bg)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 10, fontWeight: 800, color: isSelected ? "#0B7A82" : "var(--muted-foreground)" }}>
+        {CAT_CODES[place.category] ?? "PL"}
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
@@ -131,7 +131,7 @@ export default function MapPage() {
       <div className="ll-split-panel-sticky">
         <div style={{ padding: "10px 14px 8px" }}>
           <div style={{ background: "var(--content-bg)", borderRadius: 10, padding: "10px 14px", display: "flex", alignItems: "center", gap: 8 }}>
-            <span>🔍</span>
+            <span style={{ fontSize: 11, color: "var(--muted-foreground)" }}>검색</span>
             <span style={{ fontSize: 13, color: "var(--muted-foreground)" }}>{t.searchPh}</span>
           </div>
         </div>
@@ -156,7 +156,7 @@ export default function MapPage() {
       <div className="ll-mobile-only" style={{ display: "flex", flexDirection: "column", height: "100%" }}>
         <div style={{ background: "var(--card)", borderBottom: "1px solid var(--border)", padding: "8px 14px", flexShrink: 0 }}>
           <div style={{ background: "var(--content-bg)", borderRadius: 10, padding: "10px 14px", display: "flex", alignItems: "center", gap: 8 }}>
-            <span>🔍</span>
+            <span style={{ fontSize: 11, color: "var(--muted-foreground)" }}>검색</span>
             <span style={{ fontSize: 13, color: "var(--muted-foreground)" }}>{t.searchPh}</span>
           </div>
         </div>
@@ -203,8 +203,8 @@ export default function MapPage() {
           {selectedPlace && (
             <div style={{ position: "absolute", bottom: 24, left: "50%", transform: "translateX(-50%)", width: "min(420px, calc(100% - 48px))", background: "var(--card)", borderRadius: 20, border: "1px solid var(--border)", boxShadow: "0 8px 40px rgba(0,0,0,0.18)", padding: "16px 18px", zIndex: 10 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <div style={{ width: 48, height: 48, borderRadius: 14, background: "#D6F5F5", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, flexShrink: 0 }}>
-                  {CAT_ICONS[selectedPlace.category] ?? "📍"}
+                <div style={{ width: 48, height: 48, borderRadius: 14, background: "#D6F5F5", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 11, fontWeight: 800, color: "#0B7A82" }}>
+                  {CAT_CODES[selectedPlace.category] ?? "PL"}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
@@ -217,10 +217,10 @@ export default function MapPage() {
                 </div>
                 <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
                   <button style={{ padding: "7px 14px", borderRadius: 20, border: "1px solid var(--border)", background: "var(--content-bg)", color: "var(--muted-foreground)", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
-                    🔖 {t.save}
+                    {t.save}
                   </button>
                   <button style={{ padding: "7px 14px", borderRadius: 20, border: "none", background: "#15b6c1", color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer" }}>
-                    🗺 {t.startRoute}
+                    {t.startRoute}
                   </button>
                 </div>
               </div>

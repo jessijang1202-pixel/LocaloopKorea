@@ -4,13 +4,10 @@ import { useState } from "react";
 import { useLang } from "@/lib/lang";
 import { useTheme } from "@/lib/theme";
 
-function Section({ title, emoji, children }: { title: string; emoji: string; children: React.ReactNode }) {
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div style={{ marginBottom: 28 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
-        <span style={{ fontSize: 22 }}>{emoji}</span>
-        <h2 style={{ fontSize: 17, fontWeight: 800, color: "var(--foreground)", letterSpacing: "-0.02em" }}>{title}</h2>
-      </div>
+      <h2 style={{ fontSize: 17, fontWeight: 800, color: "var(--foreground)", letterSpacing: "-0.02em", marginBottom: 14 }}>{title}</h2>
       {children}
     </div>
   );
@@ -123,7 +120,7 @@ export default function EtiquettePage() {
 
         {/* GREETINGS */}
         {show("greeting") && (
-          <Section emoji="🙇" title={isKo ? "인사 & 기본 예절" : "Greetings & Basic Manners"}>
+          <Section title={isKo ? "인사 & 기본 예절" : "Greetings & Basic Manners"}>
             <Card accent isDark={isDark}>
               <div style={{ fontSize: 13, fontWeight: 800, color: "#15b6c1", marginBottom: 6 }}>
                 {isKo ? "인사의 나라 — 고개 숙임(절)이 핵심" : "The Bowing Nation — the bow is everything"}
@@ -168,7 +165,7 @@ export default function EtiquettePage() {
             </Card>
 
             <Callout color="teal">
-              💡 {isKo
+              {isKo
                 ? "'감사합니다 (Gamsahamnida)'와 '죄송합니다 (Joesonghamnida)'만 알아도 웬만한 상황을 넘길 수 있습니다."
                 : "'Gamsahamnida' (thank you) and 'Joesonghamnida' (I'm sorry) — learn these two and you'll handle most situations fine."}
             </Callout>
@@ -177,7 +174,7 @@ export default function EtiquettePage() {
 
         {/* DINING */}
         {show("dining") && (
-          <Section emoji="🍽️" title={isKo ? "식당 & 식사 문화" : "Restaurant & Dining Culture"}>
+          <Section title={isKo ? "식당 & 식사 문화" : "Restaurant & Dining Culture"}>
             <Card>
               <div style={{ fontSize: 12, fontWeight: 800, color: "var(--foreground)", marginBottom: 10 }}>
                 {isKo ? "한국 식당의 규칙" : "Korean Restaurant Rules"}
@@ -195,7 +192,7 @@ export default function EtiquettePage() {
             </Card>
 
             <Callout color="yellow">
-              🍺 {isKo
+              {isKo
                 ? "술자리 문화: 자신의 잔을 직접 채우지 않고 옆 사람이 채워줍니다. 마시기 싫을 땐 잔을 손으로 가볍게 덮으면 됩니다."
                 : "Drinking culture: you don't pour for yourself — neighbors fill each other's glasses. To decline, lightly cover your glass with your hand."}
             </Callout>
@@ -208,7 +205,6 @@ export default function EtiquettePage() {
                 { emoji: "🎁", ko: "더치페이", en: "Taking turns", desc: isKo ? "번갈아 내는 것이 자연스러워요" : "Rotating who pays is the norm" },
               ].map((item) => (
                 <div key={item.en} style={{ background: "var(--card)", borderRadius: 12, padding: "12px 10px", border: "1px solid var(--border)" }}>
-                  <div style={{ fontSize: 22, marginBottom: 4 }}>{item.emoji}</div>
                   <div style={{ fontSize: 12, fontWeight: 700, color: "var(--foreground)", marginBottom: 2 }}>{isKo ? item.ko : item.en}</div>
                   <div style={{ fontSize: 10, color: "var(--muted-foreground)", lineHeight: 1.4 }}>{item.desc}</div>
                 </div>
@@ -219,7 +215,7 @@ export default function EtiquettePage() {
 
         {/* TRANSPORT */}
         {show("transport") && (
-          <Section emoji="🚇" title={isKo ? "대중교통 에티켓" : "Public Transport Etiquette"}>
+          <Section title={isKo ? "대중교통 에티켓" : "Public Transport Etiquette"}>
             <Card>
               {[
                 { ok: true, ko: "노약자석(분홍/파란 시트)은 비어 있어도 어른·임산부를 위해 비워두세요", en: "Priority seats (pink/blue) should stay empty even if available" },
@@ -234,7 +230,7 @@ export default function EtiquettePage() {
             </Card>
 
             <Callout color="blue">
-              🚌 {isKo
+              {isKo
                 ? "버스 정류장에서 버스가 오면 손을 들어 신호를 보내야 합니다. 아무 신호도 없으면 버스가 그냥 지나칠 수 있어요!"
                 : "At bus stops, you MUST wave your hand to signal the bus. If you don't signal, it may drive past without stopping!"}
             </Callout>
@@ -243,7 +239,7 @@ export default function EtiquettePage() {
 
         {/* SOCIAL */}
         {show("social") && (
-          <Section emoji="👥" title={isKo ? "사회생활 & 인간관계" : "Social Life & Relationships"}>
+          <Section title={isKo ? "사회생활 & 인간관계" : "Social Life & Relationships"}>
             <Card accent isDark={isDark}>
               <div style={{ fontSize: 13, fontWeight: 800, color: "#15b6c1", marginBottom: 6 }}>
                 {isKo ? "나이와 직급이 중요한 나라" : "Age and rank matter a lot here"}
@@ -272,7 +268,7 @@ export default function EtiquettePage() {
             </Card>
 
             <Callout color="teal">
-              🎁 {isKo
+              {isKo
                 ? "선물 문화: 선물을 받으면 바로 열어보지 않는 것이 예의입니다. 나중에 혼자 열어보는 경우가 많아요."
                 : "Gift culture: don't open a gift immediately when received — it's polite to open it later when alone."}
             </Callout>
@@ -281,9 +277,9 @@ export default function EtiquettePage() {
 
         {/* TABOOS */}
         {show("taboo") && (
-          <Section emoji="🚫" title={isKo ? "절대 피해야 할 것들" : "Things to Absolutely Avoid"}>
+          <Section title={isKo ? "절대 피해야 할 것들" : "Things to Absolutely Avoid"}>
             <Callout color="red">
-              ⚠️ {isKo
+              {isKo
                 ? "아래 행동들은 한국에서 심각한 실례 또는 금기로 여겨집니다. 문화적 충격을 피하려면 꼭 기억하세요!"
                 : "The following are considered seriously rude or taboo in Korea. Keep these in mind to avoid culture shock!"}
             </Callout>
@@ -302,7 +298,7 @@ export default function EtiquettePage() {
             </Card>
 
             <Callout color="yellow">
-              💡 {isKo
+              {isKo
                 ? "실수해도 괜찮아요! 대부분의 한국인은 외국인의 문화 차이를 이해하고 너그럽게 받아들입니다. 진심 어린 '죄송합니다'면 충분합니다."
                 : "It's okay to make mistakes! Most Koreans are understanding of cultural differences. A sincere '죄송합니다 (Joesonghamnida)' goes a long way."}
             </Callout>
@@ -311,7 +307,6 @@ export default function EtiquettePage() {
 
         {/* Quick Reference Card */}
         <div style={{ background: isDark ? "linear-gradient(135deg, #0B1E2D 0%, #0a3550 100%)" : "linear-gradient(135deg, #E0F5F6 0%, #C4EBF0 100%)", borderRadius: 18, padding: "20px 16px", textAlign: "center", marginBottom: 8, border: isDark ? "none" : "1px solid var(--border)" }}>
-          <div style={{ fontSize: 20, marginBottom: 8 }}>🤝</div>
           <div style={{ fontSize: 15, fontWeight: 800, color: isDark ? "#fff" : "var(--foreground)", marginBottom: 6 }}>
             {isKo ? "핵심 표현 빠른 참고" : "Key Phrases Quick Reference"}
           </div>

@@ -12,8 +12,8 @@ const T = {
 };
 
 const STATS = [{ key: "places", value: 12 }, { key: "courses", value: 3 }, { key: "connections", value: 8 }, { key: "tasksDone", value: 5 }] as const;
-const ACTIVITY_ROWS = [{ icon: "📍", key: "visited", count: 12 }, { icon: "🏃", key: "completed", count: 3 }, { icon: "👥", key: "joined", count: 2 }] as const;
-const SETTING_ROWS = [{ icon: "✏️", key: "editProfile", href: "/profile/edit" }, { icon: "🙋", key: "aboutMe", href: "/profile/me" }, { icon: "🌐", key: "language", href: "#" }, { icon: "🔔", key: "notifications", href: "#" }] as const;
+const ACTIVITY_ROWS = [{ key: "visited", count: 12 }, { key: "completed", count: 3 }, { key: "joined", count: 2 }] as const;
+const SETTING_ROWS = [{ key: "editProfile", href: "/profile/edit" }, { key: "aboutMe", href: "/profile/me" }, { key: "language", href: "#" }, { key: "notifications", href: "#" }] as const;
 
 type ProfileData = { display_name: string | null; user_type: string | null; nationality: string | null; avatar_url: string | null };
 
@@ -70,7 +70,7 @@ export default function ProfilePage() {
       {/* Level */}
       <div style={{ background: "var(--card)", padding: "12px 16px", borderBottom: "1px solid var(--border)", flexShrink: 0 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
-          <span style={{ fontSize: 11, fontWeight: 700, color: "var(--foreground)" }}>⭐ {t.level} Lv.2</span>
+          <span style={{ fontSize: 11, fontWeight: 700, color: "var(--foreground)" }}>{t.level} Lv.2</span>
           <span style={{ fontSize: 10, color: "var(--muted-foreground)" }}>45%</span>
         </div>
         <div style={{ height: 5, borderRadius: 3, background: "var(--border)", overflow: "hidden" }}>
@@ -91,7 +91,6 @@ export default function ProfilePage() {
       {/* Logout */}
       <div style={{ marginTop: "auto", padding: "12px 14px", borderTop: "1px solid var(--border)" }}>
         <button onClick={handleLogout} disabled={loggingOut} style={{ display: "flex", alignItems: "center", gap: 8, width: "100%", padding: "10px 12px", borderRadius: 10, background: "none", border: "1px solid var(--border)", cursor: "pointer" }}>
-          <span style={{ fontSize: 16 }}>🚪</span>
           <span style={{ fontSize: 13, color: "#EF4444", fontWeight: 600 }}>{loggingOut ? "…" : t.logout}</span>
         </button>
       </div>
@@ -105,10 +104,9 @@ export default function ProfilePage() {
         <div style={{ padding: "12px 16px 6px" }}>
           <p style={{ fontSize: 12, fontWeight: 700, color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.05em" }}>{t.activity}</p>
         </div>
-        {ACTIVITY_ROWS.map(({ icon, key, count }, i) => (
+        {ACTIVITY_ROWS.map(({ key, count }, i) => (
           <div key={key} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", borderTop: i === 0 ? "none" : "1px solid var(--border)" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{ fontSize: 18 }}>{icon}</span>
               <span style={{ fontSize: 13, color: "var(--foreground)" }}>{t[key]}</span>
             </div>
             <span style={{ fontSize: 13, fontWeight: 700, color: "#15b6c1" }}>{count}</span>
@@ -121,17 +119,15 @@ export default function ProfilePage() {
         <div style={{ padding: "12px 16px 6px" }}>
           <p style={{ fontSize: 12, fontWeight: 700, color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.05em" }}>{t.settings}</p>
         </div>
-        {SETTING_ROWS.map(({ icon, key, href }, i) => (
+        {SETTING_ROWS.map(({ key, href }, i) => (
           <Link key={key} href={href} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", borderTop: i === 0 ? "none" : "1px solid var(--border)", textDecoration: "none" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{ fontSize: 18 }}>{icon}</span>
               <span style={{ fontSize: 13, color: "var(--foreground)" }}>{t[key]}</span>
             </div>
             <span style={{ color: "var(--muted-foreground)", fontSize: 16 }}>›</span>
           </Link>
         ))}
         <button onClick={handleLogout} disabled={loggingOut} style={{ display: "flex", alignItems: "center", gap: 10, width: "100%", padding: "12px 16px", borderTop: "1px solid var(--border)", background: "none", border: "none", cursor: "pointer" }}>
-          <span style={{ fontSize: 18 }}>🚪</span>
           <span style={{ fontSize: 13, color: "#EF4444", fontWeight: 600 }}>{loggingOut ? "…" : t.logout}</span>
         </button>
       </div>
@@ -163,7 +159,7 @@ export default function ProfilePage() {
         </div>
         <div style={{ background: "var(--card)", padding: "14px 16px", borderBottom: "1px solid var(--border)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, color: "var(--foreground)" }}>⭐ {t.level} Lv.2</span>
+            <span style={{ fontSize: 12, fontWeight: 700, color: "var(--foreground)" }}>{t.level} Lv.2</span>
             <span style={{ fontSize: 10, color: "var(--muted-foreground)" }}>45%</span>
           </div>
           <div style={{ height: 6, borderRadius: 3, background: "var(--border)", overflow: "hidden" }}>
