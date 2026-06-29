@@ -60,13 +60,12 @@ export function AppNav() {
                 key={tab.href}
                 href={tab.href}
                 style={{
-                  display: "flex", alignItems: "center", gap: 10,
-                  padding: "0 10px", height: 44, borderRadius: 10, textDecoration: "none",
+                  display: "flex", alignItems: "center",
+                  padding: "0 14px", height: 44, borderRadius: 10, textDecoration: "none",
                   background: active ? "rgba(21,182,193,0.18)" : "transparent",
                   borderLeft: active ? "3px solid #15b6c1" : "3px solid transparent",
                 }}
               >
-                <span style={{ fontSize: 18, lineHeight: 1, flexShrink: 0 }}>{tab.icon}</span>
                 <span style={{ fontSize: 13, fontWeight: active ? 700 : 400, color: active ? "#15b6c1" : "rgba(255,255,255,0.65)", whiteSpace: "nowrap" }}>{label}</span>
               </Link>
             );
@@ -78,13 +77,12 @@ export function AppNav() {
           <Link
             href="/guide"
             style={{
-              display: "flex", alignItems: "center", gap: 10,
-              padding: "0 10px", height: 44, borderRadius: 10, textDecoration: "none",
+              display: "flex", alignItems: "center",
+              padding: "0 14px", height: 44, borderRadius: 10, textDecoration: "none",
               background: isActive("/guide") ? "rgba(21,182,193,0.18)" : "transparent",
               borderLeft: isActive("/guide") ? "3px solid #15b6c1" : "3px solid transparent",
             }}
           >
-            <span style={{ fontSize: 18, lineHeight: 1, flexShrink: 0 }}>📖</span>
             <span style={{ fontSize: 13, fontWeight: isActive("/guide") ? 700 : 400, color: isActive("/guide") ? "#15b6c1" : "rgba(255,255,255,0.65)" }}>
               {isKo ? "가이드" : "Guide"}
             </span>
@@ -118,10 +116,9 @@ export function AppNav() {
             <Link
               key={tab.href}
               href={tab.href}
-              style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, padding: "6px 2px", textDecoration: "none", color: active ? "#15b6c1" : "#9BB5B8" }}
+              style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "6px 2px", textDecoration: "none", color: active ? "#15b6c1" : "#9BB5B8" }}
             >
-              <span style={{ fontSize: 18, lineHeight: 1 }}>{tab.icon}</span>
-              <span style={{ fontSize: 8, fontWeight: active ? 700 : 400 }}>{isKo ? tab.labelKo : tab.labelEn}</span>
+              <span style={{ fontSize: 11, fontWeight: active ? 700 : 400 }}>{isKo ? tab.labelKo : tab.labelEn}</span>
             </Link>
           );
         })}
