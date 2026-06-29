@@ -3,8 +3,6 @@
 import Link from "next/link";
 import { useLang } from "@/lib/lang";
 
-// ─── Mock UI helpers ──────────────────────────────────────────────────────────
-
 function RatingBadge({ r }: { r: "S" | "A" | "B" | "C" }) {
   const map = {
     S: { bg: "#D6F5F5", color: "#0B7A82" },
@@ -34,10 +32,7 @@ function Tag({ label, color }: { label: string; color: string }) {
   );
 }
 
-function MockPlaceCard({
-  emoji, name, addr, rating, tags,
-  selected = false,
-}: {
+function MockPlaceCard({ emoji, name, addr, rating, tags, selected = false }: {
   emoji: string; name: string; addr: string; rating: "S" | "A" | "B" | "C";
   tags: { label: string; color: string }[]; selected?: boolean;
 }) {
@@ -45,19 +40,19 @@ function MockPlaceCard({
     <div style={{
       display: "flex", alignItems: "center", gap: 10,
       padding: "10px 12px", borderRadius: 14, marginBottom: 6,
-      background: selected ? "#EDF9F9" : "#fff",
-      border: selected ? "1.5px solid #15b6c1" : "1px solid #E0E8EA",
+      background: selected ? "var(--card-selected)" : "var(--card)",
+      border: selected ? "1.5px solid #15b6c1" : "1px solid var(--border)",
       boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
     }}>
-      <div style={{ width: 40, height: 40, borderRadius: 10, background: "#F0FAFA", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>
+      <div style={{ width: 40, height: 40, borderRadius: 10, background: "var(--icon-bg)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>
         {emoji}
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 2 }}>
-          <span style={{ fontSize: 12, fontWeight: 700, color: "#1A2B2C" }}>{name}</span>
+          <span style={{ fontSize: 12, fontWeight: 700, color: "var(--foreground)" }}>{name}</span>
           <RatingBadge r={rating} />
         </div>
-        <p style={{ fontSize: 10, color: "#4A6467", marginBottom: 3 }}>{addr}</p>
+        <p style={{ fontSize: 10, color: "var(--muted-foreground)", marginBottom: 3 }}>{addr}</p>
         <div style={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
           {tags.map((t, i) => <Tag key={i} {...t} />)}
         </div>
@@ -68,12 +63,12 @@ function MockPlaceCard({
 
 function MockTaskRow({ stage, title, done }: { stage: string; title: string; done: boolean }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 12px", borderRadius: 10, background: "#fff", border: "1px solid #E0E8EA", marginBottom: 5 }}>
-      <div style={{ width: 22, height: 22, borderRadius: "50%", background: done ? "#15b6c1" : "#F0FAFA", border: done ? "none" : "1.5px solid #C0D8DA", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 12px", borderRadius: 10, background: "var(--card)", border: "1px solid var(--border)", marginBottom: 5 }}>
+      <div style={{ width: 22, height: 22, borderRadius: "50%", background: done ? "#15b6c1" : "var(--icon-bg)", border: done ? "none" : "1.5px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
         {done && <span style={{ color: "#fff", fontSize: 11, fontWeight: 800 }}>✓</span>}
       </div>
       <div>
-        <p style={{ fontSize: 11, fontWeight: 600, color: "#1A2B2C" }}>{title}</p>
+        <p style={{ fontSize: 11, fontWeight: 600, color: "var(--foreground)" }}>{title}</p>
         <p style={{ fontSize: 9, color: "#15b6c1", fontWeight: 600 }}>{stage}</p>
       </div>
     </div>
@@ -85,7 +80,7 @@ function Section({ title, emoji, children }: { title: string; emoji: string; chi
     <div style={{ marginBottom: 24 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
         <span style={{ fontSize: 20 }}>{emoji}</span>
-        <h2 style={{ fontSize: 16, fontWeight: 800, color: "#1A2B2C", letterSpacing: "-0.02em" }}>{title}</h2>
+        <h2 style={{ fontSize: 16, fontWeight: 800, color: "var(--foreground)", letterSpacing: "-0.02em" }}>{title}</h2>
       </div>
       {children}
     </div>
@@ -95,9 +90,9 @@ function Section({ title, emoji, children }: { title: string; emoji: string; chi
 function Card({ children, accent = false }: { children: React.ReactNode; accent?: boolean }) {
   return (
     <div style={{
-      background: accent ? "linear-gradient(135deg, #0B1E2D 0%, #0a3044 100%)" : "#fff",
+      background: accent ? "linear-gradient(135deg, #0B1E2D 0%, #0a3044 100%)" : "var(--card)",
       borderRadius: 16, padding: "16px",
-      border: accent ? "none" : "1px solid #E0E8EA",
+      border: accent ? "none" : "1px solid var(--border)",
       boxShadow: accent ? "0 4px 20px rgba(11,30,45,0.15)" : "0 1px 5px rgba(0,0,0,0.04)",
       marginBottom: 12,
     }}>
@@ -120,15 +115,13 @@ function Callout({ color, children }: { color: "teal" | "yellow" | "blue"; child
   );
 }
 
-// ─── Page ────────────────────────────────────────────────────────────────────
-
 export default function GuidePage() {
   const isKo = useLang();
 
   return (
-    <div className="ll-fullpage" style={{ display: "flex", flexDirection: "column", background: "#F5F9FA" }}>
+    <div className="ll-fullpage" style={{ display: "flex", flexDirection: "column", background: "var(--content-bg)" }}>
       {/* Hero header */}
-      <div style={{ background: "linear-gradient(135deg, #0B1E2D 0%, #0a3550 100%)", paddingTop: "calc(env(safe-area-inset-top, 0px) + 12px)", paddingBottom: 24, paddingInline: 20, flexShrink: 0 }}>
+      <div style={{ background: "linear-gradient(135deg, #0B1E2D 0%, #0a3550 100%)", paddingTop: 12, paddingBottom: 24, paddingInline: 20, flexShrink: 0 }}>
         <Link href="/map" style={{ fontSize: 10, color: "rgba(255,255,255,0.45)", textDecoration: "none", display: "block", marginBottom: 10 }}>
           ← {isKo ? "지도로 돌아가기" : "Back to Map"}
         </Link>
@@ -148,9 +141,7 @@ export default function GuidePage() {
       {/* Content */}
       <div style={{ flex: 1, overflowY: "auto", padding: "20px 16px 80px" }}>
 
-        {/* ──────────────────────────────────────────────────────── */}
-        {/* SECTION 1: 나를 알려줘 */}
-        {/* ──────────────────────────────────────────────────────── */}
+        {/* SECTION 1 */}
         <Section emoji="🧬" title={isKo ? "가장 먼저 — '나를 알려줘'를 채우세요" : "Start Here — Fill in 'About Me'"}>
           <Card accent>
             <div style={{ fontSize: 13, fontWeight: 800, color: "#15b6c1", marginBottom: 6 }}>
@@ -163,13 +154,12 @@ export default function GuidePage() {
             </p>
           </Card>
 
-          {/* Comparison table */}
           <div style={{ overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11, background: "#fff", borderRadius: 14, overflow: "hidden", border: "1px solid #E0E8EA" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11, background: "var(--card)", borderRadius: 14, overflow: "hidden", border: "1px solid var(--border)" }}>
               <thead>
-                <tr style={{ background: "#F5F9FA" }}>
-                  <th style={{ padding: "9px 10px", textAlign: "left", color: "#4A6467", fontWeight: 700, borderBottom: "1px solid #E0E8EA" }}>{isKo ? "내 설정" : "My Settings"}</th>
-                  <th style={{ padding: "9px 10px", textAlign: "left", color: "#4A6467", fontWeight: 700, borderBottom: "1px solid #E0E8EA" }}>{isKo ? "AI가 바꾸는 것" : "What AI Changes"}</th>
+                <tr style={{ background: "var(--content-bg)" }}>
+                  <th style={{ padding: "9px 10px", textAlign: "left", color: "var(--muted-foreground)", fontWeight: 700, borderBottom: "1px solid var(--border)" }}>{isKo ? "내 설정" : "My Settings"}</th>
+                  <th style={{ padding: "9px 10px", textAlign: "left", color: "var(--muted-foreground)", fontWeight: 700, borderBottom: "1px solid var(--border)" }}>{isKo ? "AI가 바꾸는 것" : "What AI Changes"}</th>
                 </tr>
               </thead>
               <tbody>
@@ -179,9 +169,9 @@ export default function GuidePage() {
                   { setting: isKo ? "관심사: 요리" : "Interest: Cooking", result: isKo ? "로컬 식재료 시장, 쿠킹클래스 코스, 음식 모임" : "Local ingredient markets, cooking class courses, food meetups" },
                   { setting: isKo ? "거주기간: 1주 미만" : "Stay: < 1 week", result: isKo ? "생존 필수 과제 최우선 (USIM, 교통카드, 은행)" : "Survival tasks first: USIM, T-money card, bank account" },
                 ].map((row, i) => (
-                  <tr key={i} style={{ borderBottom: "1px solid #F0F4F5" }}>
-                    <td style={{ padding: "9px 10px", fontWeight: 600, color: "#1A2B2C" }}>{row.setting}</td>
-                    <td style={{ padding: "9px 10px", color: "#4A6467", lineHeight: 1.5 }}>{row.result}</td>
+                  <tr key={i} style={{ borderBottom: "1px solid var(--border)" }}>
+                    <td style={{ padding: "9px 10px", fontWeight: 600, color: "var(--foreground)" }}>{row.setting}</td>
+                    <td style={{ padding: "9px 10px", color: "var(--muted-foreground)", lineHeight: 1.5 }}>{row.result}</td>
                   </tr>
                 ))}
               </tbody>
@@ -203,11 +193,9 @@ export default function GuidePage() {
           </Link>
         </Section>
 
-        {/* ──────────────────────────────────────────────────────── */}
-        {/* SECTION 2: 카테고리 */}
-        {/* ──────────────────────────────────────────────────────── */}
+        {/* SECTION 2 */}
         <Section emoji="📂" title={isKo ? "8가지 카테고리" : "8 Categories"}>
-          <p style={{ fontSize: 12, color: "#4A6467", lineHeight: 1.6, marginBottom: 12 }}>
+          <p style={{ fontSize: 12, color: "var(--muted-foreground)", lineHeight: 1.6, marginBottom: 12 }}>
             {isKo
               ? "Localoop Korea의 모든 장소는 외국인 시각에서 재분류된 8개 카테고리로 나뉩니다. 단순한 분류가 아니라 외국인이 실제로 필요로 하는 상황별 구분입니다."
               : "Every place in Localoop Korea falls into one of 8 categories, re-classified from a foreigner's perspective — not just type of place, but what you actually need in each situation."}
@@ -223,67 +211,62 @@ export default function GuidePage() {
               { emoji: "🏥", ko: "건강", en: "Health", desc: isKo ? "병원·약국·클리닉·헬스장" : "Hospitals, clinics, pharmacies, gyms" },
               { emoji: "🚌", ko: "교통", en: "Transport", desc: isKo ? "지하철·버스·KTX·공항" : "Subway, bus, KTX, airport access" },
             ].map((cat) => (
-              <div key={cat.en} style={{ background: "#fff", borderRadius: 12, padding: "12px 10px", border: "1px solid #E0E8EA" }}>
+              <div key={cat.en} style={{ background: "var(--card)", borderRadius: 12, padding: "12px 10px", border: "1px solid var(--border)" }}>
                 <div style={{ fontSize: 22, marginBottom: 4 }}>{cat.emoji}</div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: "#1A2B2C", marginBottom: 2 }}>{isKo ? cat.ko : cat.en}</div>
-                <div style={{ fontSize: 10, color: "#4A6467", lineHeight: 1.4 }}>{cat.desc}</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "var(--foreground)", marginBottom: 2 }}>{isKo ? cat.ko : cat.en}</div>
+                <div style={{ fontSize: 10, color: "var(--muted-foreground)", lineHeight: 1.4 }}>{cat.desc}</div>
               </div>
             ))}
           </div>
         </Section>
 
-        {/* ──────────────────────────────────────────────────────── */}
-        {/* SECTION 3: 3가지 엔진 */}
-        {/* ──────────────────────────────────────────────────────── */}
+        {/* SECTION 3 */}
         <Section emoji="🔬" title={isKo ? "Localoop의 3가지 엔진" : "Localoop's 3 Engines"}>
-          <p style={{ fontSize: 12, color: "#4A6467", lineHeight: 1.6, marginBottom: 14 }}>
+          <p style={{ fontSize: 12, color: "var(--muted-foreground)", lineHeight: 1.6, marginBottom: 14 }}>
             {isKo
               ? "단순한 리뷰 앱이 아닙니다. 3개의 AI 엔진이 실시간으로 당신의 한국 생활을 분석하고 최적의 경험을 설계합니다."
               : "This isn't just a review app. Three AI engines analyze your Korea life in real time and design the optimal experience for you."}
           </p>
 
-          {/* Engine 1 */}
           <Card>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
               <div style={{ width: 32, height: 32, borderRadius: 8, background: "#E8F9F9", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>⭐</div>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 800, color: "#1A2B2C" }}>{isKo ? "엔진 1: 친화성 평가 엔진" : "Engine 1: Friendliness Rating Engine"}</div>
+                <div style={{ fontSize: 13, fontWeight: 800, color: "var(--foreground)" }}>{isKo ? "엔진 1: 친화성 평가 엔진" : "Engine 1: Friendliness Rating Engine"}</div>
                 <div style={{ fontSize: 10, color: "#15b6c1", fontWeight: 600 }}>S / A / B / C 등급 시스템</div>
               </div>
             </div>
-            <p style={{ fontSize: 12, color: "#4A6467", lineHeight: 1.6 }}>
+            <p style={{ fontSize: 12, color: "var(--muted-foreground)", lineHeight: 1.6 }}>
               {isKo
                 ? "Localoop 데이터팀이 직접 방문·검증한 데이터와 실제 외국인 사용자 피드백을 결합해 외국인 친화 지수를 4단계로 평가합니다. 구글 지도에는 없는 외국인 전용 필터입니다."
                 : "Localoop's data team combines on-site verification data with real expat user feedback to rate foreigner-friendliness in 4 tiers. A foreigner-only filter you won't find on Google Maps."}
             </p>
           </Card>
 
-          {/* Engine 2 */}
           <Card>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
               <div style={{ width: 32, height: 32, borderRadius: 8, background: "#E8F4FF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>🗺️</div>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 800, color: "#1A2B2C" }}>{isKo ? "엔진 2: AI 코스 생성 엔진" : "Engine 2: AI Course Builder"}</div>
+                <div style={{ fontSize: 13, fontWeight: 800, color: "var(--foreground)" }}>{isKo ? "엔진 2: AI 코스 생성 엔진" : "Engine 2: AI Course Builder"}</div>
                 <div style={{ fontSize: 10, color: "#1565C0", fontWeight: 600 }}>{isKo ? "실제 현지인 동선 기반" : "Based on real local routes"}</div>
               </div>
             </div>
-            <p style={{ fontSize: 12, color: "#4A6467", lineHeight: 1.6 }}>
+            <p style={{ fontSize: 12, color: "var(--muted-foreground)", lineHeight: 1.6 }}>
               {isKo
                 ? "관광지가 아닌 현지인이 실제로 가는 동선을 분석합니다. 언어 수준·이동 거리·시간대·날씨·계절을 반영해 외국인이 혼자서도 소화할 수 있는 반나절/하루 코스를 자동 설계합니다."
                 : "We analyze the routes locals actually take — not tourist traps. Factoring in your language level, travel distance, time of day, weather and season, the engine auto-designs half-day and full-day courses a foreigner can handle solo."}
             </p>
           </Card>
 
-          {/* Engine 3 */}
           <Card>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
               <div style={{ width: 32, height: 32, borderRadius: 8, background: "#F0FFF0", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>🤝</div>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 800, color: "#1A2B2C" }}>{isKo ? "엔진 3: 커뮤니티 매칭 엔진" : "Engine 3: Community Matching Engine"}</div>
+                <div style={{ fontSize: 13, fontWeight: 800, color: "var(--foreground)" }}>{isKo ? "엔진 3: 커뮤니티 매칭 엔진" : "Engine 3: Community Matching Engine"}</div>
                 <div style={{ fontSize: 10, color: "#2E7D32", fontWeight: 600 }}>{isKo ? "관심사 × 위치 × 언어 기반" : "Interest × Location × Language"}</div>
               </div>
             </div>
-            <p style={{ fontSize: 12, color: "#4A6467", lineHeight: 1.6 }}>
+            <p style={{ fontSize: 12, color: "var(--muted-foreground)", lineHeight: 1.6 }}>
               {isKo
                 ? "한국인↔외국인 언어교환, 취미 모임, 동네 이웃 연결을 AI가 자동 매칭합니다. '나를 알려줘'에 입력한 관심사와 거주 지역을 기반으로 가장 잘 맞을 사람을 먼저 보여줍니다."
                 : "AI auto-matches Korean↔foreigner language exchanges, hobby meetups, and neighborhood connections. Based on interests and location from 'About Me', it surfaces the people you're most likely to click with."}
@@ -291,14 +274,10 @@ export default function GuidePage() {
           </Card>
         </Section>
 
-        {/* ──────────────────────────────────────────────────────── */}
-        {/* SECTION 4: 지도 등급 시스템 */}
-        {/* ──────────────────────────────────────────────────────── */}
+        {/* SECTION 4 */}
         <Section emoji="🗺️" title={isKo ? "지도 — S/A/B/C 등급 완전 정복" : "Map — S/A/B/C Rating System"}>
-
-          {/* Rating table */}
           <Card>
-            <div style={{ fontSize: 12, fontWeight: 700, color: "#1A2B2C", marginBottom: 10 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: "var(--foreground)", marginBottom: 10 }}>
               {isKo ? "등급 기준표" : "Rating Criteria"}
             </div>
             {[
@@ -307,17 +286,16 @@ export default function GuidePage() {
               { r: "B" as const, label: isKo ? "기본 소통 가능" : "Basic Access OK", criteria: isKo ? "카드 결제만 가능" : "Card payment only", color: "#A56000" },
               { r: "C" as const, label: isKo ? "현지 경험 도전" : "Full Local Challenge", criteria: isKo ? "현금만 · 한국어만" : "Cash only · Korean only", color: "#666" },
             ].map((item) => (
-              <div key={item.r} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: "1px solid #F0F4F5" }}>
+              <div key={item.r} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: "1px solid var(--border)" }}>
                 <RatingBadge r={item.r} />
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 11, fontWeight: 700, color: item.color }}>{item.label}</div>
-                  <div style={{ fontSize: 10, color: "#4A6467" }}>{item.criteria}</div>
+                  <div style={{ fontSize: 10, color: "var(--muted-foreground)" }}>{item.criteria}</div>
                 </div>
               </div>
             ))}
           </Card>
 
-          {/* 3 icons explained */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 12 }}>
             {[
               { emoji: "💬", ko: "영어 OK", en: "English OK", desc: isKo ? "메뉴·직원이 영어 가능" : "Menu & staff in English", color: "#D6F5F5", text: "#0B7A82" },
@@ -332,38 +310,13 @@ export default function GuidePage() {
             ))}
           </div>
 
-          {/* Mock example screen */}
-          <div style={{ background: "#F5F9FA", borderRadius: 14, padding: "12px", border: "1px solid #E0E8EA" }}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: "#9BB5B8", marginBottom: 8, letterSpacing: "0.06em" }}>
+          <div style={{ background: "var(--content-bg)", borderRadius: 14, padding: "12px", border: "1px solid var(--border)" }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "var(--muted-foreground)", marginBottom: 8, letterSpacing: "0.06em" }}>
               {isKo ? "▶ 예시 화면" : "▶ EXAMPLE SCREEN"}
             </div>
-            <MockPlaceCard
-              emoji="☕" name={isKo ? "앤트러사이트 홍대" : "Anthracite Hongdae"}
-              addr={isKo ? "서울 마포구 토정로5길 13" : "13 Tojeong-ro 5-gil, Mapo-gu, Seoul"}
-              rating="S" selected
-              tags={[
-                { label: isKo ? "영어 OK" : "English OK", color: "teal" },
-                { label: isKo ? "카드 OK" : "Card OK", color: "blue" },
-                { label: isKo ? "혼자 OK" : "Solo OK", color: "green" },
-              ]}
-            />
-            <MockPlaceCard
-              emoji="🛍️" name={isKo ? "광장시장" : "Gwangjang Market"}
-              addr={isKo ? "서울 종로구 창경궁로 88" : "88 Changgyeonggung-ro, Jongno-gu"}
-              rating="C"
-              tags={[
-                { label: isKo ? "현금 필요" : "Cash Only", color: "yellow" },
-              ]}
-            />
-            <MockPlaceCard
-              emoji="🛒" name={isKo ? "더 현대 서울" : "The Hyundai Seoul"}
-              addr={isKo ? "서울 영등포구 여의대로 108" : "108 Yeoui-daero, Yeongdeungpo-gu"}
-              rating="A"
-              tags={[
-                { label: isKo ? "영어 OK" : "English OK", color: "teal" },
-                { label: isKo ? "카드 OK" : "Card OK", color: "blue" },
-              ]}
-            />
+            <MockPlaceCard emoji="☕" name={isKo ? "앤트러사이트 홍대" : "Anthracite Hongdae"} addr={isKo ? "서울 마포구 토정로5길 13" : "13 Tojeong-ro 5-gil, Mapo-gu, Seoul"} rating="S" selected tags={[{ label: isKo ? "영어 OK" : "English OK", color: "teal" }, { label: isKo ? "카드 OK" : "Card OK", color: "blue" }, { label: isKo ? "혼자 OK" : "Solo OK", color: "green" }]} />
+            <MockPlaceCard emoji="🛍️" name={isKo ? "광장시장" : "Gwangjang Market"} addr={isKo ? "서울 종로구 창경궁로 88" : "88 Changgyeonggung-ro, Jongno-gu"} rating="C" tags={[{ label: isKo ? "현금 필요" : "Cash Only", color: "yellow" }]} />
+            <MockPlaceCard emoji="🛒" name={isKo ? "더 현대 서울" : "The Hyundai Seoul"} addr={isKo ? "서울 영등포구 여의대로 108" : "108 Yeoui-daero, Yeongdeungpo-gu"} rating="A" tags={[{ label: isKo ? "영어 OK" : "English OK", color: "teal" }, { label: isKo ? "카드 OK" : "Card OK", color: "blue" }]} />
           </div>
 
           <Callout color="yellow">
@@ -373,19 +326,16 @@ export default function GuidePage() {
           </Callout>
         </Section>
 
-        {/* ──────────────────────────────────────────────────────── */}
-        {/* SECTION 5: Tasks */}
-        {/* ──────────────────────────────────────────────────────── */}
+        {/* SECTION 5 */}
         <Section emoji="✅" title={isKo ? "Tasks — 한국 생활 단계별 로드맵" : "Tasks — Step-by-Step Korea Roadmap"}>
-          <p style={{ fontSize: 12, color: "#4A6467", lineHeight: 1.6, marginBottom: 12 }}>
+          <p style={{ fontSize: 12, color: "var(--muted-foreground)", lineHeight: 1.6, marginBottom: 12 }}>
             {isKo
-              ? "한국에 막 도착한 날부터 장기 거주자가 될 때까지, AI가 당신의 비자 단계에 맞는 다음 할 일을 자동으로 제시합니다. 무엇부터 해야 할지 몰라 헤매는 시간을 없애드립니다."
-              : "From the day you arrive to becoming a long-term resident, the AI automatically presents what to do next based on your visa stage. No more wondering where to start."}
+              ? "한국에 막 도착한 날부터 장기 거주자가 될 때까지, AI가 당신의 비자 단계에 맞는 다음 할 일을 자동으로 제시합니다."
+              : "From the day you arrive to becoming a long-term resident, the AI automatically presents what to do next based on your visa stage."}
           </p>
 
-          {/* Stage progression */}
           <Card>
-            <div style={{ fontSize: 11, fontWeight: 700, color: "#1A2B2C", marginBottom: 10 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "var(--foreground)", marginBottom: 10 }}>
               {isKo ? "5단계 정착 로드맵" : "5-Stage Settlement Roadmap"}
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 0, marginBottom: 14, overflowX: "auto" }}>
@@ -397,21 +347,14 @@ export default function GuidePage() {
                 { ko: "장기거주", en: "Long-term", active: false },
               ].map((stage, i) => (
                 <div key={i} style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
-                  <div style={{
-                    padding: "5px 8px", borderRadius: 8,
-                    background: stage.active ? "#15b6c1" : "#F0FAFA",
-                    color: stage.active ? "#fff" : "#9BB5B8",
-                    fontSize: 9, fontWeight: 700,
-                  }}>
+                  <div style={{ padding: "5px 8px", borderRadius: 8, background: stage.active ? "#15b6c1" : "var(--icon-bg)", color: stage.active ? "#fff" : "var(--muted-foreground)", fontSize: 9, fontWeight: 700 }}>
                     {i + 1}. {isKo ? stage.ko : stage.en}
                   </div>
-                  {i < 4 && <div style={{ width: 10, height: 1, background: "#E0E8EA" }} />}
+                  {i < 4 && <div style={{ width: 10, height: 1, background: "var(--border)" }} />}
                 </div>
               ))}
             </div>
-
-            {/* Example tasks */}
-            <div style={{ fontSize: 10, fontWeight: 700, color: "#9BB5B8", marginBottom: 6, letterSpacing: "0.06em" }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "var(--muted-foreground)", marginBottom: 6, letterSpacing: "0.06em" }}>
               {isKo ? "▶ 도착 단계 예시 과제" : "▶ ARRIVAL STAGE EXAMPLE TASKS"}
             </div>
             <MockTaskRow stage={isKo ? "도착" : "Arrival"} title={isKo ? "통신사 USIM 개통하기" : "Get a USIM card"} done={true} />
@@ -422,34 +365,31 @@ export default function GuidePage() {
 
           <Callout color="blue">
             📋 {isKo
-              ? "비자 종류별로 과제 순서가 달라집니다. D-2(학생)는 장학금 신청이, E-7(전문직)는 사대보험 등록이 우선 과제로 올라옵니다. '나를 알려줘'에 비자를 입력했을 때 차이가 생깁니다."
-              : "Task order changes by visa type. D-2 (student) gets scholarship applications first; E-7 (professional) gets 4-major-insurance registration. This is why filling in 'About Me' matters."}
+              ? "비자 종류별로 과제 순서가 달라집니다. D-2(학생)는 장학금 신청이, E-7(전문직)는 사대보험 등록이 우선 과제로 올라옵니다."
+              : "Task order changes by visa type. D-2 (student) gets scholarship applications first; E-7 (professional) gets 4-major-insurance registration."}
           </Callout>
 
-          <div style={{ fontSize: 12, color: "#4A6467", lineHeight: 1.65, marginBottom: 4 }}>
+          <div style={{ fontSize: 12, color: "var(--muted-foreground)", lineHeight: 1.65, marginBottom: 4 }}>
             {isKo ? "✔ 과제를 완료하면 다음 단계의 과제가 자동으로 열립니다" : "✔ Completing a task unlocks the next set automatically"}
           </div>
-          <div style={{ fontSize: 12, color: "#4A6467", lineHeight: 1.65, marginBottom: 4 }}>
+          <div style={{ fontSize: 12, color: "var(--muted-foreground)", lineHeight: 1.65, marginBottom: 4 }}>
             {isKo ? "✔ 각 과제에는 어디서 어떻게 해야 하는지 상세 가이드 링크가 붙어 있습니다" : "✔ Each task has a detailed guide on where to go and what to bring"}
           </div>
-          <div style={{ fontSize: 12, color: "#4A6467", lineHeight: 1.65 }}>
+          <div style={{ fontSize: 12, color: "var(--muted-foreground)", lineHeight: 1.65 }}>
             {isKo ? "✔ 완료율에 따라 레벨(Lv.1~5)이 올라가고 커뮤니티 뱃지가 부여됩니다" : "✔ Completion rate raises your level (Lv.1–5) and earns community badges"}
           </div>
         </Section>
 
-        {/* ──────────────────────────────────────────────────────── */}
-        {/* SECTION 6: Courses */}
-        {/* ──────────────────────────────────────────────────────── */}
+        {/* SECTION 6 */}
         <Section emoji="🏃" title={isKo ? "Courses — AI 현지 코스 추천" : "Courses — AI Local Course Picks"}>
-          <p style={{ fontSize: 12, color: "#4A6467", lineHeight: 1.6, marginBottom: 12 }}>
+          <p style={{ fontSize: 12, color: "var(--muted-foreground)", lineHeight: 1.6, marginBottom: 12 }}>
             {isKo
               ? "구글에서 검색하면 나오는 관광 코스가 아닙니다. 현지인이 실제로 다니는 동선을 AI가 분석해 외국인도 혼자 소화할 수 있는 형태로 최적화합니다."
               : "These aren't the tourist courses you'd find on Google. The AI analyzes routes locals actually take and optimizes them into solo-friendly experiences for expats."}
           </p>
 
-          {/* Course filters */}
           <Card>
-            <div style={{ fontSize: 11, fontWeight: 700, color: "#1A2B2C", marginBottom: 10 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "var(--foreground)", marginBottom: 10 }}>
               {isKo ? "코스 필터 종류" : "Course Filter Types"}
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
@@ -461,43 +401,27 @@ export default function GuidePage() {
                 { ko: "문화", en: "Culture" },
                 { ko: "자연", en: "Nature" },
               ].map((f, i) => (
-                <span key={i} style={{
-                  padding: "5px 12px", borderRadius: 20, fontSize: 11, fontWeight: 600,
-                  background: f.active ? "#15b6c1" : "#F0FAFA",
-                  color: f.active ? "#fff" : "#4A6467",
-                  border: f.active ? "none" : "1px solid #E0E8EA",
-                }}>
+                <span key={i} style={{ padding: "5px 12px", borderRadius: 20, fontSize: 11, fontWeight: 600, background: f.active ? "#15b6c1" : "var(--icon-bg)", color: f.active ? "#fff" : "var(--muted-foreground)", border: f.active ? "none" : "1px solid var(--border)" }}>
                   {isKo ? f.ko : f.en}
                 </span>
               ))}
             </div>
           </Card>
 
-          {/* Mock course cards */}
-          <div style={{ background: "#F5F9FA", borderRadius: 14, padding: "12px", border: "1px solid #E0E8EA", marginBottom: 12 }}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: "#9BB5B8", marginBottom: 8, letterSpacing: "0.06em" }}>
+          <div style={{ background: "var(--content-bg)", borderRadius: 14, padding: "12px", border: "1px solid var(--border)", marginBottom: 12 }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "var(--muted-foreground)", marginBottom: 8, letterSpacing: "0.06em" }}>
               {isKo ? "▶ 예시 코스 카드" : "▶ EXAMPLE COURSE CARDS"}
             </div>
             {[
-              {
-                emoji: "☕", title: isKo ? "성수 인더스트리얼 반나절" : "Seongsu Industrial Half-Day",
-                tags: [isKo ? "반나절" : "Half-Day", isKo ? "카페" : "Café", isKo ? "S등급 위주" : "S-rated"],
-                places: isKo ? "성수연방 → 어니언 성수 → 대림창고 갤러리" : "Seongsu Yeonbang → Onion → Daelim Warehouse",
-                time: isKo ? "약 3시간" : "~3 hours",
-              },
-              {
-                emoji: "🏛️", title: isKo ? "종로 고궁 문화 하루 코스" : "Jongno Palace Culture Full Day",
-                tags: [isKo ? "하루" : "Full Day", isKo ? "문화" : "Culture", isKo ? "역사" : "History"],
-                places: isKo ? "경복궁 → 북촌한옥마을 → 인사동 → 광장시장" : "Gyeongbokgung → Bukchon → Insadong → Gwangjang",
-                time: isKo ? "약 6시간" : "~6 hours",
-              },
+              { emoji: "☕", title: isKo ? "성수 인더스트리얼 반나절" : "Seongsu Industrial Half-Day", tags: [isKo ? "반나절" : "Half-Day", isKo ? "카페" : "Café", isKo ? "S등급 위주" : "S-rated"], places: isKo ? "성수연방 → 어니언 성수 → 대림창고 갤러리" : "Seongsu Yeonbang → Onion → Daelim Warehouse", time: isKo ? "약 3시간" : "~3 hours" },
+              { emoji: "🏛️", title: isKo ? "종로 고궁 문화 하루 코스" : "Jongno Palace Culture Full Day", tags: [isKo ? "하루" : "Full Day", isKo ? "문화" : "Culture", isKo ? "역사" : "History"], places: isKo ? "경복궁 → 북촌한옥마을 → 인사동 → 광장시장" : "Gyeongbokgung → Bukchon → Insadong → Gwangjang", time: isKo ? "약 6시간" : "~6 hours" },
             ].map((course, i) => (
-              <div key={i} style={{ background: "#fff", borderRadius: 12, padding: "12px", marginBottom: 8, border: "1px solid #E0E8EA" }}>
+              <div key={i} style={{ background: "var(--card)", borderRadius: 12, padding: "12px", marginBottom: 8, border: "1px solid var(--border)" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
                   <div style={{ width: 36, height: 36, borderRadius: 10, background: "#E8F9F9", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>{course.emoji}</div>
                   <div>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: "#1A2B2C" }}>{course.title}</div>
-                    <div style={{ fontSize: 10, color: "#4A6467" }}>{course.time}</div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "var(--foreground)" }}>{course.title}</div>
+                    <div style={{ fontSize: 10, color: "var(--muted-foreground)" }}>{course.time}</div>
                   </div>
                 </div>
                 <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 6 }}>
@@ -505,33 +429,28 @@ export default function GuidePage() {
                     <span key={ti} style={{ fontSize: 9, fontWeight: 600, padding: "2px 7px", borderRadius: 4, background: "#E8F9F9", color: "#0B7A82" }}>{tag}</span>
                   ))}
                 </div>
-                <div style={{ fontSize: 10, color: "#4A6467", lineHeight: 1.5 }}>
-                  📍 {course.places}
-                </div>
+                <div style={{ fontSize: 10, color: "var(--muted-foreground)", lineHeight: 1.5 }}>📍 {course.places}</div>
               </div>
             ))}
           </div>
 
           <Callout color="teal">
             🏃 {isKo
-              ? "코스 내 장소는 모두 S/A등급 위주로 구성됩니다. 처음 한국 생활을 시작했다면 'AI 추천' 필터로 시작해보세요. 당신의 한국어 수준에 맞는 코스가 가장 먼저 나타납니다."
+              ? "코스 내 장소는 모두 S/A등급 위주로 구성됩니다. 처음 한국 생활을 시작했다면 'AI 추천' 필터로 시작해보세요."
               : "Places within courses are prioritized S/A-rated. Just starting out? Use the 'AI Pick' filter — courses matching your Korean level appear first."}
           </Callout>
         </Section>
 
-        {/* ──────────────────────────────────────────────────────── */}
-        {/* SECTION 7: Community */}
-        {/* ──────────────────────────────────────────────────────── */}
+        {/* SECTION 7 */}
         <Section emoji="👥" title={isKo ? "Community — 모임 & 매칭" : "Community — Meetups & Matching"}>
-          <p style={{ fontSize: 12, color: "#4A6467", lineHeight: 1.6, marginBottom: 12 }}>
+          <p style={{ fontSize: 12, color: "var(--muted-foreground)", lineHeight: 1.6, marginBottom: 12 }}>
             {isKo
               ? "한국에서 진짜 인연을 만드는 공간입니다. 언어교환 파트너, 취미 모임, 동네 이웃을 AI가 연결해드립니다."
               : "The space to make real connections in Korea. The AI connects you to language exchange partners, hobby groups, and neighborhood friends."}
           </p>
 
-          {/* How to create */}
           <Card>
-            <div style={{ fontSize: 12, fontWeight: 700, color: "#1A2B2C", marginBottom: 10 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: "var(--foreground)", marginBottom: 10 }}>
               📌 {isKo ? "모임 만들기 — 4단계" : "Creating a Meetup — 4 Steps"}
             </div>
             {[
@@ -544,14 +463,13 @@ export default function GuidePage() {
                 <div style={{ width: 22, height: 22, borderRadius: "50%", background: "#15b6c1", color: "#fff", fontSize: 11, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 1 }}>
                   {step.n}
                 </div>
-                <p style={{ fontSize: 12, color: "#4A6467", lineHeight: 1.5 }}>{isKo ? step.ko : step.en}</p>
+                <p style={{ fontSize: 12, color: "var(--muted-foreground)", lineHeight: 1.5 }}>{isKo ? step.ko : step.en}</p>
               </div>
             ))}
           </Card>
 
-          {/* Matching system */}
           <Card>
-            <div style={{ fontSize: 12, fontWeight: 700, color: "#1A2B2C", marginBottom: 10 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: "var(--foreground)", marginBottom: 10 }}>
               🤝 {isKo ? "매칭 시스템 작동 원리" : "How the Matching System Works"}
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: 8, alignItems: "center", marginBottom: 10 }}>
@@ -567,27 +485,26 @@ export default function GuidePage() {
                 <div style={{ fontSize: 9, color: "#4A6467", marginTop: 3 }}>{isKo ? "한국어 배우고 싶음" : "Wants to learn Korean"}</div>
               </div>
             </div>
-            <div style={{ fontSize: 12, color: "#4A6467", lineHeight: 1.65 }}>
+            <div style={{ fontSize: 12, color: "var(--muted-foreground)", lineHeight: 1.65 }}>
               {isKo
                 ? "AI가 관심사·언어 수준·위치·시간대를 분석해 매칭 점수를 계산합니다. 단순한 언어교환을 넘어 요리, 등산, 보드게임 등 공통 취미로 연결되는 경우 매칭 점수가 가장 높게 나타납니다."
                 : "The AI calculates a match score using interests, language level, location, and availability. Matches through shared hobbies — cooking, hiking, board games — score higher than language exchange alone."}
             </div>
           </Card>
 
-          {/* People tab */}
           <Card>
-            <div style={{ fontSize: 12, fontWeight: 700, color: "#1A2B2C", marginBottom: 8 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: "var(--foreground)", marginBottom: 8 }}>
               👤 {isKo ? "'피플' 탭 — 개인 매칭" : "'People' Tab — 1:1 Matching"}
             </div>
-            <div style={{ fontSize: 12, color: "#4A6467", lineHeight: 1.65, marginBottom: 8 }}>
+            <div style={{ fontSize: 12, color: "var(--muted-foreground)", lineHeight: 1.65, marginBottom: 8 }}>
               {isKo
-                ? "'피플' 탭에서는 현재 내 위치 근처의 사용자를 볼 수 있습니다. '나를 알려줘'에 입력한 관심사와 겹치는 사람이 먼저 보입니다. 프로필을 클릭해 1:1 채팅을 시작할 수 있습니다."
-                : "The 'People' tab shows users near your current location. People whose interests overlap with your 'About Me' appear first. Tap a profile to start a 1:1 chat."}
+                ? "'피플' 탭에서는 현재 내 위치 근처의 사용자를 볼 수 있습니다. '나를 알려줘'에 입력한 관심사와 겹치는 사람이 먼저 보입니다."
+                : "The 'People' tab shows users near your current location. People whose interests overlap with your 'About Me' appear first."}
             </div>
             <Callout color="yellow">
               🔒 {isKo
-                ? "매칭 정확도를 높이려면 '나를 알려줘'에 취미·관심사를 최소 3개 이상 입력하세요. 입력 항목이 많을수록 AI가 더 잘 맞는 사람을 찾아드립니다."
-                : "To improve match accuracy, add at least 3 hobbies/interests in 'About Me'. The more you share, the better the AI finds your people."}
+                ? "매칭 정확도를 높이려면 '나를 알려줘'에 취미·관심사를 최소 3개 이상 입력하세요."
+                : "To improve match accuracy, add at least 3 hobbies/interests in 'About Me'."}
             </Callout>
           </Card>
         </Section>
