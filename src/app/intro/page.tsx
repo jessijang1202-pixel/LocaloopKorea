@@ -12,7 +12,7 @@ type Highlight = "place" | "task" | "course" | "people";
 // ─── Mobile slides ─────────────────────────────────────────────────────────────
 const MOB_KO = [
   { icon: "🗺️", img: "/onboarding_welcome.png", tag: "Localoop Korea", lines: ["어서와!", "한국에 온걸 환영해"], hi: 1, desc: "언어 장벽, 낯선 동네, 새로운 일상.\n이제 AI가 당신의 한국 생활을\n단계별로 안내해드려요.", bg: "#0B1E2D", ac: "#15b6c1" },
-  { icon: "📍", img: "/onboarding_places.png", tag: "기능 01", lines: ["내 주변", "외국인 친화 장소 찾기"], hi: 1, desc: "지도에서 바로 확인하는 S~C 외국인 친화도 등급.\n영어 메뉴, 카드 결제 여부도 한눈에 볼 수 있어요.", bg: "#0a2233", ac: "#15b6c1" },
+  { icon: "📍", img: "/onboarding_places.png", tag: "기능 01", lines: ["내 주변", "외국인 친화 장소 찾기"], hi: 1, desc: "S~C 외국인 친화도 등급을 지도에서 바로 확인.\n영어 메뉴, 카드 결제 여부도 한눈에!", bg: "#0a2233", ac: "#15b6c1" },
   { icon: "📋", img: "/onboarding_tasks.png", tag: "기능 02", lines: ["지금 뭘 해야 하는지", "AI가 알려줘"], hi: 1, desc: "도착 첫날부터 장기 정착까지.\n체류 단계에 맞게 \"지금 해야 할 일\"을\n자동으로 안내해드려요.", bg: "#0B1E2D", ac: "#ffd600" },
   { icon: "🏃", img: "/onboarding_courses.png", tag: "기능 03", lines: ["현지인만 아는", "로컬 코스 추천"], hi: 1, desc: "관광지 말고 진짜 한국.\n내 언어 수준·취향에 맞는 반나절 로컬 코스를\nAI가 자동으로 짜드려요.", bg: "#0a2233", ac: "#15b6c1" },
   { icon: "🤝", img: "/onboarding_connect.png", tag: "기능 04 · 05", lines: ["외국인·한국인", "진짜 친구 만들기"], hi: 1, desc: "언어 교환, 취미 모임, 동네 파티.\n실시간 번역 채팅으로\n언어 장벽 없이 자연스럽게 연결돼요.", bg: "#0B1E2D", ac: "#ffd600" },
@@ -280,8 +280,8 @@ export default function IntroPage() {
     window.addEventListener("beforeinstallprompt", onPrompt);
 
     const supabase = createClient();
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) { router.replace("/map"); return; }
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) { router.replace("/map"); return; }
       setReady(true);
     });
     return () => {
@@ -460,7 +460,7 @@ export default function IntroPage() {
               <span key={i} style={{ display: "block", color: i === ms.hi ? ms.ac : "#fff" }}>{line}</span>
             ))}
           </h1>
-          <p style={{ fontSize: 15, color: "rgba(255,255,255,0.6)", lineHeight: 1.75, whiteSpace: "pre-line", maxWidth: 340 }}>{ms.desc}</p>
+          <p style={{ fontSize: 13, color: "rgba(255,255,255,0.6)", lineHeight: 1.8, whiteSpace: "pre-line", maxWidth: 320 }}>{ms.desc}</p>
         </div>
         {/* Footer */}
         <div style={{ padding: "32px 28px", paddingBottom: "calc(32px + env(safe-area-inset-bottom))", flexShrink: 0 }}>

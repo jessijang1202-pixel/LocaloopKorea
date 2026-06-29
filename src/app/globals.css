@@ -25,7 +25,17 @@
   --color-card: var(--card);
 }
 
-/* Dark mode: intentionally minimal — landing page stays light */
+/* ── Theme: dark mode overrides (data-theme="dark") ─────────── */
+[data-theme="dark"] body {
+  background: #08151E;
+}
+[data-theme="dark"] .ll-bottomnav {
+  background: #0B1E2D;
+  border-top-color: rgba(255,255,255,0.10);
+}
+[data-theme="dark"] .ll-bottomnav a {
+  color: rgba(255,255,255,0.38);
+}
 
 * {
   box-sizing: border-box;
@@ -716,16 +726,12 @@ html {
   .lang-btn-fixed { display: none; }
 }
 
-/* ── App shell: responsive sidebar (PC) + bottom nav (mobile) ─ */
-.ll-sidebar {
+/* ── App shell: top nav (PC) + bottom nav (mobile) ────────── */
+.ll-topnav {
   display: none;
-  position: fixed;
-  top: 0; left: 0; bottom: 0;
-  width: 220px;
-  background: #0B1E2D;
-  flex-direction: column;
-  z-index: 50;
-  overflow-y: auto;
+}
+.ll-sidebar {
+  display: none; /* legacy — kept for backward compat */
 }
 .ll-bottomnav {
   position: fixed;
@@ -747,10 +753,23 @@ html {
 }
 @media (min-width: 768px) {
   .app-container { max-width: 100%; margin: 0; }
-  .ll-sidebar { display: flex; }
+  .ll-topnav {
+    display: flex;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 56px;
+    background: #0B1E2D;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.28);
+    z-index: 100;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    gap: 16px;
+  }
   .ll-bottomnav { display: none; }
-  .ll-content { padding-bottom: 0; margin-left: 220px; }
-  .ll-fullpage { height: 100dvh; }
+  .ll-content { padding-bottom: 0; padding-top: 56px; margin-left: 0; }
+  .ll-fullpage { height: calc(100dvh - 56px); }
 }
 
 /* Desktop width baseline: 1440px primary, 1200px container max */

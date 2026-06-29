@@ -80,12 +80,12 @@ function MockTaskRow({ stage, title, done }: { stage: string; title: string; don
   );
 }
 
-function Section({ title, emoji, children }: { title: string; emoji: string; children: React.ReactNode }) {
+function Section({ title, emoji, color = "#15b6c1", children }: { title: string; emoji: string; color?: string; children: React.ReactNode }) {
   return (
-    <div style={{ marginBottom: 24 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-        <span style={{ fontSize: 20 }}>{emoji}</span>
-        <h2 style={{ fontSize: 16, fontWeight: 800, color: "#1A2B2C", letterSpacing: "-0.02em" }}>{title}</h2>
+    <div style={{ marginBottom: 28 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14, padding: "12px 16px", background: `${color}18`, borderRadius: 14, borderLeft: `4px solid ${color}` }}>
+        <span style={{ fontSize: 24 }}>{emoji}</span>
+        <h2 style={{ fontSize: 15, fontWeight: 800, color, letterSpacing: "-0.02em", lineHeight: 1.3 }}>{title}</h2>
       </div>
       {children}
     </div>
@@ -151,7 +151,7 @@ export default function GuidePage() {
         {/* ──────────────────────────────────────────────────────── */}
         {/* SECTION 1: 나를 알려줘 */}
         {/* ──────────────────────────────────────────────────────── */}
-        <Section emoji="🧬" title={isKo ? "가장 먼저 — '나를 알려줘'를 채우세요" : "Start Here — Fill in 'About Me'"}>
+        <Section emoji="🧬" color="#8B44F7" title={isKo ? "가장 먼저 — '나를 알려줘'를 채우세요" : "Start Here — Fill in 'About Me'"}>
           <Card accent>
             <div style={{ fontSize: 13, fontWeight: 800, color: "#15b6c1", marginBottom: 6 }}>
               {isKo ? "⚡ 앱의 모든 추천이 여기서 시작됩니다" : "⚡ All recommendations start here"}
@@ -206,7 +206,7 @@ export default function GuidePage() {
         {/* ──────────────────────────────────────────────────────── */}
         {/* SECTION 2: 카테고리 */}
         {/* ──────────────────────────────────────────────────────── */}
-        <Section emoji="📂" title={isKo ? "8가지 카테고리" : "8 Categories"}>
+        <Section emoji="📂" color="#E65100" title={isKo ? "8가지 카테고리" : "8 Categories"}>
           <p style={{ fontSize: 12, color: "#4A6467", lineHeight: 1.6, marginBottom: 12 }}>
             {isKo
               ? "Localoop Korea의 모든 장소는 외국인 시각에서 재분류된 8개 카테고리로 나뉩니다. 단순한 분류가 아니라 외국인이 실제로 필요로 하는 상황별 구분입니다."
@@ -235,7 +235,7 @@ export default function GuidePage() {
         {/* ──────────────────────────────────────────────────────── */}
         {/* SECTION 3: 3가지 엔진 */}
         {/* ──────────────────────────────────────────────────────── */}
-        <Section emoji="🔬" title={isKo ? "Localoop의 3가지 엔진" : "Localoop's 3 Engines"}>
+        <Section emoji="🔬" color="#0B7A82" title={isKo ? "Localoop의 3가지 엔진" : "Localoop's 3 Engines"}>
           <p style={{ fontSize: 12, color: "#4A6467", lineHeight: 1.6, marginBottom: 14 }}>
             {isKo
               ? "단순한 리뷰 앱이 아닙니다. 3개의 AI 엔진이 실시간으로 당신의 한국 생활을 분석하고 최적의 경험을 설계합니다."
@@ -294,7 +294,7 @@ export default function GuidePage() {
         {/* ──────────────────────────────────────────────────────── */}
         {/* SECTION 4: 지도 등급 시스템 */}
         {/* ──────────────────────────────────────────────────────── */}
-        <Section emoji="🗺️" title={isKo ? "지도 — S/A/B/C 등급 완전 정복" : "Map — S/A/B/C Rating System"}>
+        <Section emoji="🗺️" color="#1A7A2C" title={isKo ? "지도 — S/A/B/C 등급 완전 정복" : "Map — S/A/B/C Rating System"}>
 
           {/* Rating table */}
           <Card>
@@ -376,7 +376,7 @@ export default function GuidePage() {
         {/* ──────────────────────────────────────────────────────── */}
         {/* SECTION 5: Tasks */}
         {/* ──────────────────────────────────────────────────────── */}
-        <Section emoji="✅" title={isKo ? "Tasks — 한국 생활 단계별 로드맵" : "Tasks — Step-by-Step Korea Roadmap"}>
+        <Section emoji="✅" color="#1565C0" title={isKo ? "Tasks — 한국 생활 단계별 로드맵" : "Tasks — Step-by-Step Korea Roadmap"}>
           <p style={{ fontSize: 12, color: "#4A6467", lineHeight: 1.6, marginBottom: 12 }}>
             {isKo
               ? "한국에 막 도착한 날부터 장기 거주자가 될 때까지, AI가 당신의 비자 단계에 맞는 다음 할 일을 자동으로 제시합니다. 무엇부터 해야 할지 몰라 헤매는 시간을 없애드립니다."
@@ -440,7 +440,7 @@ export default function GuidePage() {
         {/* ──────────────────────────────────────────────────────── */}
         {/* SECTION 6: Courses */}
         {/* ──────────────────────────────────────────────────────── */}
-        <Section emoji="🏃" title={isKo ? "Courses — AI 현지 코스 추천" : "Courses — AI Local Course Picks"}>
+        <Section emoji="🏃" color="#BF360C" title={isKo ? "Courses — AI 현지 코스 추천" : "Courses — AI Local Course Picks"}>
           <p style={{ fontSize: 12, color: "#4A6467", lineHeight: 1.6, marginBottom: 12 }}>
             {isKo
               ? "구글에서 검색하면 나오는 관광 코스가 아닙니다. 현지인이 실제로 다니는 동선을 AI가 분석해 외국인도 혼자 소화할 수 있는 형태로 최적화합니다."
@@ -522,7 +522,7 @@ export default function GuidePage() {
         {/* ──────────────────────────────────────────────────────── */}
         {/* SECTION 7: Community */}
         {/* ──────────────────────────────────────────────────────── */}
-        <Section emoji="👥" title={isKo ? "Community — 모임 & 매칭" : "Community — Meetups & Matching"}>
+        <Section emoji="👥" color="#6A1B9A" title={isKo ? "Community — 모임 & 매칭" : "Community — Meetups & Matching"}>
           <p style={{ fontSize: 12, color: "#4A6467", lineHeight: 1.6, marginBottom: 12 }}>
             {isKo
               ? "한국에서 진짜 인연을 만드는 공간입니다. 언어교환 파트너, 취미 모임, 동네 이웃을 AI가 연결해드립니다."

@@ -29,8 +29,8 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <body className="min-h-full bg-[var(--background)] text-[var(--foreground)] antialiased">
-        {/* Capture beforeinstallprompt before React mounts so the event isn't lost */}
-        <script dangerouslySetInnerHTML={{ __html: `window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.deferredPrompt=e;});` }} />
+        {/* Theme init (default dark) + install prompt capture — must run before React mounts */}
+        <script dangerouslySetInnerHTML={{ __html: `(function(){var t=localStorage.getItem("ll-theme")||"dark";document.documentElement.setAttribute("data-theme",t);})();window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.deferredPrompt=e;});` }} />
         {children}
       </body>
     </html>

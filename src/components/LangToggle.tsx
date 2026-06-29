@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLang, setLang } from "@/lib/lang";
+import { useTheme, toggleTheme } from "@/lib/theme";
 
 type BeforeInstallPromptEvent = Event & {
   prompt(): Promise<void>;
@@ -59,9 +60,10 @@ export function LangToggleInline() {
   );
 }
 
-/** Combined [Lang][Login][Install] row for app page headers. */
+/** Combined [Lang][Theme][Login][Install] row for app page headers (mobile). */
 export function TopActions() {
   const isKo = useLang();
+  const theme = useTheme();
 
   const handleInstall = async () => {
     const w = window as Window & { deferredPrompt?: BeforeInstallPromptEvent };
@@ -81,6 +83,18 @@ export function TopActions() {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
       <LangToggleInline />
+      <button
+        onClick={toggleTheme}
+        aria-label="Toggle dark/light mode"
+        style={{
+          display: "inline-flex", alignItems: "center", justifyContent: "center",
+          padding: "5px 9px", borderRadius: 20, lineHeight: 1, fontSize: 14,
+          background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.30)",
+          cursor: "pointer",
+        }}
+      >
+        {theme === "dark" ? "☀️" : "🌙"}
+      </button>
       <Link
         href="/login"
         style={{

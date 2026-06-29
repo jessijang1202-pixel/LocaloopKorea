@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLang, setLang } from "@/lib/lang";
+import { useTheme, toggleTheme } from "@/lib/theme";
 
 type Tab = { href: string; icon: string; labelKo: string; labelEn: string };
 
@@ -11,12 +12,17 @@ const TABS: Tab[] = [
   { href: "/tasks",     icon: "✅",   labelKo: "과제",    labelEn: "Tasks" },
   { href: "/courses",   icon: "🏃",   labelKo: "코스",    labelEn: "Courses" },
   { href: "/community", icon: "👥",   labelKo: "커뮤니티", labelEn: "Community" },
+  { href: "/chat",      icon: "💬",   labelKo: "채팅",    labelEn: "Chat" },
   { href: "/profile",   icon: "👤",   labelKo: "나",      labelEn: "Me" },
 ];
+
+/* Bottom nav shows 5 tabs (chat accessed via community) */
+const BOTTOM_TABS = TABS.filter((t) => t.href !== "/chat");
 
 export function AppNav() {
   const pathname = usePathname();
   const isKo = useLang();
+  const theme = useTheme();
 
   function isActive(href: string) {
     return pathname === href || pathname.startsWith(href + "/");
@@ -24,16 +30,13 @@ export function AppNav() {
 
   return (
     <>
-      {/* PC sidebar */}
-      <aside className="ll-sidebar">
-        <div style={{ padding: "22px 20px 14px", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
-          <div style={{ fontSize: 13, fontWeight: 800, color: "#fff", letterSpacing: "-0.02em" }}>
+      {/* PC: horizontal top nav bar (hidden on mobile via .ll-topnav CSS) */}
+      <header className="ll-topnav">
+        {/* Left: logo + nav links */}
+        <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <span style={{ fontSize: 14, fontWeight: 900, color: "#fff", marginRight: 16, whiteSpace: "nowrap", letterSpacing: "-0.02em" }}>
             Localoop<span style={{ color: "#15b6c1" }}>Korea</span>
-          </div>
-          <div style={{ fontSize: 10, color: "#8BB8C0", marginTop: 2 }}>Real Korea starts here</div>
-        </div>
-
-        <nav style={{ flex: 1, paddingTop: 8, display: "flex", flexDirection: "column" }}>
+          </span>
           {TABS.map((tab) => {
             const active = isActive(tab.href);
             return (
@@ -41,46 +44,60 @@ export function AppNav() {
                 key={tab.href}
                 href={tab.href}
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                  padding: "11px 20px",
-                  textDecoration: "none",
-                  color: active ? "#fff" : "rgba(255,255,255,0.45)",
-                  background: active ? "rgba(21,182,193,0.15)" : "transparent",
-                  borderLeft: active ? "3px solid #15b6c1" : "3px solid transparent",
-                  fontSize: 13,
-                  fontWeight: active ? 600 : 400,
+                  display: "flex", alignItems: "center", gap: 6,
+                  padding: "7px 13px", borderRadius: 8, textDecoration: "none",
+                  background: active ? "rgba(21,182,193,0.16)" : "transparent",
+                  color: active ? "#fff" : "rgba(255,255,255,0.52)",
+                  fontSize: 13, fontWeight: active ? 600 : 400,
+                  borderBottom: active ? "2px solid #15b6c1" : "2px solid transparent",
+                  whiteSpace: "nowrap",
                 }}
               >
-                <span style={{ fontSize: 17 }}>{tab.icon}</span>
+                <span style={{ fontSize: 15 }}>{tab.icon}</span>
                 <span>{isKo ? tab.labelKo : tab.labelEn}</span>
               </Link>
             );
           })}
-          {/* Lang toggle + Login button — sidebar bottom (PC only) */}
-          <div style={{ marginTop: "auto", padding: "16px 20px", borderTop: "1px solid rgba(255,255,255,0.08)", display: "flex", flexDirection: "column", gap: 8 }}>
-            <button
-              onClick={() => setLang(isKo ? "en" : "ko")}
-              style={{ display: "flex", alignItems: "center", gap: 8, background: "rgba(21,182,193,0.12)", border: "1.5px solid rgba(21,182,193,0.35)", borderRadius: 10, padding: "9px 14px", color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer", width: "100%", letterSpacing: "0.02em" }}
-            >
-              <span style={{ fontSize: 14 }}>🌐</span>
-              <span>{isKo ? "Switch to English" : "한국어로 변경"}</span>
-            </button>
-            <Link
-              href="/login"
-              style={{ display: "flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.18)", borderRadius: 10, padding: "9px 14px", color: "rgba(255,255,255,0.7)", fontSize: 12, fontWeight: 600, textDecoration: "none", letterSpacing: "0.02em" }}
-            >
-              <span style={{ fontSize: 14 }}>🔑</span>
-              <span>{isKo ? "로그인" : "Login"}</span>
-            </Link>
-          </div>
-        </nav>
-      </aside>
+        </div>
 
-      {/* Mobile bottom nav */}
+        {/* Right: theme toggle + lang + login */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+          <button
+            onClick={toggleTheme}
+            aria-label="Toggle dark/light mode"
+            style={{
+              background: "rgba(255,255,255,0.10)", border: "1px solid rgba(255,255,255,0.18)",
+              borderRadius: 8, padding: "6px 10px", cursor: "pointer", fontSize: 16, lineHeight: 1,
+            }}
+          >
+            {theme === "dark" ? "☀️" : "🌙"}
+          </button>
+          <button
+            onClick={() => setLang(isKo ? "en" : "ko")}
+            style={{
+              background: "rgba(21,182,193,0.14)", border: "1.5px solid rgba(21,182,193,0.38)",
+              borderRadius: 8, padding: "6px 13px", color: "#fff",
+              fontSize: 12, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap",
+            }}
+          >
+            {isKo ? "EN" : "한국어"}
+          </button>
+          <Link
+            href="/login"
+            style={{
+              background: "rgba(255,255,255,0.09)", border: "1px solid rgba(255,255,255,0.20)",
+              borderRadius: 8, padding: "6px 13px", color: "rgba(255,255,255,0.78)",
+              fontSize: 12, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap",
+            }}
+          >
+            {isKo ? "로그인" : "Login"}
+          </Link>
+        </div>
+      </header>
+
+      {/* Mobile: bottom tab bar */}
       <nav className="ll-bottomnav">
-        {TABS.map((tab) => {
+        {BOTTOM_TABS.map((tab) => {
           const active = isActive(tab.href);
           return (
             <Link
