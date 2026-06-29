@@ -744,6 +744,10 @@ html {
 }
 
 /* ── App shell: sidebar (PC) + bottom nav (mobile) ────────── */
+/* ll-pc-only: hidden on mobile, shown on PC (overridden by @media below) */
+/* IMPORTANT: this rule must come BEFORE @media (min-width:768px) so the media query wins */
+.ll-pc-only { display: none; }
+
 .ll-topnav {
   display: none; /* not used */
 }
@@ -800,7 +804,6 @@ html {
 
 /* Mobile/PC split utilities */
 /* ll-mobile-only: visible on mobile (inline display style applies), hidden on PC via !important above */
-.ll-pc-only { display: none; }
 
 /* PC split panel layout */
 .ll-split {
