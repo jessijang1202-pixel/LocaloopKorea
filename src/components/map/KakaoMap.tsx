@@ -70,7 +70,8 @@ export function KakaoMap({ pins, center, zoom = 5, onPinClick, lang = "ko" }: Ka
     delete (window as Window & { kakao?: unknown }).kakao;
 
     const script = document.createElement("script");
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_KEY}&autoload=false&lang=${lang}`;
+    // Cache-bust with timestamp so browser re-fetches with the correct lang param
+    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_KEY}&autoload=false&lang=${lang}&_ts=${Date.now()}`;
     script.async = true;
     script.onload = buildMap;
     document.head.appendChild(script);

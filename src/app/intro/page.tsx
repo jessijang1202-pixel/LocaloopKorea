@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import Link from "next/link";
 import { useLang } from "@/lib/lang";
 import { LangToggleInline } from "@/components/LangToggle";
 import { useRouter } from "next/navigation";
@@ -340,6 +341,9 @@ export default function IntroPage() {
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <LangToggleInline />
+            <Link href="/login" style={{ display: "inline-flex", alignItems: "center", padding: "5px 12px", borderRadius: 20, background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.28)", color: "rgba(255,255,255,0.85)", fontSize: 12, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>
+              {isKo ? "로그인" : "Login"}
+            </Link>
             {!pcDone && (
               <button onClick={() => router.push("/map")} style={{ background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.28)", borderRadius: 20, color: "rgba(255,255,255,0.85)", fontSize: 12, fontWeight: 600, padding: "5px 14px", cursor: "pointer" }}>
                 {isKo ? "건너뛰기" : "Skip"}
@@ -412,8 +416,11 @@ export default function IntroPage() {
           <span style={{ fontSize: 14, fontWeight: 900, color: "#fff" }}>Localoop<span style={{ color: ms.ac }}>Korea</span></span>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <LangToggleInline />
+            <Link href="/login" style={{ display: "inline-flex", alignItems: "center", padding: "5px 10px", borderRadius: 20, background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.28)", color: "rgba(255,255,255,0.85)", fontSize: 11, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>
+              {isKo ? "로그인" : "Login"}
+            </Link>
             {!isLast && (
-              <button onClick={() => router.push("/map")} style={{ background: "rgba(255,255,255,0.14)", border: "1px solid rgba(255,255,255,0.28)", borderRadius: 20, color: "rgba(255,255,255,0.85)", fontSize: 12, fontWeight: 600, padding: "5px 12px", cursor: "pointer" }}>
+              <button onClick={() => router.push("/map")} style={{ background: "rgba(255,255,255,0.14)", border: "1px solid rgba(255,255,255,0.28)", borderRadius: 20, color: "rgba(255,255,255,0.85)", fontSize: 11, fontWeight: 600, padding: "5px 10px", cursor: "pointer" }}>
                 {isKo ? "건너뛰기" : "Skip"}
               </button>
             )}
