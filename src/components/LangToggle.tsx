@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLang, setLang } from "@/lib/lang";
@@ -63,32 +62,20 @@ export function LangToggleInline() {
 /** Combined [Lang][Login][Install] row for app page headers. */
 export function TopActions() {
   const isKo = useLang();
-  const promptRef = useRef<BeforeInstallPromptEvent | null>(null);
-  const [, forceUpdate] = useState(0);
-
-  useEffect(() => {
-    const handler = (e: Event) => {
-      e.preventDefault();
-      promptRef.current = e as BeforeInstallPromptEvent;
-      forceUpdate((n) => n + 1);
-    };
-    window.addEventListener("beforeinstallprompt", handler);
-    return () => window.removeEventListener("beforeinstallprompt", handler);
-  }, []);
 
   const handleInstall = async () => {
-    if (!promptRef.current) {
+    const w = window as Window & { deferredPrompt?: BeforeInstallPromptEvent };
+    if (w.deferredPrompt) {
+      await w.deferredPrompt.prompt();
+      await w.deferredPrompt.userChoice;
+      w.deferredPrompt = undefined;
+    } else {
       alert(
         isKo
-          ? "브라우저 메뉴에서 '홈 화면에 추가'를 선택하세요"
-          : "Tap the browser menu → 'Add to Home Screen'"
+          ? "iPhone: 공유 버튼 → '홈 화면에 추가'\nAndroid: 이미 설치되었거나 설치를 지원하지 않는 브라우저입니다"
+          : "iPhone: Share → 'Add to Home Screen'\nAndroid: Already installed or not supported by this browser"
       );
-      return;
     }
-    await promptRef.current.prompt();
-    const { outcome } = await promptRef.current.userChoice;
-    if (outcome === "accepted") promptRef.current = null;
-    forceUpdate((n) => n + 1);
   };
 
   return (

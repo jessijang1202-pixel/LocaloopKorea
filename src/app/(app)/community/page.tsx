@@ -157,15 +157,7 @@ export default function CommunityPage() {
           <span style={{ fontSize: 13, fontWeight: 900, color: "#fff", letterSpacing: "-0.02em", whiteSpace: "nowrap" }}>
             Localoop<span style={{ color: "#15b6c1" }}>Korea</span>
           </span>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <TopActions />
-            <button style={{
-              background: "#15b6c1", border: "none", borderRadius: 20,
-              padding: "5px 12px", color: "#fff", fontSize: 11, fontWeight: 700, cursor: "pointer",
-            }}>
-              + {t.newMeetup}
-            </button>
-          </div>
+          <TopActions />
         </div>
         {/* Tabs */}
         <div style={{ display: "flex", padding: "0 16px" }}>
@@ -190,6 +182,14 @@ export default function CommunityPage() {
       <div style={{ flex: 1, overflowY: "auto", background: "#F5F9FA", padding: "12px 14px 0" }}>
         {tab === "meetup" && (
           <>
+            <button style={{
+              width: "100%", marginBottom: 12, padding: "12px 0",
+              background: "#15b6c1", border: "none", borderRadius: 14,
+              color: "#fff", fontSize: 14, fontWeight: 700, cursor: "pointer",
+              letterSpacing: "0.01em",
+            }}>
+              + {t.newMeetup}
+            </button>
             {MEETUPS.map((m) => {
               const isJoined = joined[m.id];
               const spotsLeft = m.max - m.joined;

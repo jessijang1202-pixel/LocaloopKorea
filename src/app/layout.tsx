@@ -29,6 +29,8 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <body className="min-h-full bg-[var(--background)] text-[var(--foreground)] antialiased">
+        {/* Capture beforeinstallprompt before React mounts so the event isn't lost */}
+        <script dangerouslySetInnerHTML={{ __html: `window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.deferredPrompt=e;});` }} />
         {children}
       </body>
     </html>

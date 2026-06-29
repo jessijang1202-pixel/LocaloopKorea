@@ -130,17 +130,7 @@ export default function ProfilePage() {
           <span style={{ fontSize: 13, fontWeight: 900, color: "#fff", letterSpacing: "-0.02em", whiteSpace: "nowrap" }}>
             Localoop<span style={{ color: "#15b6c1" }}>Korea</span>
           </span>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <TopActions />
-            <Link href="/profile/edit" style={{
-              background: "rgba(21,182,193,0.18)", border: "1.5px solid rgba(21,182,193,0.45)",
-              borderRadius: 10, padding: "6px 14px", color: "#fff", fontSize: 12, fontWeight: 700,
-              textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 5,
-              letterSpacing: "0.02em",
-            }}>
-              ✏️ {t.editProfile}
-            </Link>
-          </div>
+          <TopActions />
         </div>
 
         {/* Avatar + name */}
