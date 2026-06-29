@@ -60,6 +60,24 @@ export function AppNav() {
           })}
         </nav>
 
+        {/* Guide link */}
+        <div style={{ padding: "0 10px 8px" }}>
+          <Link
+            href="/guide"
+            style={{
+              display: "flex", alignItems: "center", gap: 10,
+              padding: "10px 12px", borderRadius: 10, textDecoration: "none",
+              background: isActive("/guide") ? "rgba(21,182,193,0.18)" : "transparent",
+              color: isActive("/guide") ? "#fff" : "rgba(255,255,255,0.52)",
+              fontSize: 13, fontWeight: isActive("/guide") ? 700 : 400,
+              borderLeft: isActive("/guide") ? "3px solid #15b6c1" : "3px solid transparent",
+            }}
+          >
+            <span style={{ fontSize: 17, width: 22, textAlign: "center", flexShrink: 0 }}>📖</span>
+            <span>{isKo ? "가이드" : "Guide"}</span>
+          </Link>
+        </div>
+
         {/* Bottom: theme + lang */}
         <div style={{ padding: "12px 10px", borderTop: "1px solid rgba(255,255,255,0.07)", display: "flex", flexDirection: "column", gap: 8 }}>
           <button
