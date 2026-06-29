@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useLang } from "@/lib/lang";
-import { TopActions } from "@/components/LangToggle";
+import { PageHeader } from "@/components/layout/PageHeader";
 import dynamic from "next/dynamic";
 import { SEED_PLACES } from "@/data/seed";
 import type { Place } from "@/types";
@@ -80,23 +80,18 @@ export default function MapPage() {
   return (
     <div className="ll-fullpage" style={{ display: "flex", flexDirection: "column" }}>
       {/* Header */}
-      <div style={{ background: "#15b6c1", paddingTop: "calc(env(safe-area-inset-top, 0px) + 3px)", paddingBottom: 10, flexShrink: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "6px 14px", marginBottom: 8 }}>
-          <span style={{ fontSize: 13, fontWeight: 900, color: "#fff", letterSpacing: "-0.02em", whiteSpace: "nowrap" }}>
-            Localoop<span style={{ opacity: 0.7 }}>Korea</span>
-          </span>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <TopActions />
-            <Link href="/guide" style={{ display: "inline-flex", alignItems: "center", padding: "5px 12px", borderRadius: 20, background: "rgba(11,30,45,0.82)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", border: "1.5px solid rgba(21,182,193,0.55)", color: "#fff", fontSize: 11, fontWeight: 700, textDecoration: "none", whiteSpace: "nowrap", letterSpacing: "0.04em", boxShadow: "0 2px 8px rgba(0,0,0,0.25)" }}>
-              {isKo ? "사용가이드" : "Guide"}
-            </Link>
-          </div>
-        </div>
-        <div style={{ margin: "0 16px", background: "#fff", borderRadius: 10, padding: "10px 14px", display: "flex", alignItems: "center", gap: 8 }}>
+      <PageHeader
+        right={
+          <Link href="/guide" style={{ display: "inline-flex", alignItems: "center", padding: "5px 12px", borderRadius: 20, background: "rgba(11,30,45,0.82)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", border: "1.5px solid rgba(21,182,193,0.55)", color: "#fff", fontSize: 11, fontWeight: 700, textDecoration: "none", whiteSpace: "nowrap", letterSpacing: "0.04em", boxShadow: "0 2px 8px rgba(0,0,0,0.25)" }}>
+            {isKo ? "사용가이드" : "Guide"}
+          </Link>
+        }
+      >
+        <div style={{ margin: "0 16px", background: "rgba(255,255,255,0.9)", borderRadius: 10, padding: "10px 14px", display: "flex", alignItems: "center", gap: 8 }}>
           <span>🔍</span>
           <span style={{ fontSize: 13, color: "#9BB5B8" }}>{t.searchPh}</span>
         </div>
-      </div>
+      </PageHeader>
 
       {/* Filter chips */}
       <div className="scroll-x" style={{ background: "var(--card)", borderBottom: "1px solid var(--border)", padding: "10px 16px", display: "flex", gap: 8, flexShrink: 0 }}>

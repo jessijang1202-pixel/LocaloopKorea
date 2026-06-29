@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useLang } from "@/lib/lang";
-import { TopActions } from "@/components/LangToggle";
+import { PageHeader } from "@/components/layout/PageHeader";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/is-configured";
 
@@ -152,30 +152,23 @@ export default function CommunityPage() {
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100%" }}>
       {/* Header */}
-      <div style={{ background: "#0B1E2D", paddingTop: "calc(env(safe-area-inset-top, 0px) + 3px)", flexShrink: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "6px 14px 12px" }}>
-          <span style={{ fontSize: 13, fontWeight: 900, color: "#fff", letterSpacing: "-0.02em", whiteSpace: "nowrap" }}>
-            Localoop<span style={{ color: "#15b6c1" }}>Korea</span>
-          </span>
-          <TopActions />
-        </div>
-        {/* Tabs */}
-        <div style={{ display: "flex", padding: "0 16px" }}>
-          {(["meetup", "people"] as const).map((key) => (
-            <button
-              key={key}
-              onClick={() => setTab(key)}
-              style={{
-                flex: 1, padding: "10px 0", background: "none", border: "none",
-                borderBottom: tab === key ? "2px solid #15b6c1" : "2px solid transparent",
-                color: tab === key ? "#15b6c1" : "rgba(255,255,255,0.35)",
-                fontWeight: tab === key ? 700 : 400, fontSize: 13, cursor: "pointer",
-              }}
-            >
-              {key === "meetup" ? t.meetup : t.people}
-            </button>
-          ))}
-        </div>
+      <PageHeader />
+      {/* Tab bar */}
+      <div style={{ background: "#0B1E2D", display: "flex", padding: "0 16px", flexShrink: 0 }}>
+        {(["meetup", "people"] as const).map((key) => (
+          <button
+            key={key}
+            onClick={() => setTab(key)}
+            style={{
+              flex: 1, padding: "10px 0", background: "none", border: "none",
+              borderBottom: tab === key ? "2px solid #15b6c1" : "2px solid transparent",
+              color: tab === key ? "#15b6c1" : "rgba(255,255,255,0.35)",
+              fontWeight: tab === key ? 700 : 400, fontSize: 13, cursor: "pointer",
+            }}
+          >
+            {key === "meetup" ? t.meetup : t.people}
+          </button>
+        ))}
       </div>
 
       {/* Content */}

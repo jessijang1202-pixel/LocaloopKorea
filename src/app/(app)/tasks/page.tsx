@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useLang } from "@/lib/lang";
-import { TopActions } from "@/components/LangToggle";
+import { PageHeader } from "@/components/layout/PageHeader";
 
 const STAGES = {
   en: ["Arrival", "Early Life", "Settlement", "Community", "Long-term"],
@@ -88,19 +88,13 @@ export default function TasksPage() {
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100%" }}>
       {/* Header */}
-      <div style={{ background: "#0B1E2D", paddingTop: "calc(env(safe-area-inset-top, 0px) + 3px)", paddingBottom: 12, flexShrink: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "6px 14px" }}>
-          <span style={{ fontSize: 13, fontWeight: 900, color: "#fff", letterSpacing: "-0.02em", whiteSpace: "nowrap" }}>
-            Localoop<span style={{ color: "#15b6c1" }}>Korea</span>
-          </span>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <TopActions />
-            <button style={{ background: "rgba(255,255,255,0.12)", border: "none", borderRadius: 8, padding: "5px 9px", color: "#fff", fontSize: 13, cursor: "pointer" }}>
-              ℹ️
-            </button>
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        right={
+          <button style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, padding: "5px 9px", color: "#fff", fontSize: 13, cursor: "pointer" }}>
+            ℹ️
+          </button>
+        }
+      />
 
       {/* Stage progress */}
       <div style={{ background: "#0B1E2D", paddingBottom: 20, paddingInline: 16, flexShrink: 0 }}>

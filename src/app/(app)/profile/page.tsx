@@ -5,7 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/is-configured";
 import { useLang } from "@/lib/lang";
-import { TopActions } from "@/components/LangToggle";
+import { PageHeader } from "@/components/layout/PageHeader";
 
 const T = {
   ko: {
@@ -125,16 +125,12 @@ export default function ProfilePage() {
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100%" }}>
       {/* Header */}
-      <div style={{ background: "#0B1E2D", paddingTop: "calc(env(safe-area-inset-top, 0px) + 3px)", paddingBottom: 20, flexShrink: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "6px 14px 12px" }}>
-          <span style={{ fontSize: 13, fontWeight: 900, color: "#fff", letterSpacing: "-0.02em", whiteSpace: "nowrap" }}>
-            Localoop<span style={{ color: "#15b6c1" }}>Korea</span>
-          </span>
-          <TopActions />
-        </div>
+      <PageHeader />
 
+      {/* Profile info section */}
+      <div style={{ background: "#0B1E2D", paddingBottom: 20, flexShrink: 0 }}>
         {/* Avatar + name */}
-        <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "0 16px 16px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 16px 16px" }}>
           <div style={{
             width: 56, height: 56, borderRadius: "50%",
             background: "#FFD600",

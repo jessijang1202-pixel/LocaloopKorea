@@ -16,9 +16,6 @@ const TABS: Tab[] = [
   { href: "/profile",   icon: "👤",   labelKo: "나",      labelEn: "Me" },
 ];
 
-/* Bottom nav shows 5 tabs (chat accessed via community) */
-const BOTTOM_TABS = TABS.filter((t) => t.href !== "/chat");
-
 export function AppNav() {
   const pathname = usePathname();
   const isKo = useLang();
@@ -30,13 +27,17 @@ export function AppNav() {
 
   return (
     <>
-      {/* PC: horizontal top nav bar (hidden on mobile via .ll-topnav CSS) */}
-      <header className="ll-topnav">
-        {/* Left: logo + nav links */}
-        <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <span style={{ fontSize: 14, fontWeight: 900, color: "#fff", marginRight: 16, whiteSpace: "nowrap", letterSpacing: "-0.02em" }}>
+      {/* PC: left sidebar (hidden on mobile via CSS) */}
+      <aside className="ll-sidebar">
+        {/* Logo */}
+        <div style={{ padding: "20px 18px 16px", borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+          <span style={{ fontSize: 14, fontWeight: 900, color: "#fff", letterSpacing: "-0.02em", whiteSpace: "nowrap" }}>
             Localoop<span style={{ color: "#15b6c1" }}>Korea</span>
           </span>
+        </div>
+
+        {/* Nav tabs */}
+        <nav style={{ flex: 1, padding: "12px 10px", display: "flex", flexDirection: "column", gap: 2 }}>
           {TABS.map((tab) => {
             const active = isActive(tab.href);
             return (
@@ -44,60 +45,54 @@ export function AppNav() {
                 key={tab.href}
                 href={tab.href}
                 style={{
-                  display: "flex", alignItems: "center", gap: 6,
-                  padding: "7px 13px", borderRadius: 8, textDecoration: "none",
-                  background: active ? "rgba(21,182,193,0.16)" : "transparent",
+                  display: "flex", alignItems: "center", gap: 10,
+                  padding: "10px 12px", borderRadius: 10, textDecoration: "none",
+                  background: active ? "rgba(21,182,193,0.18)" : "transparent",
                   color: active ? "#fff" : "rgba(255,255,255,0.52)",
-                  fontSize: 13, fontWeight: active ? 600 : 400,
-                  borderBottom: active ? "2px solid #15b6c1" : "2px solid transparent",
-                  whiteSpace: "nowrap",
+                  fontSize: 13, fontWeight: active ? 700 : 400,
+                  borderLeft: active ? "3px solid #15b6c1" : "3px solid transparent",
                 }}
               >
-                <span style={{ fontSize: 15 }}>{tab.icon}</span>
+                <span style={{ fontSize: 17, width: 22, textAlign: "center", flexShrink: 0 }}>{tab.icon}</span>
                 <span>{isKo ? tab.labelKo : tab.labelEn}</span>
               </Link>
             );
           })}
-        </div>
+        </nav>
 
-        {/* Right: theme toggle + lang + login */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+        {/* Bottom: theme + lang */}
+        <div style={{ padding: "12px 10px", borderTop: "1px solid rgba(255,255,255,0.07)", display: "flex", flexDirection: "column", gap: 8 }}>
           <button
             onClick={toggleTheme}
             aria-label="Toggle dark/light mode"
             style={{
-              background: "rgba(255,255,255,0.10)", border: "1px solid rgba(255,255,255,0.18)",
-              borderRadius: 8, padding: "6px 10px", cursor: "pointer", fontSize: 16, lineHeight: 1,
+              display: "flex", alignItems: "center", gap: 10,
+              padding: "9px 12px", borderRadius: 10, border: "none",
+              background: "rgba(255,255,255,0.07)", cursor: "pointer",
+              color: "rgba(255,255,255,0.7)", fontSize: 13,
             }}
           >
-            {theme === "dark" ? "☀️" : "🌙"}
+            <span style={{ fontSize: 16 }}>{theme === "dark" ? "☀️" : "🌙"}</span>
+            <span>{theme === "dark" ? (isKo ? "라이트 모드" : "Light mode") : (isKo ? "다크 모드" : "Dark mode")}</span>
           </button>
           <button
             onClick={() => setLang(isKo ? "en" : "ko")}
             style={{
-              background: "rgba(21,182,193,0.14)", border: "1.5px solid rgba(21,182,193,0.38)",
-              borderRadius: 8, padding: "6px 13px", color: "#fff",
-              fontSize: 12, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap",
+              display: "flex", alignItems: "center", gap: 10,
+              padding: "9px 12px", borderRadius: 10, border: "none",
+              background: "rgba(21,182,193,0.12)", cursor: "pointer",
+              color: "rgba(255,255,255,0.7)", fontSize: 13,
             }}
           >
-            {isKo ? "EN" : "한국어"}
+            <span style={{ fontSize: 16 }}>🌐</span>
+            <span>{isKo ? "English" : "한국어"}</span>
           </button>
-          <Link
-            href="/login"
-            style={{
-              background: "rgba(255,255,255,0.09)", border: "1px solid rgba(255,255,255,0.20)",
-              borderRadius: 8, padding: "6px 13px", color: "rgba(255,255,255,0.78)",
-              fontSize: 12, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap",
-            }}
-          >
-            {isKo ? "로그인" : "Login"}
-          </Link>
         </div>
-      </header>
+      </aside>
 
-      {/* Mobile: bottom tab bar */}
+      {/* Mobile: bottom tab bar (all 6 tabs including chat) */}
       <nav className="ll-bottomnav">
-        {BOTTOM_TABS.map((tab) => {
+        {TABS.map((tab) => {
           const active = isActive(tab.href);
           return (
             <Link
@@ -110,13 +105,13 @@ export function AppNav() {
                 alignItems: "center",
                 justifyContent: "center",
                 gap: 2,
-                padding: "6px 4px",
+                padding: "6px 2px",
                 textDecoration: "none",
                 color: active ? "#15b6c1" : "#9BB5B8",
               }}
             >
-              <span style={{ fontSize: 21, lineHeight: 1 }}>{tab.icon}</span>
-              <span style={{ fontSize: 9, fontWeight: active ? 700 : 400 }}>
+              <span style={{ fontSize: 19, lineHeight: 1 }}>{tab.icon}</span>
+              <span style={{ fontSize: 8, fontWeight: active ? 700 : 400 }}>
                 {isKo ? tab.labelKo : tab.labelEn}
               </span>
             </Link>

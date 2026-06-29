@@ -13,6 +13,23 @@
   --border: #E0E8EA;
   --card: #ffffff;
   --accent: #22d3ee;
+  --content-bg: #F5F9FA;
+  --card-selected: #EDF9F9;
+  --icon-bg: #F0FAFA;
+}
+
+/* ── Dark mode CSS variables ────────────────────────────────── */
+[data-theme="dark"] {
+  --background: #08151E;
+  --foreground: #DCF0F0;
+  --muted-foreground: #7CAAB0;
+  --card: #0d2233;
+  --content-bg: #0a1828;
+  --card-selected: #0e3040;
+  --icon-bg: #0d2233;
+  --border: rgba(255,255,255,0.09);
+  --secondary: #111e2a;
+  --muted: #111e2a;
 }
 
 @theme inline {
@@ -726,12 +743,12 @@ html {
   .lang-btn-fixed { display: none; }
 }
 
-/* ── App shell: top nav (PC) + bottom nav (mobile) ────────── */
+/* ── App shell: sidebar (PC) + bottom nav (mobile) ────────── */
 .ll-topnav {
-  display: none;
+  display: none; /* not used */
 }
 .ll-sidebar {
-  display: none; /* legacy — kept for backward compat */
+  display: none; /* hidden on mobile */
 }
 .ll-bottomnav {
   position: fixed;
@@ -753,23 +770,30 @@ html {
 }
 @media (min-width: 768px) {
   .app-container { max-width: 100%; margin: 0; }
-  .ll-topnav {
+  /* Left sidebar */
+  .ll-sidebar {
     display: flex;
+    flex-direction: column;
     position: fixed;
-    top: 0; left: 0; right: 0;
-    height: 56px;
+    top: 0; left: 0; bottom: 0;
+    width: 220px;
     background: #0B1E2D;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 2px 12px rgba(0,0,0,0.28);
+    border-right: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 2px 0 12px rgba(0,0,0,0.22);
     z-index: 100;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 28px;
-    gap: 16px;
+    overflow: hidden;
   }
   .ll-bottomnav { display: none; }
-  .ll-content { padding-bottom: 0; padding-top: 56px; margin-left: 0; }
-  .ll-fullpage { height: calc(100dvh - 56px); }
+  /* Page-level mobile headers hidden on PC (sidebar handles navigation) */
+  .ll-page-header { display: none !important; }
+  .ll-content { padding-bottom: 0; padding-top: 0; margin-left: 220px; }
+  .ll-fullpage { height: 100dvh; }
+}
+
+/* Sidebar dark mode */
+[data-theme="dark"] .ll-sidebar {
+  background: #071018;
+  border-right-color: rgba(255,255,255,0.06);
 }
 
 /* Desktop width baseline: 1440px primary, 1200px container max */

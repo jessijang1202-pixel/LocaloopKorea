@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useLang } from "@/lib/lang";
-import { TopActions } from "@/components/LangToggle";
+import { PageHeader } from "@/components/layout/PageHeader";
 
 type Message = {
   id: string;
@@ -79,14 +79,7 @@ export default function ChatPage() {
   return (
     <div className="ll-fullpage" style={{ display: "flex", flexDirection: "column" }}>
       {/* Header */}
-      <div style={{ background: "#0B1E2D", paddingTop: "calc(env(safe-area-inset-top, 0px) + 3px)", paddingBottom: 10, flexShrink: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "6px 14px" }}>
-          <span style={{ fontSize: 13, fontWeight: 900, color: "#fff", letterSpacing: "-0.02em", whiteSpace: "nowrap" }}>
-            Localoop<span style={{ color: "#15b6c1" }}>Korea</span>
-          </span>
-          <TopActions />
-        </div>
-      </div>
+      <PageHeader />
 
       {/* Translation notice */}
       <div style={{
@@ -103,7 +96,7 @@ export default function ChatPage() {
       </div>
 
       {/* Messages */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "12px 16px", background: "#F5F9FA" }}>
+      <div style={{ flex: 1, overflowY: "auto", padding: "12px 16px", background: "var(--content-bg)" }}>
         {messages.map((msg) => {
           const isMe = msg.from === "me";
           return (
@@ -117,11 +110,11 @@ export default function ChatPage() {
                 maxWidth: "75%",
                 padding: "10px 12px",
                 borderRadius: isMe ? "16px 4px 16px 16px" : "4px 16px 16px 16px",
-                background: isMe ? "#15b6c1" : "#fff",
+                background: isMe ? "#15b6c1" : "var(--card)",
                 boxShadow: "0 1px 4px rgba(0,0,0,0.07)",
-                border: isMe ? "none" : "1px solid #E0E8EA",
+                border: isMe ? "none" : "1px solid var(--border)",
               }}>
-                <p style={{ fontSize: 13, color: isMe ? "#fff" : "#1A2B2C", lineHeight: 1.5 }}>
+                <p style={{ fontSize: 13, color: isMe ? "#fff" : "var(--foreground)", lineHeight: 1.5 }}>
                   {msg.text}
                 </p>
               </div>
@@ -132,9 +125,9 @@ export default function ChatPage() {
                 padding: "6px 10px",
                 borderRadius: 8,
                 background: isMe ? "rgba(21,182,193,0.1)" : "rgba(0,0,0,0.03)",
-                border: isMe ? "1px solid rgba(21,182,193,0.2)" : "1px solid rgba(0,0,0,0.05)",
+                border: isMe ? "1px solid rgba(21,182,193,0.2)" : "1px solid var(--border)",
               }}>
-                <p style={{ fontSize: 10, color: isMe ? "#0B7A82" : "#4A6467", lineHeight: 1.4 }}>
+                <p style={{ fontSize: 10, color: isMe ? "#0B7A82" : "var(--muted-foreground)", lineHeight: 1.4 }}>
                   🔄 {msg.translation}
                 </p>
               </div>
@@ -146,8 +139,8 @@ export default function ChatPage() {
 
       {/* Input */}
       <div style={{
-        background: "#fff",
-        borderTop: "1px solid #E0E8EA",
+        background: "var(--card)",
+        borderTop: "1px solid var(--border)",
         padding: "10px 16px",
         display: "flex",
         gap: 8,
@@ -164,10 +157,10 @@ export default function ChatPage() {
             height: 40,
             padding: "0 14px",
             borderRadius: 20,
-            border: "1.5px solid #E0E8EA",
-            background: "#F5F9FA",
+            border: "1.5px solid var(--border)",
+            background: "var(--content-bg)",
             fontSize: 13,
-            color: "#1A2B2C",
+            color: "var(--foreground)",
             outline: "none",
           }}
         />
