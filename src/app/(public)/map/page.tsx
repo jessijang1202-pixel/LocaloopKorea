@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useLang } from "@/lib/lang";
+import { TopActions } from "@/components/LangToggle";
 import dynamic from "next/dynamic";
 import { SEED_PLACES } from "@/data/seed";
 import type { Place } from "@/types";
@@ -81,9 +82,12 @@ export default function MapPage() {
       <div style={{ background: "#15b6c1", paddingTop: 44, paddingBottom: 12, flexShrink: 0 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px", marginBottom: 10 }}>
           <span style={{ fontSize: 17, fontWeight: 800, color: "#fff", letterSpacing: "-0.02em" }}>{t.title}</span>
-          <button style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, padding: "6px 10px", color: "#fff", fontSize: 13, cursor: "pointer" }}>
-            ⚙️
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <TopActions />
+            <button style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, padding: "6px 10px", color: "#fff", fontSize: 13, cursor: "pointer" }}>
+              ⚙️
+            </button>
+          </div>
         </div>
         <div style={{ margin: "0 16px", background: "#fff", borderRadius: 10, padding: "10px 14px", display: "flex", alignItems: "center", gap: 8 }}>
           <span>🔍</span>
@@ -171,7 +175,7 @@ export default function MapPage() {
                   </span>
                 </div>
                 <p style={{ fontSize: 11, color: "#4A6467", marginBottom: 4 }}>
-                  {place.address ?? place.name_ko}
+                  {isKo ? (place.address_ko ?? place.name_ko) : (place.address ?? place.name_en)}
                 </p>
                 <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
                   {place.english_support && (

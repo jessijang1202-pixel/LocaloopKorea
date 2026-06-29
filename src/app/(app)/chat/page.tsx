@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useLang } from "@/lib/lang";
+import { TopActions } from "@/components/LangToggle";
 
 type Message = {
   id: string;
@@ -79,19 +80,22 @@ export default function ChatPage() {
     <div className="ll-fullpage" style={{ display: "flex", flexDirection: "column" }}>
       {/* Header */}
       <div style={{ background: "#0B1E2D", paddingTop: 44, paddingBottom: 14, flexShrink: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "0 16px" }}>
-          <div style={{
-            width: 36, height: 36, borderRadius: "50%",
-            background: "#15b6c1",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 16, flexShrink: 0,
-          }}>
-            👥
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{
+              width: 36, height: 36, borderRadius: "50%",
+              background: "#15b6c1",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 16, flexShrink: 0,
+            }}>
+              👥
+            </div>
+            <div>
+              <p style={{ fontSize: 14, fontWeight: 700, color: "#fff" }}>{t.title}</p>
+              <p style={{ fontSize: 10, color: "#8BB8C0" }}>Itaewon Language Exchange</p>
+            </div>
           </div>
-          <div>
-            <p style={{ fontSize: 14, fontWeight: 700, color: "#fff" }}>{t.title}</p>
-            <p style={{ fontSize: 10, color: "#8BB8C0" }}>Itaewon Language Exchange</p>
-          </div>
+          <TopActions />
         </div>
       </div>
 

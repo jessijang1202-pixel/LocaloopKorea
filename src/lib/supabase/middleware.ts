@@ -1,6 +1,9 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+// Set to true to bypass all auth redirects for testing. Re-enable for production.
+const BYPASS_AUTH = true;
+
 const PROTECTED = [
   "/tasks", "/courses", "/community", "/chat", "/profile",
   "/places", "/guides", "/food", "/meetups", "/settings", "/saved",
@@ -13,6 +16,9 @@ export async function updateSession(request: NextRequest) {
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
+
+  // Bypass auth for testing — remove BYPASS_AUTH flag when ready for production
+  if (BYPASS_AUTH) return supabaseResponse;
 
   // Demo mode — skip auth
   if (!url.startsWith("https://") || key.length < 20) {

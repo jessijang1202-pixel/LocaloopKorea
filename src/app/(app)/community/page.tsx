@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useLang } from "@/lib/lang";
+import { TopActions } from "@/components/LangToggle";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/is-configured";
 
@@ -154,12 +155,15 @@ export default function CommunityPage() {
       <div style={{ background: "#0B1E2D", paddingTop: 44, flexShrink: 0 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px 14px" }}>
           <span style={{ fontSize: 17, fontWeight: 800, color: "#fff", letterSpacing: "-0.02em" }}>{t.title}</span>
-          <button style={{
-            background: "#15b6c1", border: "none", borderRadius: 20,
-            padding: "6px 14px", color: "#fff", fontSize: 11, fontWeight: 700, cursor: "pointer",
-          }}>
-            + {t.newMeetup}
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <TopActions />
+            <button style={{
+              background: "#15b6c1", border: "none", borderRadius: 20,
+              padding: "6px 14px", color: "#fff", fontSize: 11, fontWeight: 700, cursor: "pointer",
+            }}>
+              + {t.newMeetup}
+            </button>
+          </div>
         </div>
         {/* Tabs */}
         <div style={{ display: "flex", padding: "0 16px" }}>

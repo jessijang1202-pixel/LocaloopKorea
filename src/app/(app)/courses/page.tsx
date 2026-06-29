@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useLang } from "@/lib/lang";
+import { TopActions } from "@/components/LangToggle";
 
 const FILTERS = {
   en: ["AI Pick", "Half-Day", "Full Day", "Food", "Culture", "Nature"],
@@ -98,12 +99,15 @@ export default function CoursesPage() {
       <div style={{ background: "#15b6c1", paddingTop: 44, paddingBottom: 14, flexShrink: 0 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px" }}>
           <span style={{ fontSize: 17, fontWeight: 800, color: "#fff", letterSpacing: "-0.02em" }}>{t.title}</span>
-          <button
-            onClick={() => setActiveFilter(0)}
-            style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, padding: "6px 10px", color: "#fff", fontSize: 13, cursor: "pointer" }}
-          >
-            🔄
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <TopActions />
+            <button
+              onClick={() => setActiveFilter(0)}
+              style={{ background: "rgba(255,255,255,0.2)", border: "none", borderRadius: 8, padding: "6px 10px", color: "#fff", fontSize: 13, cursor: "pointer" }}
+            >
+              🔄
+            </button>
+          </div>
         </div>
       </div>
 

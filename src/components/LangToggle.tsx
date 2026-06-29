@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLang, setLang } from "@/lib/lang";
 
@@ -55,5 +56,27 @@ export function LangToggleInline() {
     >
       {isKo ? "EN" : "한국어"}
     </button>
+  );
+}
+
+/** Combined [Lang][Login] pair for app page headers. */
+export function TopActions() {
+  const isKo = useLang();
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <LangToggleInline />
+      <Link
+        href="/login"
+        style={{
+          display: "inline-flex", alignItems: "center", padding: "5px 11px",
+          borderRadius: 20, background: "rgba(255,255,255,0.15)",
+          border: "1px solid rgba(255,255,255,0.28)", color: "#fff",
+          fontSize: 11, fontWeight: 600, textDecoration: "none",
+          whiteSpace: "nowrap", letterSpacing: "0.04em", lineHeight: 1,
+        }}
+      >
+        {isKo ? "로그인" : "Login"}
+      </Link>
+    </div>
   );
 }

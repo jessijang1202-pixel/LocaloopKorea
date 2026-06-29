@@ -51,6 +51,7 @@ export interface Place {
   category: string;
   region_id: string | null;
   address: string | null;
+  address_ko?: string | null;
   lat: number | null;
   lng: number | null;
   image_url: string | null;

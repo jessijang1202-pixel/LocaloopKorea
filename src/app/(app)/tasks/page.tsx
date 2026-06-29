@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useLang } from "@/lib/lang";
+import { TopActions } from "@/components/LangToggle";
 
 const STAGES = {
   en: ["Arrival", "Early Life", "Settlement", "Community", "Long-term"],
@@ -90,9 +91,12 @@ export default function TasksPage() {
       <div style={{ background: "#0B1E2D", paddingTop: 44, paddingBottom: 16, flexShrink: 0 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 16px" }}>
           <span style={{ fontSize: 17, fontWeight: 800, color: "#fff", letterSpacing: "-0.02em" }}>{t.title}</span>
-          <button style={{ background: "rgba(255,255,255,0.12)", border: "none", borderRadius: 8, padding: "6px 10px", color: "#fff", fontSize: 13, cursor: "pointer" }}>
-            ℹ️
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <TopActions />
+            <button style={{ background: "rgba(255,255,255,0.12)", border: "none", borderRadius: 8, padding: "6px 10px", color: "#fff", fontSize: 13, cursor: "pointer" }}>
+              ℹ️
+            </button>
+          </div>
         </div>
       </div>
 

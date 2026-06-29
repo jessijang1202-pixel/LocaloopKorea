@@ -130,6 +130,14 @@ export default function ProfilePage() {
           <span style={{ fontSize: 17, fontWeight: 800, color: "#fff", letterSpacing: "-0.02em" }}>{t.title}</span>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <LangToggleInline />
+            <Link href="/login" style={{
+              display: "inline-flex", alignItems: "center", padding: "5px 11px",
+              borderRadius: 20, background: "rgba(255,255,255,0.15)",
+              border: "1px solid rgba(255,255,255,0.28)", color: "#fff",
+              fontSize: 11, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap",
+            }}>
+              {isKo ? "로그인" : "Login"}
+            </Link>
             <Link href="/profile/edit" style={{
               background: "rgba(21,182,193,0.18)", border: "1.5px solid rgba(21,182,193,0.45)",
               borderRadius: 10, padding: "6px 14px", color: "#fff", fontSize: 12, fontWeight: 700,
