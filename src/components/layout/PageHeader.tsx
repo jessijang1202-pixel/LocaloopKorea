@@ -14,6 +14,9 @@ export function PageHeader({ right, children }: PageHeaderProps) {
     <div
       className="ll-page-header"
       style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 50,
         background: "#15b6c1",
         paddingTop: "calc(env(safe-area-inset-top, 0px) + 3px)",
         paddingBottom: children ? 10 : 10,

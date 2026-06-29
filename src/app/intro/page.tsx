@@ -10,19 +10,22 @@ import { createClient } from "@/lib/supabase/client";
 type Highlight = "place" | "task" | "course" | "people";
 
 // ─── Mobile slides ─────────────────────────────────────────────────────────────
-const MOB_KO = [
+type MobSlide = { icon: string; img: string; tag: string; lines: string[]; hi: number; desc: string; bg: string; ac: string; chatPreview?: boolean };
+const MOB_KO: MobSlide[] = [
   { icon: "🗺️", img: "/onboarding_welcome.png", tag: "Localoop Korea", lines: ["어서와!", "한국에 온걸 환영해"], hi: 1, desc: "언어 장벽, 낯선 동네, 새로운 일상.\n이제 AI가 당신의 한국 생활을\n단계별로 안내해드려요.", bg: "#0B1E2D", ac: "#15b6c1" },
   { icon: "📍", img: "/onboarding_places.png", tag: "기능 01", lines: ["내 주변", "외국인 친화 장소 찾기"], hi: 1, desc: "S~C 외국인 친화도 등급을 지도에서 바로 확인.\n영어 메뉴, 카드 결제 여부도 한눈에!", bg: "#0a2233", ac: "#15b6c1" },
   { icon: "📋", img: "/onboarding_tasks.png", tag: "기능 02", lines: ["지금 뭘 해야 하는지", "AI가 알려줘"], hi: 1, desc: "도착 첫날부터 장기 정착까지.\n체류 단계에 맞게 \"지금 해야 할 일\"을\n자동으로 안내해드려요.", bg: "#0B1E2D", ac: "#ffd600" },
   { icon: "🏃", img: "/onboarding_courses.png", tag: "기능 03", lines: ["현지인만 아는", "로컬 코스 추천"], hi: 1, desc: "관광지 말고 진짜 한국.\n내 언어 수준·취향에 맞는 반나절 로컬 코스를\nAI가 자동으로 짜드려요.", bg: "#0a2233", ac: "#15b6c1" },
   { icon: "🤝", img: "/onboarding_connect.png", tag: "기능 04 · 05", lines: ["외국인·한국인", "진짜 친구 만들기"], hi: 1, desc: "언어 교환, 취미 모임, 동네 파티.\n실시간 번역 채팅으로\n언어 장벽 없이 자연스럽게 연결돼요.", bg: "#0B1E2D", ac: "#ffd600" },
+  { icon: "💬", img: "", tag: "기능 06", lines: ["실시간 번역 채팅으로", "언어 장벽 없애기"], hi: 1, desc: "한국어를 몰라도 괜찮아요.\n메시지를 보내면 AI가 즉시 번역해\n상대방에게 전달해드려요.\n자연스러운 대화, 진짜 연결.", bg: "#08151E", ac: "#15b6c1", chatPreview: true },
 ];
-const MOB_EN = [
+const MOB_EN: MobSlide[] = [
   { icon: "🗺️", img: "/onboarding_welcome.png", tag: "Localoop Korea", lines: ["Welcome to Korea!", "Your new life starts here"], hi: 0, desc: "New city. New language. New life.\nLet AI guide your Korea journey\nstep by step.", bg: "#0B1E2D", ac: "#15b6c1" },
   { icon: "📍", img: "/onboarding_places.png", tag: "Feature 01", lines: ["Find foreigner-friendly", "places near you"], hi: 1, desc: "See S~C friendliness ratings directly on the map.\nEnglish menu, card payment — all at a glance.", bg: "#0a2233", ac: "#15b6c1" },
   { icon: "📋", img: "/onboarding_tasks.png", tag: "Feature 02", lines: ["AI tells you exactly", "what to do right now"], hi: 1, desc: "From day one to long-term settlement.\nBased on your visa stage, we automatically\nguide you through your next steps.", bg: "#0B1E2D", ac: "#ffd600" },
   { icon: "🏃", img: "/onboarding_courses.png", tag: "Feature 03", lines: ["Local courses only", "insiders know about"], hi: 1, desc: "Skip the tourist traps.\nAI builds a half-day local course matched\nto your language level and interests.", bg: "#0a2233", ac: "#15b6c1" },
   { icon: "🤝", img: "/onboarding_connect.png", tag: "Features 04 · 05", lines: ["Make real friends —", "locals & expats alike"], hi: 1, desc: "Language exchange, hobby meetups, hangouts.\nReal-time chat translation breaks every barrier.", bg: "#0B1E2D", ac: "#ffd600" },
+  { icon: "💬", img: "", tag: "Feature 06", lines: ["Real-time translation chat —", "no language barrier"], hi: 1, desc: "Don't know Korean? No problem.\nSend a message and AI instantly translates it\nfor the other person.\nNatural conversations, real connections.", bg: "#08151E", ac: "#15b6c1", chatPreview: true },
 ];
 
 // ─── PC slides ─────────────────────────────────────────────────────────────────
@@ -430,29 +433,49 @@ export default function IntroPage() {
         {/* Slide content */}
         <div key={slide} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: `${showInstallBtn ? 88 : 72}px 40px 0`, textAlign: "center", opacity: fading ? 0 : 1, transform: fading ? "translateY(12px)" : "translateY(0)", transition: "opacity 0.16s, transform 0.16s" }}>
           <div style={{
-            width: 280,
-            height: 200,
-            position: "relative",
-            marginBottom: 28,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            background: "#fff",
-            borderRadius: 20,
-            padding: 10,
-            boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
-            overflow: "hidden"
+            width: 280, height: 200,
+            position: "relative", marginBottom: 28,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            background: "#fff", borderRadius: 20, padding: 10,
+            boxShadow: "0 10px 30px rgba(0,0,0,0.35)", overflow: "hidden",
           }}>
-            <img
-              src={ms.img}
-              alt={ms.tag}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                borderRadius: 12
-              }}
-            />
+            {ms.chatPreview ? (
+              /* Inline chat mockup for the translation chat slide */
+              <div style={{ width: "100%", height: "100%", borderRadius: 12, background: "#F5F9FA", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+                <div style={{ background: "#0B1E2D", padding: "8px 12px", display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{ width: 28, height: 28, borderRadius: "50%", background: "#15b6c1", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800, color: "#fff" }}>민</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: "#fff" }}>민준</div>
+                    <div style={{ fontSize: 9, color: "#15b6c1" }}>🟢 {isKo ? "온라인" : "Online"}</div>
+                  </div>
+                  <span style={{ fontSize: 9, background: "rgba(21,182,193,0.2)", color: "#15b6c1", padding: "2px 7px", borderRadius: 10, fontWeight: 600 }}>AI 번역 ON</span>
+                </div>
+                <div style={{ flex: 1, padding: "8px 10px", display: "flex", flexDirection: "column", gap: 6 }}>
+                  <div style={{ alignSelf: "flex-start", maxWidth: "80%" }}>
+                    <div style={{ background: "#fff", border: "1px solid #E0E8EA", borderRadius: "4px 12px 12px 12px", padding: "6px 9px" }}>
+                      <div style={{ fontSize: 10, color: "#1A2B2C" }}>안녕하세요! 이태원 카페 추천해주실 수 있나요?</div>
+                    </div>
+                    <div style={{ background: "rgba(21,182,193,0.08)", border: "1px solid rgba(21,182,193,0.2)", borderRadius: 6, padding: "3px 8px", marginTop: 3 }}>
+                      <div style={{ fontSize: 9, color: "#0B7A82" }}>🔄 Can you recommend a café in Itaewon?</div>
+                    </div>
+                  </div>
+                  <div style={{ alignSelf: "flex-end", maxWidth: "80%" }}>
+                    <div style={{ background: "#15b6c1", borderRadius: "12px 4px 12px 12px", padding: "6px 9px" }}>
+                      <div style={{ fontSize: 10, color: "#fff" }}>Of course! Anthracite is amazing ☕</div>
+                    </div>
+                    <div style={{ background: "rgba(21,182,193,0.08)", border: "1px solid rgba(21,182,193,0.2)", borderRadius: 6, padding: "3px 8px", marginTop: 3 }}>
+                      <div style={{ fontSize: 9, color: "#0B7A82" }}>🔄 물론이죠! Anthracite 정말 좋아요 ☕</div>
+                    </div>
+                  </div>
+                </div>
+                <div style={{ padding: "6px 8px", borderTop: "1px solid #E0E8EA", display: "flex", gap: 5, background: "#fff" }}>
+                  <div style={{ flex: 1, background: "#F5F9FA", borderRadius: 14, padding: "5px 10px", fontSize: 9, color: "#9BB5B8" }}>{isKo ? "메시지 입력..." : "Type a message..."}</div>
+                  <div style={{ width: 24, height: 24, borderRadius: "50%", background: "#15b6c1", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, color: "#fff" }}>➤</div>
+                </div>
+              </div>
+            ) : (
+              <img src={ms.img} alt={ms.tag} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 12 }} />
+            )}
           </div>
           <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", color: ms.ac === "#ffd600" ? "#0B1E2D" : "#0B7A82", background: ms.ac === "#ffd600" ? "#ffd600" : "#D4F4F6", padding: "4px 14px", borderRadius: 20, marginBottom: 20 }}>{ms.tag}</div>
           <h1 style={{ fontSize: 28, fontWeight: 800, lineHeight: 1.3, marginBottom: 18, letterSpacing: "-0.02em" }}>
