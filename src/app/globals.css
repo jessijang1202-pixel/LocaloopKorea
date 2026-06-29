@@ -816,7 +816,7 @@ html {
   width: 320px;
   min-width: 320px;
   height: 100%;
-  overflow-y: auto;
+  overflow: hidden;
   border-right: 1px solid var(--border);
   background: var(--card);
   flex-shrink: 0;
@@ -824,8 +824,7 @@ html {
   flex-direction: column;
 }
 .ll-split-panel-sticky {
-  position: sticky;
-  top: 0;
+  flex-shrink: 0;
   z-index: 2;
   background: var(--card);
   border-bottom: 1px solid var(--border);
