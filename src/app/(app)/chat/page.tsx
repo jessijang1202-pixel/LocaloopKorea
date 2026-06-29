@@ -65,7 +65,7 @@ export default function ChatPage() {
           <span style={{ fontSize: 12, color: "var(--muted-foreground)" }}>{t.searchPh}</span>
         </div>
       </div>
-      <div style={{ flex: 1, overflowY: "auto" }}>
+      <div style={{ flex: 1, overflowY: "auto", minHeight: 0 }}>
         {CONVERSATIONS.map((cv) => {
           const isActive = cv.id === activeCv;
           const lastMsg = isKo ? cv.lastMsg.ko : cv.lastMsg.en;
@@ -109,7 +109,7 @@ export default function ChatPage() {
         <span style={{ fontSize: 13 }}>🔄</span>
         <span style={{ fontSize: 11, color: "#0B7A82", fontWeight: 600 }}>{t.notice}</span>
       </div>
-      <div style={{ flex: 1, overflowY: "auto", padding: "12px 16px", background: "var(--content-bg)" }}>
+      <div style={{ flex: 1, overflowY: "auto", minHeight: 0, padding: "12px 16px", background: "var(--content-bg)" }}>
         {activeMessages.map((msg) => {
           const isMe = msg.from === "me";
           return (

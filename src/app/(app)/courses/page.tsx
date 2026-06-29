@@ -240,7 +240,7 @@ export default function CoursesPage() {
       <div className="ll-pc-only ll-split">
         <div className="ll-split-panel">
           {filterChips}
-          <div style={{ flex: 1, overflowY: "auto", padding: "8px 12px 0", background: "var(--content-bg)" }}>
+          <div style={{ flex: 1, overflowY: "auto", minHeight: 0, padding: "8px 12px 0", background: "var(--content-bg)" }}>
             {filtered.length === 0 && <div style={{ textAlign: "center", padding: "40px 0", color: "var(--muted-foreground)", fontSize: 13 }}>{t.noResults}</div>}
             {filtered.map((course) => courseCard(course, true))}
             <div style={{ height: 12 }} />

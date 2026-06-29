@@ -62,7 +62,7 @@ export default function CommunityPage() {
   );
 
   const meetupList = (compact = false) => (
-    <div style={compact ? { flex: 1, overflowY: "auto", background: "var(--content-bg)", padding: "10px 12px 0" } : { flex: 1, overflowY: "auto", background: "var(--content-bg)", padding: "12px 14px 0" }}>
+    <div style={compact ? { flex: 1, overflowY: "auto", minHeight: 0, background: "var(--content-bg)", padding: "10px 12px 0" } : { flex: 1, overflowY: "auto", background: "var(--content-bg)", padding: "12px 14px 0" }}>
       <button onClick={() => { if (compact) setShowCreateForm(true); }} style={{ width: "100%", marginBottom: 10, padding: "11px 0", background: "#15b6c1", border: "none", borderRadius: 12, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>
         + {t.newMeetup}
       </button>
@@ -96,7 +96,7 @@ export default function CommunityPage() {
   );
 
   const peopleList = (compact = false) => (
-    <div style={compact ? { flex: 1, overflowY: "auto", background: "var(--content-bg)", padding: "10px 12px 0" } : { flex: 1, overflowY: "auto", background: "var(--content-bg)", padding: "12px 14px 0" }}>
+    <div style={compact ? { flex: 1, overflowY: "auto", minHeight: 0, background: "var(--content-bg)", padding: "10px 12px 0" } : { flex: 1, overflowY: "auto", background: "var(--content-bg)", padding: "12px 14px 0" }}>
       <p style={{ fontSize: 11, color: "var(--muted-foreground)", marginBottom: 10 }}>{t.peopleSub}</p>
       {STATIC_PEOPLE.map((person) => {
         const isSelected = person.id === selectedPersonId;

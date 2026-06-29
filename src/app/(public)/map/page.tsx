@@ -187,7 +187,7 @@ export default function MapPage() {
         {/* Left panel: search + filters + place list */}
         <div className="ll-split-panel">
           {searchAndChips}
-          <div style={{ flex: 1, overflowY: "auto", padding: "8px 14px 0", background: "var(--content-bg)" }}>
+          <div style={{ flex: 1, overflowY: "auto", minHeight: 0, padding: "8px 14px 0", background: "var(--content-bg)" }}>
             {filtered.length === 0 && <div style={{ textAlign: "center", padding: "40px 0", color: "var(--muted-foreground)", fontSize: 13 }}>{t.noResults}</div>}
             {filtered.map((place) => (
               <PlaceCard key={place.id} place={place} isSelected={place.id === selectedPlace?.id} isKo={isKo} t={t} onClick={() => setSelectedPlace(place)} />

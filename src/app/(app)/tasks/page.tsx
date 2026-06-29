@@ -101,7 +101,7 @@ export default function TasksPage() {
   );
 
   const taskList = (scrollable = false) => (
-    <div style={scrollable ? { flex: 1, overflowY: "auto", background: "var(--content-bg)", padding: "10px 12px 0" } : { background: "var(--content-bg)", padding: "10px 14px 0" }}>
+    <div style={scrollable ? { flex: 1, overflowY: "auto", minHeight: 0, background: "var(--content-bg)", padding: "10px 12px 0" } : { background: "var(--content-bg)", padding: "10px 14px 0" }}>
       {TASKS.map((task) => {
         const isChecked = checked[task.id] ?? task.done;
         const info = isKo ? task.ko : task.en;
