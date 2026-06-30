@@ -53,8 +53,8 @@ export function LangToggleInline() {
       onClick={() => setLang(isKo ? "en" : "ko")}
       aria-label="Switch language"
       style={{
-        display: "inline-flex", alignItems: "center",
-        padding: "5px 10px", borderRadius: 20, fontSize: 11,
+        display: "inline-flex", alignItems: "center", justifyContent: "center",
+        height: 30, padding: "0 10px", borderRadius: 8, fontSize: 11,
         fontWeight: 500, cursor: "pointer", lineHeight: 1, whiteSpace: "nowrap",
         background: "transparent",
         border: "1px solid rgba(255,255,255,0.22)",
@@ -95,9 +95,9 @@ export function TopActions() {
         aria-label="Toggle dark/light mode"
         style={{
           display: "inline-flex", alignItems: "center", justifyContent: "center",
-          padding: "5px 9px", borderRadius: 20, lineHeight: 1,
+          height: 30, width: 30, borderRadius: 8, lineHeight: 1,
           background: "transparent", border: "1px solid rgba(255,255,255,0.22)",
-          cursor: "pointer", color: "#ffffff",
+          cursor: "pointer", color: "#ffffff", flexShrink: 0,
         }}
       >
         {theme === "dark" ? (
