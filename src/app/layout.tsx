@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import "@/styles/theme-experiment.css";
+import { ExperimentThemeWatcher } from "@/components/ExperimentThemeWatcher";
 
 export const metadata: Metadata = {
   title: "Localoop Korea — Dig into local Korea",
@@ -30,6 +32,7 @@ export default function RootLayout({
       <body className="min-h-full bg-[var(--background)] text-[var(--foreground)] antialiased">
         {/* Theme init (default dark) + install prompt capture — must run before React mounts */}
         <script dangerouslySetInnerHTML={{ __html: `(function(){var t=localStorage.getItem("ll-theme")||"dark";document.documentElement.setAttribute("data-theme",t);})();window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.deferredPrompt=e;});` }} />
+        <ExperimentThemeWatcher />
         {children}
       </body>
     </html>

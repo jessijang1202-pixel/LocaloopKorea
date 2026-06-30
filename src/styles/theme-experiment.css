@@ -1,0 +1,197 @@
+/* ================================================================
+   LOCALOOP KOREA — EXPERIMENT THEME
+   Style: E-commerce / Shopping App  |  Primary: #1ABC9C Mint Green
+
+   Activation : ?theme=experiment  (set by ExperimentThemeWatcher)
+   Deactivate : ?theme=default     (or remove query param)
+
+   DOES NOT touch globals.css or any existing CSS variable.
+   Scoped entirely to html[data-exp-theme="experiment"].
+   !important is intentional — overrides hardcoded inline styles.
+   ================================================================ */
+
+/* ── 1. CSS Variable Overrides ────────────────────────────────
+   Overrides :root AND [data-theme="dark"] values when active.
+   This stylesheet loads after globals.css, so equal-specificity
+   selectors here win via cascade order.
+   ─────────────────────────────────────────────────────────── */
+html[data-exp-theme="experiment"],
+html[data-exp-theme="experiment"][data-theme="dark"] {
+  --background:           #F8F9FA;
+  --foreground:           #1A1A2E;
+  --primary:              #1ABC9C;
+  --primary-dark:         #17A085;
+  --primary-light:        #D5F5EE;
+  --primary-foreground:   #ffffff;
+  --secondary:            #F0FFF8;
+  --muted:                #F0FFF8;
+  --muted-foreground:     #6B7280;
+  --border:               #E8ECF0;
+  --card:                 #FFFFFF;
+  --accent:               #1ABC9C;
+  --content-bg:           #F2F4F7;
+  --card-selected:        #E8FBF5;
+  --icon-bg:              #F0FFF8;
+
+  /* Pastel category palette */
+  --exp-coral:   #FF7E67;
+  --exp-yellow:  #FFC845;
+  --exp-purple:  #8B7FD8;
+  --exp-blue:    #5B9BD5;
+  --exp-pink:    #F488A8;
+  --exp-mint:    #1ABC9C;
+
+  /* Design tokens */
+  --exp-shadow-card:  0 4px 12px rgba(0, 0, 0, 0.06);
+  --exp-shadow-modal: 0 8px 32px rgba(0, 0, 0, 0.10);
+  --exp-radius-card:  20px;
+  --exp-radius-btn:   999px;
+}
+
+/* ── 2. Body ──────────────────────────────────────────────── */
+html[data-exp-theme="experiment"] body,
+html[data-exp-theme="experiment"][data-theme="dark"] body {
+  background: #F2F4F7 !important;
+  color: #1A1A2E !important;
+  font-family: "Inter", "Pretendard Variable", "Pretendard",
+               -apple-system, BlinkMacSystemFont, "Segoe UI",
+               "Noto Sans KR", sans-serif !important;
+}
+
+/* ── 3. Mobile Page Header ────────────────────────────────── */
+/* White header with green accent — white logo text stays on green strip */
+html[data-exp-theme="experiment"] .ll-page-header,
+html[data-exp-theme="experiment"][data-theme="dark"] .ll-page-header {
+  background: #1ABC9C !important;
+  border-bottom: none !important;
+  box-shadow: 0 2px 12px rgba(26, 188, 156, 0.30) !important;
+}
+
+/* ── 4. PC Sidebar ────────────────────────────────────────── */
+/* Green gradient sidebar — existing white text stays readable */
+html[data-exp-theme="experiment"] .ll-sidebar,
+html[data-exp-theme="experiment"][data-theme="dark"] .ll-sidebar {
+  background: linear-gradient(180deg, #1ABC9C 0%, #13A085 100%) !important;
+  border-right: none !important;
+  box-shadow: 3px 0 20px rgba(26, 188, 156, 0.28) !important;
+}
+
+/* Sidebar section dividers */
+html[data-exp-theme="experiment"] .ll-sidebar [style*="rgba(255,255,255,0.07)"],
+html[data-exp-theme="experiment"][data-theme="dark"] .ll-sidebar [style*="rgba(255,255,255,0.07)"] {
+  border-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+/* Theme/lang toggle buttons in sidebar */
+html[data-exp-theme="experiment"] .ll-sidebar button,
+html[data-exp-theme="experiment"][data-theme="dark"] .ll-sidebar button {
+  background: rgba(255, 255, 255, 0.18) !important;
+  color: #ffffff !important;
+}
+
+/* ── 5. Mobile Bottom Nav ─────────────────────────────────── */
+/* Clean white card nav — commerce style */
+html[data-exp-theme="experiment"] .ll-bottomnav,
+html[data-exp-theme="experiment"][data-theme="dark"] .ll-bottomnav {
+  background: #FFFFFF !important;
+  border-top: 1px solid #E8ECF0 !important;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Bottom nav icons/labels: gray (active gets bold weight from inline) */
+html[data-exp-theme="experiment"] .ll-bottomnav a,
+html[data-exp-theme="experiment"][data-theme="dark"] .ll-bottomnav a {
+  color: #B0B8C4 !important;
+}
+
+/* ── 6. PC Split Panels ───────────────────────────────────── */
+html[data-exp-theme="experiment"] .ll-split-panel,
+html[data-exp-theme="experiment"][data-theme="dark"] .ll-split-panel {
+  background: #FFFFFF !important;
+  border-right: 1px solid #E8ECF0 !important;
+}
+
+html[data-exp-theme="experiment"] .ll-split-main,
+html[data-exp-theme="experiment"][data-theme="dark"] .ll-split-main {
+  background: #F2F4F7 !important;
+}
+
+/* ── 7. Content wrapper ───────────────────────────────────── */
+html[data-exp-theme="experiment"] .ll-content,
+html[data-exp-theme="experiment"][data-theme="dark"] .ll-content {
+  background: #F2F4F7 !important;
+}
+
+/* ── 8. Auth cards ────────────────────────────────────────── */
+html[data-exp-theme="experiment"] .auth-card,
+html[data-exp-theme="experiment"][data-theme="dark"] .auth-card {
+  border-color: #E8ECF0 !important;
+  box-shadow: 0 8px 40px rgba(26, 188, 156, 0.12) !important;
+}
+
+/* ── 9. Split panel sticky header ────────────────────────── */
+html[data-exp-theme="experiment"] .ll-split-panel-sticky,
+html[data-exp-theme="experiment"][data-theme="dark"] .ll-split-panel-sticky {
+  background: #FFFFFF !important;
+  border-bottom-color: #E8ECF0 !important;
+}
+
+/* ── 10. Landing page nav (public pages) ──────────────────── */
+html[data-exp-theme="experiment"] .lp-nav,
+html[data-exp-theme="experiment"][data-theme="dark"] .lp-nav {
+  background: rgba(255, 255, 255, 0.97) !important;
+  border-bottom-color: #E8ECF0 !important;
+}
+
+/* ── 11. App container background ─────────────────────────── */
+html[data-exp-theme="experiment"] .app-container,
+html[data-exp-theme="experiment"][data-theme="dark"] .app-container {
+  background-color: #F2F4F7 !important;
+}
+
+/* ── 12. Experiment-only utility classes ──────────────────── */
+/* Use these in new experiment-specific components if needed */
+
+.exp-card {
+  background: #FFFFFF;
+  border-radius: var(--exp-radius-card, 20px);
+  box-shadow: var(--exp-shadow-card, 0 4px 12px rgba(0,0,0,0.06));
+  border: 1px solid #E8ECF0;
+  padding: 16px;
+}
+
+.exp-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #1ABC9C;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 999px;
+  font-weight: 700;
+  padding: 10px 22px;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(26, 188, 156, 0.30);
+  text-decoration: none;
+  transition: opacity 0.15s, transform 0.1s;
+}
+.exp-btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+
+.exp-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.exp-category-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
