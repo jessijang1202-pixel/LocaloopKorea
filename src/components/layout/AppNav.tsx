@@ -12,7 +12,7 @@ const SIDEBAR_TABS: Tab[] = [
   { href: "/tasks",     icon: "tasks",     labelKo: "태스크",   labelEn: "Tasks" },
   { href: "/courses",   icon: "courses",   labelKo: "코스",     labelEn: "Courses" },
   { href: "/community", icon: "community", labelKo: "커뮤니티",  labelEn: "Community" },
-  { href: "/etiquette", icon: "culture",   labelKo: "에티켓",   labelEn: "Etiquette" },
+  { href: "/guide",     icon: "culture",   labelKo: "가이드",   labelEn: "Guide" },
   { href: "/profile",   icon: "profile",   labelKo: "나",       labelEn: "Me" },
 ];
 
@@ -117,23 +117,6 @@ export function AppNav() {
             );
           })}
         </nav>
-
-        {/* Guide link */}
-        <div style={{ padding: "0 10px 6px" }}>
-          <Link
-            href="/guide"
-            style={{
-              display: "flex", alignItems: "center",
-              padding: "0 14px", height: 44, borderRadius: 10, textDecoration: "none",
-              background: isActive("/guide") ? "rgba(255,86,54,0.16)" : "transparent",
-              borderLeft: isActive("/guide") ? "3px solid #FF6A4D" : "3px solid transparent",
-            }}
-          >
-            <span style={{ fontSize: 13, fontWeight: isActive("/guide") ? 700 : 400, color: isActive("/guide") ? "#FF8C72" : "rgba(255,244,240,0.52)" }}>
-              {isKo ? "가이드" : "Guide"}
-            </span>
-          </Link>
-        </div>
 
         {/* Bottom controls */}
         <div style={{ padding: "8px 10px 18px", borderTop: "1px solid rgba(255,86,54,0.10)", display: "flex", gap: 6 }}>

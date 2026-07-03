@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useLang, setLang } from "@/lib/lang";
 import { useTheme } from "@/lib/theme";
 import dynamic from "next/dynamic";
@@ -8,6 +8,7 @@ import { SEED_PLACES, SEED_REGIONS } from "@/data/seed";
 import type { Place } from "@/types";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const KakaoMap = dynamic(
   () => import("@/components/map/KakaoMap").then((m) => m.KakaoMap),
@@ -208,6 +209,106 @@ function PlaceCard2({ place, isKo, hot = false }: { place: Place; isKo: boolean;
   );
 }
 
+function WelcomePopup({ isKo, onClose }: { isKo: boolean; onClose: () => void }) {
+  const router = useRouter();
+
+  function handleGuide() {
+    onClose();
+    router.push("/guide");
+  }
+
+  const features = [
+    {
+      grade: "S/A/B/C",
+      bg: "#E8F9F9", text: "#0B7A82",
+      title: isKo ? "외국인 친화 등급 시스템" : "Foreigner-Friendliness Rating",
+      desc: isKo ? "영어 지원·카드 결제·혼자 OK 기준으로 장소를 4등급으로 분류합니다." : "Places rated in 4 tiers by English support, card payment, and solo-friendliness.",
+    },
+    {
+      grade: "MAP",
+      bg: "#E8F4FF", text: "#1565C0",
+      title: isKo ? "이태원 중심 지도 탐색" : "Itaewon-Centered Map",
+      desc: isKo ? "이태원부터 시작해 서울 전역의 외국인 친화 장소를 탐색하세요." : "Start from Itaewon and explore foreigner-friendly spots across Seoul.",
+    },
+    {
+      grade: "TASK",
+      bg: "#F0FFF0", text: "#2E7D32",
+      title: isKo ? "한국 생활 단계별 Tasks" : "Step-by-Step Korea Tasks",
+      desc: isKo ? "USIM·은행·외국인등록증 등 정착 필수 과제를 단계별로 안내합니다." : "Guided tasks for USIM, bank, ARC, and every step of settling in Korea.",
+    },
+    {
+      grade: "MATCH",
+      bg: "#FFF9C4", text: "#A56000",
+      title: isKo ? "커뮤니티 AI 매칭" : "Community AI Matching",
+      desc: isKo ? "관심사·언어·위치 기반으로 한국인·외국인 모임을 자동 매칭합니다." : "Auto-match with Korean locals and expats by interest, language, and location.",
+    },
+  ];
+
+  return (
+    <div style={{
+      position: "fixed", inset: 0, zIndex: 9999,
+      background: "rgba(0,0,0,0.55)",
+      display: "flex", alignItems: "flex-end", justifyContent: "center",
+      padding: "0",
+    }}>
+      <div style={{
+        background: "var(--card)", borderRadius: "24px 24px 0 0",
+        width: "100%", maxWidth: 480,
+        padding: "20px 20px calc(env(safe-area-inset-bottom, 0px) + 24px)",
+        boxShadow: "0 -8px 40px rgba(0,0,0,0.22)",
+        maxHeight: "88dvh", overflowY: "auto",
+      }}>
+        {/* Handle */}
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
+          <div style={{ width: 36, height: 4, borderRadius: 2, background: "var(--border)" }} />
+        </div>
+
+        {/* Title */}
+        <div style={{ marginBottom: 18, textAlign: "center" }}>
+          <div style={{ fontSize: 11, fontWeight: 800, color: "var(--grade-s)", letterSpacing: "0.1em", marginBottom: 6 }}>LOCALOOP KOREA</div>
+          <h2 style={{ fontSize: 20, fontWeight: 900, color: "var(--foreground)", letterSpacing: "-0.03em", lineHeight: 1.2, marginBottom: 6 }}>
+            {isKo ? "한국 생활의 새로운 시작" : "Your New Start in Korea"}
+          </h2>
+          <p style={{ fontSize: 13, color: "var(--foreground-muted)", lineHeight: 1.6 }}>
+            {isKo ? "Localoop Korea가 한국 생활의 모든 순간을 함께합니다." : "Localoop Korea guides you through every moment of life in Korea."}
+          </p>
+        </div>
+
+        {/* Feature list */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
+          {features.map((f) => (
+            <div key={f.grade} style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "12px 14px", borderRadius: 14, background: "var(--content-bg)", border: "1px solid var(--border)" }}>
+              <div style={{ width: 40, height: 40, borderRadius: 10, flexShrink: 0, background: f.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 800, color: f.text }}>
+                {f.grade}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "var(--foreground)", marginBottom: 3 }}>{f.title}</div>
+                <div style={{ fontSize: 11, color: "var(--foreground-muted)", lineHeight: 1.55 }}>{f.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Buttons */}
+        <div style={{ display: "flex", gap: 8 }}>
+          <button
+            onClick={handleGuide}
+            style={{ flex: 1, padding: "13px 0", borderRadius: 14, background: "var(--grade-s)", color: "#fff", fontSize: 14, fontWeight: 700, border: "none", cursor: "pointer" }}
+          >
+            {isKo ? "유저 가이드 보기" : "View User Guide"}
+          </button>
+          <button
+            onClick={onClose}
+            style={{ padding: "13px 18px", borderRadius: 14, background: "var(--content-bg)", color: "var(--foreground-muted)", fontSize: 14, fontWeight: 600, border: "1px solid var(--border)", cursor: "pointer" }}
+          >
+            {isKo ? "닫기" : "Close"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function MapPage() {
   const isKo = useLang();
   const theme = useTheme();
@@ -216,7 +317,19 @@ export default function MapPage() {
   );
   const [chip, setChip] = useState<FilterKey>("all");
   const [sheetExpanded, setSheetExpanded] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
   const dragStartY = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!sessionStorage.getItem("ll_welcome_shown")) {
+      setShowPopup(true);
+    }
+  }, []);
+
+  function closePopup() {
+    sessionStorage.setItem("ll_welcome_shown", "1");
+    setShowPopup(false);
+  }
 
   const hotPlaces = SEED_PLACES.filter((p) => HOT_PLACE_IDS.includes(p.id));
 
@@ -489,6 +602,7 @@ export default function MapPage() {
     <>
       {mobileView}
       {pcView}
+      {showPopup && <WelcomePopup isKo={isKo} onClose={closePopup} />}
     </>
   );
 }
