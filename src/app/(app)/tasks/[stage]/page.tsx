@@ -31,8 +31,8 @@ const STAGES: Record<string, StageDetail> = {
   "arrival": {
     slug: "arrival", stageNum: 1,
     color: "#FF5636",
-    ko: { name: "도착", tagline: "한국 첫날, 꼭 해야 할 일들" },
-    en: { name: "Arrival", tagline: "Day one in Korea — get these done first" },
+    ko: { name: "도착", tagline: "한국 첫날, 꼭\n해야 할 것들" },
+    en: { name: "Arrival", tagline: "Day one in Korea —\nget these done first" },
     tasks: [
       {
         id: "a1",
@@ -73,8 +73,8 @@ const STAGES: Record<string, StageDetail> = {
   "early-life": {
     slug: "early-life", stageNum: 2,
     color: "#234BFF",
-    ko: { name: "초기 생활", tagline: "한국 생활의 기반을 만드는 단계" },
-    en: { name: "Early Life", tagline: "Building the foundation for life in Korea" },
+    ko: { name: "초기 생활", tagline: "한국 생활 기반을\n탄탄히 쌓는 단계" },
+    en: { name: "Early Life", tagline: "Building your foundation\nfor life in Korea" },
     tasks: [
       {
         id: "e1",
@@ -116,8 +116,8 @@ const STAGES: Record<string, StageDetail> = {
   "settlement": {
     slug: "settlement", stageNum: 3,
     color: "#12A05A",
-    ko: { name: "정착", tagline: "한국이 진짜 '집'이 되는 단계" },
-    en: { name: "Settlement", tagline: "When Korea starts to feel like home" },
+    ko: { name: "정착", tagline: "한국이 진짜\n내 집이 되는 순간" },
+    en: { name: "Settlement", tagline: "When Korea truly starts\nto feel like home" },
     tasks: [
       {
         id: "s1",
@@ -158,8 +158,8 @@ const STAGES: Record<string, StageDetail> = {
   "community": {
     slug: "community", stageNum: 4,
     color: "#7B4DFF",
-    ko: { name: "커뮤니티", tagline: "한국에서 진짜 사람들과 연결되기" },
-    en: { name: "Community", tagline: "Making real connections in Korea" },
+    ko: { name: "커뮤니티", tagline: "한국 사람들과\n진짜로 연결되기" },
+    en: { name: "Community", tagline: "Making real connections\nwith people in Korea" },
     tasks: [
       {
         id: "c1",
@@ -199,8 +199,8 @@ const STAGES: Record<string, StageDetail> = {
   "long-term": {
     slug: "long-term", stageNum: 5,
     color: "#B87000",
-    ko: { name: "장기 거주", tagline: "한국을 내 나라처럼 살아가기" },
-    en: { name: "Long-term", tagline: "Living in Korea like it's truly home" },
+    ko: { name: "장기 거주", tagline: "한국을 나만의\n삶의 터전으로" },
+    en: { name: "Long-term", tagline: "Living in Korea like\nit's always been home" },
     tasks: [
       {
         id: "l1",
@@ -295,7 +295,7 @@ export default function StageDetailPage() {
           </span>
         </div>
 
-        <h1 style={{ fontSize: 28, fontWeight: 900, color: "#fff", letterSpacing: "-0.6px", marginBottom: 6, position: "relative" }}>
+        <h1 style={{ fontSize: 28, fontWeight: 900, color: "#fff", letterSpacing: "-0.6px", marginBottom: 6, position: "relative", whiteSpace: "pre-line" }}>
           {isKo ? detail.ko.tagline : detail.en.tagline}
         </h1>
 
@@ -331,60 +331,57 @@ export default function StageDetailPage() {
       </div>
 
       {/* Task list */}
-      <div style={{ padding: "14px 16px 0", display: "flex", flexDirection: "column", gap: 10 }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: "var(--foreground-sub)", letterSpacing: "0.04em", marginBottom: 4 }}>
-          {isKo ? "체크리스트" : "CHECKLIST"}
-        </div>
+      <div style={{ padding: "10px 16px 0", display: "flex", flexDirection: "column", gap: 9 }}>
         {tasks.map((task) => {
           const done = checked[task.id] ?? false;
           const info = isKo ? task.ko : task.en;
           return (
             <div key={task.id} style={{
-              background: "var(--card)", borderRadius: 16,
+              background: "var(--card)",
+              borderRadius: 16,
               border: task.urgent && !done ? "1.5px solid var(--grade-s)" : "1px solid var(--border)",
-              padding: "14px 14px 12px",
-              boxShadow: task.urgent && !done ? "0 2px 12px -4px rgba(255,86,54,0.2)" : "0 1px 4px rgba(0,0,0,0.04)",
+              padding: "13px 14px",
+              display: "flex",
+              alignItems: "flex-start",
+              gap: 12,
+              boxShadow: task.urgent && !done ? "0 2px 12px -4px rgba(255,86,54,0.25)" : "0 1px 4px rgba(0,0,0,0.04)",
             }}>
-              <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
-                {/* Checkbox */}
-                <button
-                  onClick={() => toggle(task.id)}
-                  style={{
-                    width: 26, height: 26, borderRadius: 8, flexShrink: 0, marginTop: 1,
-                    background: done ? "var(--grade-s)" : "transparent",
-                    border: done ? "none" : task.urgent ? "2px solid var(--grade-s)" : "2px solid var(--border)",
-                    cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-                  }}
-                >
-                  {done && <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round"><path d="M20 6L9 17l-5-5"/></svg>}
-                </button>
+              <button
+                onClick={() => toggle(task.id)}
+                style={{
+                  width: 26, height: 26, borderRadius: 8, flexShrink: 0, marginTop: 1,
+                  background: done ? "var(--grade-s)" : "transparent",
+                  border: done ? "none" : task.urgent ? "2px solid var(--grade-s)" : "2px solid var(--border)",
+                  cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+                }}
+              >
+                {done && <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round"><path d="M20 6L9 17l-5-5"/></svg>}
+              </button>
 
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 3 }}>
-                    <span style={{
-                      fontSize: 14, fontWeight: 700,
-                      color: done ? "var(--foreground-muted)" : "var(--foreground)",
-                      textDecoration: done ? "line-through" : "none",
-                    }}>
-                      {info.name}
-                    </span>
-                    {task.urgent && !done && (
-                      <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999, background: "var(--grade-s)", color: "#fff", flexShrink: 0 }}>
-                        {task.deadline ?? "긴급"}
-                      </span>
-                    )}
-                    {done && (
-                      <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999, background: "var(--badge-en-bg)", color: "var(--badge-en-fg)", flexShrink: 0 }}>
-                        {isKo ? "완료" : "Done"}
-                      </span>
-                    )}
-                  </div>
-                  <div style={{ fontSize: 12, color: "var(--foreground-muted)", marginBottom: 8 }}>{info.desc}</div>
-                  {/* Tip */}
-                  <div style={{ fontSize: 11, color: "var(--foreground-muted)", background: "var(--content-bg)", borderRadius: 10, padding: "8px 10px", lineHeight: 1.55, borderLeft: "3px solid var(--grade-s)" }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <span style={{
+                  fontSize: 14, fontWeight: 700,
+                  color: done ? "var(--foreground-muted)" : "var(--foreground)",
+                  textDecoration: done ? "line-through" : "none",
+                }}>
+                  {info.name}
+                </span>
+                {task.urgent && !done && (
+                  <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999, background: "var(--grade-s)", color: "#fff", marginLeft: 6 }}>
+                    {task.deadline ?? "긴급"}
+                  </span>
+                )}
+                {done && (
+                  <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999, background: "var(--badge-en-bg)", color: "var(--badge-en-fg)", marginLeft: 6 }}>
+                    {isKo ? "완료" : "Done"}
+                  </span>
+                )}
+                <div style={{ fontSize: 11, color: "var(--foreground-muted)", marginTop: 2 }}>{info.desc}</div>
+                {!done && (
+                  <div style={{ fontSize: 11, color: "var(--foreground-muted)", background: "var(--content-bg)", borderRadius: 8, padding: "6px 9px", marginTop: 7, lineHeight: 1.55, borderLeft: "3px solid var(--grade-s)" }}>
                     {info.tip}
                   </div>
-                </div>
+                )}
               </div>
             </div>
           );
