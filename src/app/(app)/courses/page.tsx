@@ -18,6 +18,7 @@ const COURSES = [
     badge: { ko: "오늘의 코스", en: "Today's Pick" },
     englishOk: true, filter: "Half-Day",
     color: "#F5D6D6", accent: "#C0350F",
+    image: "/itaewon_street.png",
   },
   {
     id: "c2",
@@ -27,6 +28,7 @@ const COURSES = [
     badge: { ko: "문화", en: "Culture" },
     englishOk: true, filter: "Culture",
     color: "#DDE4FF", accent: "#234BFF",
+    image: "/hannam_gallery.png",
   },
   {
     id: "c3",
@@ -36,6 +38,7 @@ const COURSES = [
     badge: { ko: "나이트", en: "Nightlife" },
     englishOk: false, filter: "Full Day",
     color: "#2D1F4A", accent: "#8A63FF",
+    image: "/itaewon_night.png",
   },
   {
     id: "c4",
@@ -45,6 +48,7 @@ const COURSES = [
     badge: { ko: "자연", en: "Nature" },
     englishOk: true, filter: "Nature",
     color: "#D6F0D6", accent: "#12A05A",
+    image: "/namsan_morning.png",
   },
   {
     id: "c5",
@@ -54,6 +58,7 @@ const COURSES = [
     badge: { ko: "AI 추천", en: "AI Pick" },
     englishOk: true, filter: "Half-Day",
     color: "#FFF0D6", accent: "#B87000",
+    image: "/seongsu_craft.png",
   },
 ];
 
@@ -98,15 +103,20 @@ export default function CoursesPage() {
         {featured && (
           <Link href={`/courses/${featured.slug}`} style={{ textDecoration: "none", display: "block" }}>
             <div style={{ borderRadius: 22, overflow: "hidden", marginBottom: 20, position: "relative", height: 200, background: featured.color, boxShadow: "0 8px 28px -8px rgba(0,0,0,0.22)", cursor: "pointer" }}>
+              {featured.image && (
+                <img src={featured.image} alt={featured.name.ko} style={{ width: "100%", height: "100%", objectFit: "cover", position: "absolute", inset: 0 }} />
+              )}
               <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 55%)" }} />
               <div style={{ position: "absolute", top: 14, left: 14 }}>
                 <span style={{ fontSize: 11, fontWeight: 700, padding: "4px 11px", borderRadius: 999, background: "var(--grade-b)", color: "var(--grade-b-text)" }}>
                   {isKo ? featured.badge.ko : featured.badge.en}
                 </span>
               </div>
-              <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ fontSize: 10, letterSpacing: "0.15em", fontFamily: "monospace", color: "rgba(0,0,0,0.25)", fontWeight: 600 }}>PHOTO · 이태원</span>
-              </div>
+              {!featured.image && (
+                <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <span style={{ fontSize: 10, letterSpacing: "0.15em", fontFamily: "monospace", color: "rgba(0,0,0,0.25)", fontWeight: 600 }}>PHOTO · 이태원</span>
+                </div>
+              )}
               <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0 16px 14px" }}>
                 <div style={{ fontSize: 21, fontWeight: 800, color: "#fff", letterSpacing: "-0.4px", marginBottom: 7, lineHeight: 1.2 }}>
                   {isKo ? featured.name.ko : featured.name.en}
@@ -139,8 +149,12 @@ export default function CoursesPage() {
           {(featured ? rest : filtered).map((course) => (
             <Link key={course.id} href={`/courses/${course.slug}`} style={{ textDecoration: "none", display: "block" }}>
               <div style={{ background: "var(--card)", borderRadius: 16, border: "1px solid var(--border)", padding: "13px 14px", display: "flex", alignItems: "center", gap: 13, cursor: "pointer" }}>
-                <div style={{ width: 60, height: 60, borderRadius: 13, flexShrink: 0, background: course.color, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <span style={{ fontSize: 9, letterSpacing: "0.1em", fontFamily: "monospace", color: "rgba(0,0,0,0.3)" }}>PHOTO</span>
+                <div style={{ width: 60, height: 60, borderRadius: 13, flexShrink: 0, background: course.color, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", position: "relative" }}>
+                  {course.image ? (
+                    <img src={course.image} alt={course.name.ko} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  ) : (
+                    <span style={{ fontSize: 9, letterSpacing: "0.1em", fontFamily: "monospace", color: "rgba(0,0,0,0.3)" }}>PHOTO</span>
+                  )}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 14, fontWeight: 700, color: "var(--foreground)", marginBottom: 2 }}>

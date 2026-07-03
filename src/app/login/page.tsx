@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import { useLang } from "@/lib/lang";
+import { useLang, setLang } from "@/lib/lang";
 import Link from "next/link";
 import { useActionState } from "react";
 import { useSearchParams } from "next/navigation";

@@ -24,6 +24,7 @@ type CourseDetail = {
   accent: string;
   englishOk: boolean;
   stops: Stop[];
+  image?: string;
 };
 
 const COURSE_DATA: Record<string, CourseDetail> = {
@@ -37,6 +38,7 @@ const COURSE_DATA: Record<string, CourseDetail> = {
     badge: { ko: "오늘의 코스", en: "Today's Pick" },
     color: "#F5D6D6", accent: "#C0350F",
     englishOk: true,
+    image: "/itaewon_street.png",
     stops: [
       { name: { ko: "앤트러사이트 홍대", en: "Anthracite Hongdae" }, type: { ko: "카페", en: "Café" }, duration: { ko: "40분", en: "40 min" }, tip: { ko: "공장을 개조한 감성 카페. 에스프레소 추천!", en: "Factory-converted café. Try the espresso!" }, placeSlug: "anthracite-hongdae" },
       { name: { ko: "광장시장", en: "Gwangjang Market" }, type: { ko: "시장", en: "Market" }, duration: { ko: "60분", en: "60 min" }, tip: { ko: "빈대떡과 마약 김밥을 꼭 드세요", en: "Don't miss the bindaetteok and mayak kimbap" }, placeSlug: "gwangjang-market" },
@@ -53,6 +55,7 @@ const COURSE_DATA: Record<string, CourseDetail> = {
     badge: { ko: "문화", en: "Culture" },
     color: "#DDE4FF", accent: "#234BFF",
     englishOk: true,
+    image: "/hannam_gallery.png",
     stops: [
       { name: { ko: "성수연방", en: "Seongsu Yeonbang" }, type: { ko: "복합공간", en: "Cultural Space" }, duration: { ko: "60분", en: "60 min" }, tip: { ko: "다양한 편집숍과 갤러리가 모여있어요", en: "A curated mix of boutiques and galleries" }, placeSlug: "seongsu-yeonbang" },
       { name: { ko: "갤러리 산책", en: "Gallery Walk" }, type: { ko: "갤러리", en: "Gallery" }, duration: { ko: "60분", en: "60 min" }, tip: { ko: "한남동 골목의 소규모 갤러리들을 둘러보세요", en: "Explore the small galleries in Hannam alleys" } },
@@ -70,6 +73,7 @@ const COURSE_DATA: Record<string, CourseDetail> = {
     badge: { ko: "나이트", en: "Nightlife" },
     color: "#2D1F4A", accent: "#8A63FF",
     englishOk: false,
+    image: "/itaewon_night.png",
     stops: [
       { name: { ko: "이태원 한식당", en: "Korean Dinner in Itaewon" }, type: { ko: "식당", en: "Restaurant" }, duration: { ko: "90분", en: "90 min" }, tip: { ko: "삼겹살과 소주로 저녁을 시작하세요", en: "Start the evening with samgyeopsal and soju" } },
       { name: { ko: "루프탑 바", en: "Rooftop Bar" }, type: { ko: "바", en: "Bar" }, duration: { ko: "60분", en: "60 min" }, tip: { ko: "서울 야경이 보이는 루프탑을 선택하세요", en: "Pick a rooftop with Seoul skyline views" } },
@@ -86,6 +90,7 @@ const COURSE_DATA: Record<string, CourseDetail> = {
     badge: { ko: "자연", en: "Nature" },
     color: "#D6F0D6", accent: "#12A05A",
     englishOk: true,
+    image: "/namsan_morning.png",
     stops: [
       { name: { ko: "남산 서울타워", en: "N Seoul Tower" }, type: { ko: "명소", en: "Landmark" }, duration: { ko: "60분", en: "60 min" }, tip: { ko: "아침 일찍 가면 사람이 적어요. 자물쇠 다리도 보세요", en: "Go early to avoid crowds. See the love lock bridge" } },
       { name: { ko: "남산 산책로", en: "Namsan Trail" }, type: { ko: "자연", en: "Nature" }, duration: { ko: "60분", en: "60 min" }, tip: { ko: "케이블카 대신 걸어 올라가면 더 좋아요", en: "Walking up beats the cable car for the experience" } },
@@ -101,6 +106,7 @@ const COURSE_DATA: Record<string, CourseDetail> = {
     badge: { ko: "AI 추천", en: "AI Pick" },
     color: "#FFF0D6", accent: "#B87000",
     englishOk: true,
+    image: "/seongsu_craft.png",
     stops: [
       { name: { ko: "성수연방", en: "Seongsu Yeonbang" }, type: { ko: "복합공간", en: "Cultural Space" }, duration: { ko: "45분", en: "45 min" }, tip: { ko: "성수동 힙스터 문화의 중심지", en: "The heart of Seongsu's hipster culture" }, placeSlug: "seongsu-yeonbang" },
       { name: { ko: "로스터리 카페", en: "Specialty Roastery" }, type: { ko: "카페", en: "Café" }, duration: { ko: "45분", en: "45 min" }, tip: { ko: "스페셜티 커피 한 잔은 필수", en: "A specialty coffee is non-negotiable here" } },
@@ -130,6 +136,9 @@ export default function CourseDetailPage() {
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100%", background: "var(--content-bg)" }}>
       {/* Hero */}
       <div style={{ position: "relative", height: 220, background: course.color, flexShrink: 0 }}>
+        {course.image && (
+          <img src={course.image} alt={course.name.ko} style={{ width: "100%", height: "100%", objectFit: "cover", position: "absolute", inset: 0 }} />
+        )}
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 50%)" }} />
 
         {/* Back button */}
