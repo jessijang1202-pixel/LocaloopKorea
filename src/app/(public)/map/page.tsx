@@ -264,56 +264,60 @@ function WelcomePopup({ isKo, onClose }: { isKo: boolean; onClose: () => void })
   return (
     <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 9999, background: "rgba(0,0,0,0.48)", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 20px" }}>
 
-      {/* ── Mobile card: compact, single-column, max 340px ── */}
-      <div className="ll-mobile-only" onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 22, width: "100%", maxWidth: 340, maxHeight: "80dvh", overflowY: "auto", boxShadow: "0 20px 56px rgba(0,0,0,0.22)", padding: "22px 18px 20px" }}>
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>{logoMark}</div>
-        <div style={{ textAlign: "center", marginBottom: 16 }}>
-          <div style={{ fontSize: 9, fontWeight: 800, color: "#FF5636", letterSpacing: "0.12em", marginBottom: 4 }}>LOCALOOP KOREA</div>
-          <h2 style={{ fontSize: 17, fontWeight: 900, color: "#16151A", letterSpacing: "-0.03em", lineHeight: 1.25, marginBottom: 4 }}>
-            {isKo ? "한국 생활의 새로운 시작" : "Your New Start in Korea"}
-          </h2>
-          <p style={{ fontSize: 11, color: "#6B6880", lineHeight: 1.6 }}>
-            {isKo ? "Localoop Korea의 4가지 핵심 기능" : "4 core features of Localoop Korea"}
-          </p>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-          {features.map((f) => (
-            <div key={f.grade} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "10px 12px", borderRadius: 13, background: "#F7F6F9", border: "1px solid #EDECF2" }}>
-              <div style={{ width: 34, height: 34, borderRadius: 9, flexShrink: 0, background: f.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 7.5, fontWeight: 800, color: f.text, textAlign: "center", lineHeight: 1.25 }}>{f.grade}</div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 11.5, fontWeight: 700, color: "#16151A", marginBottom: 2 }}>{f.title}</div>
-                <div style={{ fontSize: 10, color: "#6B6880", lineHeight: 1.5 }}>{f.desc}</div>
+      {/* ── Mobile card (ll-mobile-only = visibility wrapper only) ── */}
+      <div className="ll-mobile-only" style={{ width: "100%", maxWidth: 340 }}>
+        <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 22, width: "100%", maxHeight: "80dvh", overflowY: "auto", boxShadow: "0 20px 56px rgba(0,0,0,0.22)", padding: "22px 18px 20px" }}>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>{logoMark}</div>
+          <div style={{ textAlign: "center", marginBottom: 16 }}>
+            <div style={{ fontSize: 9, fontWeight: 800, color: "#FF5636", letterSpacing: "0.12em", marginBottom: 4 }}>LOCALOOP KOREA</div>
+            <h2 style={{ fontSize: 17, fontWeight: 900, color: "#16151A", letterSpacing: "-0.03em", lineHeight: 1.25, marginBottom: 4 }}>
+              {isKo ? "한국 생활의 새로운 시작" : "Your New Start in Korea"}
+            </h2>
+            <p style={{ fontSize: 11, color: "#6B6880", lineHeight: 1.6 }}>
+              {isKo ? "Localoop Korea의 4가지 핵심 기능" : "4 core features of Localoop Korea"}
+            </p>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+            {features.map((f) => (
+              <div key={f.grade} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "10px 12px", borderRadius: 13, background: "#F7F6F9", border: "1px solid #EDECF2" }}>
+                <div style={{ width: 34, height: 34, borderRadius: 9, flexShrink: 0, background: f.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 7.5, fontWeight: 800, color: f.text, textAlign: "center", lineHeight: 1.25 }}>{f.grade}</div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 11.5, fontWeight: 700, color: "#16151A", marginBottom: 2 }}>{f.title}</div>
+                  <div style={{ fontSize: 10, color: "#6B6880", lineHeight: 1.5 }}>{f.desc}</div>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+          {btnRow("sm")}
         </div>
-        {btnRow("sm")}
       </div>
 
-      {/* ── PC card: max 460px, 1-column, same style as mobile but slightly larger ── */}
-      <div className="ll-pc-only" onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 24, width: "100%", maxWidth: 460, maxHeight: "88dvh", overflowY: "auto", boxShadow: "0 32px 80px rgba(0,0,0,0.22)", padding: "28px 24px 24px" }}>
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: 14 }}>{logoMark}</div>
-        <div style={{ textAlign: "center", marginBottom: 20 }}>
-          <div style={{ fontSize: 10, fontWeight: 800, color: "#FF5636", letterSpacing: "0.12em", marginBottom: 5 }}>LOCALOOP KOREA</div>
-          <h2 style={{ fontSize: 21, fontWeight: 900, color: "#16151A", letterSpacing: "-0.03em", lineHeight: 1.25, marginBottom: 5 }}>
-            {isKo ? "한국 생활의 새로운 시작" : "Your New Start in Korea"}
-          </h2>
-          <p style={{ fontSize: 12, color: "#6B6880", lineHeight: 1.6 }}>
-            {isKo ? "Localoop Korea의 4가지 핵심 기능을 소개합니다." : "Discover the 4 core features of Localoop Korea."}
-          </p>
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 9, marginBottom: 20 }}>
-          {features.map((f) => (
-            <div key={f.grade} style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "12px 14px", borderRadius: 14, background: "#F7F6F9", border: "1px solid #EDECF2" }}>
-              <div style={{ width: 40, height: 40, borderRadius: 11, flexShrink: 0, background: f.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 800, color: f.text, textAlign: "center", lineHeight: 1.25 }}>{f.grade}</div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#16151A", marginBottom: 3 }}>{f.title}</div>
-                <div style={{ fontSize: 11, color: "#6B6880", lineHeight: 1.55 }}>{f.desc}</div>
+      {/* ── PC card (ll-pc-only = visibility wrapper only) ── */}
+      <div className="ll-pc-only" style={{ width: "100%", maxWidth: 460 }}>
+        <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 24, width: "100%", maxHeight: "88dvh", overflowY: "auto", boxShadow: "0 32px 80px rgba(0,0,0,0.22)", padding: "28px 24px 24px" }}>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: 14 }}>{logoMark}</div>
+          <div style={{ textAlign: "center", marginBottom: 20 }}>
+            <div style={{ fontSize: 10, fontWeight: 800, color: "#FF5636", letterSpacing: "0.12em", marginBottom: 5 }}>LOCALOOP KOREA</div>
+            <h2 style={{ fontSize: 21, fontWeight: 900, color: "#16151A", letterSpacing: "-0.03em", lineHeight: 1.25, marginBottom: 5 }}>
+              {isKo ? "한국 생활의 새로운 시작" : "Your New Start in Korea"}
+            </h2>
+            <p style={{ fontSize: 12, color: "#6B6880", lineHeight: 1.6 }}>
+              {isKo ? "Localoop Korea의 4가지 핵심 기능을 소개합니다." : "Discover the 4 core features of Localoop Korea."}
+            </p>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 9, marginBottom: 20 }}>
+            {features.map((f) => (
+              <div key={f.grade} style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "12px 14px", borderRadius: 14, background: "#F7F6F9", border: "1px solid #EDECF2" }}>
+                <div style={{ width: 40, height: 40, borderRadius: 11, flexShrink: 0, background: f.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 800, color: f.text, textAlign: "center", lineHeight: 1.25 }}>{f.grade}</div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "#16151A", marginBottom: 3 }}>{f.title}</div>
+                  <div style={{ fontSize: 11, color: "#6B6880", lineHeight: 1.55 }}>{f.desc}</div>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+          {btnRow("lg")}
         </div>
-        {btnRow("lg")}
       </div>
     </div>
   );
