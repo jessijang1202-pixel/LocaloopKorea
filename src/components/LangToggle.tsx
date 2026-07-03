@@ -45,7 +45,7 @@ export function LangToggle() {
   );
 }
 
-/** Inline lang toggle — subtle, blends into header. */
+/** Inline lang toggle — uses CSS variables, works on any background */
 export function LangToggleInline() {
   const isKo = useLang();
   return (
@@ -55,19 +55,47 @@ export function LangToggleInline() {
       style={{
         display: "inline-flex", alignItems: "center", justifyContent: "center",
         height: 30, padding: "0 10px", borderRadius: 8, fontSize: 11,
-        fontWeight: 500, cursor: "pointer", lineHeight: 1, whiteSpace: "nowrap",
-        background: "transparent",
-        border: "1px solid rgba(255,255,255,0.22)",
-        color: "rgba(255,255,255,0.6)",
+        fontWeight: 700, cursor: "pointer", lineHeight: 1, whiteSpace: "nowrap",
+        background: "var(--content-bg)",
+        border: "1px solid var(--border)",
+        color: "var(--foreground-muted)",
         userSelect: "none",
       }}
     >
-      {isKo ? "EN" : "한국어"}
+      {isKo ? "EN" : "KO"}
     </button>
   );
 }
 
-/** Combined [Lang][Theme][Login][Install] row for app page headers (mobile). */
+/** Theme toggle button — uses CSS variables */
+export function ThemeToggle() {
+  const theme = useTheme();
+  return (
+    <button
+      onClick={toggleTheme}
+      aria-label="Toggle dark/light mode"
+      style={{
+        display: "inline-flex", alignItems: "center", justifyContent: "center",
+        height: 30, width: 30, borderRadius: 8, lineHeight: 1,
+        background: "var(--content-bg)",
+        border: "1px solid var(--border)",
+        cursor: "pointer", color: "var(--foreground-muted)", flexShrink: 0,
+      }}
+    >
+      {theme === "dark" ? (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <circle cx="12" cy="12" r="5"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+      ) : (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+        </svg>
+      )}
+    </button>
+  );
+}
+
+/** Combined [Lang][Theme] row — used in map overlay (dark bg), keeps white styling */
 export function TopActions() {
   const isKo = useLang();
   const theme = useTheme();
@@ -90,26 +118,7 @@ export function TopActions() {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
       <LangToggleInline />
-      <button
-        onClick={toggleTheme}
-        aria-label="Toggle dark/light mode"
-        style={{
-          display: "inline-flex", alignItems: "center", justifyContent: "center",
-          height: 30, width: 30, borderRadius: 8, lineHeight: 1,
-          background: "transparent", border: "1px solid rgba(255,255,255,0.22)",
-          cursor: "pointer", color: "#ffffff", flexShrink: 0,
-        }}
-      >
-        {theme === "dark" ? (
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <circle cx="12" cy="12" r="5"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-          </svg>
-        ) : (
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
-          </svg>
-        )}
-      </button>
+      <ThemeToggle />
     </div>
   );
 }
