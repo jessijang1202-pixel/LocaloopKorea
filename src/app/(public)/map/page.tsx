@@ -417,28 +417,19 @@ export default function MapPage() {
           </div>
         </div>
         <div style={{ flex: 1, overflowY: "auto", minHeight: 0, padding: "8px 14px" }}>
-          {/* Hot Places - PC compact strip */}
-          <div style={{ marginBottom: 12, paddingBottom: 12, borderBottom: "1px solid var(--border)" }}>
+          {/* 이태원 PICK — PC, big badge via PlaceCard2 hot */}
+          <div style={{ marginBottom: 14, paddingBottom: 14, borderBottom: "1px solid var(--border)" }}>
             <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.1em", color: "var(--grade-s)", marginBottom: 8 }}>
               {isKo ? "이태원 PICK" : "ITAEWON PICK"}
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              {hotPlaces.map((p) => {
-                const r = getRating(p);
-                const t = TRAVEL_INFO[p.id];
-                return (
-                  <Link key={p.id} href={`/places/${p.slug}`} style={{ background: "var(--content-bg)", borderRadius: 11, padding: "8px 10px", textDecoration: "none", display: "flex", alignItems: "center", gap: 8, border: "1px solid var(--border)" }}>
-                    <div style={{ width: 28, height: 28, borderRadius: 7, background: GRADE_BG[r], display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                      <span style={{ fontSize: 10, fontWeight: 800, color: GRADE_TEXT[r], lineHeight: 1 }}>{r}</span>
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 12, fontWeight: 700, color: "var(--foreground)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{isKo ? p.name_ko : p.name_en}</div>
-                      <div style={{ fontSize: 10, color: "var(--foreground-sub)" }}>{t ? (isKo ? t.ko : t.en) : ""}</div>
-                    </div>
-                  </Link>
-                );
-              })}
+            <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+              {hotPlaces.map((p) => <PlaceCard2 key={p.id} place={p} isKo={isKo} hot />)}
             </div>
+          </div>
+
+          {/* 다른 지역 추천 */}
+          <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.1em", color: "var(--foreground-muted)", marginBottom: 8 }}>
+            {isKo ? "다른 지역 추천" : "OTHER REGIONS"}
           </div>
           {filtered.map((place) => (
             <PlaceCardPC key={place.id} place={place} isSelected={selected?.id === place.id} isKo={isKo} onClick={() => setSelected(place)} />
