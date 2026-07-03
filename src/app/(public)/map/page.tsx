@@ -290,31 +290,29 @@ function WelcomePopup({ isKo, onClose }: { isKo: boolean; onClose: () => void })
         {btnRow("sm")}
       </div>
 
-      {/* ── PC card: wider, 2-column grid for features, max 580px ── */}
-      <div className="ll-pc-only" onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 28, width: "100%", maxWidth: 580, maxHeight: "85dvh", overflowY: "auto", boxShadow: "0 32px 80px rgba(0,0,0,0.22)", padding: "36px 32px 30px" }}>
-        {/* Header row */}
-        <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 20 }}>
+      {/* ── PC card: max 540px, 2-column horizontal cells, no-scroll ── */}
+      <div className="ll-pc-only" onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 26, width: "100%", maxWidth: 540, boxShadow: "0 32px 80px rgba(0,0,0,0.22)", padding: "30px 28px 26px" }}>
+        {/* Header */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
           {logoMark}
           <div>
-            <div style={{ fontSize: 10, fontWeight: 800, color: "#FF5636", letterSpacing: "0.12em", marginBottom: 3 }}>LOCALOOP KOREA</div>
-            <h2 style={{ fontSize: 22, fontWeight: 900, color: "#16151A", letterSpacing: "-0.03em", lineHeight: 1.2 }}>
+            <div style={{ fontSize: 9, fontWeight: 800, color: "#FF5636", letterSpacing: "0.12em", marginBottom: 2 }}>LOCALOOP KOREA</div>
+            <h2 style={{ fontSize: 20, fontWeight: 900, color: "#16151A", letterSpacing: "-0.03em", lineHeight: 1.2 }}>
               {isKo ? "한국 생활의 새로운 시작" : "Your New Start in Korea"}
             </h2>
           </div>
         </div>
-        <p style={{ fontSize: 13, color: "#6B6880", lineHeight: 1.65, marginBottom: 22, paddingBottom: 22, borderBottom: "1px solid #EDECF2" }}>
-          {isKo
-            ? "Localoop Korea는 외국인의 한국 생활 전반을 돕는 4가지 핵심 기능을 제공합니다. 아래에서 각 기능을 확인하고 유저 가이드에서 더 자세히 알아보세요."
-            : "Localoop Korea offers 4 core features to support every aspect of expat life in Korea. Explore each below, then visit the User Guide to learn more."}
+        <p style={{ fontSize: 12, color: "#8B8598", lineHeight: 1.5, marginBottom: 18, paddingBottom: 18, borderBottom: "1px solid #EDECF2" }}>
+          {isKo ? "외국인의 한국 생활을 위한 4가지 핵심 기능을 소개합니다." : "4 core features designed for expat life in Korea."}
         </p>
-        {/* 2-column grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 6 }}>
+        {/* 2×2 grid — each cell: badge left, text right (horizontal) */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 }}>
           {features.map((f) => (
-            <div key={f.grade} style={{ display: "flex", flexDirection: "column", gap: 10, padding: "16px 16px", borderRadius: 16, background: "#F7F6F9", border: "1px solid #EDECF2" }}>
-              <div style={{ width: 44, height: 44, borderRadius: 12, background: f.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 800, color: f.text, textAlign: "center", lineHeight: 1.25 }}>{f.grade}</div>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 800, color: "#16151A", marginBottom: 5 }}>{f.title}</div>
-                <div style={{ fontSize: 11.5, color: "#6B6880", lineHeight: 1.6 }}>{f.desc}</div>
+            <div key={f.grade} style={{ display: "flex", alignItems: "flex-start", gap: 11, padding: "13px 14px", borderRadius: 14, background: "#F7F6F9", border: "1px solid #EDECF2" }}>
+              <div style={{ width: 38, height: 38, borderRadius: 10, flexShrink: 0, background: f.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 7.5, fontWeight: 800, color: f.text, textAlign: "center", lineHeight: 1.25 }}>{f.grade}</div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#16151A", marginBottom: 3 }}>{f.title}</div>
+                <div style={{ fontSize: 10.5, color: "#6B6880", lineHeight: 1.5 }}>{f.desc}</div>
               </div>
             </div>
           ))}

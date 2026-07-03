@@ -57,7 +57,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full bg-[var(--background)] text-[var(--foreground)] antialiased">
         {/* Theme init (default dark) + install prompt capture — must run before React mounts */}
-        <script dangerouslySetInnerHTML={{ __html: `(function(){var t=localStorage.getItem("ll-theme")||"dark";document.documentElement.setAttribute("data-theme",t);})();window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.deferredPrompt=e;});` }} />
+        <script dangerouslySetInnerHTML={{ __html: `(function(){var t=localStorage.getItem("ll-theme")||"dark";document.documentElement.setAttribute("data-theme",t);var l=localStorage.getItem("ll_lang")||(navigator.language.startsWith("ko")?"ko":"en");document.documentElement.setAttribute("data-lang",l);})();window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.deferredPrompt=e;});` }} />
         {children}
       </body>
     </html>
