@@ -157,10 +157,10 @@ function PlaceCard2({ place, isKo, hot = false }: { place: Place; isKo: boolean;
   const t = TRAVEL_INFO[place.id];
   const city = !hot ? (SEED_REGIONS.find((r) => r.id === place.region_id)?.city ?? "") : null;
 
-  const badgeSize  = hot ? 48 : 36;
-  const badgeR     = hot ? 14 : 10;
-  const gradeSize  = hot ? 18 : 13;
-  const subSize    = hot ?  7 :  6;
+  const badgeSize  = hot ? 60 : 34;
+  const badgeR     = hot ? 16 : 9;
+  const gradeSize  = hot ? 22 : 12;
+  const subSize    = hot ?  8 :  6;
   const nameSize   = hot ? 13 : 12;
 
   return (
@@ -208,7 +208,9 @@ function PlaceCard2({ place, isKo, hot = false }: { place: Place; isKo: boolean;
 export default function MapPage() {
   const isKo = useLang();
   const theme = useTheme();
-  const [selected, setSelected] = useState<Place>(SEED_PLACES[0]);
+  const [selected, setSelected] = useState<Place>(
+    SEED_PLACES.find((p) => p.id === HOT_PLACE_IDS[0]) ?? SEED_PLACES[0]
+  );
   const [chip, setChip] = useState<FilterKey>("all");
   const [sheetExpanded, setSheetExpanded] = useState(false);
 
