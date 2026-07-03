@@ -113,7 +113,7 @@ export const SEED_PLACES: Place[] = [
     description_ko: "이태원의 숨겨진 언덕 동네. 작은 바, 인디 음악 공간, 각국 카페가 골목 사이에 촘촘히 들어선 이태원의 로컬 감성 지역.",
     address: "Sinheung-ro, Yongsan-gu, Seoul", address_ko: "서울 용산구 신흥로",
     lat: 37.5432, lng: 126.9812,
-    image_url: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800",
+    image_url: "https://images.unsplash.com/photo-1772224927586-daa4327820bb?w=800",
     english_support: true, card_payment: true, solo_friendly: true, reservation_difficulty: "easy", created_at: "",
   },
   {
