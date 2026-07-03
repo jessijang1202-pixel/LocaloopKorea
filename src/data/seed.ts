@@ -93,7 +93,7 @@ export const SEED_PLACES: Place[] = [
     description_ko: "이태원 바로 옆 삼성 세계 수준의 사립 미술관. 쿨하스·하디드·보타가 설계한 세 건물에 고려청자부터 현대 미술까지 1만 5천여 점 소장.",
     address: "60-16 Itaewon-ro 55-gil, Yongsan-gu, Seoul", address_ko: "서울 용산구 이태원로55길 60-16",
     lat: 37.5358, lng: 126.9988,
-    image_url: "https://images.unsplash.com/photo-1577083552431-6e5fd01988ec?w=800",
+    image_url: "https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=800",
     english_support: true, card_payment: true, solo_friendly: true, reservation_difficulty: "easy", created_at: "",
   },
   {

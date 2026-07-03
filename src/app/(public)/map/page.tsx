@@ -7,6 +7,7 @@ import dynamic from "next/dynamic";
 import { SEED_PLACES, SEED_REGIONS } from "@/data/seed";
 import type { Place } from "@/types";
 import Link from "next/link";
+import Image from "next/image";
 
 const KakaoMap = dynamic(
   () => import("@/components/map/KakaoMap").then((m) => m.KakaoMap),
@@ -168,11 +169,19 @@ function PlaceCard2({ place, isKo, hot = false }: { place: Place; isKo: boolean;
       href={`/places/${place.slug}`}
       style={{
         background: "var(--content-bg)", borderRadius: 14,
-        padding: "11px 12px", textDecoration: "none",
-        display: "flex", flexDirection: "column", gap: 6,
+        padding: 0, textDecoration: "none",
+        display: "flex", flexDirection: "column",
         border: "1px solid var(--border)",
+        overflow: "hidden",
       }}
     >
+      {/* Thumbnail */}
+      {place.image_url && (
+        <div style={{ position: "relative", width: "100%", height: hot ? 110 : 80, flexShrink: 0, background: "var(--muted)" }}>
+          <Image src={place.image_url} alt={isKo ? place.name_ko : place.name_en} fill sizes="400px" style={{ objectFit: "cover" }} />
+        </div>
+      )}
+      <div style={{ padding: "10px 12px", display: "flex", flexDirection: "column", gap: 6 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
         <div style={{
           width: badgeSize, height: badgeSize, borderRadius: badgeR, flexShrink: 0,
@@ -201,6 +210,7 @@ function PlaceCard2({ place, isKo, hot = false }: { place: Place; isKo: boolean;
           {isKo ? t.ko : t.en} · {t.dist}
         </div>
       )}
+      </div>
     </Link>
   );
 }
