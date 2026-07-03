@@ -244,77 +244,82 @@ function WelcomePopup({ isKo, onClose }: { isKo: boolean; onClose: () => void })
     },
   ];
 
-  return (
-    <div
-      onClick={onClose}
-      style={{
-        position: "fixed", inset: 0, zIndex: 9999,
-        background: "rgba(0,0,0,0.48)",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        padding: "24px 20px",
-      }}
-    >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          background: "#fff",
-          borderRadius: 24,
-          width: "100%",
-          maxWidth: 360,
-          maxHeight: "82dvh",
-          overflowY: "auto",
-          boxShadow: "0 24px 60px rgba(0,0,0,0.22)",
-          padding: "24px 20px 22px",
-        }}
-      >
-        {/* Logo mark */}
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: 14 }}>
-          <div style={{ width: 38, height: 38, borderRadius: 11, background: "linear-gradient(135deg, #FF5636 0%, #c43e2a 100%)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(255,86,54,0.35)" }}>
-            <span style={{ fontSize: 18, fontWeight: 900, color: "#fff", letterSpacing: "-0.5px" }}>L</span>
-          </div>
-        </div>
+  const logoMark = (
+    <div style={{ width: 38, height: 38, borderRadius: 11, background: "linear-gradient(135deg, #FF5636 0%, #c43e2a 100%)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(255,86,54,0.35)", flexShrink: 0 }}>
+      <span style={{ fontSize: 18, fontWeight: 900, color: "#fff", letterSpacing: "-0.5px" }}>L</span>
+    </div>
+  );
 
-        {/* Title */}
-        <div style={{ textAlign: "center", marginBottom: 18 }}>
-          <div style={{ fontSize: 10, fontWeight: 800, color: "#FF5636", letterSpacing: "0.12em", marginBottom: 5 }}>LOCALOOP KOREA</div>
-          <h2 style={{ fontSize: 19, fontWeight: 900, color: "#16151A", letterSpacing: "-0.03em", lineHeight: 1.25, marginBottom: 5 }}>
+  const btnRow = (size: "sm" | "lg") => (
+    <div style={{ display: "flex", gap: 8, marginTop: size === "lg" ? 22 : 18 }}>
+      <button onClick={handleGuide} style={{ flex: 1, padding: size === "lg" ? "14px 0" : "12px 0", borderRadius: 13, background: "#FF5636", color: "#fff", fontSize: size === "lg" ? 14 : 13, fontWeight: 700, border: "none", cursor: "pointer", boxShadow: "0 4px 12px rgba(255,86,54,0.3)" }}>
+        {isKo ? "유저 가이드 보기" : "View User Guide"}
+      </button>
+      <button onClick={onClose} style={{ padding: size === "lg" ? "14px 20px" : "12px 16px", borderRadius: 13, background: "#F0EFF5", color: "#6B6880", fontSize: size === "lg" ? 14 : 13, fontWeight: 600, border: "none", cursor: "pointer" }}>
+        {isKo ? "닫기" : "Close"}
+      </button>
+    </div>
+  );
+
+  return (
+    <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 9999, background: "rgba(0,0,0,0.48)", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 20px" }}>
+
+      {/* ── Mobile card: compact, single-column, max 340px ── */}
+      <div className="ll-mobile-only" onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 22, width: "100%", maxWidth: 340, maxHeight: "80dvh", overflowY: "auto", boxShadow: "0 20px 56px rgba(0,0,0,0.22)", padding: "22px 18px 20px" }}>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>{logoMark}</div>
+        <div style={{ textAlign: "center", marginBottom: 16 }}>
+          <div style={{ fontSize: 9, fontWeight: 800, color: "#FF5636", letterSpacing: "0.12em", marginBottom: 4 }}>LOCALOOP KOREA</div>
+          <h2 style={{ fontSize: 17, fontWeight: 900, color: "#16151A", letterSpacing: "-0.03em", lineHeight: 1.25, marginBottom: 4 }}>
             {isKo ? "한국 생활의 새로운 시작" : "Your New Start in Korea"}
           </h2>
-          <p style={{ fontSize: 12, color: "#6B6880", lineHeight: 1.6 }}>
-            {isKo ? "Localoop Korea의 4가지 핵심 기능을 소개합니다." : "Discover the 4 core features of Localoop Korea."}
+          <p style={{ fontSize: 11, color: "#6B6880", lineHeight: 1.6 }}>
+            {isKo ? "Localoop Korea의 4가지 핵심 기능" : "4 core features of Localoop Korea"}
           </p>
         </div>
-
-        {/* Feature list */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 18 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
           {features.map((f) => (
-            <div key={f.grade} style={{ display: "flex", alignItems: "flex-start", gap: 11, padding: "11px 13px", borderRadius: 14, background: "#F7F6F9", border: "1px solid #EDECF2" }}>
-              <div style={{ width: 38, height: 38, borderRadius: 10, flexShrink: 0, background: f.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 800, color: f.text, textAlign: "center", lineHeight: 1.2 }}>
-                {f.grade}
-              </div>
+            <div key={f.grade} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "10px 12px", borderRadius: 13, background: "#F7F6F9", border: "1px solid #EDECF2" }}>
+              <div style={{ width: 34, height: 34, borderRadius: 9, flexShrink: 0, background: f.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 7.5, fontWeight: 800, color: f.text, textAlign: "center", lineHeight: 1.25 }}>{f.grade}</div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: "#16151A", marginBottom: 2 }}>{f.title}</div>
-                <div style={{ fontSize: 10.5, color: "#6B6880", lineHeight: 1.55 }}>{f.desc}</div>
+                <div style={{ fontSize: 11.5, fontWeight: 700, color: "#16151A", marginBottom: 2 }}>{f.title}</div>
+                <div style={{ fontSize: 10, color: "#6B6880", lineHeight: 1.5 }}>{f.desc}</div>
               </div>
             </div>
           ))}
         </div>
+        {btnRow("sm")}
+      </div>
 
-        {/* Buttons */}
-        <div style={{ display: "flex", gap: 8 }}>
-          <button
-            onClick={handleGuide}
-            style={{ flex: 1, padding: "12px 0", borderRadius: 13, background: "#FF5636", color: "#fff", fontSize: 13, fontWeight: 700, border: "none", cursor: "pointer", boxShadow: "0 4px 12px rgba(255,86,54,0.3)" }}
-          >
-            {isKo ? "유저 가이드 보기" : "View User Guide"}
-          </button>
-          <button
-            onClick={onClose}
-            style={{ padding: "12px 16px", borderRadius: 13, background: "#F0EFF5", color: "#6B6880", fontSize: 13, fontWeight: 600, border: "none", cursor: "pointer" }}
-          >
-            {isKo ? "닫기" : "Close"}
-          </button>
+      {/* ── PC card: wider, 2-column grid for features, max 580px ── */}
+      <div className="ll-pc-only" onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 28, width: "100%", maxWidth: 580, maxHeight: "85dvh", overflowY: "auto", boxShadow: "0 32px 80px rgba(0,0,0,0.22)", padding: "36px 32px 30px" }}>
+        {/* Header row */}
+        <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 20 }}>
+          {logoMark}
+          <div>
+            <div style={{ fontSize: 10, fontWeight: 800, color: "#FF5636", letterSpacing: "0.12em", marginBottom: 3 }}>LOCALOOP KOREA</div>
+            <h2 style={{ fontSize: 22, fontWeight: 900, color: "#16151A", letterSpacing: "-0.03em", lineHeight: 1.2 }}>
+              {isKo ? "한국 생활의 새로운 시작" : "Your New Start in Korea"}
+            </h2>
+          </div>
         </div>
+        <p style={{ fontSize: 13, color: "#6B6880", lineHeight: 1.65, marginBottom: 22, paddingBottom: 22, borderBottom: "1px solid #EDECF2" }}>
+          {isKo
+            ? "Localoop Korea는 외국인의 한국 생활 전반을 돕는 4가지 핵심 기능을 제공합니다. 아래에서 각 기능을 확인하고 유저 가이드에서 더 자세히 알아보세요."
+            : "Localoop Korea offers 4 core features to support every aspect of expat life in Korea. Explore each below, then visit the User Guide to learn more."}
+        </p>
+        {/* 2-column grid */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 6 }}>
+          {features.map((f) => (
+            <div key={f.grade} style={{ display: "flex", flexDirection: "column", gap: 10, padding: "16px 16px", borderRadius: 16, background: "#F7F6F9", border: "1px solid #EDECF2" }}>
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: f.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 800, color: f.text, textAlign: "center", lineHeight: 1.25 }}>{f.grade}</div>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 800, color: "#16151A", marginBottom: 5 }}>{f.title}</div>
+                <div style={{ fontSize: 11.5, color: "#6B6880", lineHeight: 1.6 }}>{f.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+        {btnRow("lg")}
       </div>
     </div>
   );
