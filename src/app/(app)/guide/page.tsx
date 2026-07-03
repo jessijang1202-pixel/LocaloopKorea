@@ -179,15 +179,44 @@ function UserGuideTab({ isKo }: { isKo: boolean }) {
         </div>
       </Section>
 
-      <Section title={isKo ? "Localoop의 3가지 엔진" : "Localoop's 3 Engines"}>
+      <Section title={isKo ? "Localoop의 4가지 엔진" : "Localoop's 4 Engines"}>
         <p style={{ fontSize: 12, color: "var(--muted-foreground)", lineHeight: 1.6, marginBottom: 14 }}>
-          {isKo ? "단순한 리뷰 앱이 아닙니다. 3개의 AI 엔진이 실시간으로 당신의 한국 생활을 분석하고 최적의 경험을 설계합니다."
-            : "This isn't just a review app. Three AI engines analyze your Korea life in real time and design the optimal experience for you."}
+          {isKo ? "단순한 리뷰 앱이 아닙니다. 4개의 AI 엔진이 실시간으로 당신의 한국 생활을 분석하고 최적의 경험을 설계합니다."
+            : "This isn't just a review app. Four AI engines analyze your Korea life in real time and design the optimal experience for you."}
         </p>
         {[
-          { badge: "S/A", badgeBg: "#E8F9F9", badgeText: "#0B7A82", title: isKo ? "엔진 1: 친화성 평가 엔진" : "Engine 1: Friendliness Rating Engine", sub: "S / A / B / C 등급 시스템", subColor: "var(--grade-s)", body: isKo ? "Localoop 데이터팀이 직접 방문·검증한 데이터와 실제 외국인 사용자 피드백을 결합해 외국인 친화 지수를 4단계로 평가합니다." : "Localoop's data team combines on-site verification with real expat feedback to rate foreigner-friendliness in 4 tiers." },
-          { badge: "AI",  badgeBg: "#E8F4FF", badgeText: "#1565C0", title: isKo ? "엔진 2: AI 코스 생성 엔진" : "Engine 2: AI Course Builder", sub: isKo ? "실제 현지인 동선 기반" : "Based on real local routes", subColor: "#1565C0", body: isKo ? "관광지가 아닌 현지인이 실제로 가는 동선을 분석합니다. 언어 수준·이동 거리·시간대를 반영해 외국인이 혼자서도 소화할 수 있는 코스를 자동 설계합니다." : "We analyze the routes locals actually take. Factoring in language level, distance, and time of day, the engine auto-designs courses a foreigner can handle solo." },
-          { badge: "M",   badgeBg: "#F0FFF0", badgeText: "#2E7D32", title: isKo ? "엔진 3: 커뮤니티 매칭 엔진" : "Engine 3: Community Matching Engine", sub: isKo ? "관심사 × 위치 × 언어 기반" : "Interest × Location × Language", subColor: "#2E7D32", body: isKo ? "한국인↔외국인 언어교환, 취미 모임, 동네 이웃 연결을 AI가 자동 매칭합니다." : "AI auto-matches Korean↔foreigner language exchanges, hobby meetups, and neighborhood connections." },
+          {
+            badge: "S/A", badgeBg: "#E8F9F9", badgeText: "#0B7A82",
+            title: isKo ? "엔진 1: 친화성 평가 엔진" : "Engine 1: Friendliness Rating Engine",
+            sub: "S / A / B / C 등급 시스템", subColor: "var(--grade-s)",
+            body: isKo
+              ? "Localoop 데이터팀이 직접 방문·검증한 데이터와 실제 외국인 사용자 피드백을 결합해 외국인 친화 지수를 4단계로 평가합니다."
+              : "Localoop's data team combines on-site verification with real expat feedback to rate foreigner-friendliness in 4 tiers.",
+          },
+          {
+            badge: "AI", badgeBg: "#E8F4FF", badgeText: "#1565C0",
+            title: isKo ? "엔진 2: AI 코스 생성 엔진" : "Engine 2: AI Course Builder",
+            sub: isKo ? "실제 현지인 동선 기반" : "Based on real local routes", subColor: "#1565C0",
+            body: isKo
+              ? "관광지가 아닌 현지인이 실제로 가는 동선을 분석합니다. 언어 수준·이동 거리·시간대를 반영해 외국인이 혼자서도 소화할 수 있는 코스를 자동 설계합니다."
+              : "We analyze the routes locals actually take. Factoring in language level, distance, and time of day, the engine auto-designs courses a foreigner can handle solo.",
+          },
+          {
+            badge: "TSK", badgeBg: "#FFF0E8", badgeText: "#B85C00",
+            title: isKo ? "엔진 3: 개인 맞춤형 태스크 엔진" : "Engine 3: Personalized Task Engine",
+            sub: isKo ? "비자 × 언어 × 거주기간 기반" : "Visa × Language × Length of Stay", subColor: "#B85C00",
+            body: isKo
+              ? "'나를 알려줘'에 입력한 비자 종류·한국어 수준·거주 기간을 분석해 지금 당신에게 가장 필요한 과제를 우선순위에 맞게 자동 배열합니다. D-2 학생이라면 장학금·언어교환이, E-7 직장인이라면 사대보험·세금 신고가 먼저 표시됩니다."
+              : "By analyzing your visa type, Korean level, and length of stay from 'About Me', the engine automatically arranges your most urgent tasks in the right order. D-2 students see scholarship and language exchange first; E-7 workers see insurance registration and tax filing.",
+          },
+          {
+            badge: "M", badgeBg: "#F0FFF0", badgeText: "#2E7D32",
+            title: isKo ? "엔진 4: 커뮤니티 매칭 엔진" : "Engine 4: Community Matching Engine",
+            sub: isKo ? "관심사 × 위치 × 언어 기반" : "Interest × Location × Language", subColor: "#2E7D32",
+            body: isKo
+              ? "한국인↔외국인 언어교환, 취미 모임, 동네 이웃 연결을 AI가 자동 매칭합니다."
+              : "AI auto-matches Korean↔foreigner language exchanges, hobby meetups, and neighborhood connections.",
+          },
         ].map((e) => (
           <Card key={e.badge}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
