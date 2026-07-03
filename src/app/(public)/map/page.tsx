@@ -220,70 +220,81 @@ function WelcomePopup({ isKo, onClose }: { isKo: boolean; onClose: () => void })
   const features = [
     {
       grade: "S/A/B/C",
-      bg: "#E8F9F9", text: "#0B7A82",
-      title: isKo ? "외국인 친화 등급 시스템" : "Foreigner-Friendliness Rating",
-      desc: isKo ? "영어 지원·카드 결제·혼자 OK 기준으로 장소를 4등급으로 분류합니다." : "Places rated in 4 tiers by English support, card payment, and solo-friendliness.",
-    },
-    {
-      grade: "MAP",
-      bg: "#E8F4FF", text: "#1565C0",
-      title: isKo ? "이태원 중심 지도 탐색" : "Itaewon-Centered Map",
-      desc: isKo ? "이태원부터 시작해 서울 전역의 외국인 친화 장소를 탐색하세요." : "Start from Itaewon and explore foreigner-friendly spots across Seoul.",
+      bg: "#FFE8E2", text: "#C0331A",
+      title: isKo ? "외국인 친화 등급" : "Friendliness Rating",
+      desc: isKo ? "영어 지원·카드 결제·혼자 OK 기준으로 장소를 4단계로 평가합니다." : "Places rated in 4 tiers by English, card payment, and solo-friendliness.",
     },
     {
       grade: "TASK",
-      bg: "#F0FFF0", text: "#2E7D32",
+      bg: "#E8F4FF", text: "#1565C0",
       title: isKo ? "한국 생활 단계별 Tasks" : "Step-by-Step Korea Tasks",
-      desc: isKo ? "USIM·은행·외국인등록증 등 정착 필수 과제를 단계별로 안내합니다." : "Guided tasks for USIM, bank, ARC, and every step of settling in Korea.",
+      desc: isKo ? "USIM·은행·외국인등록증 등 정착 필수 과제를 순서대로 안내합니다." : "Guided tasks for USIM, bank, ARC, and every step of settling in.",
+    },
+    {
+      grade: "COURSE",
+      bg: "#F0FFF0", text: "#2E7D32",
+      title: isKo ? "진정한 로컬 코스 추천" : "Authentic Local Courses",
+      desc: isKo ? "관광지가 아닌 현지인이 실제로 가는 동선으로 설계된 코스를 경험하세요." : "Courses built from routes locals actually take — not tourist trails.",
     },
     {
       grade: "MATCH",
       bg: "#FFF9C4", text: "#A56000",
       title: isKo ? "커뮤니티 AI 매칭" : "Community AI Matching",
-      desc: isKo ? "관심사·언어·위치 기반으로 한국인·외국인 모임을 자동 매칭합니다." : "Auto-match with Korean locals and expats by interest, language, and location.",
+      desc: isKo ? "관심사·언어·위치 기반으로 한국인·외국인 모임을 자동으로 연결합니다." : "Auto-match with Korean locals and expats by interest, language, and location.",
     },
   ];
 
   return (
-    <div style={{
-      position: "fixed", inset: 0, zIndex: 9999,
-      background: "rgba(0,0,0,0.55)",
-      display: "flex", alignItems: "flex-end", justifyContent: "center",
-      padding: "0",
-    }}>
-      <div style={{
-        background: "var(--card)", borderRadius: "24px 24px 0 0",
-        width: "100%", maxWidth: 480,
-        padding: "20px 20px calc(env(safe-area-inset-bottom, 0px) + 24px)",
-        boxShadow: "0 -8px 40px rgba(0,0,0,0.22)",
-        maxHeight: "88dvh", overflowY: "auto",
-      }}>
-        {/* Handle */}
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
-          <div style={{ width: 36, height: 4, borderRadius: 2, background: "var(--border)" }} />
+    <div
+      onClick={onClose}
+      style={{
+        position: "fixed", inset: 0, zIndex: 9999,
+        background: "rgba(0,0,0,0.48)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        padding: "24px 20px",
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          background: "#fff",
+          borderRadius: 24,
+          width: "100%",
+          maxWidth: 360,
+          maxHeight: "82dvh",
+          overflowY: "auto",
+          boxShadow: "0 24px 60px rgba(0,0,0,0.22)",
+          padding: "24px 20px 22px",
+        }}
+      >
+        {/* Logo mark */}
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 14 }}>
+          <div style={{ width: 38, height: 38, borderRadius: 11, background: "linear-gradient(135deg, #FF5636 0%, #c43e2a 100%)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(255,86,54,0.35)" }}>
+            <span style={{ fontSize: 18, fontWeight: 900, color: "#fff", letterSpacing: "-0.5px" }}>L</span>
+          </div>
         </div>
 
         {/* Title */}
-        <div style={{ marginBottom: 18, textAlign: "center" }}>
-          <div style={{ fontSize: 11, fontWeight: 800, color: "var(--grade-s)", letterSpacing: "0.1em", marginBottom: 6 }}>LOCALOOP KOREA</div>
-          <h2 style={{ fontSize: 20, fontWeight: 900, color: "var(--foreground)", letterSpacing: "-0.03em", lineHeight: 1.2, marginBottom: 6 }}>
+        <div style={{ textAlign: "center", marginBottom: 18 }}>
+          <div style={{ fontSize: 10, fontWeight: 800, color: "#FF5636", letterSpacing: "0.12em", marginBottom: 5 }}>LOCALOOP KOREA</div>
+          <h2 style={{ fontSize: 19, fontWeight: 900, color: "#16151A", letterSpacing: "-0.03em", lineHeight: 1.25, marginBottom: 5 }}>
             {isKo ? "한국 생활의 새로운 시작" : "Your New Start in Korea"}
           </h2>
-          <p style={{ fontSize: 13, color: "var(--foreground-muted)", lineHeight: 1.6 }}>
-            {isKo ? "Localoop Korea가 한국 생활의 모든 순간을 함께합니다." : "Localoop Korea guides you through every moment of life in Korea."}
+          <p style={{ fontSize: 12, color: "#6B6880", lineHeight: 1.6 }}>
+            {isKo ? "Localoop Korea의 4가지 핵심 기능을 소개합니다." : "Discover the 4 core features of Localoop Korea."}
           </p>
         </div>
 
         {/* Feature list */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 18 }}>
           {features.map((f) => (
-            <div key={f.grade} style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "12px 14px", borderRadius: 14, background: "var(--content-bg)", border: "1px solid var(--border)" }}>
-              <div style={{ width: 40, height: 40, borderRadius: 10, flexShrink: 0, background: f.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 800, color: f.text }}>
+            <div key={f.grade} style={{ display: "flex", alignItems: "flex-start", gap: 11, padding: "11px 13px", borderRadius: 14, background: "#F7F6F9", border: "1px solid #EDECF2" }}>
+              <div style={{ width: 38, height: 38, borderRadius: 10, flexShrink: 0, background: f.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 800, color: f.text, textAlign: "center", lineHeight: 1.2 }}>
                 {f.grade}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "var(--foreground)", marginBottom: 3 }}>{f.title}</div>
-                <div style={{ fontSize: 11, color: "var(--foreground-muted)", lineHeight: 1.55 }}>{f.desc}</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#16151A", marginBottom: 2 }}>{f.title}</div>
+                <div style={{ fontSize: 10.5, color: "#6B6880", lineHeight: 1.55 }}>{f.desc}</div>
               </div>
             </div>
           ))}
@@ -293,13 +304,13 @@ function WelcomePopup({ isKo, onClose }: { isKo: boolean; onClose: () => void })
         <div style={{ display: "flex", gap: 8 }}>
           <button
             onClick={handleGuide}
-            style={{ flex: 1, padding: "13px 0", borderRadius: 14, background: "var(--grade-s)", color: "#fff", fontSize: 14, fontWeight: 700, border: "none", cursor: "pointer" }}
+            style={{ flex: 1, padding: "12px 0", borderRadius: 13, background: "#FF5636", color: "#fff", fontSize: 13, fontWeight: 700, border: "none", cursor: "pointer", boxShadow: "0 4px 12px rgba(255,86,54,0.3)" }}
           >
             {isKo ? "유저 가이드 보기" : "View User Guide"}
           </button>
           <button
             onClick={onClose}
-            style={{ padding: "13px 18px", borderRadius: 14, background: "var(--content-bg)", color: "var(--foreground-muted)", fontSize: 14, fontWeight: 600, border: "1px solid var(--border)", cursor: "pointer" }}
+            style={{ padding: "12px 16px", borderRadius: 13, background: "#F0EFF5", color: "#6B6880", fontSize: 13, fontWeight: 600, border: "none", cursor: "pointer" }}
           >
             {isKo ? "닫기" : "Close"}
           </button>
