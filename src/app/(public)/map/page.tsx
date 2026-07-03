@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useLang, setLang } from "@/lib/lang";
 import { useTheme } from "@/lib/theme";
 import dynamic from "next/dynamic";
-import { SEED_PLACES } from "@/data/seed";
+import { SEED_PLACES, SEED_REGIONS } from "@/data/seed";
 import type { Place } from "@/types";
 import Link from "next/link";
 
@@ -151,10 +151,18 @@ function PlaceCardPC({ place, isSelected, isKo, onClick }: {
   );
 }
 
-// Compact 2-column grid card for mobile bottom sheet
-function PlaceCard2({ place, isKo }: { place: Place; isKo: boolean }) {
+// 2-column grid card — hot=true: big badge (이태원 PICK), hot=false: medium badge + city label (다른 지역)
+function PlaceCard2({ place, isKo, hot = false }: { place: Place; isKo: boolean; hot?: boolean }) {
   const rating = getRating(place);
   const t = TRAVEL_INFO[place.id];
+  const city = !hot ? (SEED_REGIONS.find((r) => r.id === place.region_id)?.city ?? "") : null;
+
+  const badgeSize  = hot ? 48 : 36;
+  const badgeR     = hot ? 14 : 10;
+  const gradeSize  = hot ? 18 : 13;
+  const subSize    = hot ?  7 :  6;
+  const nameSize   = hot ? 13 : 12;
+
   return (
     <Link
       href={`/places/${place.slug}`}
@@ -165,16 +173,17 @@ function PlaceCard2({ place, isKo }: { place: Place; isKo: boolean }) {
         border: "1px solid var(--border)",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
         <div style={{
-          width: 32, height: 32, borderRadius: 8, flexShrink: 0,
+          width: badgeSize, height: badgeSize, borderRadius: badgeR, flexShrink: 0,
           background: GRADE_BG[rating],
           display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
         }}>
-          <span style={{ fontSize: 12, fontWeight: 800, color: GRADE_TEXT[rating], lineHeight: 1 }}>{rating}</span>
+          <span style={{ fontSize: gradeSize, fontWeight: 800, color: GRADE_TEXT[rating], lineHeight: 1 }}>{rating}</span>
+          <span style={{ fontSize: subSize, fontWeight: 700, letterSpacing: "0.05em", opacity: 0.85, color: GRADE_TEXT[rating] }}>GRADE</span>
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: "var(--foreground)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+          <div style={{ fontSize: nameSize, fontWeight: 700, color: "var(--foreground)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
             {isKo ? place.name_ko : place.name_en}
           </div>
           <div style={{ fontSize: 10, color: "var(--foreground-muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
@@ -182,6 +191,11 @@ function PlaceCard2({ place, isKo }: { place: Place; isKo: boolean }) {
           </div>
         </div>
       </div>
+      {city && (
+        <div style={{ fontSize: 10, fontWeight: 600, color: "var(--foreground-muted)", letterSpacing: "0.02em" }}>
+          {city}
+        </div>
+      )}
       {t && (
         <div style={{ fontSize: 10, color: "var(--foreground-sub)", fontWeight: 500 }}>
           {isKo ? t.ko : t.en} · {t.dist}
@@ -348,20 +362,20 @@ export default function MapPage() {
 
         {/* Scrollable content — both pick sections live here so sheet can collapse cleanly */}
         <div style={{ flex: 1, overflowY: "auto", padding: "0 16px" }}>
-          {/* 이태원 PICK — 2×3 grid */}
-          <div style={{ paddingTop: 14, marginBottom: 20 }}>
+          {/* 이태원 PICK — 2×3 grid, big badge */}
+          <div style={{ paddingTop: 14, marginBottom: 22 }}>
             <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.1em", color: "var(--grade-s)", marginBottom: 10 }}>
               {isKo ? "이태원 PICK" : "ITAEWON PICK"}
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-              {hotPlaces.map((p) => <PlaceCard2 key={p.id} place={p} isKo={isKo} />)}
+              {hotPlaces.map((p) => <PlaceCard2 key={p.id} place={p} isKo={isKo} hot />)}
             </div>
           </div>
 
-          {/* CITY PICKS — 2×3 grid */}
+          {/* 다른 지역 추천 — 2×3 grid, medium badge + city label */}
           <div style={{ marginBottom: 8 }}>
             <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.1em", color: "var(--foreground-muted)", marginBottom: 10 }}>
-              {isKo ? "지역별 PICK" : "CITY PICKS"}
+              {isKo ? "다른 지역 추천" : "OTHER REGIONS"}
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
               {filtered.map((p) => <PlaceCard2 key={p.id} place={p} isKo={isKo} />)}
