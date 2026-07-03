@@ -48,13 +48,13 @@ export default function ProfilePage() {
   const profilePanel = (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
       {/* Avatar section */}
-      <div style={{ background: "#0B1E2D", padding: "24px 20px 20px", flexShrink: 0 }}>
+      <div style={{ background: "linear-gradient(160deg, #2A1208 0%, #1E0D06 100%)", padding: "24px 20px 20px", flexShrink: 0 }}>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: 16 }}>
-          <div style={{ width: 64, height: 64, borderRadius: "50%", background: "#FFD600", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, fontWeight: 800, color: "#1A2B2C", border: "2px solid rgba(255,255,255,0.2)", marginBottom: 10 }}>
+          <div style={{ width: 64, height: 64, borderRadius: "50%", background: "var(--grade-s)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, fontWeight: 800, color: "#fff", border: "2px solid rgba(255,255,255,0.2)", marginBottom: 10 }}>
             {loading ? "…" : initial}
           </div>
           <p style={{ fontSize: 16, fontWeight: 800, color: "#fff", marginBottom: 4 }}>{loading ? t.loading : displayName}</p>
-          {userTypeLabel && <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 20, background: "rgba(21,182,193,0.2)", color: "#15b6c1" }}>{userTypeLabel}</span>}
+          {userTypeLabel && <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 20, background: "rgba(255,86,54,0.18)", color: "var(--grade-s)" }}>{userTypeLabel}</span>}
         </div>
         {/* Stats */}
         <div style={{ display: "flex", background: "rgba(255,255,255,0.07)", borderRadius: 12, overflow: "hidden" }}>
@@ -74,7 +74,7 @@ export default function ProfilePage() {
           <span style={{ fontSize: 10, color: "var(--muted-foreground)" }}>45%</span>
         </div>
         <div style={{ height: 5, borderRadius: 3, background: "var(--border)", overflow: "hidden" }}>
-          <div style={{ height: "100%", width: "45%", borderRadius: 3, background: "linear-gradient(90deg, #15b6c1, #0B8A91)" }} />
+          <div style={{ height: "100%", width: "45%", borderRadius: 3, background: "linear-gradient(90deg, var(--grade-s), #c43e2a)" }} />
         </div>
         <p style={{ fontSize: 9, color: "var(--muted-foreground)", marginTop: 4 }}>{t.levelSub}</p>
       </div>
@@ -82,7 +82,7 @@ export default function ProfilePage() {
       {/* Section nav (PC only) */}
       <div style={{ display: "flex", borderBottom: "1px solid var(--border)", flexShrink: 0 }}>
         {(["activity", "settings"] as const).map((sec) => (
-          <button key={sec} onClick={() => setActiveSection(sec)} style={{ flex: 1, padding: "10px 0", background: "none", border: "none", borderBottom: activeSection === sec ? "2px solid #15b6c1" : "2px solid transparent", color: activeSection === sec ? "#15b6c1" : "var(--muted-foreground)", fontWeight: activeSection === sec ? 700 : 400, fontSize: 12, cursor: "pointer" }}>
+          <button key={sec} onClick={() => setActiveSection(sec)} style={{ flex: 1, padding: "10px 0", background: "none", border: "none", borderBottom: activeSection === sec ? "2px solid var(--grade-s)" : "2px solid transparent", color: activeSection === sec ? "var(--grade-s)" : "var(--muted-foreground)", fontWeight: activeSection === sec ? 700 : 400, fontSize: 12, cursor: "pointer" }}>
             {sec === "activity" ? t.activity : t.settings}
           </button>
         ))}
@@ -109,7 +109,7 @@ export default function ProfilePage() {
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <span style={{ fontSize: 13, color: "var(--foreground)" }}>{t[key]}</span>
             </div>
-            <span style={{ fontSize: 13, fontWeight: 700, color: "#15b6c1" }}>{count}</span>
+            <span style={{ fontSize: 13, fontWeight: 700, color: "var(--grade-s)" }}>{count}</span>
           </div>
         ))}
       </div>
@@ -138,14 +138,14 @@ export default function ProfilePage() {
     <>
       {/* ── Mobile layout ── */}
       <div className="ll-mobile-only" style={{ display: "flex", flexDirection: "column", minHeight: "100%" }}>
-        <div style={{ background: "#0B1E2D", paddingBottom: 20, flexShrink: 0 }}>
+        <div style={{ background: "linear-gradient(160deg, #2A1208 0%, #1E0D06 100%)", paddingBottom: 20, flexShrink: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 16px 16px" }}>
-            <div style={{ width: 56, height: 56, borderRadius: "50%", background: "#FFD600", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, fontWeight: 800, color: "#1A2B2C", border: "2px solid rgba(255,255,255,0.2)" }}>
+            <div style={{ width: 56, height: 56, borderRadius: "50%", background: "var(--grade-s)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, fontWeight: 800, color: "#fff", border: "2px solid rgba(255,255,255,0.2)" }}>
               {loading ? "…" : initial}
             </div>
             <div>
               <p style={{ fontSize: 16, fontWeight: 800, color: "#fff", marginBottom: 3 }}>{loading ? t.loading : displayName}</p>
-              {userTypeLabel && <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 20, background: "rgba(21,182,193,0.2)", color: "#15b6c1" }}>{userTypeLabel}</span>}
+              {userTypeLabel && <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 20, background: "rgba(255,86,54,0.18)", color: "var(--grade-s)" }}>{userTypeLabel}</span>}
             </div>
           </div>
           <div style={{ display: "flex", padding: "0 12px" }}>
@@ -163,7 +163,7 @@ export default function ProfilePage() {
             <span style={{ fontSize: 10, color: "var(--muted-foreground)" }}>45%</span>
           </div>
           <div style={{ height: 6, borderRadius: 3, background: "var(--border)", overflow: "hidden" }}>
-            <div style={{ height: "100%", width: "45%", borderRadius: 3, background: "linear-gradient(90deg, #15b6c1, #0B8A91)" }} />
+            <div style={{ height: "100%", width: "45%", borderRadius: 3, background: "linear-gradient(90deg, var(--grade-s), #c43e2a)" }} />
           </div>
           <p style={{ fontSize: 10, color: "var(--muted-foreground)", marginTop: 5 }}>{t.levelSub}</p>
         </div>

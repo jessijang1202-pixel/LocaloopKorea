@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLang } from "@/lib/lang";
 
-const C = { teal: "#15b6c1", tealLight: "#d4f4f6", tealDark: "#0b7a82", dark: "#0B1E2D", text: "#1a2b2c", sub: "#4a6467", border: "#e0e8ea" };
+const C = { teal: "var(--grade-s)", tealLight: "rgba(255,86,54,0.08)", tealDark: "#c43e2a", dark: "linear-gradient(160deg, #2A1208 0%, #1E0D06 100%)", text: "var(--foreground)", sub: "var(--foreground-muted)", border: "var(--border)" };
 
 // ─── Option lists ──────────────────────────────────────────────────────────────
 
@@ -96,7 +96,7 @@ function toggleArr(arr: string[], val: string) {
 
 function Chip({ label, on, onClick }: { label: string; on: boolean; onClick: () => void }) {
   return (
-    <button type="button" onClick={onClick} style={{ padding: "8px 14px", borderRadius: 20, border: `1.5px solid ${on ? C.teal : C.border}`, background: on ? C.tealLight : "#fff", color: on ? C.tealDark : C.sub, fontWeight: on ? 700 : 400, fontSize: 13, cursor: "pointer" }}>
+    <button type="button" onClick={onClick} style={{ padding: "8px 14px", borderRadius: 20, border: `1.5px solid ${on ? C.teal : C.border}`, background: on ? C.tealLight : "var(--card)", color: on ? C.teal : C.sub, fontWeight: on ? 700 : 400, fontSize: 13, cursor: "pointer" }}>
       {label}
     </button>
   );
@@ -104,8 +104,8 @@ function Chip({ label, on, onClick }: { label: string; on: boolean; onClick: () 
 
 function SelectCard({ label, desc, on, onClick }: { label: string; desc?: string; on: boolean; onClick: () => void }) {
   return (
-    <button type="button" onClick={onClick} style={{ width: "100%", textAlign: "left", padding: "12px 14px", borderRadius: 12, border: `1.5px solid ${on ? C.teal : C.border}`, background: on ? C.tealLight : "#fff", cursor: "pointer", marginBottom: 7 }}>
-      <div style={{ fontSize: 13, fontWeight: 600, color: on ? C.tealDark : C.text }}>{label}</div>
+    <button type="button" onClick={onClick} style={{ width: "100%", textAlign: "left", padding: "12px 14px", borderRadius: 12, border: `1.5px solid ${on ? C.teal : C.border}`, background: on ? C.tealLight : "var(--content-bg)", cursor: "pointer", marginBottom: 7 }}>
+      <div style={{ fontSize: 13, fontWeight: 600, color: on ? C.teal : C.text }}>{label}</div>
       {desc && <div style={{ fontSize: 11, color: C.sub, marginTop: 2 }}>{desc}</div>}
     </button>
   );
@@ -134,7 +134,7 @@ function Toggle({ on, onChange, label, desc }: { on: boolean; onChange: () => vo
 }
 
 function Card({ children }: { children: React.ReactNode }) {
-  return <div style={{ background: "#fff", borderRadius: 16, border: `1px solid ${C.border}`, padding: "16px 16px 10px", marginBottom: 12 }}>{children}</div>;
+  return <div style={{ background: "var(--card)", borderRadius: 16, border: `1px solid ${C.border}`, padding: "16px 16px 10px", marginBottom: 12 }}>{children}</div>;
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -223,7 +223,7 @@ export default function MePage() {
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100%" }}>
       {/* Header */}
-      <div style={{ background: C.dark, paddingTop: 44, paddingBottom: 16, flexShrink: 0 }}>
+      <div style={{ background: C.dark as string, paddingTop: 44, paddingBottom: 16, flexShrink: 0 }}>
         <div style={{ padding: "0 16px" }}>
           <button onClick={() => router.push("/profile")} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.55)", fontSize: 13, cursor: "pointer", padding: 0, marginBottom: 10 }}>
             ← {ko ? "마이페이지" : "My Page"}
@@ -238,7 +238,7 @@ export default function MePage() {
       </div>
 
       {/* Form */}
-      <div style={{ flex: 1, overflowY: "auto", background: "#F5F9FA", padding: "16px 14px 100px" }}>
+      <div style={{ flex: 1, overflowY: "auto", background: "var(--content-bg)", padding: "16px 14px 100px" }}>
 
         {/* Section: 나에 대해 */}
         <Card>
@@ -340,11 +340,11 @@ export default function MePage() {
       </div>
 
       {/* Save button */}
-      <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "#fff", borderTop: `1px solid ${C.border}`, padding: "14px 16px", paddingBottom: "calc(14px + env(safe-area-inset-bottom))", zIndex: 50 }}>
+      <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "var(--card)", borderTop: `1px solid ${C.border}`, padding: "14px 16px", paddingBottom: "calc(14px + env(safe-area-inset-bottom))", zIndex: 50 }}>
         <button
           onClick={handleSave}
           disabled={saving || saved}
-          style={{ width: "100%", height: 50, borderRadius: 14, background: saved ? "#1D9E75" : `linear-gradient(135deg, ${C.teal}, ${C.tealDark})`, color: "#fff", fontWeight: 700, fontSize: 15, border: "none", cursor: saving || saved ? "default" : "pointer", opacity: saving ? 0.7 : 1, transition: "background 0.2s" }}
+          style={{ width: "100%", height: 50, borderRadius: 14, background: saved ? "#1D9E75" : "var(--grade-s)", color: "#fff", fontWeight: 700, fontSize: 15, border: "none", cursor: saving || saved ? "default" : "pointer", opacity: saving ? 0.7 : 1, transition: "background 0.2s", boxShadow: "0 4px 16px rgba(255,86,54,0.3)" }}
         >
           {saved ? (ko ? "✓ 저장됐어요!" : "✓ Saved!") : saving ? (ko ? "저장 중…" : "Saving…") : (ko ? "저장하기" : "Save changes")}
         </button>

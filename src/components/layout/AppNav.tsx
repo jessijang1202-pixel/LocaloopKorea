@@ -17,9 +17,9 @@ const SIDEBAR_TABS: Tab[] = [
   { href: "/profile",   icon: "profile",   labelKo: "나",       labelEn: "Me" },
 ];
 
-// 5 tabs only — chat is accessible via community or elsewhere
+// 6 tabs on mobile — profile accessible via sidebar on PC
 const BOTTOM_TABS: Tab[] = SIDEBAR_TABS.filter(
-  t => t.href !== "/profile" && t.href !== "/chat"
+  t => t.href !== "/profile"
 );
 
 function TabIcon({ name, size = 22 }: { name: string; size?: number }) {

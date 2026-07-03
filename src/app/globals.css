@@ -18,6 +18,9 @@
   --grade-b-text: #3a2c00;
   --grade-c:      #7B4DFF;
 
+  /* Dark warm tone for hero sections */
+  --grade-dark:     #1E1015;
+
   /* Primary action = coral (S grade / accent) */
   --primary:            #FF5636;
   --primary-dark:       #E0391A;
@@ -68,6 +71,8 @@
   --grade-b:      #FFD23C;
   --grade-b-text: #3a2c00;
   --grade-c:      #8A63FF;
+
+  --grade-dark:     #12090C;
 
   --primary:            #FF6A4D;
   --primary-dark:       #FF4D28;

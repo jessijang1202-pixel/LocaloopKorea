@@ -7,7 +7,7 @@ type Message = { id: string; from: "me" | "other"; text: string; translation: st
 
 const CONVERSATIONS = [
   { id: "cv1", name: "민준", flag: "🇰🇷", color: "#FFD600", initial: "민", lastMsg: { ko: "안녕하세요! 이태원에서 좋은 카페 추천해 주실 수 있나요?", en: "Hello! Can you recommend a good café in Itaewon?" }, time: "2m" },
-  { id: "cv2", name: "Sarah", flag: "🇺🇸", color: "#15b6c1", initial: "S", lastMsg: { ko: "보드게임 모임 같이 가실 분?", en: "Anyone want to join the board game meetup?" }, time: "14m" },
+  { id: "cv2", name: "Sarah", flag: "🇺🇸", color: "var(--grade-s)", initial: "S", lastMsg: { ko: "보드게임 모임 같이 가실 분?", en: "Anyone want to join the board game meetup?" }, time: "14m" },
   { id: "cv3", name: "Yuki", flag: "🇯🇵", color: "#FF7043", initial: "Y", lastMsg: { ko: "북촌 카페 같이 가요!", en: "Let's visit a Bukchon café together!" }, time: "1h" },
 ];
 
@@ -92,7 +92,7 @@ export default function ChatPage() {
           <div
             key={cv.id}
             onClick={() => { setActiveCv(cv.id); onSelect?.(cv.id); }}
-            style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", borderBottom: "1px solid var(--border)", background: isActive ? "var(--card-selected)" : "transparent", cursor: "pointer", borderLeft: isActive ? "3px solid #15b6c1" : "3px solid transparent" }}
+            style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", borderBottom: "1px solid var(--border)", background: isActive ? "var(--card-selected)" : "transparent", cursor: "pointer", borderLeft: isActive ? "3px solid var(--grade-s)" : "3px solid transparent" }}
           >
             <div style={{ width: 46, height: 46, borderRadius: "50%", background: cv.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, fontWeight: 800, color: "#fff", flexShrink: 0, position: "relative" }}>
               {cv.initial}
@@ -143,24 +143,24 @@ export default function ChatPage() {
           <div style={{ width: 38, height: 38, borderRadius: "50%", background: activePerson.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 800, color: "#fff" }}>{activePerson.initial}</div>
           <div>
             <div style={{ fontSize: 14, fontWeight: 800, color: "var(--foreground)" }}>{activePerson.name} {activePerson.flag}</div>
-            <div style={{ fontSize: 10, color: "#15b6c1", fontWeight: 600 }}>🔄 {isKo ? "AI 번역 ON" : "AI Translation ON"}</div>
+            <div style={{ fontSize: 10, color: "var(--grade-s)", fontWeight: 600 }}>🔄 {isKo ? "AI 번역 ON" : "AI Translation ON"}</div>
           </div>
         </div>
       )}
-      <div style={{ background: "#E8F9F9", borderBottom: "1px solid #C8EDEF", padding: "7px 16px", display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+      <div style={{ background: "rgba(255,86,54,0.06)", borderBottom: "1px solid rgba(255,86,54,0.18)", padding: "7px 16px", display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
         <span style={{ fontSize: 13 }}>🔄</span>
-        <span style={{ fontSize: 11, color: "#0B7A82", fontWeight: 600 }}>{t.notice}</span>
+        <span style={{ fontSize: 11, color: "var(--grade-s)", fontWeight: 600 }}>{t.notice}</span>
       </div>
       <div style={{ flex: 1, overflowY: "auto", minHeight: 0, padding: "12px 16px", background: "var(--content-bg)" }}>
         {activeMessages.map((msg) => {
           const isMe = msg.from === "me";
           return (
             <div key={msg.id} style={{ display: "flex", flexDirection: "column", alignItems: isMe ? "flex-end" : "flex-start", marginBottom: 16 }}>
-              <div style={{ maxWidth: "75%", padding: "10px 12px", borderRadius: isMe ? "16px 4px 16px 16px" : "4px 16px 16px 16px", background: isMe ? "#15b6c1" : "var(--card)", boxShadow: "0 1px 4px rgba(0,0,0,0.07)", border: isMe ? "none" : "1px solid var(--border)" }}>
+              <div style={{ maxWidth: "75%", padding: "10px 12px", borderRadius: isMe ? "16px 4px 16px 16px" : "4px 16px 16px 16px", background: isMe ? "var(--grade-s)" : "var(--card)", boxShadow: "0 1px 4px rgba(0,0,0,0.07)", border: isMe ? "none" : "1px solid var(--border)" }}>
                 <p style={{ fontSize: 13, color: isMe ? "#fff" : "var(--foreground)", lineHeight: 1.5 }}>{msg.text}</p>
               </div>
-              <div style={{ maxWidth: "75%", marginTop: 4, padding: "6px 10px", borderRadius: 8, background: isMe ? "rgba(21,182,193,0.1)" : "rgba(0,0,0,0.03)", border: isMe ? "1px solid rgba(21,182,193,0.2)" : "1px solid var(--border)" }}>
-                <p style={{ fontSize: 10, color: isMe ? "#0B7A82" : "var(--muted-foreground)", lineHeight: 1.4 }}>🔄 {msg.translation}</p>
+              <div style={{ maxWidth: "75%", marginTop: 4, padding: "6px 10px", borderRadius: 8, background: isMe ? "rgba(255,86,54,0.08)" : "rgba(0,0,0,0.03)", border: isMe ? "1px solid rgba(255,86,54,0.2)" : "1px solid var(--border)" }}>
+                <p style={{ fontSize: 10, color: isMe ? "var(--foreground-muted)" : "var(--muted-foreground)", lineHeight: 1.4 }}>🔄 {msg.translation}</p>
               </div>
             </div>
           );
@@ -169,7 +169,7 @@ export default function ChatPage() {
       </div>
       <div style={{ background: "var(--card)", borderTop: "1px solid var(--border)", padding: "10px 16px", display: "flex", gap: 8, flexShrink: 0, paddingBottom: "calc(10px + env(safe-area-inset-bottom))" }}>
         <input value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); } }} placeholder={t.inputPh} style={{ flex: 1, height: 40, padding: "0 14px", borderRadius: 20, border: "1.5px solid var(--border)", background: "var(--content-bg)", fontSize: 13, color: "var(--foreground)", outline: "none" }} />
-        <button onClick={sendMessage} style={{ width: 40, height: 40, borderRadius: "50%", background: "#15b6c1", border: "none", color: "#fff", fontSize: 16, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>➤</button>
+        <button onClick={sendMessage} style={{ width: 40, height: 40, borderRadius: "50%", background: "var(--grade-s)", border: "none", color: "#fff", fontSize: 16, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>➤</button>
       </div>
     </div>
   );

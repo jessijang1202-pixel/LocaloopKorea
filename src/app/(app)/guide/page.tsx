@@ -41,7 +41,7 @@ function MockPlaceCard({ name, addr, rating, tags, selected = false }: {
       display: "flex", alignItems: "center", gap: 10,
       padding: "10px 12px", borderRadius: 14, marginBottom: 6,
       background: selected ? "var(--card-selected)" : "var(--card)",
-      border: selected ? "1.5px solid #15b6c1" : "1px solid var(--border)",
+      border: selected ? "1.5px solid var(--grade-s)" : "1px solid var(--border)",
       boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
     }}>
       <div style={{ width: 40, height: 40, borderRadius: 10, background: "var(--icon-bg)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: "var(--muted-foreground)", flexShrink: 0 }}>
@@ -64,12 +64,12 @@ function MockPlaceCard({ name, addr, rating, tags, selected = false }: {
 function MockTaskRow({ stage, title, done }: { stage: string; title: string; done: boolean }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 12px", borderRadius: 10, background: "var(--card)", border: "1px solid var(--border)", marginBottom: 5 }}>
-      <div style={{ width: 22, height: 22, borderRadius: "50%", background: done ? "#15b6c1" : "var(--icon-bg)", border: done ? "none" : "1.5px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+      <div style={{ width: 22, height: 22, borderRadius: "50%", background: done ? "var(--grade-s)" : "var(--icon-bg)", border: done ? "none" : "1.5px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
         {done && <span style={{ color: "#fff", fontSize: 11, fontWeight: 800 }}>✓</span>}
       </div>
       <div>
         <p style={{ fontSize: 11, fontWeight: 600, color: "var(--foreground)" }}>{title}</p>
-        <p style={{ fontSize: 9, color: "#15b6c1", fontWeight: 600 }}>{stage}</p>
+        <p style={{ fontSize: 9, color: "var(--grade-s)", fontWeight: 600 }}>{stage}</p>
       </div>
     </div>
   );
@@ -87,7 +87,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 function Card({ children, accent = false }: { children: React.ReactNode; accent?: boolean }) {
   return (
     <div style={{
-      background: accent ? "linear-gradient(135deg, #0B1E2D 0%, #0a3044 100%)" : "var(--card)",
+      background: accent ? "linear-gradient(160deg, var(--grade-dark) 0%, #2A1510 100%)" : "var(--card)",
       borderRadius: 16, padding: "16px",
       border: accent ? "none" : "1px solid var(--border)",
       boxShadow: accent ? "0 4px 20px rgba(11,30,45,0.15)" : "0 1px 5px rgba(0,0,0,0.04)",
@@ -118,11 +118,11 @@ export default function GuidePage() {
   return (
     <div className="ll-fullpage" style={{ display: "flex", flexDirection: "column", background: "var(--content-bg)" }}>
       {/* Hero header */}
-      <div style={{ background: "linear-gradient(135deg, #0B1E2D 0%, #0a3550 100%)", paddingTop: 12, paddingBottom: 24, paddingInline: 20, flexShrink: 0 }}>
+      <div style={{ background: "linear-gradient(160deg, var(--grade-dark) 0%, #2A1510 100%)", paddingTop: 12, paddingBottom: 24, paddingInline: 20, flexShrink: 0 }}>
         <Link href="/map" style={{ fontSize: 10, color: "rgba(255,255,255,0.45)", textDecoration: "none", display: "block", marginBottom: 10 }}>
           ← {isKo ? "지도로 돌아가기" : "Back to Map"}
         </Link>
-        <div style={{ fontSize: 11, fontWeight: 700, color: "#15b6c1", letterSpacing: "0.08em", marginBottom: 6 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: "var(--grade-s)", letterSpacing: "0.08em", marginBottom: 6 }}>
           LOCALOOP KOREA
         </div>
         <h1 style={{ fontSize: 24, fontWeight: 900, color: "#fff", letterSpacing: "-0.03em", lineHeight: 1.2, marginBottom: 8 }}>
@@ -141,7 +141,7 @@ export default function GuidePage() {
         {/* SECTION 1 */}
         <Section title={isKo ? "가장 먼저 — '나를 알려줘'를 채우세요" : "Start Here — Fill in 'About Me'"}>
           <Card accent>
-            <div style={{ fontSize: 13, fontWeight: 800, color: "#15b6c1", marginBottom: 6 }}>
+            <div style={{ fontSize: 13, fontWeight: 800, color: "var(--grade-s)", marginBottom: 6 }}>
               {isKo ? "앱의 모든 추천이 여기서 시작됩니다" : "All recommendations start here"}
             </div>
             <p style={{ fontSize: 13, color: "rgba(255,255,255,0.85)", lineHeight: 1.65 }}>
@@ -183,7 +183,7 @@ export default function GuidePage() {
 
           <Link href="/profile/me" style={{
             display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-            padding: "12px 0", borderRadius: 12, background: "#15b6c1",
+            padding: "12px 0", borderRadius: 12, background: "var(--grade-s)",
             color: "#fff", fontSize: 13, fontWeight: 700, textDecoration: "none",
           }}>
             {isKo ? "나를 알려줘 채우러 가기" : "Go Fill in About Me"}
@@ -209,7 +209,7 @@ export default function GuidePage() {
               { code: "TR", ko: "교통", en: "Transport", desc: isKo ? "지하철·버스·KTX·공항" : "Subway, bus, KTX, airport access" },
             ].map((cat) => (
               <div key={cat.en} style={{ background: "var(--card)", borderRadius: 12, padding: "12px 10px", border: "1px solid var(--border)" }}>
-                <div style={{ fontSize: 11, fontWeight: 800, color: "#15b6c1", marginBottom: 4 }}>{cat.code}</div>
+                <div style={{ fontSize: 11, fontWeight: 800, color: "var(--grade-s)", marginBottom: 4 }}>{cat.code}</div>
                 <div style={{ fontSize: 12, fontWeight: 700, color: "var(--foreground)", marginBottom: 2 }}>{isKo ? cat.ko : cat.en}</div>
                 <div style={{ fontSize: 10, color: "var(--muted-foreground)", lineHeight: 1.4 }}>{cat.desc}</div>
               </div>
@@ -230,7 +230,7 @@ export default function GuidePage() {
               <div style={{ width: 32, height: 32, borderRadius: 8, background: "#E8F9F9", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 800, color: "#0B7A82" }}>S/A</div>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 800, color: "var(--foreground)" }}>{isKo ? "엔진 1: 친화성 평가 엔진" : "Engine 1: Friendliness Rating Engine"}</div>
-                <div style={{ fontSize: 10, color: "#15b6c1", fontWeight: 600 }}>S / A / B / C 등급 시스템</div>
+                <div style={{ fontSize: 10, color: "var(--grade-s)", fontWeight: 600 }}>S / A / B / C 등급 시스템</div>
               </div>
             </div>
             <p style={{ fontSize: 12, color: "var(--muted-foreground)", lineHeight: 1.6 }}>
@@ -344,7 +344,7 @@ export default function GuidePage() {
                 { ko: "장기거주", en: "Long-term", active: false },
               ].map((stage, i) => (
                 <div key={i} style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
-                  <div style={{ padding: "5px 8px", borderRadius: 8, background: stage.active ? "#15b6c1" : "var(--icon-bg)", color: stage.active ? "#fff" : "var(--muted-foreground)", fontSize: 9, fontWeight: 700 }}>
+                  <div style={{ padding: "5px 8px", borderRadius: 8, background: stage.active ? "var(--grade-s)" : "var(--icon-bg)", color: stage.active ? "#fff" : "var(--muted-foreground)", fontSize: 9, fontWeight: 700 }}>
                     {i + 1}. {isKo ? stage.ko : stage.en}
                   </div>
                   {i < 4 && <div style={{ width: 10, height: 1, background: "var(--border)" }} />}
@@ -398,7 +398,7 @@ export default function GuidePage() {
                 { ko: "문화", en: "Culture" },
                 { ko: "자연", en: "Nature" },
               ].map((f, i) => (
-                <span key={i} style={{ padding: "5px 12px", borderRadius: 20, fontSize: 11, fontWeight: 600, background: f.active ? "#15b6c1" : "var(--icon-bg)", color: f.active ? "#fff" : "var(--muted-foreground)", border: f.active ? "none" : "1px solid var(--border)" }}>
+                <span key={i} style={{ padding: "5px 12px", borderRadius: 20, fontSize: 11, fontWeight: 600, background: f.active ? "var(--grade-s)" : "var(--icon-bg)", color: f.active ? "#fff" : "var(--muted-foreground)", border: f.active ? "none" : "1px solid var(--border)" }}>
                   {isKo ? f.ko : f.en}
                 </span>
               ))}
@@ -457,7 +457,7 @@ export default function GuidePage() {
               { n: 4, ko: "등록 완료 → 근처 사용자에게 자동 알림 발송", en: "Done → Auto-notification sent to nearby users" },
             ].map((step) => (
               <div key={step.n} style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 8 }}>
-                <div style={{ width: 22, height: 22, borderRadius: "50%", background: "#15b6c1", color: "#fff", fontSize: 11, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 1 }}>
+                <div style={{ width: 22, height: 22, borderRadius: "50%", background: "var(--grade-s)", color: "#fff", fontSize: 11, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 1 }}>
                   {step.n}
                 </div>
                 <p style={{ fontSize: 12, color: "var(--muted-foreground)", lineHeight: 1.5 }}>{isKo ? step.ko : step.en}</p>
@@ -475,7 +475,7 @@ export default function GuidePage() {
                 <div style={{ fontSize: 11, fontWeight: 700, color: "#1565C0" }}>{isKo ? "한국인" : "Korean"}</div>
                 <div style={{ fontSize: 9, color: "#4A6467", marginTop: 3 }}>{isKo ? "영어 배우고 싶음" : "Wants to learn English"}</div>
               </div>
-              <div style={{ textAlign: "center", fontSize: 20, color: "#15b6c1", fontWeight: 900 }}>⇄</div>
+              <div style={{ textAlign: "center", fontSize: 20, color: "var(--grade-s)", fontWeight: 900 }}>⇄</div>
               <div style={{ background: "#E8F9F9", borderRadius: 12, padding: "10px", textAlign: "center" }}>
                 <div style={{ fontSize: 13, fontWeight: 800, color: "#0B7A82", marginBottom: 4 }}>EN</div>
                 <div style={{ fontSize: 11, fontWeight: 700, color: "#0B7A82" }}>{isKo ? "외국인" : "Foreigner"}</div>
@@ -507,7 +507,7 @@ export default function GuidePage() {
         </Section>
 
         {/* Bottom CTA */}
-        <div style={{ background: "linear-gradient(135deg, #0B1E2D 0%, #0a3550 100%)", borderRadius: 18, padding: "20px 16px", textAlign: "center", marginBottom: 8 }}>
+        <div style={{ background: "linear-gradient(160deg, var(--grade-dark) 0%, #2A1510 100%)", borderRadius: 18, padding: "20px 16px", textAlign: "center", marginBottom: 8 }}>
           <div style={{ fontSize: 15, fontWeight: 800, color: "#fff", marginBottom: 6 }}>
             {isKo ? "지금 바로 시작하세요" : "Start Right Now"}
           </div>
@@ -517,7 +517,7 @@ export default function GuidePage() {
               : "Fill in 'About Me' first and Localoop becomes your personal Korea life guide"}
           </div>
           <div style={{ display: "flex", gap: 8 }}>
-            <Link href="/profile/me" style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "11px 0", borderRadius: 12, background: "#15b6c1", color: "#fff", fontSize: 12, fontWeight: 700, textDecoration: "none" }}>
+            <Link href="/profile/me" style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "11px 0", borderRadius: 12, background: "var(--grade-s)", color: "#fff", fontSize: 12, fontWeight: 700, textDecoration: "none" }}>
               {isKo ? "나를 알려줘" : "About Me"}
             </Link>
             <Link href="/map" style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "11px 0", borderRadius: 12, background: "rgba(255,255,255,0.12)", border: "1px solid rgba(255,255,255,0.2)", color: "#fff", fontSize: 12, fontWeight: 700, textDecoration: "none" }}>

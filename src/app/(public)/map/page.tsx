@@ -37,8 +37,8 @@ const WALK_MIN: Record<string, number> = {
   p1: 8, p2: 25, p3: 20, p4: 14, p5: 3, p6: 5, p7: 12,
 };
 
-function PlaceRow({ place, isKo, onClick }: {
-  place: Place; isKo: boolean; onClick: () => void;
+function PlaceRow({ place, isKo }: {
+  place: Place; isKo: boolean;
 }) {
   const rating = getRating(place);
   const walk = WALK_MIN[place.id] ?? 10;
@@ -48,12 +48,13 @@ function PlaceRow({ place, isKo, onClick }: {
   };
 
   return (
-    <div
-      onClick={onClick}
+    <Link
+      href={`/places/${place.slug}`}
       style={{
         display: "flex", gap: 12, padding: "14px 0",
         borderBottom: "1px solid var(--border)",
         cursor: "pointer", alignItems: "flex-start",
+        textDecoration: "none",
       }}
     >
       {/* Grade badge */}
@@ -98,7 +99,7 @@ function PlaceRow({ place, isKo, onClick }: {
           )}
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -289,7 +290,7 @@ export default function MapPage() {
         {/* Place list */}
         <div style={{ flex: 1, overflowY: "auto", padding: "0 20px" }}>
           {filtered.map((place) => (
-            <PlaceRow key={place.id} place={place} isKo={isKo} onClick={() => { setSelected(place); if (!sheetExpanded) setSheetExpanded(true); }} />
+            <PlaceRow key={place.id} place={place} isKo={isKo} />
           ))}
           <div style={{ height: 16 }} />
         </div>
