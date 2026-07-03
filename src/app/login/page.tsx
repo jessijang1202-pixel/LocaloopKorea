@@ -8,6 +8,7 @@ import { useSearchParams } from "next/navigation";
 import { loginAction } from "./actions";
 import { SocialButtons } from "@/components/auth/SocialButtons";
 import { useRouter } from "next/navigation";
+import { useTheme } from "@/lib/theme";
 
 function LoginForm() {
   const [state, action, pending] = useActionState(loginAction, { error: "" });
@@ -15,9 +16,10 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const next = searchParams.get("next") ?? "";
   const router = useRouter();
-  const [lang, setLang] = useState<"ko" | "en">(isKo ? "ko" : "en");
 
-  const ko = lang === "ko";
+  const ko = isKo;
+  const theme = useTheme();
+  const isDark = theme === "dark";
 
   return (
     <div style={{ minHeight: "100dvh", background: "var(--background)", display: "flex", flexDirection: "column", maxWidth: 430, margin: "0 auto", position: "relative", overflow: "hidden" }}>
@@ -25,7 +27,7 @@ function LoginForm() {
       {/* ── Hero ─────────────────────────────────── */}
       <div style={{ height: 420, background: "linear-gradient(165deg, #1a1230 0%, #2d1f5e 35%, #3a2a1a 70%, #1f0f0a 100%)", position: "relative", flexShrink: 0 }}>
 
-        <img src="/seoul_landscape.png" alt="Seoul Landscape from Namsan" style={{ width: "100%", height: "100%", objectFit: "cover", position: "absolute", inset: 0 }} />
+        <img src={isDark ? "/seoul_nightscape.png" : "/seoul_landscape.png"} alt="Seoul Landscape from Namsan" style={{ width: "100%", height: "100%", objectFit: "cover", position: "absolute", inset: 0 }} />
 
         {/* Gradient overlay — bottom */}
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 55%)" }} />
@@ -40,8 +42,8 @@ function LoginForm() {
             {(["en", "ko"] as const).map((l) => (
               <button key={l} onClick={() => setLang(l)} style={{
                 fontSize: 11, fontWeight: 700, padding: "4px 12px", borderRadius: 999,
-                background: lang === l ? "#fff" : "transparent",
-                color: lang === l ? "#16151A" : "rgba(255,255,255,0.7)",
+                background: (isKo ? "ko" : "en") === l ? "#fff" : "transparent",
+                color: (isKo ? "ko" : "en") === l ? "#16151A" : "rgba(255,255,255,0.7)",
                 border: "none", cursor: "pointer",
               }}>
                 {l === "ko" ? "한국어" : "EN"}
