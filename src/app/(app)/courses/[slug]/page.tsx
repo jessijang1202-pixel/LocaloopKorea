@@ -168,19 +168,40 @@ export default function CourseDetailPage() {
       </div>
 
       {/* Meta row */}
-      <div style={{ background: "var(--card)", borderBottom: "1px solid var(--border)", padding: "14px 20px", display: "flex", gap: 20, flexShrink: 0 }}>
+      <div style={{ background: "var(--card)", borderBottom: "1px solid var(--border)", padding: "12px 20px", display: "flex", alignItems: "center", gap: 16, flexShrink: 0, flexWrap: "nowrap", overflowX: "auto", scrollbarWidth: "none" }}>
         {[
-          { icon: "📍", label: isKo ? course.meta.ko : course.meta.en },
-          { icon: "⏱", label: isKo ? course.duration.ko : course.duration.en },
-          { icon: "📊", label: isKo ? course.difficulty.ko : course.difficulty.en },
+          {
+            icon: (
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="5" r="3"/><path d="M12 8v13M8 21h8"/>
+              </svg>
+            ),
+            label: isKo ? course.meta.ko : course.meta.en,
+          },
+          {
+            icon: (
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>
+              </svg>
+            ),
+            label: isKo ? course.duration.ko : course.duration.en,
+          },
+          {
+            icon: (
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M18 20V10M12 20V4M6 20v-6"/>
+              </svg>
+            ),
+            label: isKo ? course.difficulty.ko : course.difficulty.en,
+          },
         ].map((m, i) => (
-          <div key={i} style={{ display: "flex", alignItems: "center", gap: 5 }}>
-            <span style={{ fontSize: 14 }}>{m.icon}</span>
-            <span style={{ fontSize: 12, color: "var(--foreground-muted)", fontWeight: 500 }}>{m.label}</span>
+          <div key={i} style={{ display: "flex", alignItems: "center", gap: 5, flexShrink: 0, color: "var(--foreground-muted)" }}>
+            {m.icon}
+            <span style={{ fontSize: 12, fontWeight: 500, whiteSpace: "nowrap" }}>{m.label}</span>
           </div>
         ))}
         {course.englishOk && (
-          <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999, background: "var(--badge-en-bg)", color: "var(--badge-en-fg)", marginLeft: "auto", alignSelf: "center" }}>{isKo ? "영어 OK" : "English OK"}</span>
+          <span style={{ fontSize: 10, fontWeight: 700, padding: "3px 9px", borderRadius: 999, background: "var(--badge-en-bg)", color: "var(--badge-en-fg)", marginLeft: "auto", flexShrink: 0, whiteSpace: "nowrap" }}>{isKo ? "영어 OK" : "English OK"}</span>
         )}
       </div>
 
@@ -220,9 +241,14 @@ export default function CourseDetailPage() {
                     </Link>
                   )}
                 </div>
-                <p style={{ fontSize: 12, color: "var(--foreground-muted)", lineHeight: 1.5, paddingTop: 6, borderTop: "1px solid var(--border)" }}>
-                  💡 {isKo ? stop.tip.ko : stop.tip.en}
-                </p>
+                <div style={{ display: "flex", alignItems: "flex-start", gap: 6, paddingTop: 6, borderTop: "1px solid var(--border)" }}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--foreground-sub)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 2 }}>
+                    <circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/>
+                  </svg>
+                  <p style={{ fontSize: 12, color: "var(--foreground-muted)", lineHeight: 1.5 }}>
+                    {isKo ? stop.tip.ko : stop.tip.en}
+                  </p>
+                </div>
               </div>
             </div>
           ))}
