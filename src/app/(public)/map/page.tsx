@@ -42,11 +42,13 @@ const TRAVEL_INFO: Record<string, { ko: string; en: string; dist: string }> = {
   p6: { ko: "KTX 2시간 30분", en: "KTX 2h 30min", dist: "325km" },
   p7: { ko: "도보 12분", en: "Walk 12 min", dist: "850m" },
   p8: { ko: "도보 9분", en: "Walk 9 min", dist: "650m" },
-  p9: { ko: "도보 15분", en: "Walk 15 min", dist: "1.1km" },
-  p10: { ko: "도보 8분", en: "Walk 8 min", dist: "600m" },
+  p9:  { ko: "도보 15분", en: "Walk 15 min",  dist: "1.1km" },
+  p10: { ko: "도보 8분",  en: "Walk 8 min",   dist: "600m"  },
+  p11: { ko: "도보 3분",  en: "Walk 3 min",   dist: "250m"  },
+  p12: { ko: "버스 15분", en: "Bus 15 min",   dist: "2.2km" },
 };
 
-const HOT_PLACE_IDS = ["p7", "p8", "p9", "p10"];
+const HOT_PLACE_IDS = ["p7", "p8", "p9", "p10", "p11", "p12"];
 
 const GRADE_BG: Record<string, string> = {
   S: "var(--grade-s)", A: "var(--grade-a)", B: "var(--grade-b)", C: "var(--grade-c)",
@@ -146,6 +148,46 @@ function PlaceCardPC({ place, isSelected, isKo, onClick }: {
         <div style={{ fontSize: 11, color: "var(--foreground-muted)" }}>{isKo ? place.name_en : place.name_ko}</div>
       </div>
     </div>
+  );
+}
+
+// Compact 2-column grid card for mobile bottom sheet
+function PlaceCard2({ place, isKo }: { place: Place; isKo: boolean }) {
+  const rating = getRating(place);
+  const t = TRAVEL_INFO[place.id];
+  return (
+    <Link
+      href={`/places/${place.slug}`}
+      style={{
+        background: "var(--content-bg)", borderRadius: 14,
+        padding: "11px 12px", textDecoration: "none",
+        display: "flex", flexDirection: "column", gap: 6,
+        border: "1px solid var(--border)",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <div style={{
+          width: 32, height: 32, borderRadius: 8, flexShrink: 0,
+          background: GRADE_BG[rating],
+          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+        }}>
+          <span style={{ fontSize: 12, fontWeight: 800, color: GRADE_TEXT[rating], lineHeight: 1 }}>{rating}</span>
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "var(--foreground)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+            {isKo ? place.name_ko : place.name_en}
+          </div>
+          <div style={{ fontSize: 10, color: "var(--foreground-muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+            {isKo ? place.name_en : place.name_ko}
+          </div>
+        </div>
+      </div>
+      {t && (
+        <div style={{ fontSize: 10, color: "var(--foreground-sub)", fontWeight: 500 }}>
+          {isKo ? t.ko : t.en} · {t.dist}
+        </div>
+      )}
+    </Link>
   );
 }
 
@@ -282,7 +324,6 @@ export default function MapPage() {
           transition: "height 0.3s cubic-bezier(0.32,0.72,0,1)",
           zIndex: 20, display: "flex", flexDirection: "column",
           boxShadow: "0 -4px 32px rgba(0,0,0,0.12)",
-          paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 80px)",
         }}
       >
         {/* Drag handle */}
@@ -305,36 +346,30 @@ export default function MapPage() {
           </button>
         </div>
 
-        {/* Hot Places — compact horizontal strip */}
-        <div style={{ flexShrink: 0, borderBottom: "1px solid var(--border)" }}>
-          <div style={{ padding: "10px 20px 4px", fontSize: 10, fontWeight: 800, letterSpacing: "0.1em", color: "var(--grade-s)" }}>
-            {isKo ? "이태원 PICK" : "ITAEWON PICK"}
+        {/* Scrollable content — both pick sections live here so sheet can collapse cleanly */}
+        <div style={{ flex: 1, overflowY: "auto", padding: "0 16px" }}>
+          {/* 이태원 PICK — 2×3 grid */}
+          <div style={{ paddingTop: 14, marginBottom: 20 }}>
+            <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.1em", color: "var(--grade-s)", marginBottom: 10 }}>
+              {isKo ? "이태원 PICK" : "ITAEWON PICK"}
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              {hotPlaces.map((p) => <PlaceCard2 key={p.id} place={p} isKo={isKo} />)}
+            </div>
           </div>
-          <div style={{ display: "flex", gap: 8, overflowX: "auto", scrollbarWidth: "none", padding: "0 20px 12px" }}>
-            {hotPlaces.map((p) => {
-              const r = getRating(p);
-              const t = TRAVEL_INFO[p.id];
-              return (
-                <Link key={p.id} href={`/places/${p.slug}`} style={{ flexShrink: 0, width: 140, background: "var(--content-bg)", borderRadius: 12, padding: "9px 11px", textDecoration: "none", display: "flex", alignItems: "center", gap: 9, border: "1px solid var(--border)" }}>
-                  <div style={{ width: 32, height: 32, borderRadius: 9, background: GRADE_BG[r], display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                    <span style={{ fontSize: 12, fontWeight: 800, color: GRADE_TEXT[r], lineHeight: 1 }}>{r}</span>
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: "var(--foreground)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{isKo ? p.name_ko : p.name_en}</div>
-                    <div style={{ fontSize: 10, color: "var(--foreground-sub)", marginTop: 1 }}>{t ? (isKo ? t.ko : t.en) : ""}</div>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
 
-        {/* Place list */}
-        <div style={{ flex: 1, overflowY: "auto", padding: "0 20px" }}>
-          {filtered.map((place) => (
-            <PlaceRow key={place.id} place={place} isKo={isKo} />
-          ))}
-          <div style={{ height: 16 }} />
+          {/* CITY PICKS — 2×3 grid */}
+          <div style={{ marginBottom: 8 }}>
+            <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.1em", color: "var(--foreground-muted)", marginBottom: 10 }}>
+              {isKo ? "지역별 PICK" : "CITY PICKS"}
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              {filtered.map((p) => <PlaceCard2 key={p.id} place={p} isKo={isKo} />)}
+            </div>
+          </div>
+
+          {/* Safe-area spacer for nav bar */}
+          <div style={{ height: "calc(env(safe-area-inset-bottom, 0px) + 88px)" }} />
         </div>
       </div>
     </div>

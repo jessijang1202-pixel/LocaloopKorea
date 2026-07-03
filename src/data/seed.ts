@@ -126,6 +126,26 @@ export const SEED_PLACES: Place[] = [
     image_url: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800",
     english_support: true, card_payment: true, solo_friendly: true, reservation_difficulty: "easy", created_at: "",
   },
+  {
+    id: "p11", name_ko: "이태원 세계음식거리", name_en: "Itaewon Food Street",
+    slug: "itaewon-food-street", category: "restaurant", region_id: "r2",
+    description_en: "Itaewon's legendary stretch of international cuisine. Mexican, Indian, Turkish, Lebanese — every country seems to have a restaurant here. Korea's most multicultural dining strip.",
+    description_ko: "이태원의 전설적인 세계 음식 거리. 멕시칸, 인도, 터키, 레바논 등 각국 음식점이 밀집한 한국 최고의 다문화 식도락 거리.",
+    address: "Itaewon-ro, Yongsan-gu, Seoul", address_ko: "서울 용산구 이태원로",
+    lat: 37.5347, lng: 126.9942,
+    image_url: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800",
+    english_support: true, card_payment: true, solo_friendly: true, reservation_difficulty: "easy", created_at: "",
+  },
+  {
+    id: "p12", name_ko: "남산서울타워", name_en: "Namsan Seoul Tower",
+    slug: "namsan-seoul-tower", category: "activity", region_id: "r2",
+    description_en: "Seoul's most iconic landmark, towering above Itaewon. Take the cable car or hike up for panoramic city views. A must-see day and night — the observation deck is open until midnight.",
+    description_ko: "이태원 위에 우뚝 선 서울의 상징. 케이블카나 등산로로 올라가는 전망대. 낮과 밤 모두 아름다우며 자정까지 운영.",
+    address: "105 Namsangongwon-gil, Yongsan-gu, Seoul", address_ko: "서울 용산구 남산공원길 105",
+    lat: 37.5512, lng: 126.9882,
+    image_url: "https://images.unsplash.com/photo-1546874177-9e664107314e?w=800",
+    english_support: true, card_payment: true, solo_friendly: true, reservation_difficulty: "easy", created_at: "",
+  },
 ];
 
 export const SEED_GUIDES: Guide[] = [
