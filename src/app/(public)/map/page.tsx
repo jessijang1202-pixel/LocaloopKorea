@@ -37,15 +37,21 @@ const WALK_MIN: Record<string, number> = {
   p1: 8, p2: 25, p3: 20, p4: 14, p5: 3, p6: 5, p7: 12,
 };
 
+const GRADE_BG: Record<string, string> = {
+  S: "var(--grade-s)", A: "var(--grade-a)", B: "var(--grade-b)", C: "var(--grade-c)",
+};
+const GRADE_TEXT: Record<string, string> = {
+  S: "#fff", A: "#fff", B: "#fff", C: "var(--grade-c-text)",
+};
+
 function PlaceRow({ place, isKo }: {
   place: Place; isKo: boolean;
 }) {
   const rating = getRating(place);
   const walk = WALK_MIN[place.id] ?? 10;
   const dist = walk * 70;
-  const GRADE_BG: Record<string, string> = {
-    S: "var(--grade-s)", A: "var(--grade-a)", B: "var(--grade-b)", C: "var(--grade-c)",
-  };
+  const badgeBg = GRADE_BG[rating];
+  const badgeFg = GRADE_TEXT[rating];
 
   return (
     <Link
@@ -60,13 +66,13 @@ function PlaceRow({ place, isKo }: {
       {/* Grade badge */}
       <div style={{
         width: 46, height: 46, borderRadius: 13, flexShrink: 0,
-        background: GRADE_BG[rating],
+        background: badgeBg,
         display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center",
-        color: "#fff", userSelect: "none",
+        userSelect: "none",
       }}>
-        <span style={{ fontSize: 17, fontWeight: 800, lineHeight: 1 }}>{rating}</span>
-        <span style={{ fontSize: 7, fontWeight: 700, letterSpacing: "0.05em", opacity: 0.85 }}>GRADE</span>
+        <span style={{ fontSize: 17, fontWeight: 800, lineHeight: 1, color: badgeFg }}>{rating}</span>
+        <span style={{ fontSize: 7, fontWeight: 700, letterSpacing: "0.05em", opacity: 0.85, color: badgeFg }}>GRADE</span>
       </div>
 
       {/* Info */}
@@ -108,9 +114,8 @@ function PlaceCardPC({ place, isSelected, isKo, onClick }: {
   place: Place; isSelected: boolean; isKo: boolean; onClick: () => void;
 }) {
   const rating = getRating(place);
-  const GRADE_BG: Record<string, string> = {
-    S: "var(--grade-s)", A: "var(--grade-a)", B: "var(--grade-b)", C: "var(--grade-c)",
-  };
+  const badgeBg = GRADE_BG[rating];
+  const badgeFg = GRADE_TEXT[rating];
   return (
     <div
       onClick={onClick}
@@ -122,9 +127,9 @@ function PlaceCardPC({ place, isSelected, isKo, onClick }: {
         cursor: "pointer",
       }}
     >
-      <div style={{ width: 38, height: 38, borderRadius: 10, flexShrink: 0, background: GRADE_BG[rating], display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: "#fff" }}>
-        <span style={{ fontSize: 13, fontWeight: 800, lineHeight: 1 }}>{rating}</span>
-        <span style={{ fontSize: 6, fontWeight: 700, opacity: 0.85 }}>GRADE</span>
+      <div style={{ width: 38, height: 38, borderRadius: 10, flexShrink: 0, background: badgeBg, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+        <span style={{ fontSize: 13, fontWeight: 800, lineHeight: 1, color: badgeFg }}>{rating}</span>
+        <span style={{ fontSize: 6, fontWeight: 700, opacity: 0.85, color: badgeFg }}>GRADE</span>
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ fontSize: 13, fontWeight: 700, color: "var(--foreground)", marginBottom: 2 }}>{isKo ? place.name_ko : place.name_en}</div>
@@ -342,9 +347,9 @@ export default function MapPage() {
         {selected && (
           <div style={{ position: "absolute", bottom: 24, left: "50%", transform: "translateX(-50%)", width: "min(400px, calc(100% - 48px))", background: "var(--card)", borderRadius: 20, border: "1px solid var(--border)", boxShadow: "0 8px 40px rgba(0,0,0,0.18)", padding: "14px 16px", zIndex: 10 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <div style={{ width: 42, height: 42, borderRadius: 12, flexShrink: 0, background: { S: "var(--grade-s)", A: "var(--grade-a)", B: "var(--grade-b)", C: "var(--grade-c)" }[getRating(selected)], display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: "#fff" }}>
-                <span style={{ fontSize: 15, fontWeight: 800, lineHeight: 1 }}>{getRating(selected)}</span>
-                <span style={{ fontSize: 6, fontWeight: 700 }}>GRADE</span>
+              <div style={{ width: 42, height: 42, borderRadius: 12, flexShrink: 0, background: GRADE_BG[getRating(selected)], display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ fontSize: 15, fontWeight: 800, lineHeight: 1, color: GRADE_TEXT[getRating(selected)] }}>{getRating(selected)}</span>
+                <span style={{ fontSize: 6, fontWeight: 700, color: GRADE_TEXT[getRating(selected)], opacity: 0.85 }}>GRADE</span>
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 14, fontWeight: 700, color: "var(--foreground)", marginBottom: 2 }}>{isKo ? selected.name_ko : selected.name_en}</div>

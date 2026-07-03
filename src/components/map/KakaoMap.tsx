@@ -19,11 +19,17 @@ interface KakaoMapProps {
 }
 
 const RATING_COLORS: Record<string, string> = {
-  S: "#1EC8C8",
-  A: "#17A0A0",
-  B: "#4A6467",
-  C: "#94a3b8",
-  D: "#cbd5e1",
+  S: "#FF5636",
+  A: "#12BFB6",
+  B: "#7B4DFF",
+  C: "#FFC93C",
+};
+
+const RATING_TEXT: Record<string, string> = {
+  S: "#fff",
+  A: "#fff",
+  B: "#fff",
+  C: "#3a2c00",
 };
 
 export function KakaoMap({ pins, center, zoom = 5, onPinClick, lang = "ko" }: KakaoMapProps) {
@@ -42,13 +48,14 @@ export function KakaoMap({ pins, center, zoom = 5, onPinClick, lang = "ko" }: Ka
         });
 
         pins.forEach((pin) => {
-          const color = RATING_COLORS[pin.rating ?? "B"] ?? "#4A6467";
+          const color = RATING_COLORS[pin.rating ?? "C"] ?? "#FFC93C";
+          const textColor = RATING_TEXT[pin.rating ?? "C"] ?? "#3a2c00";
           const content = `
-            <div style="display:flex;flex-direction:column;align-items:center;cursor:pointer;">
-              <div style="background:white;border:2px solid ${color};border-radius:8px;padding:3px 8px;font-size:11px;font-weight:600;color:#1A2B2C;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.12);">
-                ${pin.rating ? `${pin.rating} · ` : ""}${pin.title}
+            <div style="display:flex;flex-direction:column;align-items:center;cursor:pointer;filter:drop-shadow(0 3px 8px rgba(0,0,0,0.28));">
+              <div style="background:${color};border-radius:10px;padding:5px 11px;font-size:14px;font-weight:800;color:${textColor};letter-spacing:0.04em;line-height:1;">
+                ${pin.rating ?? "?"}
               </div>
-              <div style="width:6px;height:6px;border-radius:50%;background:${color};margin-top:3px;"></div>
+              <div style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid ${color};"></div>
             </div>`;
 
           const overlay = new window.kakao.maps.CustomOverlay({

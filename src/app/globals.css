@@ -14,9 +14,10 @@
   /* Grade colors */
   --grade-s:      #FF5636;
   --grade-a:      #12BFB6;
-  --grade-b:      #FFC93C;
-  --grade-b-text: #3a2c00;
-  --grade-c:      #7B4DFF;
+  --grade-b:      #7B4DFF;
+  --grade-b-text: #fff;
+  --grade-c:      #FFC93C;
+  --grade-c-text: #3a2c00;
 
   /* Dark warm tone for hero sections */
   --grade-dark:     #1E1015;
@@ -68,9 +69,10 @@
   /* Grade (brightened for glow) */
   --grade-s:      #FF6A4D;
   --grade-a:      #22D3C6;
-  --grade-b:      #FFD23C;
-  --grade-b-text: #3a2c00;
-  --grade-c:      #8A63FF;
+  --grade-b:      #8A63FF;
+  --grade-b-text: #fff;
+  --grade-c:      #FFD23C;
+  --grade-c-text: #3a2c00;
 
   --grade-dark:     #12090C;
 

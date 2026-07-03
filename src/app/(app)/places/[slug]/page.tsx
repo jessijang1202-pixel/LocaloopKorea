@@ -24,6 +24,10 @@ const GRADE_COLOR: Record<string, string> = {
   S: "var(--grade-s)", A: "var(--grade-a)", B: "var(--grade-b)", C: "var(--grade-c)",
 };
 
+const GRADE_TEXT: Record<string, string> = {
+  S: "#fff", A: "#fff", B: "#fff", C: "var(--grade-c-text)",
+};
+
 const CAT_LABEL: Record<string, { ko: string; en: string }> = {
   cafe:       { ko: "카페",    en: "Café" },
   restaurant: { ko: "음식점",  en: "Restaurant" },
@@ -137,6 +141,7 @@ export default function PlaceDetailPage() {
   const region = SEED_REGIONS.find((r) => r.id === place.region_id);
   const rating = getRating(place);
   const gradeColor = GRADE_COLOR[rating];
+  const gradeText = GRADE_TEXT[rating];
   const friendlyRows = getFriendlyRows(place, isKo);
   const okCount = friendlyRows.filter(r => r.ok).length;
   const summaryLabel = okCount >= 3
@@ -196,8 +201,8 @@ export default function PlaceDetailPage() {
         <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0 18px 18px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 5, background: gradeColor, borderRadius: 8, padding: "4px 10px" }}>
-              <span style={{ fontSize: 15, fontWeight: 800, color: "#fff", lineHeight: 1 }}>{rating}</span>
-              <span style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.85)", letterSpacing: "0.06em" }}>GRADE</span>
+              <span style={{ fontSize: 15, fontWeight: 800, color: gradeText, lineHeight: 1 }}>{rating}</span>
+              <span style={{ fontSize: 9, fontWeight: 700, color: gradeText, opacity: 0.8, letterSpacing: "0.06em" }}>GRADE</span>
             </div>
             <span style={{ fontSize: 12, color: "rgba(255,255,255,0.75)", fontWeight: 500 }}>
               {catText} · {isKo ? region?.name_ko : region?.name_en}
