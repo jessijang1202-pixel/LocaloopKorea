@@ -152,64 +152,57 @@ function PlaceCardPC({ place, isSelected, isKo, onClick }: {
   );
 }
 
-// 2-column grid card — hot=true: big badge (이태원 PICK), hot=false: medium badge + city label (다른 지역)
+// 2-column grid card (identical style for both ITAEWON PICK and OTHER REGIONS)
 function PlaceCard2({ place, isKo, hot = false }: { place: Place; isKo: boolean; hot?: boolean }) {
   const rating = getRating(place);
   const t = TRAVEL_INFO[place.id];
   const city = !hot ? (SEED_REGIONS.find((r) => r.id === place.region_id)?.city ?? "") : null;
-
-  const badgeSize  = hot ? 46 : 34;
-  const badgeR     = hot ? 13 : 9;
-  const gradeSize  = hot ? 17 : 12;
-  const subSize    = hot ?  7 :  6;
-  const nameSize   = hot ? 14 : 12;
 
   return (
     <Link
       href={`/places/${place.slug}`}
       style={{
         background: "var(--content-bg)", borderRadius: 14,
-        padding: 0, textDecoration: "none",
-        display: "flex", flexDirection: "column",
-        border: "1px solid var(--border)",
-        overflow: "hidden",
+        textDecoration: "none", display: "flex", flexDirection: "column",
+        border: "1px solid var(--border)", overflow: "hidden",
       }}
     >
       {/* Thumbnail */}
-      {place.image_url && (
-        <div style={{ position: "relative", width: "100%", height: hot ? 110 : 80, flexShrink: 0, background: "var(--muted)" }}>
-          <Image src={place.image_url} alt={isKo ? place.name_ko : place.name_en} fill sizes="400px" style={{ objectFit: "cover" }} />
-        </div>
-      )}
-      <div style={{ padding: "10px 12px", display: "flex", flexDirection: "column", gap: 6 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-        <div style={{
-          width: badgeSize, height: badgeSize, borderRadius: badgeR, flexShrink: 0,
-          background: GRADE_BG[rating],
-          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-        }}>
-          <span style={{ fontSize: gradeSize, fontWeight: 800, color: GRADE_TEXT[rating], lineHeight: 1 }}>{rating}</span>
-          <span style={{ fontSize: subSize, fontWeight: 700, letterSpacing: "0.05em", opacity: 0.85, color: GRADE_TEXT[rating] }}>GRADE</span>
-        </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: nameSize, fontWeight: 700, color: "var(--foreground)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-            {isKo ? place.name_ko : place.name_en}
-          </div>
-          <div style={{ fontSize: 10, color: "var(--foreground-muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-            {isKo ? place.name_en : place.name_ko}
-          </div>
-        </div>
+      <div style={{ position: "relative", width: "100%", height: 80, background: "var(--muted)", flexShrink: 0 }}>
+        {place.image_url && (
+          <Image src={place.image_url} alt={isKo ? place.name_ko : place.name_en} fill sizes="200px" style={{ objectFit: "cover" }} />
+        )}
       </div>
-      {city && (
-        <div style={{ fontSize: 10, fontWeight: 600, color: "var(--foreground-muted)", letterSpacing: "0.02em" }}>
-          {city}
+      {/* Info */}
+      <div style={{ padding: "9px 10px", display: "flex", flexDirection: "column", gap: 5 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
+          <div style={{
+            width: 34, height: 34, borderRadius: 9, flexShrink: 0,
+            background: GRADE_BG[rating],
+            display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+          }}>
+            <span style={{ fontSize: 12, fontWeight: 800, color: GRADE_TEXT[rating], lineHeight: 1 }}>{rating}</span>
+            <span style={{ fontSize: 6, fontWeight: 700, letterSpacing: "0.05em", opacity: 0.85, color: GRADE_TEXT[rating] }}>GRADE</span>
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: "var(--foreground)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              {isKo ? place.name_ko : place.name_en}
+            </div>
+            <div style={{ fontSize: 10, color: "var(--foreground-muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              {isKo ? place.name_en : place.name_ko}
+            </div>
+          </div>
         </div>
-      )}
-      {t && (
-        <div style={{ fontSize: 10, color: "var(--foreground-sub)", fontWeight: 500 }}>
-          {isKo ? t.ko : t.en} · {t.dist}
-        </div>
-      )}
+        {city && (
+          <div style={{ fontSize: 10, fontWeight: 600, color: "var(--foreground-muted)", letterSpacing: "0.02em" }}>
+            {city}
+          </div>
+        )}
+        {t && (
+          <div style={{ fontSize: 10, color: "var(--foreground-sub)", fontWeight: 500 }}>
+            {isKo ? t.ko : t.en} · {t.dist}
+          </div>
+        )}
       </div>
     </Link>
   );
@@ -388,7 +381,7 @@ export default function MapPage() {
             <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.1em", color: "var(--grade-s)", marginBottom: 10 }}>
               {isKo ? "이태원 PICK" : "ITAEWON PICK"}
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
               {hotPlaces.map((p) => <PlaceCard2 key={p.id} place={p} isKo={isKo} hot />)}
             </div>
             <button style={{ width: "100%", marginTop: 10, padding: "10px 0", borderRadius: 12, background: "var(--content-bg)", border: "1px solid var(--border)", color: "var(--foreground-muted)", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
