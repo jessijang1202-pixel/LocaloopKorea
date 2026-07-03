@@ -103,7 +103,7 @@ export const SEED_PLACES: Place[] = [
     description_ko: "이태원의 가장 개성 넘치는 골목. 각국 음식점·인디 카페·빈티지 숍이 비탈 골목에 빼곡히 들어선, 서울 'X리단길' 트렌드를 시작한 원조.",
     address: "Itaewon-ro 54-gil, Yongsan-gu, Seoul", address_ko: "서울 용산구 이태원로54길",
     lat: 37.5353, lng: 126.9893,
-    image_url: "https://images.unsplash.com/photo-1541614101331-1a5a3a194e92?w=800",
+    image_url: "https://images.unsplash.com/photo-1774078725035-85d644416c87?w=800",
     english_support: true, card_payment: true, solo_friendly: true, reservation_difficulty: "easy", created_at: "",
   },
   {
