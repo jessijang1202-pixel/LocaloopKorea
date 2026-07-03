@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { useLang, setLang } from "@/lib/lang";
 import { useTheme } from "@/lib/theme";
 import dynamic from "next/dynamic";
@@ -32,10 +32,19 @@ const CHIPS: { key: FilterKey; ko: string; en: string; hasIcon?: boolean }[] = [
   { key: "cafe",       ko: "카페",    en: "Café" },
 ];
 
-// Approximate walking times from Itaewon (mock)
-const WALK_MIN: Record<string, number> = {
-  p1: 8, p2: 25, p3: 20, p4: 14, p5: 3, p6: 5, p7: 12,
+// Real travel times & distances from Itaewon
+const TRAVEL_INFO: Record<string, { ko: string; en: string; dist: string }> = {
+  p1: { ko: "지하철 28분", en: "Subway 28 min", dist: "7.0km" },
+  p2: { ko: "지하철 33분", en: "Subway 33 min", dist: "4.1km" },
+  p3: { ko: "지하철 26분", en: "Subway 26 min", dist: "6.0km" },
+  p4: { ko: "지하철 30분", en: "Subway 30 min", dist: "5.3km" },
+  p5: { ko: "지하철 24분", en: "Subway 24 min", dist: "5.6km" },
+  p6: { ko: "KTX 2시간 30분", en: "KTX 2h 30min", dist: "325km" },
+  p7: { ko: "도보 12분", en: "Walk 12 min", dist: "850m" },
+  p8: { ko: "도보 9분", en: "Walk 9 min", dist: "650m" },
 };
+
+const HOT_PLACE_IDS = ["p7", "p8"];
 
 const GRADE_BG: Record<string, string> = {
   S: "var(--grade-s)", A: "var(--grade-a)", B: "var(--grade-b)", C: "var(--grade-c)",
@@ -48,8 +57,7 @@ function PlaceRow({ place, isKo }: {
   place: Place; isKo: boolean;
 }) {
   const rating = getRating(place);
-  const walk = WALK_MIN[place.id] ?? 10;
-  const dist = walk * 70;
+  const travel = TRAVEL_INFO[place.id];
   const badgeBg = GRADE_BG[rating];
   const badgeFg = GRADE_TEXT[rating];
 
@@ -84,7 +92,7 @@ function PlaceRow({ place, isKo }: {
           {isKo ? place.name_en : place.name_ko}
         </div>
         <div style={{ fontSize: 11, color: "var(--foreground-sub)", marginBottom: 6, display: "flex", alignItems: "center", gap: 4 }}>
-          <span>{isKo ? `도보 ${walk}분 · ${dist}m` : `${walk} min walk · ${dist}m`}</span>
+          {travel && <span>{isKo ? travel.ko : travel.en} · {travel.dist}</span>}
           <span style={{ color: "var(--success)", fontWeight: 600 }}>{isKo ? "· 지금 영업중" : "· Open now"}</span>
         </div>
         <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
@@ -145,6 +153,8 @@ export default function MapPage() {
   const [selected, setSelected] = useState<Place>(SEED_PLACES[0]);
   const [chip, setChip] = useState<FilterKey>("all");
   const [sheetExpanded, setSheetExpanded] = useState(false);
+
+  const hotPlaces = SEED_PLACES.filter((p) => HOT_PLACE_IDS.includes(p.id));
 
   const filtered = SEED_PLACES.filter((p) => {
     if (chip === "all") return true;
@@ -292,6 +302,34 @@ export default function MapPage() {
           </button>
         </div>
 
+        {/* Hot Places */}
+        <div style={{ padding: "14px 20px 0", flexShrink: 0 }}>
+          <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.1em", color: "var(--grade-s)", marginBottom: 10 }}>
+            {isKo ? "이태원 PICK" : "ITAEWON PICK"}
+          </div>
+          <div style={{ display: "flex", gap: 10, marginBottom: 4 }}>
+            {hotPlaces.map((p) => {
+              const r = getRating(p);
+              return (
+                <Link key={p.id} href={`/places/${p.slug}`} style={{ flex: 1, minWidth: 0, background: "var(--content-bg)", borderRadius: 14, padding: "11px 12px", textDecoration: "none", display: "flex", flexDirection: "column", gap: 5, border: "1px solid var(--border)" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
+                    <div style={{ width: 30, height: 30, borderRadius: 8, background: GRADE_BG[r], display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <span style={{ fontSize: 11, fontWeight: 800, color: GRADE_TEXT[r], lineHeight: 1 }}>{r}</span>
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: "var(--foreground)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{isKo ? p.name_ko : p.name_en}</div>
+                      <div style={{ fontSize: 10, color: "var(--foreground-muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{isKo ? p.name_en : p.name_ko}</div>
+                    </div>
+                  </div>
+                  <div style={{ fontSize: 11, color: "var(--foreground-sub)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } as React.CSSProperties}>
+                    {isKo ? p.description_ko : p.description_en}
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Place list */}
         <div style={{ flex: 1, overflowY: "auto", padding: "0 20px" }}>
           {filtered.map((place) => (
@@ -329,6 +367,33 @@ export default function MapPage() {
           </div>
         </div>
         <div style={{ flex: 1, overflowY: "auto", minHeight: 0, padding: "8px 14px" }}>
+          {/* Hot Places - PC */}
+          <div style={{ marginBottom: 12 }}>
+            <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.1em", color: "var(--grade-s)", marginBottom: 8 }}>
+              {isKo ? "이태원 PICK" : "ITAEWON PICK"}
+            </div>
+            <div style={{ display: "flex", gap: 8 }}>
+              {hotPlaces.map((p) => {
+                const r = getRating(p);
+                return (
+                  <Link key={p.id} href={`/places/${p.slug}`} style={{ flex: 1, minWidth: 0, background: "var(--content-bg)", borderRadius: 12, padding: "10px", textDecoration: "none", display: "flex", flexDirection: "column", gap: 5, border: "1px solid var(--border)" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
+                      <div style={{ width: 28, height: 28, borderRadius: 7, background: GRADE_BG[r], display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                        <span style={{ fontSize: 10, fontWeight: 800, color: GRADE_TEXT[r], lineHeight: 1 }}>{r}</span>
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 12, fontWeight: 700, color: "var(--foreground)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{isKo ? p.name_ko : p.name_en}</div>
+                        <div style={{ fontSize: 10, color: "var(--foreground-muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{isKo ? p.name_en : p.name_ko}</div>
+                      </div>
+                    </div>
+                    <div style={{ fontSize: 10, color: "var(--foreground-sub)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } as React.CSSProperties}>
+                      {isKo ? p.description_ko : p.description_en}
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
           {filtered.map((place) => (
             <PlaceCardPC key={place.id} place={place} isSelected={selected?.id === place.id} isKo={isKo} onClick={() => setSelected(place)} />
           ))}

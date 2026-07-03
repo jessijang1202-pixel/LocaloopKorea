@@ -86,6 +86,26 @@ export const SEED_PLACES: Place[] = [
     image_url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800",
     english_support: true, card_payment: true, solo_friendly: true, reservation_difficulty: "easy", created_at: "",
   },
+  {
+    id: "p7", name_ko: "리움미술관", name_en: "Leeum Museum of Art",
+    slug: "leeum-museum", category: "activity", region_id: "r2",
+    description_en: "Samsung's world-class private art museum steps from Itaewon. Three landmark buildings by Koolhaas, Hadid, and Botta house 15,000+ works spanning Korean antiquities to global contemporary art.",
+    description_ko: "이태원 바로 옆 삼성 세계 수준의 사립 미술관. 쿨하스·하디드·보타가 설계한 세 건물에 고려청자부터 현대 미술까지 1만 5천여 점 소장.",
+    address: "60-16 Itaewon-ro 55-gil, Yongsan-gu, Seoul", address_ko: "서울 용산구 이태원로55길 60-16",
+    lat: 37.5358, lng: 126.9988,
+    image_url: "https://images.unsplash.com/photo-1577083552431-6e5fd01988ec?w=800",
+    english_support: true, card_payment: true, solo_friendly: true, reservation_difficulty: "easy", created_at: "",
+  },
+  {
+    id: "p8", name_ko: "경리단길", name_en: "Gyeongnidan-gil",
+    slug: "gyeongnidan-gil", category: "cafe", region_id: "r2",
+    description_en: "Itaewon's most eclectic street. International restaurants, indie cafes, and vintage boutiques packed into a hillside alley — the original 'Gyeongridan' that sparked a Seoul street-naming trend.",
+    description_ko: "이태원의 가장 개성 넘치는 골목. 각국 음식점·인디 카페·빈티지 숍이 비탈 골목에 빼곡히 들어선, 서울 'X리단길' 트렌드를 시작한 원조.",
+    address: "Itaewon-ro 54-gil, Yongsan-gu, Seoul", address_ko: "서울 용산구 이태원로54길",
+    lat: 37.5353, lng: 126.9893,
+    image_url: "https://images.unsplash.com/photo-1541614101331-1a5a3a194e92?w=800",
+    english_support: true, card_payment: true, solo_friendly: true, reservation_difficulty: "easy", created_at: "",
+  },
 ];
 
 export const SEED_GUIDES: Guide[] = [
