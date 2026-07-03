@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useLang } from "@/lib/lang";
 import { useTheme } from "@/lib/theme";
 
@@ -8,6 +9,7 @@ const STAGE_NAMES = {
   ko: ["도착", "초기 생활", "정착", "커뮤니티", "장기 거주"],
   en: ["Arrival", "Early Life", "Settlement", "Community", "Long-term"],
 };
+const STAGE_SLUGS = ["arrival", "early-life", "settlement", "community", "long-term"];
 const CURRENT_STAGE = 1; // 0-indexed
 
 const TASKS = [
@@ -61,7 +63,7 @@ export default function TasksPage() {
     <div style={{
       margin: "16px 16px 0",
       borderRadius: 22,
-      background: isDark ? "var(--stage-blue)" : "var(--stage-blue)",
+      background: "linear-gradient(160deg, #1A0E14 0%, #120A0F 100%)",
       padding: "20px 22px 18px",
       position: "relative",
       overflow: "hidden",
@@ -101,22 +103,23 @@ export default function TasksPage() {
     </div>
   );
 
-  // Stage chips
+  // Stage chips — navigate to sub-pages
   const stageChips = (
-    <div style={{ display: "flex", gap: 6, padding: "14px 16px 4px", overflowX: "auto" }}>
+    <div style={{ display: "flex", gap: 6, padding: "14px 16px 4px", overflowX: "auto", scrollbarWidth: "none" }}>
       {stages.map((s, i) => {
         const active = i === activeStage;
         return (
-          <button key={s} onClick={() => setActiveStage(i)} style={{
-            flexShrink: 0, fontSize: 12, fontWeight: active ? 700 : 500,
-            padding: "6px 14px", borderRadius: 999,
-            background: active ? "var(--grade-s)" : "var(--card)",
-            color: active ? "#fff" : "var(--foreground-muted)",
-            border: active ? "none" : "1px solid var(--border)",
-            cursor: "pointer",
-          }}>
-            {s}
-          </button>
+          <Link key={s} href={`/tasks/${STAGE_SLUGS[i]}`} style={{ textDecoration: "none", flexShrink: 0 }}>
+            <span style={{
+              display: "inline-block", fontSize: 12, fontWeight: active ? 700 : 500,
+              padding: "6px 14px", borderRadius: 999,
+              background: active ? "var(--grade-s)" : "var(--card)",
+              color: active ? "#fff" : "var(--foreground-muted)",
+              border: active ? "none" : "1px solid var(--border)",
+            }}>
+              {s}
+            </span>
+          </Link>
         );
       })}
     </div>

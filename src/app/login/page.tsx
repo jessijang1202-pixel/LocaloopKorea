@@ -25,10 +25,7 @@ function LoginForm() {
       {/* ── Hero ─────────────────────────────────── */}
       <div style={{ height: 420, background: "linear-gradient(165deg, #1a1230 0%, #2d1f5e 35%, #3a2a1a 70%, #1f0f0a 100%)", position: "relative", flexShrink: 0 }}>
 
-        {/* Photo placeholder */}
-        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <span style={{ fontSize: 10, letterSpacing: "0.2em", fontFamily: "monospace", color: "rgba(255,255,255,0.18)", fontWeight: 600 }}>PHOTO · 남산에서 본 서울</span>
-        </div>
+        <img src="/seoul_landscape.png" alt="Seoul Landscape from Namsan" style={{ width: "100%", height: "100%", objectFit: "cover", position: "absolute", inset: 0 }} />
 
         {/* Gradient overlay — bottom */}
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 55%)" }} />

@@ -182,7 +182,7 @@ export default function PlaceDetailPage() {
             flex: 1, padding: "14px 0", textAlign: "center",
             borderRight: i < 2 ? "1px solid var(--border)" : "none",
           }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: s.green ? "var(--success)" : "var(--foreground)", marginBottom: 2 }}>{s.label}</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: s.green ? "var(--grade-s)" : "var(--foreground)", marginBottom: 2 }}>{s.label}</div>
             <div style={{ fontSize: 11, color: "var(--foreground-muted)" }}>{s.sub}</div>
           </div>
         ))}
@@ -209,7 +209,7 @@ export default function PlaceDetailPage() {
                 <div style={{ fontSize: 14, fontWeight: 600, color: "var(--foreground)" }}>{row.label}</div>
                 <div style={{ fontSize: 11, color: "var(--foreground-muted)" }}>{row.caption}</div>
               </div>
-              <div style={{ width: 22, height: 22, borderRadius: 999, background: row.ok ? "var(--success)" : "var(--border)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div style={{ width: 22, height: 22, borderRadius: 999, background: row.ok ? "var(--grade-s)" : "var(--border)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 {row.ok
                   ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round"><path d="M20 6L9 17l-5-5"/></svg>
                   : <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--foreground-muted)" strokeWidth="2.5" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
