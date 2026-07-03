@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useLang, setLang } from "@/lib/lang";
 import { useTheme } from "@/lib/theme";
 import dynamic from "next/dynamic";
@@ -157,11 +157,11 @@ function PlaceCard2({ place, isKo, hot = false }: { place: Place; isKo: boolean;
   const t = TRAVEL_INFO[place.id];
   const city = !hot ? (SEED_REGIONS.find((r) => r.id === place.region_id)?.city ?? "") : null;
 
-  const badgeSize  = hot ? 60 : 34;
-  const badgeR     = hot ? 16 : 9;
-  const gradeSize  = hot ? 22 : 12;
-  const subSize    = hot ?  8 :  6;
-  const nameSize   = hot ? 13 : 12;
+  const badgeSize  = hot ? 46 : 34;
+  const badgeR     = hot ? 13 : 9;
+  const gradeSize  = hot ? 17 : 12;
+  const subSize    = hot ?  7 :  6;
+  const nameSize   = hot ? 14 : 12;
 
   return (
     <Link
@@ -213,6 +213,7 @@ export default function MapPage() {
   );
   const [chip, setChip] = useState<FilterKey>("all");
   const [sheetExpanded, setSheetExpanded] = useState(false);
+  const dragStartY = useRef<number | null>(null);
 
   const hotPlaces = SEED_PLACES.filter((p) => HOT_PLACE_IDS.includes(p.id));
 
@@ -345,7 +346,15 @@ export default function MapPage() {
         {/* Drag handle */}
         <div
           onClick={() => setSheetExpanded(v => !v)}
-          style={{ padding: "10px 0 0", display: "flex", justifyContent: "center", flexShrink: 0, cursor: "pointer" }}
+          onTouchStart={(e) => { dragStartY.current = e.touches[0].clientY; }}
+          onTouchEnd={(e) => {
+            if (dragStartY.current === null) return;
+            const dy = e.changedTouches[0].clientY - dragStartY.current;
+            dragStartY.current = null;
+            if (dy < -30) setSheetExpanded(true);
+            else if (dy > 30) setSheetExpanded(false);
+          }}
+          style={{ padding: "12px 0 6px", display: "flex", justifyContent: "center", flexShrink: 0, cursor: "pointer", touchAction: "none" }}
         >
           <div style={{ width: 36, height: 4, borderRadius: 2, background: "var(--border)" }} />
         </div>
@@ -364,14 +373,17 @@ export default function MapPage() {
 
         {/* Scrollable content — both pick sections live here so sheet can collapse cleanly */}
         <div style={{ flex: 1, overflowY: "auto", padding: "0 16px" }}>
-          {/* 이태원 PICK — 2×3 grid, big badge */}
+          {/* 이태원 PICK — 1열, big badge */}
           <div style={{ paddingTop: 14, marginBottom: 22 }}>
             <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.1em", color: "var(--grade-s)", marginBottom: 10 }}>
               {isKo ? "이태원 PICK" : "ITAEWON PICK"}
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {hotPlaces.map((p) => <PlaceCard2 key={p.id} place={p} isKo={isKo} hot />)}
             </div>
+            <button style={{ width: "100%", marginTop: 10, padding: "10px 0", borderRadius: 12, background: "var(--content-bg)", border: "1px solid var(--border)", color: "var(--foreground-muted)", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+              {isKo ? "더보기" : "View more"}
+            </button>
           </div>
 
           {/* 다른 지역 추천 — 2×3 grid, medium badge + city label */}
@@ -382,6 +394,9 @@ export default function MapPage() {
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
               {filtered.map((p) => <PlaceCard2 key={p.id} place={p} isKo={isKo} />)}
             </div>
+            <button style={{ width: "100%", marginTop: 10, padding: "10px 0", borderRadius: 12, background: "var(--content-bg)", border: "1px solid var(--border)", color: "var(--foreground-muted)", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+              {isKo ? "더보기" : "View more"}
+            </button>
           </div>
 
           {/* Safe-area spacer for nav bar */}
