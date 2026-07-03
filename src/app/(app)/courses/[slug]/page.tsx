@@ -120,7 +120,7 @@ export default function CourseDetailPage() {
   if (!course) {
     return (
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", gap: 12, padding: 24 }}>
-        <p style={{ fontSize: 16, fontWeight: 700, color: "var(--foreground)" }}>코스를 찾을 수 없어요</p>
+        <p style={{ fontSize: 16, fontWeight: 700, color: "var(--foreground)" }}>{isKo ? "코스를 찾을 수 없어요" : "Course not found"}</p>
         <Link href="/courses" style={{ color: "var(--grade-s)", fontWeight: 600, fontSize: 14, textDecoration: "none" }}>← {isKo ? "코스 목록" : "All Courses"}</Link>
       </div>
     );
@@ -171,7 +171,7 @@ export default function CourseDetailPage() {
           </div>
         ))}
         {course.englishOk && (
-          <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999, background: "var(--badge-en-bg)", color: "var(--badge-en-fg)", marginLeft: "auto", alignSelf: "center" }}>영어 OK</span>
+          <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999, background: "var(--badge-en-bg)", color: "var(--badge-en-fg)", marginLeft: "auto", alignSelf: "center" }}>{isKo ? "영어 OK" : "English OK"}</span>
         )}
       </div>
 

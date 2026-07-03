@@ -23,46 +23,67 @@ const GRADE_COLOR: Record<string, string> = {
   S: "var(--grade-s)", A: "var(--grade-a)", B: "var(--grade-b)", C: "var(--grade-c)",
 };
 
-const GRADE_LABEL: Record<string, { ko: string; en: string }> = {
-  S: { ko: "외국인 최상", en: "Foreigner-Excellent" },
-  A: { ko: "외국인 우수", en: "Foreigner-Friendly" },
-  B: { ko: "외국인 보통", en: "Foreigner-OK" },
-  C: { ko: "외국인 기초", en: "Foreigner-Basic" },
+const CAT_LABEL: Record<string, { ko: string; en: string }> = {
+  cafe:       { ko: "카페",    en: "Café" },
+  restaurant: { ko: "음식점",  en: "Restaurant" },
+  bar:        { ko: "바",      en: "Bar" },
+  market:     { ko: "시장",    en: "Market" },
+  shopping:   { ko: "쇼핑",   en: "Shopping" },
+  activity:   { ko: "액티비티", en: "Activity" },
+  health:     { ko: "헬스",   en: "Health" },
+  transport:  { ko: "교통",   en: "Transport" },
 };
 
-const CAT_LABEL: Record<string, string> = {
-  cafe: "카페", restaurant: "음식점", bar: "바", market: "시장",
-  shopping: "쇼핑", activity: "액티비티", health: "헬스", transport: "교통",
+const WHY_TAGS: Record<string, { ko: string; en: string }[]> = {
+  S: [
+    { ko: "영어 완전 대응",   en: "Full English Support" },
+    { ko: "외국인 리뷰 84+", en: "84+ Foreign Reviews" },
+    { ko: "지하철 5분",      en: "5 min from Subway" },
+    { ko: "카드 OK",         en: "Card Payment OK" },
+    { ko: "혼자 방문 OK",    en: "Solo-Friendly" },
+    { ko: "예약 쉬움",       en: "Easy Reservation" },
+  ],
+  A: [
+    { ko: "영어 어느 정도 가능", en: "Some English Available" },
+    { ko: "카드 결제 OK",       en: "Card Payment OK" },
+    { ko: "외국인 리뷰 있음",   en: "Has Foreign Reviews" },
+  ],
+  B: [
+    { ko: "카드 결제 OK",   en: "Card Payment OK" },
+    { ko: "픽토그램 메뉴",  en: "Pictogram Menu" },
+    { ko: "구글맵 정보 있음", en: "Google Maps Verified" },
+  ],
+  C: [
+    { ko: "현금 선호",     en: "Cash Preferred" },
+    { ko: "한국어 필요",   en: "Korean Required" },
+    { ko: "기본 방문 가능", en: "Basic Visit OK" },
+  ],
 };
 
-const WHY_TAGS: Record<string, string[]> = {
-  S: ["영어 완전 대응", "외국인 리뷰 84+", "지하철 5분", "카드 OK", "혼자 방문 OK", "예약 쉬움"],
-  A: ["영어 어느 정도 가능", "카드 결제 OK", "외국인 리뷰 있음"],
-  B: ["카드 결제 OK", "픽토그램 메뉴", "구글맵 정보 있음"],
-  C: ["현금 선호", "한국어 필요", "기본 방문 가능"],
-};
-
-// Friendly rows config
-function getFriendlyRows(p: Place) {
+function getFriendlyRows(p: Place, isKo: boolean) {
   return [
     {
       icon: "🌐", bg: "var(--badge-en-bg)", fg: "var(--badge-en-fg)",
-      label: "영어 대응", caption: "English Support",
+      label: isKo ? "영어 대응" : "English Support",
+      caption: isKo ? "English Support" : "영어 대응",
       ok: p.english_support,
     },
     {
       icon: "💳", bg: "var(--badge-card-bg)", fg: "var(--badge-card-fg)",
-      label: "카드 결제", caption: "Card Payment",
+      label: isKo ? "카드 결제" : "Card Payment",
+      caption: isKo ? "Card Payment" : "카드 결제",
       ok: p.card_payment,
     },
     {
       icon: "👤", bg: "var(--badge-solo-bg)", fg: "var(--badge-solo-fg)",
-      label: "혼자 방문", caption: "Solo Friendly",
+      label: isKo ? "혼자 방문" : "Solo Friendly",
+      caption: isKo ? "Solo Friendly" : "혼자 방문",
       ok: p.solo_friendly,
     },
     {
       icon: "📅", bg: "var(--badge-res-bg)", fg: "var(--badge-res-fg)",
-      label: "예약 용이", caption: "Easy Reservation",
+      label: isKo ? "예약 용이" : "Easy Reservation",
+      caption: isKo ? "Easy Reservation" : "예약 용이",
       ok: p.reservation_difficulty === "easy",
     },
   ];
@@ -77,7 +98,7 @@ export default function PlaceDetailPage() {
   if (!place) {
     return (
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "60dvh", color: "var(--foreground-muted)", fontSize: 15 }}>
-        장소를 찾을 수 없어요
+        {isKo ? "장소를 찾을 수 없어요" : "Place not found"}
       </div>
     );
   }
@@ -85,9 +106,16 @@ export default function PlaceDetailPage() {
   const region = SEED_REGIONS.find((r) => r.id === place.region_id);
   const rating = getRating(place);
   const gradeColor = GRADE_COLOR[rating];
-  const friendlyRows = getFriendlyRows(place);
-  const allOk = friendlyRows.filter(r => r.ok).length >= 3;
-  const summaryLabel = allOk ? "최상" : friendlyRows.filter(r => r.ok).length >= 2 ? "우수" : "보통";
+  const friendlyRows = getFriendlyRows(place, isKo);
+  const okCount = friendlyRows.filter(r => r.ok).length;
+  const summaryLabel = okCount >= 3
+    ? (isKo ? "최상" : "Excellent")
+    : okCount >= 2
+      ? (isKo ? "우수" : "Good")
+      : (isKo ? "보통" : "Okay");
+
+  const catLabel = CAT_LABEL[place.category];
+  const catText = catLabel ? (isKo ? catLabel.ko : catLabel.en) : place.category;
 
   const mapPins = place.lat && place.lng
     ? [{ id: place.id, lat: place.lat, lng: place.lng, title: place.name_en, rating }]
@@ -101,7 +129,6 @@ export default function PlaceDetailPage() {
         {place.image_url && (
           <Image src={place.image_url} alt={place.name_en} fill sizes="430px" priority style={{ objectFit: "cover" }} />
         )}
-        {/* Gradient overlay */}
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.1) 55%, transparent 100%)" }} />
 
         {/* Top actions */}
@@ -132,7 +159,7 @@ export default function PlaceDetailPage() {
               <span style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.85)", letterSpacing: "0.06em" }}>GRADE</span>
             </div>
             <span style={{ fontSize: 12, color: "rgba(255,255,255,0.75)", fontWeight: 500 }}>
-              {CAT_LABEL[place.category] ?? place.category} · {isKo ? region?.name_ko : region?.name_en}
+              {catText} · {isKo ? region?.name_ko : region?.name_en}
             </span>
           </div>
           <h1 style={{ fontSize: 26, fontWeight: 800, color: "#fff", lineHeight: 1.15, marginBottom: 3, letterSpacing: "-0.5px" }}>
@@ -147,9 +174,9 @@ export default function PlaceDetailPage() {
       {/* ── Stats row ────────────────────────────────────── */}
       <div style={{ display: "flex", borderBottom: "1px solid var(--border)" }}>
         {[
-          { label: "도보 8분", sub: "650m" },
-          { label: "★ 4.7", sub: "리뷰 124개" },
-          { label: "영업중", sub: "~ 22:00", green: true },
+          { label: isKo ? "도보 8분" : "8 min walk", sub: "650m" },
+          { label: "★ 4.7", sub: isKo ? "리뷰 124개" : "124 reviews" },
+          { label: isKo ? "영업중" : "Open Now", sub: "~ 22:00", green: true },
         ].map((s, i) => (
           <div key={i} style={{
             flex: 1, padding: "14px 0", textAlign: "center",
@@ -166,7 +193,9 @@ export default function PlaceDetailPage() {
         {/* ── 외국인 친화도 card ──────────────────────────── */}
         <div style={{ background: "var(--card)", borderRadius: 18, border: "1px solid var(--border)", overflow: "hidden" }}>
           <div style={{ padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid var(--border)" }}>
-            <span style={{ fontSize: 15, fontWeight: 700, color: "var(--foreground)" }}>외국인 친화도</span>
+            <span style={{ fontSize: 15, fontWeight: 700, color: "var(--foreground)" }}>
+              {isKo ? "외국인 친화도" : "Foreigner Rating"}
+            </span>
             <span style={{ fontSize: 12, fontWeight: 700, padding: "3px 10px", borderRadius: 999, background: "var(--badge-en-bg)", color: "var(--badge-en-fg)" }}>
               {summaryLabel}
             </span>
@@ -193,12 +222,12 @@ export default function PlaceDetailPage() {
         {/* ── 왜 이 등급인가요? ──────────────────────────── */}
         <div style={{ background: "var(--why-bg)", border: "1px solid var(--why-border)", borderRadius: 16, padding: "14px 16px" }}>
           <div style={{ fontSize: 14, fontWeight: 800, color: "var(--why-text)", marginBottom: 10 }}>
-            왜 {rating}등급인가요?
+            {isKo ? `왜 ${rating}등급인가요?` : `Why ${rating} Grade?`}
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
             {(WHY_TAGS[rating] ?? []).map((tag) => (
-              <span key={tag} style={{ fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, background: "var(--card)", color: "var(--why-text)", border: "1px solid var(--why-border)" }}>
-                {tag}
+              <span key={tag.en} style={{ fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, background: "var(--card)", color: "var(--why-text)", border: "1px solid var(--why-border)" }}>
+                {isKo ? tag.ko : tag.en}
               </span>
             ))}
           </div>
@@ -231,7 +260,7 @@ export default function PlaceDetailPage() {
                 <div style={{ fontSize: 11, color: "var(--foreground-muted)" }}>{isKo ? place.address : place.address_ko}</div>
               </div>
               <button style={{ fontSize: 12, fontWeight: 700, color: "var(--grade-a)", background: "none", border: "none", cursor: "pointer", flexShrink: 0 }}>
-                길찾기 →
+                {isKo ? "길찾기 →" : "Directions →"}
               </button>
             </div>
           </div>
@@ -267,7 +296,7 @@ export default function PlaceDetailPage() {
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
             <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/>
           </svg>
-          길찾기 시작
+          {isKo ? "길찾기 시작" : "Get Directions"}
         </button>
       </div>
     </div>

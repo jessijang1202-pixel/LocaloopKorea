@@ -57,8 +57,9 @@ export function LangToggleInline() {
         height: 30, padding: "0 10px", borderRadius: 8, fontSize: 11,
         fontWeight: 700, cursor: "pointer", lineHeight: 1, whiteSpace: "nowrap",
         background: "var(--content-bg)",
-        border: "1px solid var(--border)",
+        border: "1.5px solid var(--border)",
         color: "var(--foreground-muted)",
+        boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
         userSelect: "none",
       }}
     >
@@ -78,8 +79,9 @@ export function ThemeToggle() {
         display: "inline-flex", alignItems: "center", justifyContent: "center",
         height: 30, width: 30, borderRadius: 8, lineHeight: 1,
         background: "var(--content-bg)",
-        border: "1px solid var(--border)",
+        border: "1.5px solid var(--border)",
         cursor: "pointer", color: "var(--foreground-muted)", flexShrink: 0,
+        boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
       }}
     >
       {theme === "dark" ? (
