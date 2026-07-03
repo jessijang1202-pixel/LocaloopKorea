@@ -1,35 +1,98 @@
 ﻿@import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #1A2B2C;
-  --primary: #1EC8C8;
-  --primary-dark: #17A0A0;
-  --primary-light: #D6F5F5;
+  /* ── Seoul Pop — Light ──────────────────────────────────── */
+  --background:       #F6F2EA;
+  --map-bg:           #E7ECE1;
+  --foreground:       #16151A;
+  --foreground-muted: #9A9488;
+  --foreground-sub:   #6C665B;
+  --card:             #FFFFFF;
+  --border:           #EBE5D9;
+  --divider:          #EBE5D9;
+
+  /* Grade colors */
+  --grade-s:      #FF5636;
+  --grade-a:      #12BFB6;
+  --grade-b:      #FFC93C;
+  --grade-b-text: #3a2c00;
+  --grade-c:      #7B4DFF;
+
+  /* Primary action = coral (S grade / accent) */
+  --primary:            #FF5636;
+  --primary-dark:       #E0391A;
+  --primary-light:      #FFF0EC;
   --primary-foreground: #ffffff;
-  --secondary: #F0FAFA;
-  --muted: #F0FAFA;
-  --muted-foreground: #4A6467;
-  --border: #E0E8EA;
-  --card: #ffffff;
-  --accent: #22d3ee;
-  --content-bg: #F5F9FA;
-  --card-selected: #EDF9F9;
-  --icon-bg: #F0FAFA;
+
+  /* Secondary actions */
+  --stage-blue: #234BFF;
+  --success:    #12A05A;
+
+  /* Semantic aliases (backwards-compat with existing code) */
+  --secondary:        #F6F2EA;
+  --muted:            #F6F2EA;
+  --muted-foreground: #9A9488;
+  --content-bg:       #F6F2EA;
+  --icon-bg:          #F0EDE5;
+  --card-selected:    #FFF0EC;
+  --accent:           #FF5636;
+
+  /* Friendly badge tints */
+  --badge-en-bg:   #D6F5F2; --badge-en-fg:   #0a8c84;
+  --badge-card-bg: #DDE4FF; --badge-card-fg: #234BFF;
+  --badge-solo-bg: #FFEEc2; --badge-solo-fg: #7a4a00;
+  --badge-res-bg:  #EEE4FF; --badge-res-fg:  #7B4DFF;
+
+  /* "Why grade" panel */
+  --why-bg: #FFF0EC; --why-border: #FFD9CF; --why-text: #C0350F;
+
+  /* Nationality tag */
+  --nat-bg: #EDE7DB; --nat-fg: #6C665B;
 }
 
 /* ── Dark mode CSS variables ────────────────────────────────── */
 [data-theme="dark"] {
-  --background: #08151E;
-  --foreground: #DCF0F0;
-  --muted-foreground: #7CAAB0;
-  --card: #0d2233;
-  --content-bg: #0a1828;
-  --card-selected: #0e3040;
-  --icon-bg: #0d2233;
-  --border: rgba(255,255,255,0.09);
-  --secondary: #111e2a;
-  --muted: #111e2a;
+  /* ── Seoul Pop — Dark ───────────────────────────────────── */
+  --background:       #121016;
+  --map-bg:           #12100E;
+  --foreground:       #F4F0E8;
+  --foreground-muted: #8B8598;
+  --foreground-sub:   #7C7688;
+  --card:             #1D1A22;
+  --border:           #2C2833;
+  --divider:          #262230;
+
+  /* Grade (brightened for glow) */
+  --grade-s:      #FF6A4D;
+  --grade-a:      #22D3C6;
+  --grade-b:      #FFD23C;
+  --grade-b-text: #3a2c00;
+  --grade-c:      #8A63FF;
+
+  --primary:            #FF6A4D;
+  --primary-dark:       #FF4D28;
+  --primary-light:      #2a1410;
+  --primary-foreground: #ffffff;
+
+  --stage-blue: #4E6BFF;
+  --success:    #3fcf87;
+
+  --secondary:        #1D1A22;
+  --muted:            #1D1A22;
+  --muted-foreground: #8B8598;
+  --content-bg:       #121016;
+  --icon-bg:          #1D1A22;
+  --card-selected:    #2a1410;
+  --accent:           #FF6A4D;
+
+  /* Friendly badge tints (dark) */
+  --badge-en-bg:   #0c3b38; --badge-en-fg:   #7ff0e6;
+  --badge-card-bg: #1a2352; --badge-card-fg: #aab8ff;
+  --badge-solo-bg: #3a2e0c; --badge-solo-fg: #ffd98a;
+  --badge-res-bg:  #2a1f52; --badge-res-fg:  #c3a8ff;
+
+  --why-bg: #2a1410; --why-border: #4a1f14; --why-text: #FF8A6D;
+  --nat-bg: #2C2833; --nat-fg: #8B8598;
 }
 
 @theme inline {
@@ -44,14 +107,11 @@
 
 /* ── Theme: dark mode overrides (data-theme="dark") ─────────── */
 [data-theme="dark"] body {
-  background: #08151E;
+  background: #121016;
 }
 [data-theme="dark"] .ll-bottomnav {
-  background: #0B1E2D;
-  border-top-color: rgba(255,255,255,0.10);
-}
-[data-theme="dark"] .ll-bottomnav a {
-  color: rgba(255,255,255,0.38);
+  background: #1D1A22;
+  border-top-color: #2C2833;
 }
 
 * {
@@ -66,7 +126,7 @@ body {
   overflow-x: hidden;
   background-color: var(--background);
   color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+  font-family: "Space Grotesk", "Pretendard Variable", "Pretendard", "Noto Sans KR", -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -758,23 +818,31 @@ html {
   position: fixed;
   bottom: 0; left: 0; right: 0;
   background: #fff;
-  border-top: 1px solid #E0E8EA;
+  border-top: 1px solid #EBE5D9;
   display: flex;
   align-items: center;
   z-index: 50;
-  height: 56px;
+  height: 76px;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 .ll-content {
-  padding-bottom: calc(56px + env(safe-area-inset-bottom));
+  padding-bottom: calc(76px + env(safe-area-inset-bottom));
   min-height: 100dvh;
 }
 /* Pages that need to fill exactly the available viewport (map, chat) */
-/* 56px = bottom nav, 50px = shared PageHeader on mobile */
+/* 76px = bottom nav, 50px = shared PageHeader on mobile */
 .ll-fullpage {
-  height: calc(100dvh - 56px - 50px);
+  height: calc(100dvh - 76px - 50px);
 }
 @media (min-width: 768px) {
-  .app-container { max-width: 100%; margin: 0; }
+  /* Sidebar is position:fixed at left 0, 168px wide.
+     Offset app-container so ALL content automatically clears the sidebar. */
+  .app-container {
+    max-width: none;
+    width: calc(100vw - 168px);
+    margin-left: 168px;
+    margin-right: 0;
+  }
   /* Left sidebar */
   .ll-sidebar {
     display: flex;
@@ -790,7 +858,10 @@ html {
   }
   .ll-bottomnav { display: none; }
   .ll-page-header { display: none !important; }
-  .ll-content { padding-bottom: 0; padding-top: 0; margin-left: 168px; height: 100dvh; overflow: hidden; }
+  /* Normal pages: full height, scrollable */
+  .ll-content { padding-bottom: 0; padding-top: 0; height: 100dvh; overflow-y: auto; }
+  /* Map / fullscreen pages: full height, no scroll (layout manages its own scroll) */
+  .ll-content-map { height: 100dvh; overflow: hidden; }
   .ll-fullpage { height: 100dvh; }
   .ll-mobile-only { display: none !important; }
   .ll-pc-only { display: flex; height: 100%; width: 100%; }

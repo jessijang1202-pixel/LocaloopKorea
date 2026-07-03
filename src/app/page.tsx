@@ -14,5 +14,5 @@ export default async function HomePage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) redirect("/map");
   }
-  redirect("/intro");
+  redirect("/map");
 }

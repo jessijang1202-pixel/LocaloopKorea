@@ -12,12 +12,15 @@ const SIDEBAR_TABS: Tab[] = [
   { href: "/tasks",     icon: "tasks",     labelKo: "과제",     labelEn: "Tasks" },
   { href: "/courses",   icon: "courses",   labelKo: "코스",     labelEn: "Courses" },
   { href: "/community", icon: "community", labelKo: "커뮤니티",  labelEn: "Community" },
-  { href: "/chat",      icon: "chat",      labelKo: "채팅",     labelEn: "Chat" },
   { href: "/etiquette", icon: "culture",   labelKo: "문화",     labelEn: "Culture" },
+  { href: "/chat",      icon: "chat",      labelKo: "채팅",     labelEn: "Chat" },
   { href: "/profile",   icon: "profile",   labelKo: "나",       labelEn: "Me" },
 ];
 
-const BOTTOM_TABS: Tab[] = SIDEBAR_TABS.filter(t => t.href !== "/profile");
+// 5 tabs only — chat is accessible via community or elsewhere
+const BOTTOM_TABS: Tab[] = SIDEBAR_TABS.filter(
+  t => t.href !== "/profile" && t.href !== "/chat"
+);
 
 function TabIcon({ name, size = 22 }: { name: string; size?: number }) {
   const base = { width: size, height: size, fill: "none", stroke: "currentColor", strokeWidth: 1.75, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
@@ -156,8 +159,8 @@ export function AppNav() {
         </div>
       </aside>
 
-      {/* Mobile: bottom tab bar — teal background, outline SVG icons */}
-      <nav className="ll-bottomnav" style={{ background: "#15b6c1" }}>
+      {/* Mobile: bottom tab bar — white/dark bg, coral active */}
+      <nav className="ll-bottomnav">
         {BOTTOM_TABS.map((tab) => {
           const active = isActive(tab.href);
           return (
@@ -167,12 +170,12 @@ export function AppNav() {
               style={{
                 flex: 1,
                 display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-                gap: 3, padding: "5px 2px", textDecoration: "none",
-                color: active ? "#FFD600" : "#ffffff",
+                gap: 4, padding: "8px 2px 2px", textDecoration: "none",
+                color: active ? "var(--grade-s)" : "var(--foreground-muted)",
               }}
             >
-              <TabIcon name={tab.icon} size={22} />
-              <span style={{ fontSize: 9, fontWeight: active ? 800 : 400, lineHeight: 1 }}>
+              <TabIcon name={tab.icon} size={24} />
+              <span style={{ fontSize: 10, fontWeight: active ? 700 : 500, lineHeight: 1 }}>
                 {isKo ? tab.labelKo : tab.labelEn}
               </span>
             </Link>

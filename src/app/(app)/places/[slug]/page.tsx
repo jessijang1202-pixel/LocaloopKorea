@@ -1,83 +1,275 @@
-import { notFound } from "next/navigation";
-import Image from "next/image";
-import { TopBar } from "@/components/layout/TopBar";
-import { Badge } from "@/components/ui/Badge";
-import { PageWrapper } from "@/components/layout/PageWrapper";
-import { SEED_PLACES, SEED_REGIONS } from "@/data/seed";
-import { PLACE_CATEGORIES } from "@/lib/constants";
+"use client";
 
-interface PlaceDetailPageProps {
-  params: Promise<{ slug: string }>;
+import { useParams, useRouter } from "next/navigation";
+import Image from "next/image";
+import { SEED_PLACES, SEED_REGIONS } from "@/data/seed";
+import type { Place } from "@/types";
+import dynamic from "next/dynamic";
+import { useLang } from "@/lib/lang";
+
+const KakaoMap = dynamic(
+  () => import("@/components/map/KakaoMap").then((m) => m.KakaoMap),
+  { ssr: false, loading: () => <div style={{ width: "100%", height: "100%", background: "var(--map-bg)" }} /> }
+);
+
+function getRating(p: Place): "S" | "A" | "B" | "C" {
+  if (p.english_support && p.card_payment && p.solo_friendly) return "S";
+  if (p.english_support && p.card_payment) return "A";
+  if (p.card_payment) return "B";
+  return "C";
 }
 
-export default async function PlaceDetailPage({ params }: PlaceDetailPageProps) {
-  const { slug } = await params;
-  const place = SEED_PLACES.find((p) => p.slug === slug);
+const GRADE_COLOR: Record<string, string> = {
+  S: "var(--grade-s)", A: "var(--grade-a)", B: "var(--grade-b)", C: "var(--grade-c)",
+};
 
-  if (!place) notFound();
+const GRADE_LABEL: Record<string, { ko: string; en: string }> = {
+  S: { ko: "외국인 최상", en: "Foreigner-Excellent" },
+  A: { ko: "외국인 우수", en: "Foreigner-Friendly" },
+  B: { ko: "외국인 보통", en: "Foreigner-OK" },
+  C: { ko: "외국인 기초", en: "Foreigner-Basic" },
+};
+
+const CAT_LABEL: Record<string, string> = {
+  cafe: "카페", restaurant: "음식점", bar: "바", market: "시장",
+  shopping: "쇼핑", activity: "액티비티", health: "헬스", transport: "교통",
+};
+
+const WHY_TAGS: Record<string, string[]> = {
+  S: ["영어 완전 대응", "외국인 리뷰 84+", "지하철 5분", "카드 OK", "혼자 방문 OK", "예약 쉬움"],
+  A: ["영어 어느 정도 가능", "카드 결제 OK", "외국인 리뷰 있음"],
+  B: ["카드 결제 OK", "픽토그램 메뉴", "구글맵 정보 있음"],
+  C: ["현금 선호", "한국어 필요", "기본 방문 가능"],
+};
+
+// Friendly rows config
+function getFriendlyRows(p: Place) {
+  return [
+    {
+      icon: "🌐", bg: "var(--badge-en-bg)", fg: "var(--badge-en-fg)",
+      label: "영어 대응", caption: "English Support",
+      ok: p.english_support,
+    },
+    {
+      icon: "💳", bg: "var(--badge-card-bg)", fg: "var(--badge-card-fg)",
+      label: "카드 결제", caption: "Card Payment",
+      ok: p.card_payment,
+    },
+    {
+      icon: "👤", bg: "var(--badge-solo-bg)", fg: "var(--badge-solo-fg)",
+      label: "혼자 방문", caption: "Solo Friendly",
+      ok: p.solo_friendly,
+    },
+    {
+      icon: "📅", bg: "var(--badge-res-bg)", fg: "var(--badge-res-fg)",
+      label: "예약 용이", caption: "Easy Reservation",
+      ok: p.reservation_difficulty === "easy",
+    },
+  ];
+}
+
+export default function PlaceDetailPage() {
+  const { slug } = useParams<{ slug: string }>();
+  const router = useRouter();
+  const isKo = useLang();
+
+  const place = SEED_PLACES.find((p) => p.slug === slug);
+  if (!place) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "60dvh", color: "var(--foreground-muted)", fontSize: 15 }}>
+        장소를 찾을 수 없어요
+      </div>
+    );
+  }
 
   const region = SEED_REGIONS.find((r) => r.id === place.region_id);
-  const category = PLACE_CATEGORIES.find((c) => c.value === place.category);
+  const rating = getRating(place);
+  const gradeColor = GRADE_COLOR[rating];
+  const friendlyRows = getFriendlyRows(place);
+  const allOk = friendlyRows.filter(r => r.ok).length >= 3;
+  const summaryLabel = allOk ? "최상" : friendlyRows.filter(r => r.ok).length >= 2 ? "우수" : "보통";
 
-  const difficultyColor = {
-    easy: "success",
-    moderate: "warning",
-    hard: "danger",
-  } as const;
+  const mapPins = place.lat && place.lng
+    ? [{ id: place.id, lat: place.lat, lng: place.lng, title: place.name_en, rating }]
+    : [];
 
   return (
-    <PageWrapper>
-      <TopBar showBack backHref="/places" transparent />
+    <div style={{ background: "var(--background)", minHeight: "100dvh", paddingBottom: 80 }}>
 
-      {/* Hero image */}
-      <div className="relative h-64 bg-[var(--muted)]">
+      {/* ── Hero ─────────────────────────────────────────── */}
+      <div style={{ position: "relative", height: 264, background: "var(--muted)" }}>
         {place.image_url && (
-          <Image src={place.image_url} alt={place.name_en} fill className="object-cover" sizes="430px" priority />
+          <Image src={place.image_url} alt={place.name_en} fill sizes="430px" priority style={{ objectFit: "cover" }} />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-        <div className="absolute bottom-4 left-4 right-4">
-          <p className="text-white/80 text-xs mb-1">{region?.name_en}</p>
-          <h1 className="text-white font-bold text-2xl leading-tight">{place.name_en}</h1>
-          <p className="text-white/70 text-sm">{place.name_ko}</p>
+        {/* Gradient overlay */}
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.1) 55%, transparent 100%)" }} />
+
+        {/* Top actions */}
+        <div style={{ position: "absolute", top: "calc(env(safe-area-inset-top, 0px) + 12px)", left: 14, right: 14, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <button
+            onClick={() => router.back()}
+            style={{ width: 36, height: 36, borderRadius: 999, background: "rgba(0,0,0,0.35)", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(4px)" }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
+              <path d="M19 12H5M12 5l-7 7 7 7" />
+            </svg>
+          </button>
+          <div style={{ display: "flex", gap: 8 }}>
+            <button style={{ width: 36, height: 36, borderRadius: 999, background: "rgba(0,0,0,0.35)", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(4px)" }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round"><circle cx="18" cy="5" r="2"/><circle cx="6" cy="12" r="2"/><circle cx="18" cy="19" r="2"/><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/></svg>
+            </button>
+            <button style={{ width: 36, height: 36, borderRadius: 999, background: "rgba(0,0,0,0.35)", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(4px)" }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Bottom overlay: grade + name */}
+        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0 18px 18px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 5, background: gradeColor, borderRadius: 8, padding: "4px 10px" }}>
+              <span style={{ fontSize: 15, fontWeight: 800, color: "#fff", lineHeight: 1 }}>{rating}</span>
+              <span style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.85)", letterSpacing: "0.06em" }}>GRADE</span>
+            </div>
+            <span style={{ fontSize: 12, color: "rgba(255,255,255,0.75)", fontWeight: 500 }}>
+              {CAT_LABEL[place.category] ?? place.category} · {isKo ? region?.name_ko : region?.name_en}
+            </span>
+          </div>
+          <h1 style={{ fontSize: 26, fontWeight: 800, color: "#fff", lineHeight: 1.15, marginBottom: 3, letterSpacing: "-0.5px" }}>
+            {isKo ? place.name_ko : place.name_en}
+          </h1>
+          <p style={{ fontSize: 14, color: "rgba(255,255,255,0.7)" }}>
+            {isKo ? place.name_en : place.name_ko}
+          </p>
         </div>
       </div>
 
-      {/* Feature badges */}
-      <div className="flex gap-2 px-4 py-4 scroll-x">
-        <Badge variant="primary" size="md">{category?.icon} {category?.label_en ?? place.category}</Badge>
-        {place.english_support && <Badge variant="success" size="md">🇬🇧 English support</Badge>}
-        {place.card_payment && <Badge size="md">💳 Card payment</Badge>}
-        {place.solo_friendly && <Badge size="md">👤 Solo friendly</Badge>}
-        {place.reservation_difficulty && (
-          <Badge variant={difficultyColor[place.reservation_difficulty]} size="md">
-            📅 Reservation: {place.reservation_difficulty}
-          </Badge>
-        )}
+      {/* ── Stats row ────────────────────────────────────── */}
+      <div style={{ display: "flex", borderBottom: "1px solid var(--border)" }}>
+        {[
+          { label: "도보 8분", sub: "650m" },
+          { label: "★ 4.7", sub: "리뷰 124개" },
+          { label: "영업중", sub: "~ 22:00", green: true },
+        ].map((s, i) => (
+          <div key={i} style={{
+            flex: 1, padding: "14px 0", textAlign: "center",
+            borderRight: i < 2 ? "1px solid var(--border)" : "none",
+          }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: s.green ? "var(--success)" : "var(--foreground)", marginBottom: 2 }}>{s.label}</div>
+            <div style={{ fontSize: 11, color: "var(--foreground-muted)" }}>{s.sub}</div>
+          </div>
+        ))}
       </div>
 
-      {/* Description */}
-      {place.description_en && (
-        <div className="px-4 mb-5">
-          <h2 className="text-sm font-bold text-[var(--foreground)] mb-2">About</h2>
-          <p className="text-sm text-[var(--muted-foreground)] leading-relaxed">{place.description_en}</p>
-        </div>
-      )}
+      <div style={{ padding: "0 18px", display: "flex", flexDirection: "column", gap: 14, paddingTop: 18 }}>
 
-      {/* Address */}
-      {place.address && (
-        <div className="mx-4 mb-5 p-4 rounded-xl bg-[var(--muted)] border border-[var(--border)]">
-          <p className="text-xs font-semibold text-[var(--foreground)] mb-1">Address</p>
-          <p className="text-sm text-[var(--muted-foreground)]">{place.address}</p>
+        {/* ── 외국인 친화도 card ──────────────────────────── */}
+        <div style={{ background: "var(--card)", borderRadius: 18, border: "1px solid var(--border)", overflow: "hidden" }}>
+          <div style={{ padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid var(--border)" }}>
+            <span style={{ fontSize: 15, fontWeight: 700, color: "var(--foreground)" }}>외국인 친화도</span>
+            <span style={{ fontSize: 12, fontWeight: 700, padding: "3px 10px", borderRadius: 999, background: "var(--badge-en-bg)", color: "var(--badge-en-fg)" }}>
+              {summaryLabel}
+            </span>
+          </div>
+          {friendlyRows.map((row, i) => (
+            <div key={i} style={{ padding: "12px 16px", display: "flex", alignItems: "center", gap: 12, borderBottom: i < friendlyRows.length - 1 ? "1px solid var(--border)" : "none" }}>
+              <div style={{ width: 36, height: 36, borderRadius: 10, flexShrink: 0, background: row.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17 }}>
+                {row.icon}
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: "var(--foreground)" }}>{row.label}</div>
+                <div style={{ fontSize: 11, color: "var(--foreground-muted)" }}>{row.caption}</div>
+              </div>
+              <div style={{ width: 22, height: 22, borderRadius: 999, background: row.ok ? "var(--success)" : "var(--border)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                {row.ok
+                  ? <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round"><path d="M20 6L9 17l-5-5"/></svg>
+                  : <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--foreground-muted)" strokeWidth="2.5" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                }
+              </div>
+            </div>
+          ))}
         </div>
-      )}
 
-      {/* Korean description */}
-      {place.description_ko && (
-        <div className="px-4 mb-5">
-          <h2 className="text-sm font-bold text-[var(--foreground)] mb-2">한국어 설명</h2>
-          <p className="text-sm text-[var(--muted-foreground)] leading-relaxed">{place.description_ko}</p>
+        {/* ── 왜 이 등급인가요? ──────────────────────────── */}
+        <div style={{ background: "var(--why-bg)", border: "1px solid var(--why-border)", borderRadius: 16, padding: "14px 16px" }}>
+          <div style={{ fontSize: 14, fontWeight: 800, color: "var(--why-text)", marginBottom: 10 }}>
+            왜 {rating}등급인가요?
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+            {(WHY_TAGS[rating] ?? []).map((tag) => (
+              <span key={tag} style={{ fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 999, background: "var(--card)", color: "var(--why-text)", border: "1px solid var(--why-border)" }}>
+                {tag}
+              </span>
+            ))}
+          </div>
         </div>
-      )}
-    </PageWrapper>
+
+        {/* ── 설명 ───────────────────────────────────────── */}
+        {(place.description_en || place.description_ko) && (
+          <div style={{ background: "var(--card)", borderRadius: 16, border: "1px solid var(--border)", padding: "14px 16px" }}>
+            <p style={{ fontSize: 14, color: "var(--foreground)", lineHeight: 1.65 }}>
+              {isKo ? place.description_ko : place.description_en}
+            </p>
+          </div>
+        )}
+
+        {/* ── 미니 지도 ──────────────────────────────────── */}
+        {place.lat && place.lng && (
+          <div style={{ background: "var(--card)", borderRadius: 16, border: "1px solid var(--border)", overflow: "hidden" }}>
+            <div style={{ height: 104 }}>
+              <KakaoMap
+                lang={isKo ? "ko" : "en"}
+                pins={mapPins}
+                center={{ lat: place.lat, lng: place.lng }}
+                zoom={3}
+                onPinClick={() => {}}
+              />
+            </div>
+            <div style={{ padding: "12px 14px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 2 }}>{isKo ? place.address_ko : place.address}</div>
+                <div style={{ fontSize: 11, color: "var(--foreground-muted)" }}>{isKo ? place.address : place.address_ko}</div>
+              </div>
+              <button style={{ fontSize: 12, fontWeight: 700, color: "var(--grade-a)", background: "none", border: "none", cursor: "pointer", flexShrink: 0 }}>
+                길찾기 →
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div style={{ height: 4 }} />
+      </div>
+
+      {/* ── Fixed CTA bar ────────────────────────────────── */}
+      <div style={{
+        position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)",
+        width: "100%", maxWidth: 430,
+        background: "var(--card)", borderTop: "1px solid var(--border)",
+        padding: "12px 18px", paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
+        display: "flex", gap: 10, zIndex: 40,
+      }}>
+        <button style={{
+          width: 52, height: 50, borderRadius: 14, flexShrink: 0,
+          background: "var(--content-bg)", border: "1.5px solid var(--border)",
+          cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+        }}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--foreground-muted)" strokeWidth="2" strokeLinecap="round">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>
+          </svg>
+        </button>
+        <button style={{
+          flex: 1, height: 50, borderRadius: 14,
+          background: "var(--grade-s)", color: "#fff",
+          border: "none", cursor: "pointer",
+          fontSize: 15, fontWeight: 700,
+          display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+        }}>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/>
+          </svg>
+          길찾기 시작
+        </button>
+      </div>
+    </div>
   );
 }
