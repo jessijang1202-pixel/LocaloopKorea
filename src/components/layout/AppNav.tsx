@@ -76,23 +76,25 @@ export function AppNav() {
 
   return (
     <>
-      {/* PC: text-only sidebar */}
+      {/* PC: sidebar — Seoul Pop design */}
       <aside className="ll-sidebar">
-        <div style={{ padding: "16px 14px 14px", display: "flex", alignItems: "center", gap: 10, borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+        {/* Logo */}
+        <Link href="/map" style={{ textDecoration: "none", padding: "18px 14px 16px", display: "flex", alignItems: "center", gap: 10, borderBottom: "1px solid rgba(255,86,54,0.12)", flexShrink: 0 }}>
           <div style={{
-            width: 36, height: 36, borderRadius: 9,
-            background: "linear-gradient(135deg, #15b6c1 0%, #0aa8b2 100%)",
+            width: 34, height: 34, borderRadius: 9,
+            background: "linear-gradient(135deg, #FF5636 0%, #c43e2a 100%)",
             display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-            boxShadow: "0 0 0 3px rgba(21,182,193,0.22)",
+            boxShadow: "0 0 0 3px rgba(255,86,54,0.25)",
           }}>
-            <span style={{ fontSize: 16, fontWeight: 900, color: "#fff" }}>L</span>
+            <span style={{ fontSize: 15, fontWeight: 900, color: "#fff", letterSpacing: "-0.5px" }}>L</span>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.15 }}>
-            <span style={{ fontSize: 17, fontWeight: 900, color: "#ffffff", letterSpacing: "-0.02em" }}>Localoop</span>
-            <span style={{ fontSize: 11, fontWeight: 800, color: "#15b6c1", letterSpacing: "0.06em" }}>KOREA</span>
+          <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.2 }}>
+            <span style={{ fontSize: 16, fontWeight: 900, color: "#fff", letterSpacing: "-0.02em" }}>Localoop</span>
+            <span style={{ fontSize: 10, fontWeight: 800, color: "#FF6A4D", letterSpacing: "0.08em" }}>KOREA</span>
           </div>
-        </div>
+        </Link>
 
+        {/* Nav items */}
         <nav style={{ flex: 1, padding: "10px 10px", display: "flex", flexDirection: "column", gap: 2 }}>
           {SIDEBAR_TABS.map((tab) => {
             const active = isActive(tab.href);
@@ -104,44 +106,48 @@ export function AppNav() {
                 style={{
                   display: "flex", alignItems: "center",
                   padding: "0 14px", height: 44, borderRadius: 10, textDecoration: "none",
-                  background: active ? "rgba(21,182,193,0.18)" : "transparent",
-                  borderLeft: active ? "3px solid #15b6c1" : "3px solid transparent",
+                  background: active ? "rgba(255,86,54,0.16)" : "transparent",
+                  borderLeft: active ? "3px solid #FF6A4D" : "3px solid transparent",
                 }}
               >
-                <span style={{ fontSize: 13, fontWeight: active ? 700 : 400, color: active ? "#15b6c1" : "rgba(255,255,255,0.65)", whiteSpace: "nowrap" }}>{label}</span>
+                <span style={{ fontSize: 13, fontWeight: active ? 700 : 400, color: active ? "#FF8C72" : "rgba(255,244,240,0.52)", whiteSpace: "nowrap" }}>
+                  {label}
+                </span>
               </Link>
             );
           })}
         </nav>
 
+        {/* Guide link */}
         <div style={{ padding: "0 10px 6px" }}>
           <Link
             href="/guide"
             style={{
               display: "flex", alignItems: "center",
               padding: "0 14px", height: 44, borderRadius: 10, textDecoration: "none",
-              background: isActive("/guide") ? "rgba(21,182,193,0.18)" : "transparent",
-              borderLeft: isActive("/guide") ? "3px solid #15b6c1" : "3px solid transparent",
+              background: isActive("/guide") ? "rgba(255,86,54,0.16)" : "transparent",
+              borderLeft: isActive("/guide") ? "3px solid #FF6A4D" : "3px solid transparent",
             }}
           >
-            <span style={{ fontSize: 13, fontWeight: isActive("/guide") ? 700 : 400, color: isActive("/guide") ? "#15b6c1" : "rgba(255,255,255,0.65)" }}>
+            <span style={{ fontSize: 13, fontWeight: isActive("/guide") ? 700 : 400, color: isActive("/guide") ? "#FF8C72" : "rgba(255,244,240,0.52)" }}>
               {isKo ? "가이드" : "Guide"}
             </span>
           </Link>
         </div>
 
-        <div style={{ padding: "8px 10px 16px", borderTop: "1px solid rgba(255,255,255,0.07)", display: "flex", gap: 6 }}>
+        {/* Bottom controls */}
+        <div style={{ padding: "8px 10px 18px", borderTop: "1px solid rgba(255,86,54,0.10)", display: "flex", gap: 6 }}>
           <button
             onClick={toggleTheme}
             title={theme === "dark" ? (isKo ? "라이트 모드" : "Light") : (isKo ? "다크 모드" : "Dark")}
-            style={{ flex: 1, height: 34, borderRadius: 9, border: "none", background: "rgba(255,255,255,0.08)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#ffffff" }}
+            style={{ flex: 1, height: 34, borderRadius: 9, border: "1px solid rgba(255,86,54,0.18)", background: "rgba(255,255,255,0.06)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,244,240,0.8)" }}
           >
             {theme === "dark" ? (
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 <circle cx="12" cy="12" r="5"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
               </svg>
             ) : (
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
               </svg>
             )}
@@ -149,7 +155,7 @@ export function AppNav() {
           <button
             onClick={() => setLang(isKo ? "en" : "ko")}
             title={isKo ? "English" : "한국어"}
-            style={{ flex: 1, height: 34, borderRadius: 9, border: "none", background: "rgba(21,182,193,0.14)", cursor: "pointer", fontSize: 11, fontWeight: 800, color: "rgba(255,255,255,0.85)", display: "flex", alignItems: "center", justifyContent: "center" }}
+            style={{ flex: 1, height: 34, borderRadius: 9, border: "1px solid rgba(255,86,54,0.28)", background: "rgba(255,86,54,0.14)", cursor: "pointer", fontSize: 11, fontWeight: 800, color: "#FF8C72", display: "flex", alignItems: "center", justifyContent: "center", letterSpacing: "0.04em" }}
           >
             {isKo ? "EN" : "KO"}
           </button>

@@ -855,9 +855,9 @@ html {
     position: fixed;
     top: 0; left: 0; bottom: 0;
     width: 168px;
-    background: #0B1E2D;
-    border-right: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 2px 0 12px rgba(0,0,0,0.22);
+    background: #1A0E14;
+    border-right: 1px solid rgba(255,86,54,0.14);
+    box-shadow: 2px 0 16px rgba(0,0,0,0.28);
     z-index: 100;
     overflow: hidden;
   }
@@ -874,8 +874,8 @@ html {
 
 /* Sidebar dark mode */
 [data-theme="dark"] .ll-sidebar {
-  background: #071018;
-  border-right-color: rgba(255,255,255,0.06);
+  background: #120A0F;
+  border-right-color: rgba(255,86,54,0.10);
 }
 
 /* Mobile/PC split utilities */
