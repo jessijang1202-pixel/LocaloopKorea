@@ -14,20 +14,20 @@ const LANGUAGES_EN = ["English", "Japanese", "Chinese", "Vietnamese", "Thai", "F
 const GENDERS_KO = ["남성", "여성", "논바이너리", "무응답"];
 const GENDERS_EN = ["Male", "Female", "Non-binary", "Prefer not to say"];
 const PURPOSES_KO = [
-  { label: "💼 직장 / 비즈니스", desc: "취업, 원격근무, 비즈니스" },
-  { label: "📚 학업", desc: "어학원, 대학교, 교환학생" },
-  { label: "✈️ 여행", desc: "단기 방문, 관광" },
-  { label: "💬 언어 학습", desc: "한국어 공부가 주목적" },
-  { label: "🎭 문화 체험", desc: "K-culture, 음식, 생활" },
-  { label: "🔎 기타", desc: "" },
+  { value: "work",     label: "직장 / 비즈니스", desc: "취업, 원격근무, 비즈니스" },
+  { value: "study",    label: "학업",             desc: "어학원, 대학교, 교환학생" },
+  { value: "travel",   label: "여행",             desc: "단기 방문, 관광" },
+  { value: "language", label: "언어 학습",        desc: "한국어 공부가 주목적" },
+  { value: "culture",  label: "문화 체험",        desc: "K-culture, 음식, 생활" },
+  { value: "other",    label: "기타",             desc: "" },
 ];
 const PURPOSES_EN = [
-  { label: "💼 Work / Business", desc: "Employment, remote work, business" },
-  { label: "📚 Study", desc: "Language school, university, exchange" },
-  { label: "✈️ Travel", desc: "Short-term visit, tourism" },
-  { label: "💬 Language learning", desc: "Learning Korean is the main goal" },
-  { label: "🎭 Cultural experience", desc: "K-culture, food, lifestyle" },
-  { label: "🔎 Other", desc: "" },
+  { value: "work",     label: "Work / Business",      desc: "Employment, remote work, business" },
+  { value: "study",    label: "Study",                desc: "Language school, university, exchange" },
+  { value: "travel",   label: "Travel",               desc: "Short-term visit, tourism" },
+  { value: "language", label: "Language learning",    desc: "Learning Korean is the main goal" },
+  { value: "culture",  label: "Cultural experience",  desc: "K-culture, food, lifestyle" },
+  { value: "other",    label: "Other",                desc: "" },
 ];
 const DURATIONS_KO = ["1개월 미만", "1~3개월", "3~6개월", "6개월~1년", "1년 이상", "미정"];
 const DURATIONS_EN = ["< 1 month", "1–3 months", "3–6 months", "6–12 months", "1+ year", "Not sure"];
@@ -265,7 +265,7 @@ export default function MePage() {
 
           <FieldLabel label={ko ? "한국에 온 목적" : "Why are you in Korea?"} />
           {purposes.map((p) => (
-            <SelectCard key={p.label} label={p.label} desc={p.desc} on={form.purpose === p.label} onClick={() => set("purpose", p.label)} />
+            <SelectCard key={p.value} label={p.label} desc={p.desc} on={form.purpose === p.value} onClick={() => set("purpose", p.value)} />
           ))}
 
           <FieldLabel label={ko ? "체류 기간" : "Stay duration"} />

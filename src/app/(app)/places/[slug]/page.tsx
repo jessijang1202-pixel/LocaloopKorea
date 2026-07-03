@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { SEED_PLACES, SEED_REGIONS } from "@/data/seed";
@@ -60,28 +61,58 @@ const WHY_TAGS: Record<string, { ko: string; en: string }[]> = {
   ],
 };
 
+const ROW_SVGS: Record<string, React.ReactNode> = {
+  globe: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <circle cx="12" cy="12" r="10"/>
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+      <line x1="2" y1="12" x2="22" y2="12"/>
+    </svg>
+  ),
+  card: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <rect x="1" y="4" width="22" height="16" rx="2"/>
+      <line x1="1" y1="10" x2="23" y2="10"/>
+    </svg>
+  ),
+  user: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+      <circle cx="12" cy="7" r="4"/>
+    </svg>
+  ),
+  calendar: (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      <rect x="3" y="4" width="18" height="18" rx="2"/>
+      <line x1="16" y1="2" x2="16" y2="6"/>
+      <line x1="8" y1="2" x2="8" y2="6"/>
+      <line x1="3" y1="10" x2="21" y2="10"/>
+    </svg>
+  ),
+};
+
 function getFriendlyRows(p: Place, isKo: boolean) {
   return [
     {
-      icon: "🌐", bg: "var(--badge-en-bg)", fg: "var(--badge-en-fg)",
+      iconId: "globe", bg: "var(--badge-en-bg)", fg: "var(--badge-en-fg)",
       label: isKo ? "영어 대응" : "English Support",
       caption: isKo ? "English Support" : "영어 대응",
       ok: p.english_support,
     },
     {
-      icon: "💳", bg: "var(--badge-card-bg)", fg: "var(--badge-card-fg)",
+      iconId: "card", bg: "var(--badge-card-bg)", fg: "var(--badge-card-fg)",
       label: isKo ? "카드 결제" : "Card Payment",
       caption: isKo ? "Card Payment" : "카드 결제",
       ok: p.card_payment,
     },
     {
-      icon: "👤", bg: "var(--badge-solo-bg)", fg: "var(--badge-solo-fg)",
+      iconId: "user", bg: "var(--badge-solo-bg)", fg: "var(--badge-solo-fg)",
       label: isKo ? "혼자 방문" : "Solo Friendly",
       caption: isKo ? "Solo Friendly" : "혼자 방문",
       ok: p.solo_friendly,
     },
     {
-      icon: "📅", bg: "var(--badge-res-bg)", fg: "var(--badge-res-fg)",
+      iconId: "calendar", bg: "var(--badge-res-bg)", fg: "var(--badge-res-fg)",
       label: isKo ? "예약 용이" : "Easy Reservation",
       caption: isKo ? "Easy Reservation" : "예약 용이",
       ok: p.reservation_difficulty === "easy",
@@ -118,8 +149,18 @@ export default function PlaceDetailPage() {
   const catText = catLabel ? (isKo ? catLabel.ko : catLabel.en) : place.category;
 
   const mapPins = place.lat && place.lng
-    ? [{ id: place.id, lat: place.lat, lng: place.lng, title: place.name_en, rating }]
+    ? [{ id: place.id, lat: place.lat, lng: place.lng, title: isKo ? (place.name_ko ?? place.name_en) : place.name_en, rating }]
     : [];
+
+  function handleDirections() {
+    const p = place;
+    if (!p || !p.lat || !p.lng) return;
+    const name = encodeURIComponent(p.name_en);
+    const appUrl = `kakaomap://route?ep=${p.lat},${p.lng}&by=FOOT`;
+    const webUrl = `https://map.kakao.com/link/to/${name},${p.lat},${p.lng}`;
+    window.location.href = appUrl;
+    setTimeout(() => { window.open(webUrl, "_blank"); }, 600);
+  }
 
   return (
     <div style={{ background: "var(--background)", minHeight: "100dvh", paddingBottom: 80 }}>
@@ -202,8 +243,8 @@ export default function PlaceDetailPage() {
           </div>
           {friendlyRows.map((row, i) => (
             <div key={i} style={{ padding: "12px 16px", display: "flex", alignItems: "center", gap: 12, borderBottom: i < friendlyRows.length - 1 ? "1px solid var(--border)" : "none" }}>
-              <div style={{ width: 36, height: 36, borderRadius: 10, flexShrink: 0, background: row.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17 }}>
-                {row.icon}
+              <div style={{ width: 36, height: 36, borderRadius: 10, flexShrink: 0, background: row.bg, display: "flex", alignItems: "center", justifyContent: "center", color: row.fg }}>
+                {ROW_SVGS[row.iconId]}
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 14, fontWeight: 600, color: "var(--foreground)" }}>{row.label}</div>
@@ -245,7 +286,7 @@ export default function PlaceDetailPage() {
         {/* ── 미니 지도 ──────────────────────────────────── */}
         {place.lat && place.lng && (
           <div style={{ background: "var(--card)", borderRadius: 16, border: "1px solid var(--border)", overflow: "hidden" }}>
-            <div style={{ height: 104 }}>
+            <div style={{ height: 156 }}>
               <KakaoMap
                 lang={isKo ? "ko" : "en"}
                 pins={mapPins}
@@ -259,7 +300,7 @@ export default function PlaceDetailPage() {
                 <div style={{ fontSize: 12, fontWeight: 600, color: "var(--foreground)", marginBottom: 2 }}>{isKo ? place.address_ko : place.address}</div>
                 <div style={{ fontSize: 11, color: "var(--foreground-muted)" }}>{isKo ? place.address : place.address_ko}</div>
               </div>
-              <button style={{ fontSize: 12, fontWeight: 700, color: "var(--grade-a)", background: "none", border: "none", cursor: "pointer", flexShrink: 0 }}>
+              <button onClick={handleDirections} style={{ fontSize: 12, fontWeight: 700, color: "var(--grade-a)", background: "none", border: "none", cursor: "pointer", flexShrink: 0 }}>
                 {isKo ? "길찾기 →" : "Directions →"}
               </button>
             </div>
@@ -286,7 +327,7 @@ export default function PlaceDetailPage() {
             <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/>
           </svg>
         </button>
-        <button style={{
+        <button onClick={handleDirections} style={{
           flex: 1, height: 50, borderRadius: 14,
           background: "var(--grade-s)", color: "#fff",
           border: "none", cursor: "pointer",
