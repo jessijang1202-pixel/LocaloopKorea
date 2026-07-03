@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useLang } from "@/lib/lang";
+import { useLang, setLang } from "@/lib/lang";
 import { useTheme } from "@/lib/theme";
 import dynamic from "next/dynamic";
 import { SEED_PLACES } from "@/data/seed";
@@ -84,23 +84,23 @@ function PlaceRow({ place, isKo }: {
           {isKo ? place.name_en : place.name_ko}
         </div>
         <div style={{ fontSize: 11, color: "var(--foreground-sub)", marginBottom: 6, display: "flex", alignItems: "center", gap: 4 }}>
-          <span>도보 {walk}분 · {dist}m</span>
-          <span style={{ color: "var(--success)", fontWeight: 600 }}>· 지금 영업중</span>
+          <span>{isKo ? `도보 ${walk}분 · ${dist}m` : `${walk} min walk · ${dist}m`}</span>
+          <span style={{ color: "var(--success)", fontWeight: 600 }}>{isKo ? "· 지금 영업중" : "· Open now"}</span>
         </div>
         <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
           {place.english_support && (
             <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 999, background: "var(--badge-en-bg)", color: "var(--badge-en-fg)", fontWeight: 600 }}>
-              🌐 영어 OK
+              {isKo ? "영어 OK" : "English OK"}
             </span>
           )}
           {place.card_payment && (
             <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 999, background: "var(--badge-card-bg)", color: "var(--badge-card-fg)", fontWeight: 600 }}>
-              💳 카드 OK
+              {isKo ? "카드 OK" : "Card OK"}
             </span>
           )}
           {place.solo_friendly && (
             <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 999, background: "var(--badge-solo-bg)", color: "var(--badge-solo-fg)", fontWeight: 600 }}>
-              👤 혼자 OK
+              {isKo ? "혼자 OK" : "Solo OK"}
             </span>
           )}
         </div>
@@ -200,14 +200,14 @@ export default function MapPage() {
               <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="var(--grade-s)" />
               <circle cx="12" cy="9" r="2.8" fill="white" />
             </svg>
-            <span style={{ fontSize: 14, fontWeight: 700 }}>이태원</span>
-            <span style={{ fontSize: 12, color: pillMuted }}>Itaewon</span>
+            <span style={{ fontSize: 14, fontWeight: 700 }}>{isKo ? "이태원" : "Itaewon"}</span>
+            <span style={{ fontSize: 12, color: pillMuted }}>{isKo ? "Itaewon" : "이태원"}</span>
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
               <path d="M6 9l6 6 6-6" />
             </svg>
           </button>
           <div style={{ display: "flex", gap: 8 }}>
-            <button style={{ width: 36, height: 36, borderRadius: 999, background: chipBg, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 700, color: chipFg, boxShadow: "0 2px 8px rgba(0,0,0,0.14)" }}>EN</button>
+            <button onClick={() => setLang(isKo ? "en" : "ko")} style={{ width: 36, height: 36, borderRadius: 999, background: chipBg, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 700, color: chipFg, boxShadow: "0 2px 8px rgba(0,0,0,0.14)" }}>{isKo ? "EN" : "KO"}</button>
             <Link href="/profile" style={{ width: 36, height: 36, borderRadius: 999, background: "var(--grade-s)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, color: "#fff", textDecoration: "none", boxShadow: "0 2px 8px rgba(255,86,54,0.4)" }}>MY</Link>
           </div>
         </div>
@@ -218,7 +218,7 @@ export default function MapPage() {
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--foreground-muted)" strokeWidth="2" strokeLinecap="round">
               <circle cx="11" cy="11" r="7" /><path d="M21 21l-4.35-4.35" />
             </svg>
-            <span style={{ fontSize: 14, color: "var(--foreground-muted)" }}>장소, 동네 검색…</span>
+            <span style={{ fontSize: 14, color: "var(--foreground-muted)" }}>{isKo ? "장소, 동네 검색…" : "Search places…"}</span>
           </div>
         </div>
 
@@ -240,7 +240,7 @@ export default function MapPage() {
                   display: "flex", alignItems: "center", gap: 4,
                 }}
               >
-                {c.hasIcon && <span style={{ fontSize: 12 }}>🌐</span>}
+                {/* no icon */}
                 {isKo ? c.ko : c.en}
               </button>
             );
@@ -254,7 +254,7 @@ export default function MapPage() {
               <rect x="3" y="11" width="18" height="11" rx="2" />
               <path d="M7 11V7a5 5 0 0110 0v4" strokeLinecap="round" />
             </svg>
-            <span style={{ fontSize: 11, color: "#F4F0E8", fontWeight: 500 }}>로그인 전 · 이태원 기본</span>
+            <span style={{ fontSize: 11, color: "#F4F0E8", fontWeight: 500 }}>{isKo ? "로그인 전 · 이태원 기본" : "Guest · Itaewon default"}</span>
           </div>
         </div>
       </div>
@@ -283,11 +283,11 @@ export default function MapPage() {
         {/* Header */}
         <div style={{ padding: "10px 20px 12px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0, borderBottom: "1px solid var(--border)" }}>
           <span style={{ fontSize: 17, fontWeight: 700, color: "var(--foreground)" }}>
-            이태원 근처&nbsp;
-            <span style={{ color: "var(--foreground-muted)", fontWeight: 500 }}>148곳</span>
+            {isKo ? "이태원 근처" : "Near Itaewon"}&nbsp;
+            <span style={{ color: "var(--foreground-muted)", fontWeight: 500 }}>{isKo ? "148곳" : "148 places"}</span>
           </span>
           <button style={{ display: "flex", alignItems: "center", gap: 3, fontSize: 13, color: "var(--foreground-muted)", background: "none", border: "none", cursor: "pointer", fontWeight: 500 }}>
-            거리순
+            {isKo ? "거리순" : "Nearest"}
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M6 9l6 6 6-6" /></svg>
           </button>
         </div>
@@ -314,7 +314,7 @@ export default function MapPage() {
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--foreground-muted)" strokeWidth="2" strokeLinecap="round">
                 <circle cx="11" cy="11" r="7" /><path d="M21 21l-4.35-4.35" />
               </svg>
-              <span style={{ fontSize: 13, color: "var(--foreground-muted)" }}>장소, 동네 검색…</span>
+              <span style={{ fontSize: 13, color: "var(--foreground-muted)" }}>{isKo ? "장소, 동네 검색…" : "Search places…"}</span>
             </div>
           </div>
           <div style={{ display: "flex", gap: 7, padding: "0 14px 10px", overflowX: "auto", scrollbarWidth: "none" }}>
@@ -356,7 +356,7 @@ export default function MapPage() {
                 <div style={{ fontSize: 11, color: "var(--foreground-muted)" }}>{isKo ? selected.name_en : selected.name_ko}</div>
               </div>
               <Link href={`/places/${selected.slug}`} style={{ padding: "7px 14px", borderRadius: 999, border: "none", background: "var(--grade-s)", color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer", textDecoration: "none" }}>
-                상세보기
+                {isKo ? "상세보기" : "Details"}
               </Link>
             </div>
           </div>
