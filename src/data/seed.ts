@@ -106,6 +106,26 @@ export const SEED_PLACES: Place[] = [
     image_url: "https://images.unsplash.com/photo-1541614101331-1a5a3a194e92?w=800",
     english_support: true, card_payment: true, solo_friendly: true, reservation_difficulty: "easy", created_at: "",
   },
+  {
+    id: "p9", name_ko: "해방촌", name_en: "Haebangchon",
+    slug: "haebangchon", category: "cafe", region_id: "r2",
+    description_en: "Itaewon's hidden hillside neighborhood. Tiny bars, underground music venues, and international cafes tucked into winding alleys — the grittier, more local side of Yongsan.",
+    description_ko: "이태원의 숨겨진 언덕 동네. 작은 바, 인디 음악 공간, 각국 카페가 골목 사이에 촘촘히 들어선 이태원의 로컬 감성 지역.",
+    address: "Sinheung-ro, Yongsan-gu, Seoul", address_ko: "서울 용산구 신흥로",
+    lat: 37.5432, lng: 126.9812,
+    image_url: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800",
+    english_support: true, card_payment: true, solo_friendly: true, reservation_difficulty: "easy", created_at: "",
+  },
+  {
+    id: "p10", name_ko: "한남동", name_en: "Hannamdong",
+    slug: "hannamdong", category: "shopping", region_id: "r2",
+    description_en: "Seoul's most affluent village, a five-minute walk from Itaewon station. Boutique galleries, concept stores, and the city's most talked-about restaurants line tree-shaded Itaewon-ro.",
+    description_ko: "이태원역에서 도보 5분 거리의 서울 최고급 동네. 부티크 갤러리, 컨셉 스토어, 서울에서 가장 화제인 레스토랑이 가로수 길을 따라 줄지어 있음.",
+    address: "Hannam-daero, Yongsan-gu, Seoul", address_ko: "서울 용산구 한남대로",
+    lat: 37.5343, lng: 127.0040,
+    image_url: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800",
+    english_support: true, card_payment: true, solo_friendly: true, reservation_difficulty: "easy", created_at: "",
+  },
 ];
 
 export const SEED_GUIDES: Guide[] = [

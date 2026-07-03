@@ -42,9 +42,11 @@ const TRAVEL_INFO: Record<string, { ko: string; en: string; dist: string }> = {
   p6: { ko: "KTX 2시간 30분", en: "KTX 2h 30min", dist: "325km" },
   p7: { ko: "도보 12분", en: "Walk 12 min", dist: "850m" },
   p8: { ko: "도보 9분", en: "Walk 9 min", dist: "650m" },
+  p9: { ko: "도보 15분", en: "Walk 15 min", dist: "1.1km" },
+  p10: { ko: "도보 8분", en: "Walk 8 min", dist: "600m" },
 };
 
-const HOT_PLACE_IDS = ["p7", "p8"];
+const HOT_PLACE_IDS = ["p7", "p8", "p9", "p10"];
 
 const GRADE_BG: Record<string, string> = {
   S: "var(--grade-s)", A: "var(--grade-a)", B: "var(--grade-b)", C: "var(--grade-c)",
@@ -157,6 +159,7 @@ export default function MapPage() {
   const hotPlaces = SEED_PLACES.filter((p) => HOT_PLACE_IDS.includes(p.id));
 
   const filtered = SEED_PLACES.filter((p) => {
+    if (HOT_PLACE_IDS.includes(p.id)) return false; // shown in PICK strip above
     if (chip === "all") return true;
     if (chip === "english") return p.english_support;
     if (chip === "S") return getRating(p) === "S";
@@ -302,27 +305,23 @@ export default function MapPage() {
           </button>
         </div>
 
-        {/* Hot Places */}
-        <div style={{ padding: "14px 20px 0", flexShrink: 0 }}>
-          <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.1em", color: "var(--grade-s)", marginBottom: 10 }}>
+        {/* Hot Places — compact horizontal strip */}
+        <div style={{ flexShrink: 0, borderBottom: "1px solid var(--border)" }}>
+          <div style={{ padding: "10px 20px 4px", fontSize: 10, fontWeight: 800, letterSpacing: "0.1em", color: "var(--grade-s)" }}>
             {isKo ? "이태원 PICK" : "ITAEWON PICK"}
           </div>
-          <div style={{ display: "flex", gap: 10, marginBottom: 4 }}>
+          <div style={{ display: "flex", gap: 8, overflowX: "auto", scrollbarWidth: "none", padding: "0 20px 12px" }}>
             {hotPlaces.map((p) => {
               const r = getRating(p);
+              const t = TRAVEL_INFO[p.id];
               return (
-                <Link key={p.id} href={`/places/${p.slug}`} style={{ flex: 1, minWidth: 0, background: "var(--content-bg)", borderRadius: 14, padding: "11px 12px", textDecoration: "none", display: "flex", flexDirection: "column", gap: 5, border: "1px solid var(--border)" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-                    <div style={{ width: 30, height: 30, borderRadius: 8, background: GRADE_BG[r], display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                      <span style={{ fontSize: 11, fontWeight: 800, color: GRADE_TEXT[r], lineHeight: 1 }}>{r}</span>
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: "var(--foreground)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{isKo ? p.name_ko : p.name_en}</div>
-                      <div style={{ fontSize: 10, color: "var(--foreground-muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{isKo ? p.name_en : p.name_ko}</div>
-                    </div>
+                <Link key={p.id} href={`/places/${p.slug}`} style={{ flexShrink: 0, width: 140, background: "var(--content-bg)", borderRadius: 12, padding: "9px 11px", textDecoration: "none", display: "flex", alignItems: "center", gap: 9, border: "1px solid var(--border)" }}>
+                  <div style={{ width: 32, height: 32, borderRadius: 9, background: GRADE_BG[r], display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <span style={{ fontSize: 12, fontWeight: 800, color: GRADE_TEXT[r], lineHeight: 1 }}>{r}</span>
                   </div>
-                  <div style={{ fontSize: 11, color: "var(--foreground-sub)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } as React.CSSProperties}>
-                    {isKo ? p.description_ko : p.description_en}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: "var(--foreground)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{isKo ? p.name_ko : p.name_en}</div>
+                    <div style={{ fontSize: 10, color: "var(--foreground-sub)", marginTop: 1 }}>{t ? (isKo ? t.ko : t.en) : ""}</div>
                   </div>
                 </Link>
               );
@@ -367,27 +366,23 @@ export default function MapPage() {
           </div>
         </div>
         <div style={{ flex: 1, overflowY: "auto", minHeight: 0, padding: "8px 14px" }}>
-          {/* Hot Places - PC */}
-          <div style={{ marginBottom: 12 }}>
+          {/* Hot Places - PC compact strip */}
+          <div style={{ marginBottom: 12, paddingBottom: 12, borderBottom: "1px solid var(--border)" }}>
             <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.1em", color: "var(--grade-s)", marginBottom: 8 }}>
               {isKo ? "이태원 PICK" : "ITAEWON PICK"}
             </div>
-            <div style={{ display: "flex", gap: 8 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {hotPlaces.map((p) => {
                 const r = getRating(p);
+                const t = TRAVEL_INFO[p.id];
                 return (
-                  <Link key={p.id} href={`/places/${p.slug}`} style={{ flex: 1, minWidth: 0, background: "var(--content-bg)", borderRadius: 12, padding: "10px", textDecoration: "none", display: "flex", flexDirection: "column", gap: 5, border: "1px solid var(--border)" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-                      <div style={{ width: 28, height: 28, borderRadius: 7, background: GRADE_BG[r], display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                        <span style={{ fontSize: 10, fontWeight: 800, color: GRADE_TEXT[r], lineHeight: 1 }}>{r}</span>
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 12, fontWeight: 700, color: "var(--foreground)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{isKo ? p.name_ko : p.name_en}</div>
-                        <div style={{ fontSize: 10, color: "var(--foreground-muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{isKo ? p.name_en : p.name_ko}</div>
-                      </div>
+                  <Link key={p.id} href={`/places/${p.slug}`} style={{ background: "var(--content-bg)", borderRadius: 11, padding: "8px 10px", textDecoration: "none", display: "flex", alignItems: "center", gap: 8, border: "1px solid var(--border)" }}>
+                    <div style={{ width: 28, height: 28, borderRadius: 7, background: GRADE_BG[r], display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <span style={{ fontSize: 10, fontWeight: 800, color: GRADE_TEXT[r], lineHeight: 1 }}>{r}</span>
                     </div>
-                    <div style={{ fontSize: 10, color: "var(--foreground-sub)", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } as React.CSSProperties}>
-                      {isKo ? p.description_ko : p.description_en}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: "var(--foreground)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{isKo ? p.name_ko : p.name_en}</div>
+                      <div style={{ fontSize: 10, color: "var(--foreground-sub)" }}>{t ? (isKo ? t.ko : t.en) : ""}</div>
                     </div>
                   </Link>
                 );
