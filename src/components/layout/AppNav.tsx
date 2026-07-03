@@ -9,18 +9,15 @@ type Tab = { href: string; icon: string; labelKo: string; labelEn: string };
 
 const SIDEBAR_TABS: Tab[] = [
   { href: "/map",       icon: "map",       labelKo: "지도",     labelEn: "Map" },
-  { href: "/tasks",     icon: "tasks",     labelKo: "과제",     labelEn: "Tasks" },
+  { href: "/tasks",     icon: "tasks",     labelKo: "태스크",   labelEn: "Tasks" },
   { href: "/courses",   icon: "courses",   labelKo: "코스",     labelEn: "Courses" },
   { href: "/community", icon: "community", labelKo: "커뮤니티",  labelEn: "Community" },
-  { href: "/etiquette", icon: "culture",   labelKo: "문화",     labelEn: "Culture" },
-  { href: "/chat",      icon: "chat",      labelKo: "채팅",     labelEn: "Chat" },
+  { href: "/etiquette", icon: "culture",   labelKo: "에티켓",   labelEn: "Etiquette" },
   { href: "/profile",   icon: "profile",   labelKo: "나",       labelEn: "Me" },
 ];
 
-// 6 tabs on mobile — profile accessible via sidebar on PC
-const BOTTOM_TABS: Tab[] = SIDEBAR_TABS.filter(
-  t => t.href !== "/profile"
-);
+// 5 tabs on mobile — chat embedded in community, profile via sidebar on PC
+const BOTTOM_TABS: Tab[] = SIDEBAR_TABS.filter(t => t.href !== "/profile");
 
 function TabIcon({ name, size = 22 }: { name: string; size?: number }) {
   const base = { width: size, height: size, fill: "none", stroke: "currentColor", strokeWidth: 1.75, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useLang } from "@/lib/lang";
 
 const FILTER_CHIPS = {
@@ -11,53 +12,48 @@ const FILTER_CHIPS = {
 const COURSES = [
   {
     id: "c1",
+    slug: "itaewon-food",
     name: { ko: "이태원 로컬 맛집 반나절 코스", en: "Itaewon Local Food Half-Day" },
     meta: { ko: "3곳 · 약 3시간", en: "3 stops · ~3 hrs" },
     badge: { ko: "오늘의 코스", en: "Today's Pick" },
-    englishOk: true,
-    filter: "Half-Day",
-    color: "#F5D6D6",
-    accent: "#C0350F",
+    englishOk: true, filter: "Half-Day",
+    color: "#F5D6D6", accent: "#C0350F",
   },
   {
     id: "c2",
+    slug: "hannam-gallery",
     name: { ko: "한남동 갤러리 & 카페 투어", en: "Hannam Gallery & Café Tour" },
     meta: { ko: "4곳 · 약 4시간", en: "4 stops · ~4 hrs" },
     badge: { ko: "문화", en: "Culture" },
-    englishOk: true,
-    filter: "Culture",
-    color: "#DDE4FF",
-    accent: "#234BFF",
+    englishOk: true, filter: "Culture",
+    color: "#DDE4FF", accent: "#234BFF",
   },
   {
     id: "c3",
+    slug: "itaewon-night",
     name: { ko: "이태원 나이트 로컬 투어", en: "Itaewon Night Local Tour" },
     meta: { ko: "3곳 · 약 4시간", en: "3 stops · ~4 hrs" },
     badge: { ko: "나이트", en: "Nightlife" },
-    englishOk: false,
-    filter: "Full Day",
-    color: "#2D1F4A",
-    accent: "#8A63FF",
+    englishOk: false, filter: "Full Day",
+    color: "#2D1F4A", accent: "#8A63FF",
   },
   {
     id: "c4",
+    slug: "namsan-morning",
     name: { ko: "남산 아침 산책 코스", en: "Namsan Morning Walk" },
     meta: { ko: "2곳 · 약 2시간", en: "2 stops · ~2 hrs" },
     badge: { ko: "자연", en: "Nature" },
-    englishOk: true,
-    filter: "Nature",
-    color: "#D6F0D6",
-    accent: "#12A05A",
+    englishOk: true, filter: "Nature",
+    color: "#D6F0D6", accent: "#12A05A",
   },
   {
     id: "c5",
+    slug: "seongsu-craft",
     name: { ko: "성수 공방 & 로스터리 투어", en: "Seongsu Craft & Roastery Tour" },
     meta: { ko: "4곳 · 약 3시간", en: "4 stops · ~3 hrs" },
     badge: { ko: "AI 추천", en: "AI Pick" },
-    englishOk: true,
-    filter: "Half-Day",
-    color: "#FFF0D6",
-    accent: "#B87000",
+    englishOk: true, filter: "Half-Day",
+    color: "#FFF0D6", accent: "#B87000",
   },
 ];
 
@@ -70,15 +66,15 @@ export default function CoursesPage() {
 
   const filtered = activeFilter === 0
     ? COURSES
-    : COURSES.filter((c) => c.filter === filterEn || (filterEn === "Food" && c.filter === "Half-Day" && c.id === "c1"));
+    : COURSES.filter((c) => c.filter === filterEn || (filterEn === "Food" && c.id === "c1"));
 
   const [featured, ...rest] = filtered;
 
   return (
     <div style={{ background: "var(--background)", minHeight: "100%", paddingBottom: 20 }}>
 
-      {/* ── Filter chips ─────────────────────────── */}
-      <div style={{ padding: "12px 16px 8px", display: "flex", gap: 7, overflowX: "auto" }}>
+      {/* Filter chips */}
+      <div style={{ padding: "12px 16px 8px", display: "flex", gap: 7, overflowX: "auto", scrollbarWidth: "none" }}>
         {chips.map((chip, i) => {
           const active = activeFilter === i;
           return (
@@ -98,96 +94,75 @@ export default function CoursesPage() {
 
       <div style={{ padding: "0 16px" }}>
 
-        {/* ── Featured card ─────────────────────── */}
+        {/* Featured card */}
         {featured && (
-          <div style={{
-            borderRadius: 22, overflow: "hidden",
-            marginBottom: 20, position: "relative", height: 200,
-            background: featured.color,
-            boxShadow: "0 8px 28px -8px rgba(0,0,0,0.22)",
-          }}>
-            {/* Gradient overlay */}
-            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 55%)" }} />
-
-            {/* Top badge */}
-            <div style={{ position: "absolute", top: 14, left: 14 }}>
-              <span style={{ fontSize: 11, fontWeight: 700, padding: "4px 11px", borderRadius: 999, background: "var(--grade-b)", color: "var(--grade-b-text)" }}>
-                {isKo ? featured.badge.ko : featured.badge.en}
-              </span>
-            </div>
-
-            {/* Photo placeholder label */}
-            <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <span style={{ fontSize: 10, letterSpacing: "0.15em", fontFamily: "monospace", color: "rgba(0,0,0,0.25)", fontWeight: 600 }}>PHOTO · 이태원</span>
-            </div>
-
-            {/* Bottom overlay */}
-            <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0 16px 14px" }}>
-              <div style={{ fontSize: 21, fontWeight: 800, color: "#fff", letterSpacing: "-0.4px", marginBottom: 7, lineHeight: 1.2 }}>
-                {isKo ? featured.name.ko : featured.name.en}
+          <Link href={`/courses/${featured.slug}`} style={{ textDecoration: "none", display: "block" }}>
+            <div style={{ borderRadius: 22, overflow: "hidden", marginBottom: 20, position: "relative", height: 200, background: featured.color, boxShadow: "0 8px 28px -8px rgba(0,0,0,0.22)", cursor: "pointer" }}>
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 55%)" }} />
+              <div style={{ position: "absolute", top: 14, left: 14 }}>
+                <span style={{ fontSize: 11, fontWeight: 700, padding: "4px 11px", borderRadius: 999, background: "var(--grade-b)", color: "var(--grade-b-text)" }}>
+                  {isKo ? featured.badge.ko : featured.badge.en}
+                </span>
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-                <span style={{ fontSize: 12, color: "rgba(255,255,255,0.8)", display: "flex", alignItems: "center", gap: 4 }}>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)" stroke="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
-                  {isKo ? featured.meta.ko : featured.meta.en}
-                </span>
-                <span style={{ fontSize: 12, color: "rgba(255,255,255,0.8)", display: "flex", alignItems: "center", gap: 4 }}>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-                  {isKo ? "약 3시간" : "~3 hrs"}
-                </span>
-                {featured.englishOk && (
-                  <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999, background: "var(--badge-en-bg)", color: "var(--badge-en-fg)" }}>영어 OK</span>
-                )}
+              <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ fontSize: 10, letterSpacing: "0.15em", fontFamily: "monospace", color: "rgba(0,0,0,0.25)", fontWeight: 600 }}>PHOTO · 이태원</span>
+              </div>
+              <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0 16px 14px" }}>
+                <div style={{ fontSize: 21, fontWeight: 800, color: "#fff", letterSpacing: "-0.4px", marginBottom: 7, lineHeight: 1.2 }}>
+                  {isKo ? featured.name.ko : featured.name.en}
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+                  <span style={{ fontSize: 12, color: "rgba(255,255,255,0.8)", display: "flex", alignItems: "center", gap: 4 }}>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="rgba(255,255,255,0.7)" stroke="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+                    {isKo ? featured.meta.ko : featured.meta.en}
+                  </span>
+                  {featured.englishOk && (
+                    <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999, background: "var(--badge-en-bg)", color: "var(--badge-en-fg)" }}>영어 OK</span>
+                  )}
+                </div>
+              </div>
+              {/* Arrow indicator */}
+              <div style={{ position: "absolute", bottom: 14, right: 14, width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round"><path d="M9 18l6-6-6-6"/></svg>
               </div>
             </div>
-          </div>
+          </Link>
         )}
 
-        {/* ── Section label ─────────────────────── */}
+        {/* Section label */}
         <div style={{ fontSize: 13, fontWeight: 700, color: "var(--foreground-sub)", marginBottom: 10, letterSpacing: "0.03em" }}>
           {isKo ? "모든 코스" : "All Courses"}
         </div>
 
-        {/* ── Course list ───────────────────────── */}
+        {/* Course list */}
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {(featured ? rest : filtered).map((course) => (
-            <div key={course.id} style={{
-              background: "var(--card)",
-              borderRadius: 16, border: "1px solid var(--border)",
-              padding: "13px 14px",
-              display: "flex", alignItems: "center", gap: 13,
-              cursor: "pointer",
-            }}>
-              {/* 60×60 color thumbnail */}
-              <div style={{
-                width: 60, height: 60, borderRadius: 13, flexShrink: 0,
-                background: course.color,
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
-                <span style={{ fontSize: 9, letterSpacing: "0.1em", fontFamily: "monospace", color: "rgba(0,0,0,0.3)" }}>PHOTO</span>
+            <Link key={course.id} href={`/courses/${course.slug}`} style={{ textDecoration: "none", display: "block" }}>
+              <div style={{ background: "var(--card)", borderRadius: 16, border: "1px solid var(--border)", padding: "13px 14px", display: "flex", alignItems: "center", gap: 13, cursor: "pointer" }}>
+                <div style={{ width: 60, height: 60, borderRadius: 13, flexShrink: 0, background: course.color, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <span style={{ fontSize: 9, letterSpacing: "0.1em", fontFamily: "monospace", color: "rgba(0,0,0,0.3)" }}>PHOTO</span>
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: "var(--foreground)", marginBottom: 2 }}>
+                    {isKo ? course.name.ko : course.name.en}
+                  </div>
+                  <div style={{ fontSize: 12, color: "var(--foreground-muted)", marginBottom: 6 }}>
+                    {isKo ? course.name.en : course.name.ko}
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span style={{ fontSize: 11, color: "var(--foreground-muted)" }}>
+                      {isKo ? course.meta.ko : course.meta.en}
+                    </span>
+                    {course.englishOk && (
+                      <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 999, background: "var(--badge-en-bg)", color: "var(--badge-en-fg)" }}>영어 OK</span>
+                    )}
+                  </div>
+                </div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--grade-s)" strokeWidth="2.5" strokeLinecap="round">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
               </div>
-
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: "var(--foreground)", marginBottom: 2 }}>
-                  {isKo ? course.name.ko : course.name.en}
-                </div>
-                <div style={{ fontSize: 12, color: "var(--foreground-muted)", marginBottom: 6 }}>
-                  {isKo ? course.name.en : course.name.ko}
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ fontSize: 11, color: "var(--foreground-muted)" }}>
-                    {isKo ? course.meta.ko : course.meta.en}
-                  </span>
-                  {course.englishOk && (
-                    <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 999, background: "var(--badge-en-bg)", color: "var(--badge-en-fg)" }}>영어 OK</span>
-                  )}
-                </div>
-              </div>
-
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--foreground-muted)" strokeWidth="2" strokeLinecap="round">
-                <path d="M9 18l6-6-6-6"/>
-              </svg>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
