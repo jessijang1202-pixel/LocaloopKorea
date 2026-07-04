@@ -118,6 +118,26 @@ export function AppNav() {
           })}
         </nav>
 
+        {/* Login button */}
+        <div style={{ padding: "0 10px 10px" }}>
+          <Link
+            href="/login"
+            style={{
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 7,
+              height: 40, borderRadius: 10, textDecoration: "none",
+              background: "linear-gradient(135deg, #FF5636 0%, #c43e2a 100%)",
+              boxShadow: "0 4px 14px rgba(255,86,54,0.35)",
+            }}
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
+            </svg>
+            <span style={{ fontSize: 12, fontWeight: 700, color: "#fff", letterSpacing: "0.02em" }}>
+              {isKo ? "로그인" : "Login"}
+            </span>
+          </Link>
+        </div>
+
         {/* Bottom controls */}
         <div style={{ padding: "8px 10px 18px", borderTop: "1px solid rgba(255,86,54,0.10)", display: "flex", gap: 6 }}>
           <button
