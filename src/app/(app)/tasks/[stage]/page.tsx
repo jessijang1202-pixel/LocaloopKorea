@@ -99,7 +99,7 @@ const STAGES: Record<string, StageDetail> = {
       },
       {
         id: "e5",
-        ko: { name: "주거지 계약", desc: "월세·전세 계약 전 부동산 중개인 이용 권장", tip: "외국인은 '월세' 형태가 일반적. 계약 전 전입신고와 확정일자 개념을 꼭 이해하세요. 이태원, 마포, 성수 지역이 외국인 거주자가 많아요." },
+        ko: { name: "주거지 계약", desc: "월세·전세 계약 전 부동산 중개인 이용 권장", tip: "외국인은 '월세' 형태가 일반적. 계약 전 전입신고와 확정일자 개념을 꼭 이해하세요." },
         en: { name: "Secure your housing contract", desc: "Use a licensed real estate agent for monthly rent (wolse) contracts", tip: "Monthly rent (wolse) is most common for foreigners. Understand 'jeonip sinso' (resident registration) and 'hwakjeong illja' (priority date) before signing." },
       },
     ],
@@ -152,7 +152,7 @@ const STAGES: Record<string, StageDetail> = {
     ],
     links: [
       { href: "/community", ko: "커뮤니티 참여하기", en: "Join the community" },
-      { href: "/etiquette", ko: "한국 에티켓 가이드", en: "Korea Etiquette Guide" },
+      { href: "/guide", ko: "한국 에티켓 가이드", en: "Korea Etiquette Guide" },
     ],
   },
   "community": {
@@ -193,7 +193,7 @@ const STAGES: Record<string, StageDetail> = {
     ],
     links: [
       { href: "/community", ko: "Localoop 커뮤니티", en: "Localoop Community" },
-      { href: "/etiquette", ko: "에티켓 가이드", en: "Etiquette Guide" },
+      { href: "/guide", ko: "에티켓 가이드", en: "Etiquette Guide" },
     ],
   },
   "long-term": {
@@ -234,7 +234,7 @@ const STAGES: Record<string, StageDetail> = {
     ],
     links: [
       { href: "/community", ko: "장기 거주자 커뮤니티", en: "Long-term resident community" },
-      { href: "/etiquette", ko: "한국 문화 심화 가이드", en: "Deep dive: Korean culture" },
+      { href: "/guide", ko: "한국 문화 심화 가이드", en: "Deep dive: Korean culture" },
     ],
   },
 };
@@ -263,62 +263,84 @@ export default function StageDetailPage() {
   const tasks = detail.tasks;
   const doneCount = tasks.filter(t => checked[t.id] ?? false).length;
   const stageIdx = STAGE_ORDER.indexOf(stage);
+  const nextUrgent = tasks.find(t => (t.urgent || t.deadline) && !(checked[t.id] ?? false));
+  const nextTask = tasks.find(t => !(checked[t.id] ?? false));
 
   function toggle(id: string) {
     setChecked(prev => ({ ...prev, [id]: !prev[id] }));
   }
 
   return (
-    <div style={{ background: "var(--background)", minHeight: "100%", paddingBottom: 40 }}>
+    <div style={{ background: "var(--background)", minHeight: "100%" }}>
 
-      {/* Hero */}
+      {/* ── Hero card — same style as tasks/page.tsx ── */}
       <div style={{
+        margin: "16px 16px 0",
+        borderRadius: 22,
         background: "linear-gradient(160deg, #1A0E14 0%, #120A0F 100%)",
-        padding: "20px 20px 22px",
-        position: "relative", overflow: "hidden",
+        padding: "18px 20px 18px",
+        position: "relative",
+        overflow: "hidden",
       }}>
-        <div style={{ position: "absolute", top: -40, right: -40, width: 140, height: 140, borderRadius: "50%", background: "rgba(255,86,54,0.07)" }} />
-        <div style={{ position: "absolute", bottom: -20, right: 40, width: 90, height: 90, borderRadius: "50%", background: "rgba(255,86,54,0.04)" }} />
+        {/* BG decorations */}
+        <div style={{ position: "absolute", top: -30, right: -30, width: 120, height: 120, borderRadius: "50%", background: "rgba(255,255,255,0.07)" }} />
+        <div style={{ position: "absolute", bottom: -20, right: 30, width: 80, height: 80, borderRadius: "50%", background: "rgba(255,255,255,0.05)" }} />
 
-        {/* Back + stage nav */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 18, position: "relative" }}>
+        {/* Top row: back + stage badge */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14, position: "relative" }}>
           <button
             onClick={() => router.back()}
-            style={{ width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.1)", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", flexShrink: 0 }}
+            style={{ width: 28, height: 28, borderRadius: "50%", background: "rgba(255,255,255,0.12)", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", flexShrink: 0 }}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-              <path d="M19 12H5M12 5l-7 7 7 7"/>
-            </svg>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
           </button>
-          <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.1em", color: "rgba(255,255,255,0.5)", textTransform: "uppercase" }}>
-            STAGE {String(detail.stageNum).padStart(2, "0")} · {isKo ? detail.ko.name : detail.en.name}
+          <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.08em", color: "rgba(255,255,255,0.75)", background: "rgba(255,255,255,0.15)", padding: "3px 10px", borderRadius: 999 }}>
+            STAGE {String(detail.stageNum).padStart(2, "0")}
+          </span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: "rgba(255,255,255,0.85)" }}>
+            {isKo ? detail.ko.name : detail.en.name}
           </span>
         </div>
 
-        <h1 style={{ fontSize: 28, fontWeight: 900, color: "#fff", letterSpacing: "-0.6px", marginBottom: 6, position: "relative", whiteSpace: "pre-line" }}>
-          {isKo ? detail.ko.tagline : detail.en.tagline}
-        </h1>
+        {/* Big counter */}
+        <div style={{ fontSize: 32, fontWeight: 900, color: "#fff", letterSpacing: "-1px", marginBottom: 14, position: "relative" }}>
+          {doneCount}<span style={{ fontSize: 18, fontWeight: 600, color: "rgba(255,255,255,0.7)" }}>/{tasks.length} {isKo ? "완료" : "done"}</span>
+        </div>
 
-        {/* Progress */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 16, position: "relative" }}>
-          <div style={{ flex: 1, height: 5, borderRadius: 99, background: "rgba(255,255,255,0.12)", overflow: "hidden" }}>
-            <div style={{ height: "100%", width: `${(doneCount / tasks.length) * 100}%`, background: "#FF6A4D", borderRadius: 99, transition: "width 0.4s" }} />
-          </div>
-          <span style={{ fontSize: 13, fontWeight: 700, color: "rgba(255,255,255,0.75)", flexShrink: 0 }}>
-            {doneCount}/{tasks.length} {isKo ? "완료" : "done"}
+        {/* Segmented progress bar — one per task */}
+        <div style={{ display: "flex", gap: 5, marginBottom: 14, position: "relative" }}>
+          {tasks.map((t) => (
+            <div key={t.id} style={{ flex: 1, height: 5, borderRadius: 99, background: (checked[t.id] ?? false) ? "#fff" : "rgba(255,255,255,0.22)" }} />
+          ))}
+        </div>
+
+        {/* Footer: next task hint */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", position: "relative" }}>
+          <span style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>
+            {doneCount === tasks.length
+              ? (isKo ? "모든 과제 완료!" : "All tasks complete!")
+              : isKo
+                ? `다음: ${(nextUrgent ?? nextTask)?.ko.name ?? ""}`
+                : `Next: ${(nextUrgent ?? nextTask)?.en.name ?? ""}`
+            }
           </span>
+          {nextUrgent?.deadline && doneCount < tasks.length && (
+            <span style={{ fontSize: 11, fontWeight: 700, background: "var(--grade-b)", color: "var(--grade-b-text)", padding: "3px 9px", borderRadius: 999 }}>
+              {nextUrgent.deadline}
+            </span>
+          )}
         </div>
       </div>
 
       {/* Stage nav chips */}
-      <div style={{ display: "flex", gap: 6, padding: "12px 16px 4px", overflowX: "auto", scrollbarWidth: "none" }}>
+      <div style={{ display: "flex", gap: 6, padding: "14px 16px 4px", overflowX: "auto", scrollbarWidth: "none" }}>
         {STAGE_ORDER.map((s, i) => {
           const active = s === stage;
           return (
             <Link key={s} href={`/tasks/${s}`} style={{ textDecoration: "none", flexShrink: 0 }}>
               <span style={{
-                display: "inline-block", fontSize: 11, fontWeight: active ? 700 : 500,
-                padding: "5px 12px", borderRadius: 999,
+                display: "inline-block", fontSize: 12, fontWeight: active ? 700 : 500,
+                padding: "6px 14px", borderRadius: 999,
                 background: active ? "var(--grade-s)" : "var(--card)",
                 color: active ? "#fff" : "var(--foreground-muted)",
                 border: active ? "none" : "1px solid var(--border)",
@@ -335,23 +357,26 @@ export default function StageDetailPage() {
         {tasks.map((task) => {
           const done = checked[task.id] ?? false;
           const info = isKo ? task.ko : task.en;
+          const isUrgent = !!task.urgent && !done;
+
           return (
             <div key={task.id} style={{
               background: "var(--card)",
               borderRadius: 16,
-              border: task.urgent && !done ? "1.5px solid var(--grade-s)" : "1px solid var(--border)",
+              border: isUrgent ? "1.5px solid var(--grade-s)" : "1px solid var(--border)",
               padding: "13px 14px",
               display: "flex",
               alignItems: "flex-start",
               gap: 12,
-              boxShadow: task.urgent && !done ? "0 2px 12px -4px rgba(255,86,54,0.25)" : "0 1px 4px rgba(0,0,0,0.04)",
+              boxShadow: isUrgent ? "0 2px 12px -4px rgba(255,86,54,0.25)" : "0 1px 4px rgba(0,0,0,0.04)",
             }}>
+              {/* Checkbox */}
               <button
                 onClick={() => toggle(task.id)}
                 style={{
                   width: 26, height: 26, borderRadius: 8, flexShrink: 0, marginTop: 1,
-                  background: done ? "var(--grade-s)" : "transparent",
-                  border: done ? "none" : task.urgent ? "2px solid var(--grade-s)" : "2px solid var(--border)",
+                  background: done ? "var(--grade-a)" : "transparent",
+                  border: done ? "none" : isUrgent ? "2px solid var(--grade-s)" : "2px solid var(--border)",
                   cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
                 }}
               >
@@ -359,26 +384,35 @@ export default function StageDetailPage() {
               </button>
 
               <div style={{ flex: 1, minWidth: 0 }}>
-                <span style={{
-                  fontSize: 14, fontWeight: 700,
-                  color: done ? "var(--foreground-muted)" : "var(--foreground)",
-                  textDecoration: done ? "line-through" : "none",
-                }}>
-                  {info.name}
-                </span>
-                {task.urgent && !done && (
-                  <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999, background: "var(--grade-s)", color: "#fff", marginLeft: 6 }}>
-                    {task.deadline ?? "긴급"}
+                {/* Name + pills row */}
+                <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", marginBottom: 3 }}>
+                  <span style={{
+                    fontSize: 14, fontWeight: 700,
+                    color: done ? "var(--foreground-muted)" : "var(--foreground)",
+                    textDecoration: done ? "line-through" : "none",
+                  }}>
+                    {info.name}
                   </span>
-                )}
-                {done && (
-                  <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999, background: "var(--badge-en-bg)", color: "var(--badge-en-fg)", marginLeft: 6 }}>
-                    {isKo ? "완료" : "Done"}
-                  </span>
-                )}
-                <div style={{ fontSize: 11, color: "var(--foreground-muted)", marginTop: 2 }}>{info.desc}</div>
+                  {done && (
+                    <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999, background: "var(--badge-en-bg)", color: "var(--badge-en-fg)" }}>
+                      {isKo ? "완료" : "Done"}
+                    </span>
+                  )}
+                  {isUrgent && (
+                    <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 999, background: "var(--grade-s)", color: "#fff" }}>
+                      {task.deadline ?? (isKo ? "긴급" : "Urgent")}
+                    </span>
+                  )}
+                </div>
+
+                {/* Desc */}
+                <div style={{ fontSize: 11, color: "var(--foreground-muted)", marginBottom: done ? 0 : 7 }}>
+                  {info.desc}
+                </div>
+
+                {/* Tip — always visible */}
                 {!done && (
-                  <div style={{ fontSize: 11, color: "var(--foreground-muted)", background: "var(--content-bg)", borderRadius: 8, padding: "6px 9px", marginTop: 7, lineHeight: 1.55, borderLeft: "3px solid var(--grade-s)" }}>
+                  <div style={{ fontSize: 11, color: "var(--foreground-muted)", background: "var(--content-bg)", borderRadius: 8, padding: "7px 10px", lineHeight: 1.6, borderLeft: "3px solid var(--grade-s)" }}>
                     {info.tip}
                   </div>
                 )}
@@ -390,13 +424,13 @@ export default function StageDetailPage() {
 
       {/* Tips section */}
       <div style={{ padding: "20px 16px 0" }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: "var(--foreground-sub)", letterSpacing: "0.04em", marginBottom: 10 }}>
+        <div style={{ fontSize: 11, fontWeight: 800, color: "var(--foreground-muted)", letterSpacing: "0.08em", marginBottom: 10 }}>
           {isKo ? "알아두면 좋은 것들" : "GOOD TO KNOW"}
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {detail.tips.map((tip, i) => (
             <div key={i} style={{ background: "var(--card)", borderRadius: 14, border: "1px solid var(--border)", padding: "12px 14px" }}>
-              <p style={{ fontSize: 13, color: "var(--foreground)", lineHeight: 1.55, margin: 0 }}>
+              <p style={{ fontSize: 12, color: "var(--foreground)", lineHeight: 1.6, margin: 0 }}>
                 {isKo ? tip.ko : tip.en}
               </p>
             </div>
@@ -406,15 +440,15 @@ export default function StageDetailPage() {
 
       {/* Quick links */}
       {detail.links.length > 0 && (
-        <div style={{ padding: "20px 16px 0" }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: "var(--foreground-sub)", letterSpacing: "0.04em", marginBottom: 10 }}>
+        <div style={{ padding: "16px 16px 0" }}>
+          <div style={{ fontSize: 11, fontWeight: 800, color: "var(--foreground-muted)", letterSpacing: "0.08em", marginBottom: 10 }}>
             {isKo ? "관련 페이지" : "RELATED"}
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {detail.links.map((link) => (
               <Link key={link.href} href={link.href} style={{ textDecoration: "none" }}>
                 <div style={{ background: "var(--card)", borderRadius: 14, border: "1px solid var(--border)", padding: "13px 16px", display: "flex", alignItems: "center", gap: 12 }}>
-                  <span style={{ fontSize: 14, fontWeight: 600, color: "var(--foreground)", flex: 1 }}>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", flex: 1 }}>
                     {isKo ? link.ko : link.en}
                   </span>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--grade-s)" strokeWidth="2.5" strokeLinecap="round"><path d="M9 18l6-6-6-6"/></svg>
@@ -425,8 +459,8 @@ export default function StageDetailPage() {
         </div>
       )}
 
-      {/* Bottom nav between stages */}
-      <div style={{ display: "flex", gap: 10, padding: "24px 16px 0" }}>
+      {/* Prev / Next stage nav */}
+      <div style={{ display: "flex", gap: 10, padding: "20px 16px 32px" }}>
         {stageIdx > 0 && (
           <Link href={`/tasks/${STAGE_ORDER[stageIdx - 1]}`} style={{ flex: 1, textDecoration: "none" }}>
             <div style={{ background: "var(--card)", borderRadius: 14, border: "1px solid var(--border)", padding: "12px 16px", display: "flex", alignItems: "center", gap: 8 }}>
@@ -454,6 +488,7 @@ export default function StageDetailPage() {
           </Link>
         )}
       </div>
+
     </div>
   );
 }
