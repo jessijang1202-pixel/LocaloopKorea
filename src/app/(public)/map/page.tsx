@@ -208,7 +208,7 @@ function PlaceCard2({ place, isKo, hot = false }: { place: Place; isKo: boolean;
   );
 }
 
-function WelcomePopup({ isDark, onClose }: { isDark: boolean; onClose: () => void }) {
+function WelcomePopup({ isDark, isKo, onClose }: { isDark: boolean; isKo: boolean; onClose: () => void }) {
   const cardBg      = isDark ? "#1D1A22" : "#ffffff";
   const cardBorder  = isDark ? "1px solid #2C2833" : "none";
   const scrimBg     = isDark ? "rgba(0,0,0,0.68)" : "rgba(10,8,6,0.60)";
@@ -352,7 +352,7 @@ function WelcomePopup({ isDark, onClose }: { isDark: boolean; onClose: () => voi
             boxShadow: "0 4px 16px rgba(255,86,54,0.32)",
           }}
         >
-          <span style={{ fontSize: 15, fontWeight: 700, color: "#fff" }}>둘러보기 시작</span>
+          <span style={{ fontSize: 15, fontWeight: 700, color: "#fff" }}>{isKo ? "둘러보기 시작" : "Start Exploring"}</span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M5 12h14M13 6l6 6-6 6"/>
           </svg>
@@ -655,7 +655,7 @@ export default function MapPage() {
     <>
       {mobileView}
       {pcView}
-      {showPopup && <WelcomePopup isDark={isDark} onClose={closePopup} />}
+      {showPopup && <WelcomePopup isDark={isDark} isKo={isKo} onClose={closePopup} />}
     </>
   );
 }
