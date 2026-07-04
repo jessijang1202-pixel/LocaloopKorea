@@ -223,7 +223,9 @@ function WelcomePopup({ isDark, isKo, onClose }: { isDark: boolean; isKo: boolea
     {
       chipBg: isDark ? "#3A1A14" : "#FFF0EC",
       iconColor: isDark ? "#FF8A6D" : "#E2431F",
-      text: "Know if a place actually welcomes you — before you walk in.",
+      text: isKo
+        ? "들어가기 전에, 그 장소가 외국인을 환영하는지 먼저 알 수 있어요."
+        : "Know if a place actually welcomes you — before you walk in.",
       icon: (
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
           <path d="M12 2L4 6v6c0 4.6 3.5 8.9 8 9.9 4.5-1 8-5.3 8-9.9V6l-8-4z" fill="currentColor" opacity="0.25"/>
@@ -235,7 +237,9 @@ function WelcomePopup({ isDark, isKo, onClose }: { isDark: boolean; isKo: boolea
     {
       chipBg: isDark ? "#0C3B38" : "#D6F5F2",
       iconColor: isDark ? "#7FF0E6" : "#0A8C84",
-      text: "Get a step-by-step guide built for where you are right now.",
+      text: isKo
+        ? "지금 내 상황에 맞게 설계된 단계별 가이드를 받아보세요."
+        : "Get a step-by-step guide built for where you are right now.",
       icon: (
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="7" cy="17" r="2.2" fill="currentColor" stroke="none"/>
@@ -247,7 +251,9 @@ function WelcomePopup({ isDark, isKo, onClose }: { isDark: boolean; isKo: boolea
     {
       chipBg: isDark ? "#3A2E0C" : "#FFF3CC",
       iconColor: isDark ? "#FFD98A" : "#9A6000",
-      text: "Find spots locals love, not the ones tourists are sent to.",
+      text: isKo
+        ? "관광객이 아닌, 현지인들이 진짜 가는 장소를 찾아보세요."
+        : "Find spots locals love, not the ones tourists are sent to.",
       icon: (
         <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
           <path d="M13.5 2.1C13.5 2.1 16 5.5 16 8.5c0 1.8-1.2 3-2 3.5 1-1 1.2-3.5-.5-5.5C14 8 13 10 11 10c1.5-1.8 1-5-1-6.5C9 5 8 7.5 8 9.5c0 3 2 5.5 4 6.5 2-1 4-3.5 4-6.5 0-3.5-2.5-7.4-2.5-7.4z" opacity="0.9"/>
@@ -258,7 +264,9 @@ function WelcomePopup({ isDark, isKo, onClose }: { isDark: boolean; isKo: boolea
     {
       chipBg: isDark ? "#2A1F52" : "#EEE4FF",
       iconColor: isDark ? "#C3A8FF" : "#7B4DFF",
-      text: "Meet people who are ready to show you the real Korea.",
+      text: isKo
+        ? "진짜 한국을 보여줄 준비가 된 사람들을 만나보세요."
+        : "Meet people who are ready to show you the real Korea.",
       icon: (
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
           <circle cx="9" cy="7" r="3"/>
@@ -320,7 +328,7 @@ function WelcomePopup({ isDark, isKo, onClose }: { isDark: boolean; isKo: boolea
 
         {/* Headline */}
         <h2 style={{ fontSize: 25, fontWeight: 700, color: headline, letterSpacing: "-0.5px", lineHeight: 1.25, marginBottom: 20 }}>
-          Your Korea life<br />starts here.
+          {isKo ? <>한국 생활,<br />여기서 시작하세요.</> : <>Your Korea life<br />starts here.</>}
         </h2>
 
         {/* Value-prop rows */}
