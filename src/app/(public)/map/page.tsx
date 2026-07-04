@@ -8,7 +8,6 @@ import { SEED_PLACES, SEED_REGIONS } from "@/data/seed";
 import type { Place } from "@/types";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 
 const KakaoMap = dynamic(
   () => import("@/components/map/KakaoMap").then((m) => m.KakaoMap),
@@ -209,83 +208,155 @@ function PlaceCard2({ place, isKo, hot = false }: { place: Place; isKo: boolean;
   );
 }
 
-function WelcomePopup({ isKo, onClose }: { isKo: boolean; onClose: () => void }) {
-  const router = useRouter();
-  const [isPC, setIsPC] = useState(false);
+function WelcomePopup({ isDark, onClose }: { isDark: boolean; onClose: () => void }) {
+  const cardBg      = isDark ? "#1D1A22" : "#ffffff";
+  const cardBorder  = isDark ? "1px solid #2C2833" : "none";
+  const scrimBg     = isDark ? "rgba(0,0,0,0.68)" : "rgba(10,8,6,0.60)";
+  const eyebrow     = isDark ? "#FF8A6D" : "#E2431F";
+  const headline    = isDark ? "#F4F0E8" : "#16151A";
+  const bodyText    = isDark ? "#C9C4D6" : "#3A3630";
+  const closeBg     = isDark ? "#2A2733" : "#F3EEE4";
+  const closeColor  = isDark ? "#8B8598" : "#6C665B";
+  const btnBg       = isDark ? "#FF6A4D" : "#FF5636";
 
-  useEffect(() => {
-    setIsPC(window.innerWidth >= 768);
-  }, []);
-
-  function handleGuide() {
-    onClose();
-    router.push("/guide");
-  }
-
-  const features = [
-    { grade: "S/A/B/C", bg: "#FFE8E2", text: "#C0331A", title: isKo ? "외국인 친화 등급" : "Friendliness Rating", desc: isKo ? "영어 지원·카드 결제·혼자 OK 기준으로 장소를 4단계로 평가합니다." : "Places rated in 4 tiers by English, card payment, and solo-friendliness." },
-    { grade: "TASK",    bg: "#E8F4FF", text: "#1565C0", title: isKo ? "한국 생활 단계별 Tasks" : "Step-by-Step Korea Tasks", desc: isKo ? "USIM·은행·외국인등록증 등 정착 필수 과제를 순서대로 안내합니다." : "Guided tasks for USIM, bank, ARC, and every step of settling in." },
-    { grade: "COURSE",  bg: "#F0FFF0", text: "#2E7D32", title: isKo ? "진정한 로컬 코스 추천" : "Authentic Local Courses", desc: isKo ? "관광지가 아닌 현지인이 실제로 가는 동선으로 설계된 코스를 경험하세요." : "Courses built from routes locals actually take — not tourist trails." },
-    { grade: "MATCH",   bg: "#FFF9C4", text: "#A56000", title: isKo ? "커뮤니티 AI 매칭" : "Community AI Matching", desc: isKo ? "관심사·언어·위치 기반으로 한국인·외국인 모임을 자동으로 연결합니다." : "Auto-match with Korean locals and expats by interest, language, and location." },
+  const rows = [
+    {
+      chipBg: isDark ? "#3A1A14" : "#FFF0EC",
+      iconColor: isDark ? "#FF8A6D" : "#E2431F",
+      text: "Know if a place actually welcomes you — before you walk in.",
+      icon: (
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L4 6v6c0 4.6 3.5 8.9 8 9.9 4.5-1 8-5.3 8-9.9V6l-8-4z" fill="currentColor" opacity="0.25"/>
+          <path d="M12 2L4 6v6c0 4.6 3.5 8.9 8 9.9 4.5-1 8-5.3 8-9.9V6l-8-4z" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+          <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      ),
+    },
+    {
+      chipBg: isDark ? "#0C3B38" : "#D6F5F2",
+      iconColor: isDark ? "#7FF0E6" : "#0A8C84",
+      text: "Get a step-by-step guide built for where you are right now.",
+      icon: (
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="7" cy="17" r="2.2" fill="currentColor" stroke="none"/>
+          <circle cx="17" cy="7" r="2.2" fill="currentColor" stroke="none"/>
+          <path d="M17 9.2C17 13.2 14 14.8 12 14.8S7 15.8 7 17"/>
+        </svg>
+      ),
+    },
+    {
+      chipBg: isDark ? "#3A2E0C" : "#FFF3CC",
+      iconColor: isDark ? "#FFD98A" : "#9A6000",
+      text: "Find spots locals love, not the ones tourists are sent to.",
+      icon: (
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M13.5 2.1C13.5 2.1 16 5.5 16 8.5c0 1.8-1.2 3-2 3.5 1-1 1.2-3.5-.5-5.5C14 8 13 10 11 10c1.5-1.8 1-5-1-6.5C9 5 8 7.5 8 9.5c0 3 2 5.5 4 6.5 2-1 4-3.5 4-6.5 0-3.5-2.5-7.4-2.5-7.4z" opacity="0.9"/>
+          <path d="M9 17c0 1.7 1.3 3 3 3s3-1.3 3-3" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
+        </svg>
+      ),
+    },
+    {
+      chipBg: isDark ? "#2A1F52" : "#EEE4FF",
+      iconColor: isDark ? "#C3A8FF" : "#7B4DFF",
+      text: "Meet people who are ready to show you the real Korea.",
+      icon: (
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
+          <circle cx="9" cy="7" r="3"/>
+          <path d="M3 21v-2a5 5 0 015-5h4a5 5 0 015 5v2"/>
+          <circle cx="17.5" cy="7" r="2.2"/>
+          <path d="M21 21v-1.5a4 4 0 00-3.5-3.97"/>
+        </svg>
+      ),
+    },
   ];
-
-  const pad   = isPC ? "28px 26px 24px" : "22px 18px 20px";
-  const mxW   = isPC ? 440 : 330;
-  const titleSz = isPC ? 20 : 17;
-  const badgeSz = isPC ? 40 : 34;
-  const gap   = isPC ? 10 : 8;
 
   return (
     <div
       onClick={onClose}
-      style={{ position: "fixed", inset: 0, zIndex: 9999, background: "rgba(0,0,0,0.52)", display: "flex", alignItems: "center", justifyContent: "center", padding: "28px 20px" }}
+      style={{
+        position: "fixed", inset: 0, zIndex: 9999,
+        background: scrimBg,
+        backdropFilter: "blur(3px)",
+        WebkitBackdropFilter: "blur(3px)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        padding: "24px 20px",
+      }}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        style={{ background: "#ffffff", borderRadius: 22, width: "100%", maxWidth: mxW, maxHeight: "84dvh", overflowY: "auto", boxShadow: "0 24px 64px rgba(0,0,0,0.24)", padding: pad }}
+        style={{
+          background: cardBg,
+          border: cardBorder,
+          borderRadius: 26,
+          width: "100%",
+          maxWidth: 332,
+          boxShadow: isDark
+            ? "0 24px 60px rgba(0,0,0,0.6)"
+            : "0 16px 48px rgba(22,21,26,0.22)",
+          padding: "28px 24px 24px",
+          position: "relative",
+        }}
       >
-        {/* Logo */}
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: 14 }}>
-          <div style={{ width: 40, height: 40, borderRadius: 12, background: "linear-gradient(135deg,#FF5636 0%,#c43e2a 100%)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(255,86,54,0.35)" }}>
-            <span style={{ fontSize: 19, fontWeight: 900, color: "#fff", letterSpacing: "-0.5px" }}>L</span>
-          </div>
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          style={{
+            position: "absolute", top: 20, right: 20,
+            width: 30, height: 30, borderRadius: "50%",
+            background: closeBg, border: "none", cursor: "pointer",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            color: closeColor,
+          }}
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </button>
+
+        {/* Eyebrow */}
+        <div style={{ fontSize: 11, fontWeight: 700, color: eyebrow, letterSpacing: "0.22em", marginBottom: 10 }}>
+          DIG INTO LOCAL KOREA
         </div>
 
-        {/* Title */}
-        <div style={{ textAlign: "center", marginBottom: 18 }}>
-          <div style={{ fontSize: 10, fontWeight: 800, color: "#FF5636", letterSpacing: "0.12em", marginBottom: 5 }}>LOCALOOP KOREA</div>
-          <h2 style={{ fontSize: titleSz, fontWeight: 900, color: "#16151A", letterSpacing: "-0.03em", lineHeight: 1.25, marginBottom: 5 }}>
-            {isKo ? "한국 생활의 새로운 시작" : "Your New Start in Korea"}
-          </h2>
-          <p style={{ fontSize: 12, color: "#6B6880", lineHeight: 1.6 }}>
-            {isKo ? "Localoop Korea의 4가지 핵심 기능을 소개합니다." : "Discover the 4 core features of Localoop Korea."}
-          </p>
-        </div>
+        {/* Headline */}
+        <h2 style={{ fontSize: 25, fontWeight: 700, color: headline, letterSpacing: "-0.5px", lineHeight: 1.25, marginBottom: 20 }}>
+          Your Korea life<br />starts here.
+        </h2>
 
-        {/* Feature list — always single column */}
-        <div style={{ display: "flex", flexDirection: "column", gap: gap, marginBottom: 18 }}>
-          {features.map((f) => (
-            <div key={f.grade} style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "11px 13px", borderRadius: 14, background: "#F7F6F9", border: "1px solid #EDECF2" }}>
-              <div style={{ width: badgeSz, height: badgeSz, borderRadius: 10, flexShrink: 0, background: f.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, fontWeight: 800, color: f.text, textAlign: "center", lineHeight: 1.25 }}>
-                {f.grade}
+        {/* Value-prop rows */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 22 }}>
+          {rows.map((row, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+              <div style={{
+                width: 32, height: 32, borderRadius: 10, flexShrink: 0,
+                background: row.chipBg,
+                color: row.iconColor,
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}>
+                {row.icon}
               </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#16151A", marginBottom: 3 }}>{f.title}</div>
-                <div style={{ fontSize: 11, color: "#6B6880", lineHeight: 1.55 }}>{f.desc}</div>
-              </div>
+              <p style={{ fontSize: 13, color: bodyText, lineHeight: 1.55, margin: 0, paddingTop: 3 }}>
+                {row.text}
+              </p>
             </div>
           ))}
         </div>
 
-        {/* Buttons */}
-        <div style={{ display: "flex", gap: 8 }}>
-          <button onClick={handleGuide} style={{ flex: 1, padding: "13px 0", borderRadius: 13, background: "#FF5636", color: "#fff", fontSize: 13, fontWeight: 700, border: "none", cursor: "pointer", boxShadow: "0 4px 12px rgba(255,86,54,0.28)" }}>
-            {isKo ? "유저 가이드 보기" : "View User Guide"}
-          </button>
-          <button onClick={onClose} style={{ padding: "13px 18px", borderRadius: 13, background: "#F0EFF5", color: "#6B6880", fontSize: 13, fontWeight: 600, border: "none", cursor: "pointer" }}>
-            {isKo ? "닫기" : "Close"}
-          </button>
-        </div>
+        {/* CTA button */}
+        <button
+          onClick={onClose}
+          style={{
+            width: "100%", height: 50, borderRadius: 14,
+            background: btnBg, border: "none", cursor: "pointer",
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+            boxShadow: "0 4px 16px rgba(255,86,54,0.32)",
+          }}
+        >
+          <span style={{ fontSize: 15, fontWeight: 700, color: "#fff" }}>둘러보기 시작</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M5 12h14M13 6l6 6-6 6"/>
+          </svg>
+        </button>
       </div>
     </div>
   );
@@ -303,13 +374,13 @@ export default function MapPage() {
   const dragStartY = useRef<number | null>(null);
 
   useEffect(() => {
-    if (!sessionStorage.getItem("ll_welcome_shown")) {
+    if (!localStorage.getItem("ll_welcome_shown")) {
       setShowPopup(true);
     }
   }, []);
 
   function closePopup() {
-    sessionStorage.setItem("ll_welcome_shown", "1");
+    localStorage.setItem("ll_welcome_shown", "1");
     setShowPopup(false);
   }
 
@@ -584,7 +655,7 @@ export default function MapPage() {
     <>
       {mobileView}
       {pcView}
-      {showPopup && <WelcomePopup isKo={isKo} onClose={closePopup} />}
+      {showPopup && <WelcomePopup isDark={isDark} onClose={closePopup} />}
     </>
   );
 }
