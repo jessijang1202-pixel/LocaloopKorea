@@ -51,7 +51,7 @@ function calcGrade(ls: number, ar: number, pd: number, lf: number): PlaceGrade {
   return "D";
 }
 
-function GradeBadge({ grade }: { grade: PladeGrade | string }) {
+function GradeBadge({ grade }: { grade: PlaceGrade | string }) {
   return (
     <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg text-white text-xs font-bold flex-shrink-0"
           style={{ background: GRADE_COLORS[grade] ?? "#9A9488" }}>

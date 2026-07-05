@@ -20,7 +20,7 @@ const MOCK_COURSE = {
   budget_min: 30000,
   budget_max: 60000,
   duration_minutes: 180,
-  status: "active" as const,
+  status: "active" as "active" | "inactive",
   places: [
     { id: "cp1", place_id: "p1", name_ko: "라이너스 BBQ", grade: "S" },
     { id: "cp2", place_id: "p7", name_ko: "더 나인 카페",  grade: "A" },
@@ -39,7 +39,7 @@ export default function CourseEditorPage() {
   const [form, setForm] = useState(isNew ? {
     name_ko: "", name_en: "", description_ko: "", description_en: "",
     region: "", theme: "", language_level: "beginner", budget_min: 0, budget_max: 0,
-    duration_minutes: 60, status: "active" as const, places: [] as typeof MOCK_COURSE.places,
+    duration_minutes: 60, status: "active" as "active" | "inactive", places: [] as typeof MOCK_COURSE.places,
   } : MOCK_COURSE);
 
   const [saving, setSaving] = useState(false);
