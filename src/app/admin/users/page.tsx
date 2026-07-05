@@ -106,7 +106,7 @@ export default function UsersPage() {
     <>
       {selected && <UserDetailModal user={selected} onClose={() => setSelected(null)} />}
 
-      <div className="p-5 max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto w-full">
         <div className="flex flex-wrap items-center gap-3 mb-4">
           <div className="relative flex-1 min-w-52">
             <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />

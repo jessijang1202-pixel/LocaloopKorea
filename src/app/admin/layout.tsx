@@ -49,7 +49,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             adminName="관리자"
             onMenuToggle={() => setSidebarOpen(v => !v)}
           />
-          <main className="flex-1 overflow-y-auto">
+          <main className="flex-1 overflow-y-auto px-4 py-5 md:px-8 md:py-6">
             {children}
           </main>
         </div>

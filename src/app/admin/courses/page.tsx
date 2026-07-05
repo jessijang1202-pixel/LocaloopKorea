@@ -52,7 +52,7 @@ export default function CoursesPage() {
   }
 
   return (
-    <div className="p-5 max-w-6xl mx-auto">
+    <div className="max-w-6xl mx-auto w-full">
       {/* Top bar */}
       <div className="flex flex-wrap items-center gap-3 mb-4">
         <div className="relative flex-1 min-w-52">

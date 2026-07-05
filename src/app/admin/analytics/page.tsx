@@ -126,7 +126,7 @@ export default function AnalyticsPage() {
   const [dateRange, setDateRange] = useState("6months");
 
   return (
-    <div className="p-5 max-w-6xl mx-auto">
+    <div className="max-w-6xl mx-auto w-full">
       {/* Date range picker */}
       <div className="flex items-center justify-between mb-5">
         <p className="text-xs text-gray-400">데이터 기준 기간</p>

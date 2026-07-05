@@ -144,7 +144,7 @@ export default function ContentPage() {
         onConfirm={() => { setTasks(prev => prev.filter(t => t.id !== deleteTarget)); setDeleteTarget(null); toast("삭제되었습니다.", "error"); }}
         onCancel={() => setDeleteTarget(null)} />
 
-      <div className="p-5 max-w-5xl mx-auto">
+      <div className="max-w-5xl mx-auto w-full">
         {/* Tabs */}
         <div className="flex gap-1 bg-gray-100 rounded-xl p-1 w-fit mb-5">
           {(["tasks", "articles"] as const).map(t => (

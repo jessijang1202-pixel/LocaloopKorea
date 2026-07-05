@@ -62,7 +62,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="p-5 max-w-2xl mx-auto flex flex-col gap-5">
+    <div className="max-w-2xl mx-auto w-full flex flex-col gap-5">
 
       {/* Admin profile */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
