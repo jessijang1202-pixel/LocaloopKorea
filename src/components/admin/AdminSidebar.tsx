@@ -65,7 +65,7 @@ export function AdminSidebar({ open, onClose }: Props) {
         </div>
 
         {/* Nav items */}
-        <nav className="flex-1 py-4 px-3 flex flex-col gap-0.5 overflow-y-auto">
+        <nav className="flex-1 py-5 px-3 flex flex-col gap-1 overflow-y-auto">
           {NAV.map((item) => {
             const active = isActive(item);
             const Icon = item.icon;
@@ -75,7 +75,7 @@ export function AdminSidebar({ open, onClose }: Props) {
                 href={item.href}
                 onClick={onClose}
                 className={[
-                  "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors group",
+                  "flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-colors group",
                   active
                     ? "bg-[#FF5636]/15 text-[#FF8C72] border-l-[3px] border-[#FF5636]"
                     : "text-white/50 hover:text-white/80 hover:bg-white/5 border-l-[3px] border-transparent",

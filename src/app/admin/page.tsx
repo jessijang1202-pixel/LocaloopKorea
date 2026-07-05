@@ -172,17 +172,14 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto w-full">
+    <div className="max-w-6xl mx-auto w-full flex flex-col gap-6">
 
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-lg font-bold text-gray-900">대시보드</h2>
-          <p className="text-xs text-gray-400 mt-0.5">2025년 7월 5일 기준</p>
-        </div>
+      {/* Header — date + refresh only (title shown in topbar) */}
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-gray-400">2025년 7월 5일 기준</p>
         <button
           onClick={handleRefresh}
-          className="flex items-center gap-2 px-3 py-2 rounded-xl border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
         >
           <RefreshCw size={14} className={refreshing ? "animate-spin" : ""} />
           새로고침
@@ -190,7 +187,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stat cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard icon={MapPin}    label="총 장소 수"           value={STATS.totalPlaces}  color="#FF5636" />
         <StatCard icon={Users}     label="총 사용자 수"          value={STATS.totalUsers}   color="#12BFB6" />
         <StatCard icon={BookOpen}  label="로컬 코스 수"          value={STATS.totalCourses} color="#7B4DFF" />
@@ -200,7 +197,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Charts row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-5">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <GradeBarChart />
         <SignupLineChart />
         <RegionsChart />
@@ -208,14 +205,14 @@ export default function AdminDashboard() {
 
       {/* Activity log */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        <div className="flex items-center gap-2 px-5 py-4 border-b border-gray-100">
+        <div className="flex items-center gap-2 px-6 py-4 border-b border-gray-100">
           <Activity size={16} className="text-gray-400" />
           <h3 className="font-semibold text-gray-800 text-sm">최근 활동 로그</h3>
           <span className="ml-auto text-xs text-gray-400">최근 10건</span>
         </div>
         <div className="divide-y divide-gray-50">
           {ACTIVITY_LOG.map((log) => (
-            <div key={log.id} className="flex items-center gap-4 px-5 py-3 hover:bg-gray-50/50 transition-colors">
+            <div key={log.id} className="flex items-center gap-4 px-6 py-3.5 hover:bg-gray-50/50 transition-colors">
               <ActivityTypeChip type={log.type} />
               <span className="text-sm text-gray-700 font-medium">{log.action}</span>
               <span className="text-sm text-gray-400">{log.region}</span>
