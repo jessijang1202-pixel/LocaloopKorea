@@ -29,10 +29,9 @@ export async function updateSession(request: NextRequest) {
   const isAdminRoute = pathname.startsWith("/admin");
   const isAdminLogin = pathname === "/admin/login";
 
-  // ── Admin route protection (always active, ignores BYPASS_AUTH) ──
+  // ── Admin route protection ──
   if (isAdminRoute && !isAdminLogin) {
-    // No Supabase configured → allow through in dev (show UI without data)
-    if (!url.startsWith("https://") || key.length < 20) {
+    if (BYPASS_AUTH || !url.startsWith("https://") || key.length < 20) {
       return supabaseResponse;
     }
 
