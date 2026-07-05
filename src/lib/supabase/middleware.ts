@@ -14,6 +14,14 @@ const ONBOARDING_GATED = ["/tasks", "/courses", "/community"];
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
+  // Redirect admin subdomain to /admin
+  const host = request.headers.get("host") ?? "";
+  if (host === "admin.localoop.kr" && !request.nextUrl.pathname.startsWith("/admin")) {
+    const dest = request.nextUrl.clone();
+    dest.pathname = "/admin";
+    return NextResponse.redirect(dest);
+  }
+
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
 

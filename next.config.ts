@@ -1,16 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  async redirects() {
-    return [
-      {
-        source: "/",
-        has: [{ type: "host", value: "admin.localoop.kr" }],
-        destination: "https://admin.localoop.kr/admin",
-        permanent: false,
-      },
-    ];
-  },
   images: {
     remotePatterns: [
       {
