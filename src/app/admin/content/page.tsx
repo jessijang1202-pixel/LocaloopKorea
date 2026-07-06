@@ -165,7 +165,7 @@ export default function ContentPage() {
                 <Plus size={14} /> 태스크 추가
               </button>
             </div>
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-[18px] shadow-[0_6px_20px_-16px_rgba(0,0,0,0.25)] overflow-hidden">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-100 bg-gray-50/60">
@@ -221,7 +221,7 @@ export default function ContentPage() {
                 <Plus size={14} /> 아티클 추가
               </button>
             </div>
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-[18px] shadow-[0_6px_20px_-16px_rgba(0,0,0,0.25)] overflow-hidden">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-100 bg-gray-50/60">

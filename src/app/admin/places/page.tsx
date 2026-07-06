@@ -471,7 +471,7 @@ export default function PlacesPage() {
         <p className="text-xs text-gray-400 mb-3">총 {filtered.length}개 장소</p>
 
         {/* Table */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-[18px] shadow-[0_6px_20px_-16px_rgba(0,0,0,0.25)] overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>

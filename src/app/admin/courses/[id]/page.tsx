@@ -99,7 +99,7 @@ export default function CourseEditorPage() {
 
         <div className="flex flex-col gap-5">
           {/* Basic info */}
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col gap-4">
+          <div className="bg-white rounded-[18px] shadow-[0_6px_20px_-16px_rgba(0,0,0,0.25)] p-[22px] flex flex-col gap-4">
             <h3 className="font-semibold text-gray-800 text-sm">기본 정보</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
@@ -126,7 +126,7 @@ export default function CourseEditorPage() {
           </div>
 
           {/* Meta */}
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col gap-4">
+          <div className="bg-white rounded-[18px] shadow-[0_6px_20px_-16px_rgba(0,0,0,0.25)] p-[22px] flex flex-col gap-4">
             <h3 className="font-semibold text-gray-800 text-sm">코스 설정</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               <div>
@@ -171,7 +171,7 @@ export default function CourseEditorPage() {
           </div>
 
           {/* Places */}
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+          <div className="bg-white rounded-[18px] shadow-[0_6px_20px_-16px_rgba(0,0,0,0.25)] p-[22px]">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-gray-800 text-sm">포함 장소 ({form.places.length}개)</h3>
               <button className="flex items-center gap-1.5 text-xs text-[#FF5636] font-semibold hover:underline">

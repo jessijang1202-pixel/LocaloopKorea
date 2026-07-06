@@ -54,7 +54,7 @@ function GradeTrendChart() {
   const barW = chartW / GRADE_TREND.length - 4;
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+    <div className="bg-white rounded-[18px] shadow-[0_6px_20px_-16px_rgba(0,0,0,0.25)] p-[22px]">
       <h3 className="font-semibold text-gray-800 text-sm mb-4">등급 트렌드 (월별)</h3>
       <div className="flex gap-3 mb-3 flex-wrap">
         {Object.entries(GRADE_COLORS).map(([g, c]) => (
@@ -91,7 +91,7 @@ function UserNationChart() {
   const chartH = 140, chartW = 480;
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+    <div className="bg-white rounded-[18px] shadow-[0_6px_20px_-16px_rgba(0,0,0,0.25)] p-[22px]">
       <h3 className="font-semibold text-gray-800 text-sm mb-4">국적별 사용자 증가 (최근 6개월)</h3>
       <div className="flex gap-3 mb-3 flex-wrap">
         {USER_BY_NATION.map((n, i) => (
@@ -152,7 +152,7 @@ export default function AnalyticsPage() {
         {/* Bottom row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Top courses */}
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+          <div className="bg-white rounded-[18px] shadow-[0_6px_20px_-16px_rgba(0,0,0,0.25)] p-[22px]">
             <h3 className="font-semibold text-gray-800 text-sm mb-4">인기 코스 Top 5</h3>
             <div className="flex flex-col gap-3">
               {TOP_COURSES.map((c, i) => (
@@ -167,7 +167,7 @@ export default function AnalyticsPage() {
           </div>
 
           {/* Search keywords */}
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+          <div className="bg-white rounded-[18px] shadow-[0_6px_20px_-16px_rgba(0,0,0,0.25)] p-[22px]">
             <h3 className="font-semibold text-gray-800 text-sm mb-4">검색 키워드 빈도</h3>
             <div className="flex flex-col gap-2.5">
               {TOP_KEYWORDS.map((kw, i) => {

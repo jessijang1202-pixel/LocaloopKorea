@@ -65,7 +65,7 @@ export default function SettingsPage() {
     <div className="max-w-2xl mx-auto w-full flex flex-col gap-5">
 
       {/* Admin profile */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+      <div className="bg-white rounded-[18px] shadow-[0_6px_20px_-16px_rgba(0,0,0,0.25)] p-[22px]">
         <h3 className="font-semibold text-gray-800 text-sm mb-4">관리자 프로필</h3>
         <div className="flex flex-col gap-3">
           <div>
@@ -92,7 +92,7 @@ export default function SettingsPage() {
       </div>
 
       {/* Grade weights */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+      <div className="bg-white rounded-[18px] shadow-[0_6px_20px_-16px_rgba(0,0,0,0.25)] p-[22px]">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-gray-800 text-sm">등급 가중치</h3>
           <div className="flex items-center gap-3">
@@ -128,7 +128,7 @@ export default function SettingsPage() {
       </div>
 
       {/* Cron schedule */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+      <div className="bg-white rounded-[18px] shadow-[0_6px_20px_-16px_rgba(0,0,0,0.25)] p-[22px]">
         <h3 className="font-semibold text-gray-800 text-sm mb-4">데이터 수집 스케줄</h3>
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
@@ -167,7 +167,7 @@ export default function SettingsPage() {
       </div>
 
       {/* Notification settings */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+      <div className="bg-white rounded-[18px] shadow-[0_6px_20px_-16px_rgba(0,0,0,0.25)] p-[22px]">
         <h3 className="font-semibold text-gray-800 text-sm mb-4">알림 설정</h3>
         <div className="flex flex-col gap-3">
           {[
@@ -192,7 +192,7 @@ export default function SettingsPage() {
       </div>
 
       {/* API keys */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+      <div className="bg-white rounded-[18px] shadow-[0_6px_20px_-16px_rgba(0,0,0,0.25)] p-[22px]">
         <h3 className="font-semibold text-gray-800 text-sm mb-1">API 키 관리</h3>
         <p className="text-xs text-gray-400 mb-4">키는 환경 변수에 저장됩니다. 여기서 변경 시 서버 재시작이 필요할 수 있습니다.</p>
         <div className="flex flex-col gap-4">

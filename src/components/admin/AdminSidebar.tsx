@@ -8,13 +8,13 @@ import {
 } from "lucide-react";
 
 const NAV = [
-  { href: "/admin",          label: "대시보드",    icon: LayoutDashboard, exact: true },
-  { href: "/admin/places",   label: "장소 관리",   icon: MapPin },
-  { href: "/admin/courses",  label: "로컬 코스",   icon: BookOpen },
-  { href: "/admin/users",    label: "사용자",      icon: Users },
-  { href: "/admin/content",  label: "콘텐츠",      icon: FileText },
-  { href: "/admin/analytics",label: "분석",        icon: BarChart2 },
-  { href: "/admin/settings", label: "설정",        icon: Settings },
+  { href: "/admin",           label: "대시보드",  icon: LayoutDashboard, exact: true },
+  { href: "/admin/places",    label: "장소 관리", icon: MapPin },
+  { href: "/admin/courses",   label: "로컬 코스", icon: BookOpen },
+  { href: "/admin/users",     label: "사용자",    icon: Users },
+  { href: "/admin/content",   label: "콘텐츠",    icon: FileText },
+  { href: "/admin/analytics", label: "분석",      icon: BarChart2 },
+  { href: "/admin/settings",  label: "설정",      icon: Settings },
 ];
 
 interface Props {
@@ -31,32 +31,27 @@ export function AdminSidebar({ open, onClose }: Props) {
 
   return (
     <>
-      {/* Mobile overlay */}
       {open && (
-        <div
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
-          onClick={onClose}
-        />
+        <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={onClose} />
       )}
 
-      {/* Sidebar */}
       <aside
         className={[
-          "fixed top-0 left-0 z-50 h-full w-60 flex flex-col",
-          "bg-[#16151A] transition-transform duration-300",
+          "fixed top-0 left-0 z-50 h-full w-[248px] flex flex-col",
+          "bg-[#16151A] border-t-[3px] border-t-[#FF5636] transition-transform duration-300",
           "lg:translate-x-0 lg:static lg:z-auto",
           open ? "translate-x-0" : "-translate-x-full",
         ].join(" ")}
       >
-        {/* Logo row */}
-        <div className="flex items-center justify-between px-5 py-5 border-b border-white/8">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-[#FF5636] flex items-center justify-center flex-shrink-0">
-              <span className="text-white font-black text-sm">L</span>
+        {/* Logo */}
+        <div className="flex items-center justify-between px-5 py-[22px]">
+          <div className="flex items-center gap-[11px]">
+            <div className="w-[38px] h-[38px] rounded-[11px] bg-[#FF5636] flex items-center justify-center flex-shrink-0">
+              <span className="text-white font-bold text-lg">L</span>
             </div>
             <div className="leading-tight">
-              <div className="text-white font-bold text-sm">Localoop</div>
-              <div className="text-[#FF8C72] font-bold text-[9px] tracking-widest">ADMIN</div>
+              <div className="text-white font-bold text-[17px] tracking-[-0.3px]">Localoop</div>
+              <div className="text-[#FF6A4D] font-bold text-[10px] tracking-[2px]">ADMIN</div>
             </div>
           </div>
           <button onClick={onClose} className="lg:hidden text-white/40 hover:text-white">
@@ -64,8 +59,8 @@ export function AdminSidebar({ open, onClose }: Props) {
           </button>
         </div>
 
-        {/* Nav items */}
-        <nav className="flex-1 py-5 px-3 flex flex-col gap-1 overflow-y-auto">
+        {/* Nav */}
+        <nav className="flex-1 py-2.5 px-3 flex flex-col gap-[2px] overflow-y-auto">
           {NAV.map((item) => {
             const active = isActive(item);
             const Icon = item.icon;
@@ -75,29 +70,30 @@ export function AdminSidebar({ open, onClose }: Props) {
                 href={item.href}
                 onClick={onClose}
                 className={[
-                  "flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-colors group",
+                  "flex items-center gap-3 px-[14px] py-[11px] rounded-[12px] text-sm font-medium transition-colors",
                   active
-                    ? "bg-[#FF5636]/15 text-[#FF8C72] border-l-[3px] border-[#FF5636]"
-                    : "text-white/50 hover:text-white/80 hover:bg-white/5 border-l-[3px] border-transparent",
+                    ? "bg-[#FF5636] text-white"
+                    : "text-[#9A94A2] hover:text-white hover:bg-white/8",
                 ].join(" ")}
               >
-                <Icon size={17} className="flex-shrink-0" />
+                <Icon size={20} className="flex-shrink-0" />
                 <span className="flex-1">{item.label}</span>
-                {active && <ChevronRight size={13} className="opacity-60" />}
+                {active && <ChevronRight size={14} className="opacity-80" />}
               </Link>
             );
           })}
         </nav>
 
         {/* Bottom */}
-        <div className="px-3 pb-5 border-t border-white/8 pt-4">
+        <div className="px-5 pb-[22px] pt-4 border-t border-[#26242C]">
           <Link
             href="/"
-            className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-white/40 hover:text-white/60 hover:bg-white/5 transition-colors"
+            className="flex items-center gap-2 text-xs text-[#6E687A] hover:text-[#9A94A2] transition-colors mb-2"
           >
-            <ChevronRight size={13} className="rotate-180" />
-            <span>사용자 앱으로 이동</span>
+            <ChevronRight size={12} className="rotate-180" />
+            사용자 앱으로 이동
           </Link>
+          <div className="text-[11px] text-[#4E4858] mt-1">admin.localoop.kr</div>
         </div>
       </aside>
     </>
