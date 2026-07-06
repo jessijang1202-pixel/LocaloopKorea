@@ -157,7 +157,7 @@ export default function AdminDashboard() {
 
       {/* Date + Refresh */}
       <div className="flex items-center justify-between">
-        <p className="text-[13.5px] text-[#8A8478]">2025년 7월 5일 기준</p>
+        <p className="text-[13.5px] text-[#8A8478]">2026년 7월 6일 기준</p>
         <button
           onClick={handleRefresh}
           className="flex items-center gap-1.5 text-sm font-semibold text-[#6C665B] hover:text-[#16151A] transition-colors"
