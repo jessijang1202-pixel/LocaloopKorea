@@ -69,8 +69,8 @@ function StatCard({ icon: Icon, label, value, sub, color }: {
 function GradeDistCard() {
   const total = Object.values(GRADE_DIST).reduce((a, b) => a + b, 0);
   return (
-    <div className={`${CARD} p-[22px]`}>
-      <h3 className="font-bold text-[15px] text-[#16151A] mb-[18px]">등급 분포</h3>
+    <div className={`${CARD} p-7`}>
+      <h3 className="font-bold text-[15px] text-[#16151A] mb-5">등급 분포</h3>
       <div className="flex justify-between gap-2">
         {Object.entries(GRADE_DIST).map(([grade, count]) => (
           <div key={grade} className="flex-1 text-center">
@@ -100,7 +100,7 @@ function SignupChart() {
   const area = `0,${H} ${line} ${W},${H}`;
 
   return (
-    <div className={`${CARD} p-[22px] flex flex-col`}>
+    <div className={`${CARD} p-7 flex flex-col`}>
       <div className="flex items-center justify-between mb-2">
         <h3 className="font-bold text-[15px] text-[#16151A]">신규 가입 (30일)</h3>
         <span className="text-xs text-[#9A9488]">총 {SIGNUPS_30.reduce((a, d) => a + d.count, 0).toLocaleString()}명</span>
@@ -126,8 +126,8 @@ function SignupChart() {
 function RegionsCard() {
   const max = TOP_REGIONS[0].count;
   return (
-    <div className={`${CARD} p-[22px]`}>
-      <h3 className="font-bold text-[15px] text-[#16151A] mb-4">지역별 장소 수 (Top 5)</h3>
+    <div className={`${CARD} p-7`}>
+      <h3 className="font-bold text-[15px] text-[#16151A] mb-5">지역별 장소 수 (Top 5)</h3>
       <div className="flex flex-col gap-3">
         {TOP_REGIONS.map((r) => (
           <div key={r.region} className="flex items-center gap-2.5">
@@ -153,7 +153,7 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto w-full flex flex-col gap-5">
+    <div className="max-w-6xl mx-auto w-full flex flex-col gap-7">
 
       {/* Date + Refresh */}
       <div className="flex items-center justify-between">
@@ -168,7 +168,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stat cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-[18px]">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
         <StatCard icon={MapPin}    label="총 장소 수"           value={STATS.totalPlaces}  color="#FF5636" />
         <StatCard icon={Users}     label="총 사용자 수"          value={STATS.totalUsers}   color="#12BFB6" />
         <StatCard icon={BookOpen}  label="로컬 코스 수"          value={STATS.totalCourses} color="#7B4DFF" />
@@ -177,7 +177,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-[18px]">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         <GradeDistCard />
         <SignupChart />
         <RegionsCard />
@@ -185,7 +185,7 @@ export default function AdminDashboard() {
 
       {/* Activity log */}
       <div className={CARD}>
-        <div className="flex items-center justify-between px-[22px] py-4 border-b border-[#F0EBDE]">
+        <div className="flex items-center justify-between px-7 py-5 border-b border-[#F0EBDE]">
           <div className="flex items-center gap-2">
             <Activity size={16} className="text-[#8A8478]" />
             <h3 className="font-bold text-[15px] text-[#16151A]">최근 활동 로그</h3>
@@ -197,7 +197,7 @@ export default function AdminDashboard() {
             const s = ACTION_STYLE[log.type] ?? { label: log.type, color: "#9A9488" };
             return (
               <div key={log.id}
-                className="flex items-center gap-4 px-[22px] py-[11px] border-t border-[#F0EBDE] first:border-t-0 hover:bg-[#FAF8F4] transition-colors">
+                className="flex items-center gap-4 px-7 py-[14px] border-t border-[#F0EBDE] first:border-t-0 hover:bg-[#FAF8F4] transition-colors">
                 <span className="w-[44px] text-xs font-bold flex-shrink-0" style={{ color: s.color }}>{s.label}</span>
                 <span className="flex-1 text-[13.5px] text-[#16151A]">{log.action}</span>
                 <span className="w-[70px] text-[12.5px] text-[#6C665B]">{log.region}</span>
