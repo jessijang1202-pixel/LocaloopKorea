@@ -5,9 +5,9 @@ import { useState } from "react";
 /* ── data ── */
 const STATS = [
   { label: "총 장소 수",          value: 247,   color: "#FF5636", iconBg: "#FFF0EC", icon: "pin" },
-  { label: "총 사용자 수",         value: 1832,  color: "#12BFB6", iconBg: "#E6FAF9", icon: "users" },
-  { label: "로컬 코스 수",         value: 34,    color: "#7B4DFF", iconBg: "#EEE6FF", icon: "book" },
-  { label: "오늘 업데이트된 장소",  value: 18,    color: "#F59E0B", iconBg: "#FEF3C7", icon: "refresh", sub: "전체의 7%" },
+  { label: "총 사용자 수",         value: 1832,  color: "#0a8c84", iconBg: "#D6F5F2", icon: "users" },
+  { label: "로컬 코스 수",         value: 34,    color: "#7B4DFF", iconBg: "#EEE4FF", icon: "book" },
+  { label: "오늘 업데이트된 장소",  value: 18,    color: "#a06b00", iconBg: "#FFEec2", icon: "refresh", sub: "전체의 7%" },
 ];
 
 const GRADE_DIST: [string, number, string, string][] = [
@@ -15,30 +15,27 @@ const GRADE_DIST: [string, number, string, string][] = [
   ["A", 88, "#12BFB6", "#fff"],
   ["B", 71, "#FFC93C", "#3a2c00"],
   ["C", 34, "#7B4DFF", "#fff"],
-  ["D", 12, "#9A9488", "#fff"],
+  ["D", 12, "#D6D0C4", "#5F5A50"],
 ];
 
 const SIGNUPS = [45,62,38,71,55,90,48,66,42,78,53,85,39,70,47,82,56,93,44,68,51,87,41,74,49,83,57,96,43,72];
 
 const REGIONS = [
   { name: "이태원", count: 58 },
-  { name: "홍대",   count: 47 },
+  { name: "한남",   count: 47 },
   { name: "강남",   count: 39 },
   { name: "명동",   count: 31 },
-  { name: "신촌",   count: 22 },
+  { name: "서이",   count: 22 },
 ];
 
 const LOGS = [
   { id: 1, type: "collect", action: "데이터 수집",    region: "이태원", time: "3분 전" },
-  { id: 2, type: "edit",    action: "등급 수정",      region: "홍대",   time: "14분 전" },
+  { id: 2, type: "edit",    action: "등급 수정",      region: "한남",   time: "14분 전" },
   { id: 3, type: "add",     action: "신규 장소 추가", region: "강남",   time: "1시간 전" },
   { id: 4, type: "collect", action: "데이터 수집",    region: "명동",   time: "2시간 전" },
   { id: 5, type: "delete",  action: "장소 삭제",      region: "이태원", time: "3시간 전" },
-  { id: 6, type: "edit",    action: "등급 수정",      region: "신촌",   time: "5시간 전" },
-  { id: 7, type: "add",     action: "신규 장소 추가", region: "홍대",   time: "어제" },
-  { id: 8, type: "collect", action: "데이터 수집",    region: "이태원", time: "어제" },
-  { id: 9, type: "edit",    action: "등급 수정",      region: "강남",   time: "2일 전" },
-  { id: 10, type: "add",   action: "신규 장소 추가", region: "명동",   time: "2일 전" },
+  { id: 6, type: "edit",    action: "등급 수정",      region: "서이",   time: "5시간 전" },
+  { id: 7, type: "add",     action: "신규 장소 추가", region: "한남",   time: "어제" },
 ];
 
 const LOG_STYLE: Record<string, { label: string; color: string }> = {
@@ -52,7 +49,7 @@ const LOG_STYLE: Record<string, { label: string; color: string }> = {
 const CARD: React.CSSProperties = {
   background: "#fff",
   borderRadius: 18,
-  boxShadow: "0 2px 16px rgba(0,0,0,0.06)",
+  boxShadow: "0 6px 20px -16px rgba(0,0,0,0.25)",
 };
 
 function Icon({ name, color }: { name: string; color: string }) {
@@ -84,7 +81,7 @@ function Icon({ name, color }: { name: string; color: string }) {
 /* ── chart ── */
 function SignupChart() {
   const max = Math.max(...SIGNUPS);
-  const W = 520, H = 130;
+  const W = 520, H = 150;
   const pts = SIGNUPS.map((v, i) => {
     const x = (i / (SIGNUPS.length - 1)) * W;
     const y = H - (v / max) * (H - 8);
@@ -94,22 +91,22 @@ function SignupChart() {
   const area = `0,${H} ${line} ${W},${H}`;
   const total = SIGNUPS.reduce((a, b) => a + b, 0);
   return (
-    <div style={{ ...CARD, padding: 24, display: "flex", flexDirection: "column" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-        <span style={{ fontWeight: 700, fontSize: 15, color: "#16151A" }}>신규 가입 (30일)</span>
+    <div style={{ ...CARD, padding: 22, display: "flex", flexDirection: "column" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
+        <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 15, color: "#16151A" }}>신규 가입 (30일)</span>
         <span style={{ fontSize: 12, color: "#9A9488" }}>총 {total.toLocaleString()}명</span>
       </div>
-      <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: 120 }} preserveAspectRatio="none">
+      <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: 130, marginTop: 8 }} preserveAspectRatio="none">
         <defs>
           <linearGradient id="sg" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#FF5636" stopOpacity="0.22"/>
+            <stop offset="0%" stopColor="#FF5636" stopOpacity="0.28"/>
             <stop offset="100%" stopColor="#FF5636" stopOpacity="0"/>
           </linearGradient>
         </defs>
-        <polygon points={area} fill="url(#sg)"/>
+        <polygon points={area} fill="url(#sg)" stroke="none"/>
         <polyline points={line} fill="none" stroke="#FF5636" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
-      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#B3AC9F", marginTop: 4 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#B3AC9F", marginTop: 2 }}>
         <span>30일 전</span><span>오늘</span>
       </div>
     </div>
@@ -123,14 +120,14 @@ export default function AdminDashboard() {
   const maxRegion = REGIONS[0].count;
 
   return (
-    <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", flexDirection: "column", gap: 24 }}>
+    <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", flexDirection: "column", gap: 20 }}>
 
-      {/* Header row */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <span style={{ fontSize: 13.5, color: "#8A8478" }}>2026년 7월 6일 기준</span>
+      {/* Date row */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 0 }}>
+        <div style={{ fontSize: 13.5, color: "#8A8478" }}>2026년 7월 6일 기준</div>
         <button onClick={() => { setSpinning(true); setTimeout(() => setSpinning(false), 900); }}
           style={{
-            display: "flex", alignItems: "center", gap: 6, fontSize: 13.5,
+            display: "flex", alignItems: "center", gap: 6, fontSize: 13,
             fontWeight: 600, color: "#6C665B", background: "none", border: "none",
             cursor: "pointer", padding: 0,
           }}>
@@ -146,50 +143,51 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stat cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 20 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 18 }}>
         {STATS.map((s) => (
-          <div key={s.label} style={{ ...CARD, padding: 24 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+          <div key={s.label} style={{ ...CARD, padding: "20px 22px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <div style={{
-                width: 40, height: 40, borderRadius: 11,
+                width: 38, height: 38, borderRadius: 11,
                 background: s.iconBg,
                 display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
               }}>
                 <Icon name={s.icon} color={s.color} />
               </div>
-              <span style={{ fontSize: 13.5, color: "#8A8478", fontWeight: 500, lineHeight: 1.3 }}>{s.label}</span>
+              <span style={{ fontSize: 13.5, color: "#8A8478", fontWeight: 500 }}>{s.label}</span>
             </div>
             <div style={{
-              fontSize: 44, fontWeight: 800, color: "#16151A", lineHeight: 1,
-              letterSpacing: "-1.5px", fontFamily: "'Space Grotesk', sans-serif",
+              fontSize: 32, fontWeight: 700, color: "#16151A", lineHeight: 1,
+              letterSpacing: "-0.6px", fontFamily: "'Space Grotesk', sans-serif",
+              marginTop: 14,
             }}>
               {s.value.toLocaleString()}
             </div>
-            {s.sub && <div style={{ fontSize: 12, color: "#B3AC9F", marginTop: 8 }}>{s.sub}</div>}
+            {s.sub && <div style={{ fontSize: 12, color: "#B3AC9F", marginTop: 6 }}>{s.sub}</div>}
           </div>
         ))}
       </div>
 
       {/* Charts row */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr 1fr", gap: 20 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1.1fr 1.4fr 1.1fr", gap: 18, alignItems: "stretch" }}>
 
         {/* Grade distribution */}
-        <div style={{ ...CARD, padding: 24 }}>
-          <div style={{ fontWeight: 700, fontSize: 15, color: "#16151A", marginBottom: 20 }}>등급 분포</div>
+        <div style={{ ...CARD, padding: 22 }}>
+          <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 15, color: "#16151A", marginBottom: 18 }}>등급 분포</div>
           <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
             {GRADE_DIST.map(([grade, count, color, textColor]) => (
               <div key={grade} style={{ flex: 1, textAlign: "center" }}>
-                <div style={{ fontWeight: 700, fontSize: 20, color: "#16151A", letterSpacing: "-0.5px" }}>{count}</div>
-                <div style={{ height: 4, borderRadius: 2, margin: "10px 0", background: color }} />
+                <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 19, color: "#16151A" }}>{count}</div>
+                <div style={{ height: 3, borderRadius: 2, margin: "8px 0", background: color }} />
                 <div style={{
-                  width: 36, height: 36, borderRadius: "50%", margin: "0 auto",
+                  width: 30, height: 30, borderRadius: 9, margin: "0 auto",
                   background: color, color: textColor,
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: 13, fontWeight: 700,
+                  fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, fontWeight: 700,
                 }}>
                   {grade}
                 </div>
-                <div style={{ fontSize: 11, color: "#9A9488", marginTop: 8 }}>
+                <div style={{ fontSize: 11, color: "#9A9488", marginTop: 6 }}>
                   {Math.round(count / total * 100)}%
                 </div>
               </div>
@@ -201,19 +199,19 @@ export default function AdminDashboard() {
         <SignupChart />
 
         {/* Regions */}
-        <div style={{ ...CARD, padding: 24 }}>
-          <div style={{ fontWeight: 700, fontSize: 15, color: "#16151A", marginBottom: 20 }}>지역별 장소 수 (Top 5)</div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+        <div style={{ ...CARD, padding: 22 }}>
+          <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 15, color: "#16151A", marginBottom: 16 }}>지역별 장소 수 (Top 5)</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {REGIONS.map((r) => (
               <div key={r.name} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <span style={{ fontSize: 12.5, color: "#6C665B", width: 36, textAlign: "right", flexShrink: 0 }}>{r.name}</span>
-                <div style={{ flex: 1, height: 8, borderRadius: 999, background: "#F2EDE4", overflow: "hidden" }}>
+                <span style={{ fontSize: 12.5, color: "#6C665B", width: 44, flexShrink: 0 }}>{r.name}</span>
+                <div style={{ flex: 1, height: 16, borderRadius: 8, background: "#F3EFE6", overflow: "hidden" }}>
                   <div style={{
-                    height: "100%", borderRadius: 999, background: "#FF5636",
+                    height: "100%", borderRadius: 8, background: "#FF5636",
                     width: `${(r.count / maxRegion) * 100}%`,
                   }} />
                 </div>
-                <span style={{ fontSize: 12.5, fontWeight: 700, color: "#16151A", width: 24, flexShrink: 0 }}>{r.count}</span>
+                <span style={{ fontSize: 12.5, fontWeight: 700, color: "#16151A", width: 26, textAlign: "right", flexShrink: 0 }}>{r.count}</span>
               </div>
             ))}
           </div>
@@ -224,13 +222,13 @@ export default function AdminDashboard() {
       <div style={CARD}>
         <div style={{
           display: "flex", alignItems: "center", justifyContent: "space-between",
-          padding: "18px 28px", borderBottom: "1px solid #F0EBDE",
+          padding: "18px 22px", marginBottom: 0,
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#8A8478" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            <svg width="19" height="19" fill="none" viewBox="0 0 24 24" stroke="#8A8478" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
               <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
             </svg>
-            <span style={{ fontWeight: 700, fontSize: 15, color: "#16151A" }}>최근 활동 로그</span>
+            <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 15, color: "#16151A" }}>최근 활동 로그</span>
           </div>
           <span style={{ fontSize: 12, color: "#9A9488" }}>최근 10건</span>
         </div>
@@ -240,14 +238,15 @@ export default function AdminDashboard() {
             return (
               <div key={log.id} className="admin-row" style={{
                 display: "flex", alignItems: "center", gap: 16,
-                padding: "14px 28px",
-                borderTop: i === 0 ? "none" : "1px solid #F0EBDE",
+                padding: "11px 4px",
+                borderTop: "1px solid #F0EBDE",
+                ...(i === LOGS.length - 1 ? { borderBottom: "1px solid #F0EBDE" } : {}),
                 transition: "background 0.12s",
               }}>
-                <span style={{ width: 36, fontSize: 12.5, fontWeight: 700, color: s.color, flexShrink: 0 }}>{s.label}</span>
+                <span style={{ width: 44, fontSize: 12, fontWeight: 700, color: s.color, flexShrink: 0 }}>{s.label}</span>
                 <span style={{ flex: 1, fontSize: 13.5, color: "#16151A" }}>{log.action}</span>
-                <span style={{ fontSize: 12.5, color: "#6C665B", width: 60 }}>{log.region}</span>
-                <span style={{ fontSize: 12, color: "#B3AC9F", width: 72, textAlign: "right", flexShrink: 0 }}>{log.time}</span>
+                <span style={{ width: 70, fontSize: 12.5, color: "#6C665B" }}>{log.region}</span>
+                <span style={{ width: 70, textAlign: "right", fontSize: 12, color: "#B3AC9F", flexShrink: 0 }}>{log.time}</span>
               </div>
             );
           })}

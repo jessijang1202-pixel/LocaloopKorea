@@ -100,7 +100,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         @media (max-width: 1023px) { .admin-sidebar { display: none !important; } }
       `}</style>
 
-      <div style={{ display: "flex", height: "100vh", overflow: "hidden", background: "#F2EDE4" }}>
+      <div style={{ display: "flex", height: "100vh", overflow: "hidden", background: "#F3EFE6" }}>
 
         {/* Mobile overlay */}
         {mobileOpen && (
@@ -110,7 +110,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
         {/* Sidebar */}
         <aside className="admin-sidebar" style={{
-          width: 240, flexShrink: 0, background: "#16151A",
+          width: 248, flexShrink: 0, background: "#16151A",
           borderTop: "3px solid #FF5636", display: "flex", flexDirection: "column",
           zIndex: 50, overflowY: "auto",
         }}>
@@ -155,17 +155,9 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           </nav>
 
           {/* Bottom */}
-          <div style={{ padding: "16px 20px 20px", borderTop: "1px solid #26242C" }}>
-            <Link href="/" style={{
-              display: "flex", alignItems: "center", gap: 6,
-              color: "#6E687A", fontSize: 12, textDecoration: "none", marginBottom: 6,
-            }}>
-              <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
-                <path d="M15 18l-6-6 6-6" />
-              </svg>
-              사용자 앱으로 이동
-            </Link>
-            <div style={{ fontSize: 11, color: "#4E4858" }}>admin.localoop.kr</div>
+          <div style={{ padding: "16px 20px 22px", borderTop: "1px solid #26242C" }}>
+            <div style={{ fontSize: 11, color: "#6E687A" }}>admin.localoop.kr</div>
+            <div style={{ fontSize: 11, color: "#4E4858", marginTop: 2 }}>v2.4.0</div>
           </div>
         </aside>
 
@@ -190,8 +182,8 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             </button>
 
             <h1 style={{
-              flex: 1, margin: 0, fontWeight: 700, fontSize: 22,
-              color: "#16151A", letterSpacing: "-0.4px",
+              flex: 1, margin: 0, fontWeight: 700, fontSize: 21,
+              color: "#16151A", letterSpacing: "-0.4px", fontFamily: "'Space Grotesk', sans-serif",
             }}>
               {title}
             </h1>
@@ -234,7 +226,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           </header>
 
           {/* Page content */}
-          <main style={{ flex: 1, overflowY: "auto", padding: "32px 36px" }}>
+          <main style={{ flex: 1, overflowY: "auto", padding: "28px 32px 48px" }}>
             {children}
           </main>
         </div>
