@@ -7,10 +7,10 @@ const STATS = { totalPlaces: 247, totalUsers: 1832, totalCourses: 34, updatedTod
 
 const GRADE_DIST = { S: 42, A: 88, B: 71, C: 34, D: 12 };
 const GRADE_COLORS: Record<string, string> = {
-  S: "#FF5636", A: "#12BFB6", B: "#7B4DFF", C: "#FFC93C", D: "#9A9488",
+  S: "#FF5636", A: "#12BFB6", B: "#FFC93C", C: "#7B4DFF", D: "#9A9488",
 };
 const GRADE_TEXT: Record<string, string> = {
-  S: "#fff", A: "#fff", B: "#fff", C: "#3a2c00", D: "#fff",
+  S: "#fff", A: "#fff", B: "#3a2c00", C: "#fff", D: "#fff",
 };
 
 const SIGNUPS_30 = [45,62,38,71,55,90,48,66,42,78,53,85,39,70,47,82,56,93,44,68,51,87,41,74,49,83,57,96,43,72]
@@ -58,7 +58,7 @@ function StatCard({ icon: Icon, label, value, sub, color }: {
         </div>
         <p className="text-[13.5px] text-[#8A8478] font-medium leading-tight">{label}</p>
       </div>
-      <p className="font-bold text-[32px] leading-none tracking-tight text-[#16151A]">
+      <p className="font-bold text-[32px] leading-none tracking-[-0.6px] text-[#16151A]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
         {value.toLocaleString()}
       </p>
       {sub && <p className="text-xs text-[#B3AC9F] mt-2">{sub}</p>}

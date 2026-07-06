@@ -24,7 +24,8 @@ export function AdminTopbar({ title, adminName = "관리자", onMenuToggle }: Pr
       </button>
 
       {/* Title */}
-      <h1 className="font-bold text-[21px] tracking-[-0.4px] text-[#16151A] flex-1 truncate">
+      <h1 className="font-bold text-[21px] tracking-[-0.4px] text-[#16151A] flex-1 truncate"
+          style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
         {title}
       </h1>
 
