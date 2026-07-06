@@ -69,8 +69,8 @@ export function AdminTopbar({ title, adminName = "관리자", onMenuToggle }: Pr
             <div className="w-[28px] h-[28px] rounded-full bg-[#7B4DFF] flex items-center justify-center flex-shrink-0">
               <span className="text-white text-xs font-bold">{adminName[0]}</span>
             </div>
-            <span className="text-[13.5px] font-semibold text-[#16151A] hidden sm:block">{adminName}</span>
-            <ChevronDown size={14} className="text-[#9A9488] hidden sm:block" />
+            <span className="text-[13.5px] font-semibold text-[#16151A]">{adminName}</span>
+            <ChevronDown size={14} className="text-[#9A9488]" />
           </button>
 
           {dropOpen && (

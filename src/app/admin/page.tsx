@@ -50,18 +50,18 @@ function StatCard({ icon: Icon, label, value, sub, color }: {
   icon: React.ElementType; label: string; value: number; sub?: string; color: string;
 }) {
   return (
-    <div className={`${CARD} p-5`}>
-      <div className="flex items-center gap-2.5 mb-3.5">
+    <div className={`${CARD} p-6`}>
+      <div className="flex items-center gap-2.5 mb-4">
         <div className="w-[38px] h-[38px] rounded-[11px] flex items-center justify-center flex-shrink-0"
              style={{ background: `${color}20` }}>
           <Icon size={19} style={{ color }} />
         </div>
         <p className="text-[13.5px] text-[#8A8478] font-medium leading-tight">{label}</p>
       </div>
-      <p className="font-bold text-[32px] leading-none tracking-[-0.6px] text-[#16151A]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+      <p className="font-bold text-[48px] leading-none tracking-[-1px] text-[#16151A]" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
         {value.toLocaleString()}
       </p>
-      {sub && <p className="text-xs text-[#B3AC9F] mt-2">{sub}</p>}
+      {sub && <p className="text-xs text-[#B3AC9F] mt-2.5">{sub}</p>}
     </div>
   );
 }
@@ -74,13 +74,13 @@ function GradeDistCard() {
       <div className="flex justify-between gap-2">
         {Object.entries(GRADE_DIST).map(([grade, count]) => (
           <div key={grade} className="flex-1 text-center">
-            <div className="font-bold text-[19px] text-[#16151A]">{count}</div>
-            <div className="h-[3px] rounded-[2px] my-2" style={{ background: GRADE_COLORS[grade] }} />
-            <div className="w-[30px] h-[30px] rounded-[9px] flex items-center justify-center text-sm font-bold mx-auto"
+            <div className="font-bold text-[22px] text-[#16151A] tracking-[-0.5px]">{count}</div>
+            <div className="h-[4px] rounded-[2px] my-2.5" style={{ background: GRADE_COLORS[grade] }} />
+            <div className="w-[38px] h-[38px] rounded-full flex items-center justify-center text-sm font-bold mx-auto"
                  style={{ background: GRADE_COLORS[grade], color: GRADE_TEXT[grade] }}>
               {grade}
             </div>
-            <div className="text-[11px] text-[#9A9488] mt-1.5">{Math.round(count / total * 100)}%</div>
+            <div className="text-[11px] text-[#9A9488] mt-2">{Math.round(count / total * 100)}%</div>
           </div>
         ))}
       </div>

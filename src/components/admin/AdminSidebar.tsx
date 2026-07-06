@@ -73,10 +73,10 @@ export function AdminSidebar({ open, onClose }: Props) {
                   "flex items-center gap-3 px-[14px] py-[11px] rounded-[12px] text-sm font-medium transition-colors",
                   active
                     ? "bg-[#FF5636] text-white"
-                    : "text-[#9A94A2] hover:text-white hover:bg-white/8",
+                    : "text-[#7E7A8A] hover:text-white hover:bg-white/8",
                 ].join(" ")}
               >
-                <Icon size={20} className="flex-shrink-0" />
+                <Icon size={18} strokeWidth={2.2} className="flex-shrink-0" />
                 <span className="flex-1">{item.label}</span>
                 {active && <ChevronRight size={14} className="opacity-80" />}
               </Link>
