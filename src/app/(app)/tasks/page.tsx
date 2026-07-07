@@ -4,46 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { useLang } from "@/lib/lang";
 import { useTheme } from "@/lib/theme";
+import { STAGE_NAMES, STAGE_SLUGS, TASKS } from "@/content/tasks";
 
-const STAGE_NAMES = {
-  ko: ["도착", "초기 생활", "정착", "커뮤니티", "장기 거주"],
-  en: ["Arrival", "Early Life", "Settlement", "Community", "Long-term"],
-};
-const STAGE_SLUGS = ["arrival", "early-life", "settlement", "community", "long-term"];
 const CURRENT_STAGE = 1; // 0-indexed
-
-const TASKS = [
-  {
-    id: "t1",
-    ko: { name: "교통카드 구매", desc: "T-money 카드, 편의점이나 역에서 구매 가능해요" },
-    en: { name: "Get a transit card", desc: "T-money card · Convenience stores & airports" },
-    done: true, urgent: false,
-  },
-  {
-    id: "t2",
-    ko: { name: "선불 유심 가입", desc: "공항 또는 편의점에서 구매 가능" },
-    en: { name: "Get a prepaid SIM", desc: "Airport or convenience stores nationwide" },
-    done: true, urgent: false,
-  },
-  {
-    id: "t3",
-    ko: { name: "외국인 등록증 신청", desc: "입국 후 90일 이내 출입국사무소 방문 필수" },
-    en: { name: "Apply for Alien Registration", desc: "Visit immigration office within 90 days" },
-    done: false, urgent: true, deadline: "D-23",
-  },
-  {
-    id: "t4",
-    ko: { name: "은행 계좌 개설", desc: "신한·하나 은행, 영어 지원 가능" },
-    en: { name: "Open a bank account", desc: "Shinhan / Hana bank — both support English" },
-    done: false, next: true,
-  },
-  {
-    id: "t5",
-    ko: { name: "건강보험 가입", desc: "6개월 이상 체류 시 의무 가입" },
-    en: { name: "Enroll in health insurance", desc: "Required for stays of 6+ months" },
-    done: false, next: true,
-  },
-];
 
 export default function TasksPage() {
   const isKo = useLang();

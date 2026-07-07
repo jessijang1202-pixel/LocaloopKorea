@@ -5,27 +5,19 @@ import { useLang, getLang } from "@/lib/lang";
 import { createClient } from "@/lib/supabase/client";
 import { saveOnboarding } from "./actions";
 import { AppNav } from "@/components/layout/AppNav";
-
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-export type OnboardingData = {
-  isKorean: boolean;
-  displayName: string;
-  nationality: string;
-  mainLanguage: string;
-  gender: string;
-  purpose: string;
-  stayDuration: string;
-  region: string;
-  living: string;
-  koreanLevel: string;
-  interests: string[];
-  makeFriends: boolean;
-  languageExchange: boolean;
-  joinMeetups: boolean;
-  nearbyAlerts: boolean;
-  marketing: boolean;
-};
+import type { OnboardingData } from "@/types/onboarding";
+import { toggleArr } from "@/lib/form-utils";
+import {
+  LANGUAGES_KO, LANGUAGES_EN,
+  GENDERS_KO, GENDERS_EN,
+  DURATIONS_KO, DURATIONS_EN,
+  REGIONS_KO, REGIONS_EN,
+  REGION_SLUGS,
+  LIVING_KO, LIVING_EN,
+  KOREAN_LEVELS_KO, KOREAN_LEVELS_EN,
+  INTERESTS,
+  PURPOSES_ONBOARDING_KO, PURPOSES_ONBOARDING_EN,
+} from "@/content/profile-options";
 
 const INIT: OnboardingData = {
   isKorean: false,
@@ -45,10 +37,6 @@ const INIT: OnboardingData = {
   nearbyAlerts: true,
   marketing: false,
 };
-
-function toggleArr<T>(arr: T[], val: T): T[] {
-  return arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val];
-}
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
 
@@ -220,76 +208,19 @@ function OnboardingInner() {
     ? ["미국", "일본", "중국", "영국", "캐나다", "호주", "프랑스", "독일", "베트남", "태국", "인도", "기타"]
     : ["USA", "Japan", "China", "UK", "Canada", "Australia", "France", "Germany", "Vietnam", "Thailand", "India", "Other"];
 
-  const LANGUAGES = isKo
-    ? ["영어", "일본어", "중국어", "베트남어", "태국어", "프랑스어", "독일어", "기타"]
-    : ["English", "Japanese", "Chinese", "Vietnamese", "Thai", "French", "German", "Other"];
+  const LANGUAGES = isKo ? LANGUAGES_KO : LANGUAGES_EN;
 
-  const GENDERS = isKo
-    ? ["남성", "여성", "논바이너리", "무응답"]
-    : ["Male", "Female", "Non-binary", "Prefer not to say"];
+  const GENDERS = isKo ? GENDERS_KO : GENDERS_EN;
 
-  const PURPOSES = isKo
-    ? [
-        { label: "💼 직장 / 비즈니스", desc: "취업, 원격근무, 비즈니스" },
-        { label: "📚 학업", desc: "어학원, 대학교, 교환학생" },
-        { label: "✈️ 여행", desc: "단기 방문, 관광" },
-        { label: "💬 언어 학습", desc: "한국어 공부가 주목적" },
-        { label: "🎭 문화 체험", desc: "K-culture, 음식, 생활" },
-        { label: "🔎 기타", desc: "" },
-      ]
-    : [
-        { label: "💼 Work / Business", desc: "Employment, remote work, business" },
-        { label: "📚 Study", desc: "Language school, university, exchange" },
-        { label: "✈️ Travel", desc: "Short-term visit, tourism" },
-        { label: "💬 Language learning", desc: "Learning Korean is the main goal" },
-        { label: "🎭 Cultural experience", desc: "K-culture, food, lifestyle" },
-        { label: "🔎 Other", desc: "" },
-      ];
+  const PURPOSES = isKo ? PURPOSES_ONBOARDING_KO : PURPOSES_ONBOARDING_EN;
 
-  const DURATIONS = isKo
-    ? ["1개월 미만", "1~3개월", "3~6개월", "6개월~1년", "1년 이상", "미정"]
-    : ["< 1 month", "1–3 months", "3–6 months", "6–12 months", "1+ year", "Not sure"];
+  const DURATIONS = isKo ? DURATIONS_KO : DURATIONS_EN;
 
-  const REGIONS = isKo
-    ? ["홍대", "이태원", "강남", "북촌 / 인사동", "성수", "해운대 (부산)", "전주 한옥마을", "기타"]
-    : ["Hongdae", "Itaewon", "Gangnam", "Bukchon / Insadong", "Seongsu", "Haeundae (Busan)", "Jeonju Hanok", "Other"];
+  const REGIONS = isKo ? REGIONS_KO : REGIONS_EN;
 
-  const REGION_SLUGS = ["hongdae", "itaewon", "gangnam", "bukchon", "seongsu", "haeundae", "jeonju-hanok", "other"];
+  const LIVING = isKo ? LIVING_KO : LIVING_EN;
 
-  const LIVING = isKo
-    ? ["고시원", "원룸 / 오피스텔", "쉐어하우스", "에어비앤비", "친구 / 가족 집", "기타"]
-    : ["Goshiwon", "Studio / Officetel", "Share house", "Airbnb", "Friend / Family", "Other"];
-
-  const KOREAN_LEVELS = isKo
-    ? [
-        { label: "전혀 못해요", desc: "한국어를 전혀 모르거나 거의 몰라요" },
-        { label: "초급", desc: "기본 인사 정도만 해요" },
-        { label: "생활 한국어", desc: "편의점, 카페 등에서 소통 가능" },
-        { label: "일상 대화", desc: "간단한 대화는 어렵지 않아요" },
-        { label: "유창해요", desc: "한국어로 자유롭게 대화해요" },
-      ]
-    : [
-        { label: "None", desc: "I don't know any Korean yet" },
-        { label: "Beginner", desc: "Just basic greetings" },
-        { label: "Daily use", desc: "Can manage convenience stores, cafés" },
-        { label: "Conversational", desc: "Comfortable in everyday conversations" },
-        { label: "Fluent", desc: "Speak Korean freely" },
-      ];
-
-  const INTERESTS = [
-    { slug: "food", label: isKo ? "🍜 음식" : "🍜 Food" },
-    { slug: "language", label: isKo ? "💬 언어 교환" : "💬 Language Exchange" },
-    { slug: "kculture", label: isKo ? "🎭 한국 문화" : "🎭 K-Culture" },
-    { slug: "hiking", label: isKo ? "🏔️ 등산" : "🏔️ Hiking" },
-    { slug: "music", label: isKo ? "🎵 음악" : "🎵 Music" },
-    { slug: "art", label: isKo ? "🎨 예술" : "🎨 Art" },
-    { slug: "sport", label: isKo ? "⚽ 스포츠" : "⚽ Sports" },
-    { slug: "coffee", label: isKo ? "☕ 카페" : "☕ Coffee & Cafés" },
-    { slug: "nightlife", label: isKo ? "🌙 야경 / 바" : "🌙 Nightlife" },
-    { slug: "cooking", label: isKo ? "👨‍🍳 요리" : "👨‍🍳 Cooking" },
-    { slug: "photography", label: isKo ? "📷 사진" : "📷 Photography" },
-    { slug: "travel", label: isKo ? "✈️ 국내 여행" : "✈️ Travel in Korea" },
-  ];
+  const KOREAN_LEVELS = isKo ? KOREAN_LEVELS_KO : KOREAN_LEVELS_EN;
 
   // ── Shared styles ─────────────────────────────────────────────────────────────
 
@@ -410,8 +341,8 @@ function OnboardingInner() {
             <h2 style={sTitle}>{st.title}</h2>
             <p style={sSub}>{st.sub}</p>
             <div style={sChipWrap}>
-              {INTERESTS.map(({ slug, label }) => (
-                <Chip key={slug} label={label} on={data.interests.includes(slug)} onClick={() => set("interests", toggleArr(data.interests, slug))} />
+              {INTERESTS.map(({ slug, ko, en }) => (
+                <Chip key={slug} label={isKo ? ko : en} on={data.interests.includes(slug)} onClick={() => set("interests", toggleArr(data.interests, slug))} />
               ))}
             </div>
           </div>

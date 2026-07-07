@@ -1,3 +1,4 @@
+// LEGACY (Phase-1) route — not linked from AppNav; kept for URL compatibility
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { TopBar } from "@/components/layout/TopBar";

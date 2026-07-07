@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import type { OnboardingData } from "./page";
+import type { OnboardingData } from "@/types/onboarding";
 
 export async function saveOnboarding(data: OnboardingData): Promise<void> {
   const supabase = await createClient();

@@ -13,13 +13,6 @@ export function formatDate(dateStr: string, locale = "en") {
   });
 }
 
-export function formatDateShort(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
-}
-
 export function formatDateTime(dateStr: string) {
   return new Date(dateStr).toLocaleString("en-US", {
     month: "short",
@@ -28,14 +21,6 @@ export function formatDateTime(dateStr: string) {
     minute: "2-digit",
     hour12: true,
   });
-}
-
-export function slugify(text: string) {
-  return text
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/[\s_-]+/g, "-")
-    .replace(/^-+|-+$/g, "");
 }
 
 export function getInitials(name: string) {
@@ -53,7 +38,3 @@ export function spiceLevelLabel(level: number | null) {
   return labels[level] ?? "Unknown";
 }
 
-export function truncate(text: string, length: number) {
-  if (text.length <= length) return text;
-  return text.slice(0, length) + "…";
-}

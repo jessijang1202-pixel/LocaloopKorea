@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { RATING_COLORS, RATING_TEXT } from "@/lib/grades";
 
 export interface MapPin {
   id: string;
@@ -17,20 +18,6 @@ interface KakaoMapProps {
   onPinClick?: (id: string) => void;
   lang?: "ko" | "en";
 }
-
-const RATING_COLORS: Record<string, string> = {
-  S: "#FF5636",
-  A: "#12BFB6",
-  B: "#7B4DFF",
-  C: "#FFC93C",
-};
-
-const RATING_TEXT: Record<string, string> = {
-  S: "#fff",
-  A: "#fff",
-  B: "#fff",
-  C: "#3a2c00",
-};
 
 export function KakaoMap({ pins, center, zoom = 5, onPinClick, lang = "ko" }: KakaoMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);

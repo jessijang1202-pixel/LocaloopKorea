@@ -1,8 +1,9 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
+import { CARD_SOFT } from "@/components/admin/adminStyles";
 
-const CARD: React.CSSProperties = { background: "#fff", borderRadius: 18, boxShadow: "0 2px 16px rgba(0,0,0,0.06)", padding: 28 };
+const CARD: React.CSSProperties = { ...CARD_SOFT, padding: 28 };
 
 export default function CourseEditorPage() {
   const { id } = useParams<{ id: string }>();

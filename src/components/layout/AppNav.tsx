@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLang, setLang } from "@/lib/lang";
 import { useTheme, toggleTheme } from "@/lib/theme";
+import { PinIcon, SunIcon, MoonIcon } from "@/components/icons";
 
 type Tab = { href: string; icon: string; labelKo: string; labelEn: string };
 
@@ -21,12 +22,7 @@ const BOTTOM_TABS: Tab[] = SIDEBAR_TABS.filter(t => t.href !== "/profile");
 
 function TabIcon({ name, size = 22 }: { name: string; size?: number }) {
   const base = { width: size, height: size, fill: "none", stroke: "currentColor", strokeWidth: 1.75, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
-  if (name === "map") return (
-    <svg viewBox="0 0 24 24" {...base}>
-      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-      <circle cx="12" cy="9" r="2.5" />
-    </svg>
-  );
+  if (name === "map") return <PinIcon size={size} strokeWidth={1.75} />;
   if (name === "tasks") return (
     <svg viewBox="0 0 24 24" {...base}>
       <rect x="4" y="3" width="16" height="18" rx="2.5" />
@@ -145,15 +141,7 @@ export function AppNav() {
             title={theme === "dark" ? (isKo ? "라이트 모드" : "Light") : (isKo ? "다크 모드" : "Dark")}
             style={{ flex: 1, height: 34, borderRadius: 9, border: "1px solid rgba(255,86,54,0.18)", background: "rgba(255,255,255,0.06)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,244,240,0.8)" }}
           >
-            {theme === "dark" ? (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <circle cx="12" cy="12" r="5"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-              </svg>
-            ) : (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
-              </svg>
-            )}
+            {theme === "dark" ? <SunIcon /> : <MoonIcon />}
           </button>
           <button
             onClick={() => setLang(isKo ? "en" : "ko")}

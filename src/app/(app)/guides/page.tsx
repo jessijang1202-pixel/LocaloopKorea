@@ -1,5 +1,7 @@
 "use client";
 
+// LEGACY (Phase-1) route — not linked from AppNav; kept for URL compatibility
+
 import { useState } from "react";
 import { TopBar } from "@/components/layout/TopBar";
 import { PageWrapper } from "@/components/layout/PageWrapper";

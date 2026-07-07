@@ -1,3 +1,4 @@
+// LEGACY (Phase-1) route — not linked from AppNav; kept for URL compatibility
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/is-configured";

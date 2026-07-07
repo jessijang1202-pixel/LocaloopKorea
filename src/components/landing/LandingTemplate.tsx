@@ -1,5 +1,5 @@
 ﻿import Link from "next/link";
-import type { LandingData } from "./content";
+import type { LandingData } from "@/content/landing";
 
 const P  = "#1EC8C8";
 const PD = "#17A0A0";
@@ -775,7 +775,7 @@ function Footer({ d }: { d: LandingData }) {
 }
 
 // ── Template ──────────────────────────────────────────────────
-export default function LandingTemplate({ data }: { data: LandingData }) {
+export function LandingTemplate({ data }: { data: LandingData }) {
   return (
     <div style={{ background:"#ffffff", minHeight:"100dvh" }}>
       <Nav        d={data} />

@@ -18,32 +18,3 @@ export const GUIDE_CATEGORIES = [
   { value: "language", label_en: "Language Tips", label_ko: "언어", icon: "💬" },
 ];
 
-export const INTEREST_ICONS: Record<string, string> = {
-  food: "🍜",
-  language: "💬",
-  culture: "🎭",
-  hiking: "🏔️",
-  music: "🎵",
-  art: "🎨",
-  sport: "⚽",
-  travel: "✈️",
-  coffee: "☕",
-  nightlife: "🌙",
-  cooking: "👨‍🍳",
-  photography: "📷",
-};
-
-export const LANGUAGES = [
-  { value: "en", label: "English" },
-  { value: "ko", label: "한국어" },
-  { value: "ja", label: "日本語" },
-  { value: "zh", label: "中文" },
-  { value: "fr", label: "Français" },
-  { value: "es", label: "Español" },
-  { value: "de", label: "Deutsch" },
-  { value: "vi", label: "Tiếng Việt" },
-  { value: "th", label: "ภาษาไทย" },
-];
-
-export const APP_NAME = "Localoop Korea";
-export const APP_TAGLINE = "Dig into local Korea";

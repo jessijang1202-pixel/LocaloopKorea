@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { PinIcon, UsersIcon, BookIcon } from "@/components/icons";
+import { CARD_DEEP } from "@/components/admin/adminStyles";
 
 /* ── data ── */
 const STATS = [
@@ -46,30 +48,13 @@ const LOG_STYLE: Record<string, { label: string; color: string }> = {
 };
 
 /* ── helpers ── */
-const CARD: React.CSSProperties = {
-  background: "#fff",
-  borderRadius: 18,
-  boxShadow: "0 6px 20px -16px rgba(0,0,0,0.25)",
-};
+const CARD: React.CSSProperties = CARD_DEEP;
 
 function Icon({ name, color }: { name: string; color: string }) {
   const s = { width: 20, height: 20 };
-  if (name === "pin") return (
-    <svg {...s} fill="none" viewBox="0 0 24 24" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/>
-    </svg>
-  );
-  if (name === "users") return (
-    <svg {...s} fill="none" viewBox="0 0 24 24" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-      <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
-      <path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
-    </svg>
-  );
-  if (name === "book") return (
-    <svg {...s} fill="none" viewBox="0 0 24 24" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-    </svg>
-  );
+  if (name === "pin") return <PinIcon size={20} stroke={color} />;
+  if (name === "users") return <UsersIcon size={20} stroke={color} />;
+  if (name === "book") return <BookIcon size={20} stroke={color} />;
   return (
     <svg {...s} fill="none" viewBox="0 0 24 24" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
       <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>

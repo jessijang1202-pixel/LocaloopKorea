@@ -1,6 +1,8 @@
 "use client";
 
-const CARD: React.CSSProperties = { background: "#fff", borderRadius: 18, boxShadow: "0 2px 16px rgba(0,0,0,0.06)", padding: 28 };
+import { CARD_SOFT } from "@/components/admin/adminStyles";
+
+const CARD: React.CSSProperties = { ...CARD_SOFT, padding: 28 };
 
 export default function SettingsPage() {
   return (

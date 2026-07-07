@@ -50,6 +50,7 @@ export interface LandingData {
 }
 
 // ── Korean ────────────────────────────────────────────────────
+// currently unused — Korean landing content preserved for future /ko route
 
 export const KO: LandingData = {
   lang: "ko",

@@ -1,6 +1,8 @@
 "use client";
 
-const CARD: React.CSSProperties = { background: "#fff", borderRadius: 18, boxShadow: "0 2px 16px rgba(0,0,0,0.06)" };
+import { CARD_SOFT } from "@/components/admin/adminStyles";
+
+const CARD: React.CSSProperties = CARD_SOFT;
 
 const MOCK = [
   { id: "c1", name: "이태원 로컬 먹방", region: "이태원", theme: "음식 탐방", places: 3, status: "활성" },

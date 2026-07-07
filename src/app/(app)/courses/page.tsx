@@ -3,64 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useLang } from "@/lib/lang";
+import { COURSES } from "@/content/courses";
 
 const FILTER_CHIPS = {
   ko: ["전체", "반나절", "하루", "음식", "문화", "자연"],
   en: ["All", "Half-Day", "Full Day", "Food", "Culture", "Nature"],
 };
-
-const COURSES = [
-  {
-    id: "c1",
-    slug: "itaewon-food",
-    name: { ko: "이태원 로컬 맛집 반나절 코스", en: "Itaewon Local Food Half-Day" },
-    meta: { ko: "3곳 · 약 3시간", en: "3 stops · ~3 hrs" },
-    badge: { ko: "오늘의 코스", en: "Today's Pick" },
-    englishOk: true, filter: "Half-Day",
-    color: "#F5D6D6", accent: "#C0350F",
-    image: "/itaewon_street.png",
-  },
-  {
-    id: "c2",
-    slug: "hannam-gallery",
-    name: { ko: "한남동 갤러리 & 카페 투어", en: "Hannam Gallery & Café Tour" },
-    meta: { ko: "4곳 · 약 4시간", en: "4 stops · ~4 hrs" },
-    badge: { ko: "문화", en: "Culture" },
-    englishOk: true, filter: "Culture",
-    color: "#DDE4FF", accent: "#234BFF",
-    image: "/hannam_gallery.png",
-  },
-  {
-    id: "c3",
-    slug: "itaewon-night",
-    name: { ko: "이태원 나이트 로컬 투어", en: "Itaewon Night Local Tour" },
-    meta: { ko: "3곳 · 약 4시간", en: "3 stops · ~4 hrs" },
-    badge: { ko: "나이트", en: "Nightlife" },
-    englishOk: false, filter: "Full Day",
-    color: "#2D1F4A", accent: "#8A63FF",
-    image: "/itaewon_night.png",
-  },
-  {
-    id: "c4",
-    slug: "namsan-morning",
-    name: { ko: "남산 아침 산책 코스", en: "Namsan Morning Walk" },
-    meta: { ko: "2곳 · 약 2시간", en: "2 stops · ~2 hrs" },
-    badge: { ko: "자연", en: "Nature" },
-    englishOk: true, filter: "Nature",
-    color: "#D6F0D6", accent: "#12A05A",
-    image: "/namsan_morning.png",
-  },
-  {
-    id: "c5",
-    slug: "seongsu-craft",
-    name: { ko: "성수 공방 & 로스터리 투어", en: "Seongsu Craft & Roastery Tour" },
-    meta: { ko: "4곳 · 약 3시간", en: "4 stops · ~3 hrs" },
-    badge: { ko: "AI 추천", en: "AI Pick" },
-    englishOk: true, filter: "Half-Day",
-    color: "#FFF0D6", accent: "#B87000",
-    image: "/seongsu_craft.png",
-  },
-];
 
 export default function CoursesPage() {
   const isKo = useLang();

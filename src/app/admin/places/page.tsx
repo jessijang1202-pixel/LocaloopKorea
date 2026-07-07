@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { ADMIN_GRADE_COLORS, ADMIN_GRADE_TEXT } from "@/lib/grades";
+import { CARD_SOFT } from "@/components/admin/adminStyles";
 
-const CARD: React.CSSProperties = { background: "#fff", borderRadius: 18, boxShadow: "0 2px 16px rgba(0,0,0,0.06)" };
-
-const GRADE_COLORS: Record<string, string> = { S: "#FF5636", A: "#12BFB6", B: "#FFC93C", C: "#7B4DFF", D: "#9A9488" };
-const GRADE_TEXT: Record<string, string> = { S: "#fff", A: "#fff", B: "#3a2c00", C: "#fff", D: "#fff" };
+const CARD: React.CSSProperties = CARD_SOFT;
 
 type Place = { id: string; name: string; region: string; grade: string; status: string; updated: string };
 
@@ -65,7 +64,7 @@ export default function PlacesPage() {
                   <span style={{
                     display: "inline-flex", alignItems: "center", justifyContent: "center",
                     width: 28, height: 28, borderRadius: "50%",
-                    background: GRADE_COLORS[p.grade], color: GRADE_TEXT[p.grade],
+                    background: ADMIN_GRADE_COLORS[p.grade], color: ADMIN_GRADE_TEXT[p.grade],
                     fontSize: 12, fontWeight: 700,
                   }}>{p.grade}</span>
                 </td>

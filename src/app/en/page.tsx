@@ -1,5 +1,5 @@
-﻿import LandingTemplate from "@/components/landing/LandingTemplate";
-import { EN } from "@/components/landing/content";
+﻿import { LandingTemplate } from "@/components/landing/LandingTemplate";
+import { EN } from "@/content/landing";
 
 export const metadata = {
   title: "Localoop Korea — AI Life Navigation for Foreigners in Korea",

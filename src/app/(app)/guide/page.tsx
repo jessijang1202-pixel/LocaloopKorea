@@ -4,67 +4,10 @@ import { useState } from "react";
 import { useLang } from "@/lib/lang";
 import { useTheme } from "@/lib/theme";
 import Link from "next/link";
+import { Section, Card, Callout, RuleItem } from "@/components/guide/primitives";
+import { ETIQUETTE_CATEGORIES, KEY_PHRASES, ETIQUETTE_GUIDE_TAB } from "@/content/etiquette";
 
-// ── Shared helpers ──────────────────────────────────────────────────
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div style={{ marginBottom: 24 }}>
-      <h2 style={{ fontSize: 16, fontWeight: 800, color: "var(--foreground)", letterSpacing: "-0.02em", marginBottom: 12 }}>{title}</h2>
-      {children}
-    </div>
-  );
-}
-
-function Card({ children, accent = false, dark = false }: { children: React.ReactNode; accent?: boolean; dark?: boolean }) {
-  return (
-    <div style={{
-      background: accent
-        ? dark
-          ? "linear-gradient(160deg, var(--grade-dark) 0%, #2A1510 100%)"
-          : "linear-gradient(135deg, rgba(255,86,54,0.08) 0%, rgba(255,86,54,0.04) 100%)"
-        : "var(--card)",
-      borderRadius: 16, padding: "16px",
-      border: accent ? (dark ? "none" : "1px solid rgba(255,86,54,0.25)") : "1px solid var(--border)",
-      boxShadow: accent && dark ? "0 4px 20px rgba(11,30,45,0.15)" : "0 1px 5px rgba(0,0,0,0.04)",
-      marginBottom: 12,
-    }}>
-      {children}
-    </div>
-  );
-}
-
-function Callout({ color, children }: { color: "coral" | "yellow" | "red" | "blue" | "teal"; children: React.ReactNode }) {
-  const map = {
-    coral:  { bg: "rgba(255,86,54,0.06)", border: "rgba(255,86,54,0.2)",  text: "var(--grade-s)" },
-    yellow: { bg: "#FFFDE7",              border: "#FFE082",               text: "#7A5000" },
-    red:    { bg: "#FFF0F0",              border: "#FFCDD2",               text: "#7A1A1A" },
-    blue:   { bg: "#E8F4FF",              border: "#90CAF9",               text: "#1A3A6E" },
-    teal:   { bg: "#E8F9F9",              border: "#C0EDEF",               text: "#1A5C60" },
-  };
-  const c = map[color];
-  return (
-    <div style={{ background: c.bg, border: `1px solid ${c.border}`, borderRadius: 12, padding: "12px 14px", marginBottom: 10, color: c.text, fontSize: 12, lineHeight: 1.65 }}>
-      {children}
-    </div>
-  );
-}
-
-function RuleItem({ ok, text }: { ok: boolean; text: string }) {
-  return (
-    <div style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "9px 0", borderBottom: "1px solid var(--border)" }}>
-      <div style={{
-        width: 22, height: 22, borderRadius: "50%", flexShrink: 0, marginTop: 1,
-        background: ok ? "rgba(34,197,94,0.12)" : "rgba(239,68,68,0.12)",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        fontSize: 12, color: ok ? "#16a34a" : "#dc2626", fontWeight: 700,
-      }}>
-        {ok ? "✓" : "✕"}
-      </div>
-      <p style={{ fontSize: 12, color: "var(--foreground)", lineHeight: 1.6 }}>{text}</p>
-    </div>
-  );
-}
-
+// ── Guide-only helpers (not shared) ─────────────────────────────────
 function RatingBadge({ r }: { r: "S" | "A" | "B" | "C" }) {
   const map = { S: { bg: "#D6F5F5", color: "#0B7A82" }, A: { bg: "#E8F4FF", color: "#1565C0" }, B: { bg: "#FFF9C4", color: "#A56000" }, C: { bg: "#F5F5F5", color: "#666" } };
   return <span style={{ fontSize: 10, fontWeight: 800, padding: "2px 7px", borderRadius: 6, background: map[r].bg, color: map[r].color }}>{r}</span>;
@@ -323,17 +266,13 @@ function UserGuideTab({ isKo }: { isKo: boolean }) {
 }
 
 // ── 문화 & 에티켓 탭 ────────────────────────────────────────────────
-const ETIQUETTE_CATEGORIES = [
-  { id: "all", ko: "전체", en: "All" },
-  { id: "greeting", ko: "인사", en: "Greetings" },
-  { id: "dining", ko: "식사", en: "Dining" },
-  { id: "transport", ko: "교통", en: "Transport" },
-  { id: "social", ko: "사회", en: "Social" },
-  { id: "taboo", ko: "금기", en: "Taboos" },
-];
-
+// Copy comes from ETIQUETTE_GUIDE_TAB — the intentionally trimmed dataset (see
+// src/content/etiquette.ts). It is deliberately shorter than the /etiquette
+// page's ETIQUETTE_FULL: fewer rule rows, condensed sentences, no dining grid,
+// and no gift-culture callout. Do not sync the two datasets.
 function EtiquetteTab({ isKo, isDark }: { isKo: boolean; isDark: boolean }) {
   const [activeFilter, setActiveFilter] = useState("all");
+  const c = ETIQUETTE_GUIDE_TAB;
   function show(cat: string) { return activeFilter === "all" || activeFilter === cat; }
 
   return (
@@ -357,85 +296,59 @@ function EtiquetteTab({ isKo, isDark }: { isKo: boolean; isDark: boolean }) {
       <div style={{ flex: 1, overflowY: "auto", minHeight: 0, padding: "20px 16px 80px" }}>
 
         {show("greeting") && (
-          <Section title={isKo ? "인사 & 기본 예절" : "Greetings & Basic Manners"}>
+          <Section title={isKo ? c.greeting.title.ko : c.greeting.title.en}>
             <Card accent dark={isDark}>
-              <div style={{ fontSize: 13, fontWeight: 800, color: "var(--grade-s)", marginBottom: 6 }}>{isKo ? "인사의 나라 — 고개 숙임(절)이 핵심" : "The Bowing Nation — the bow is everything"}</div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: "var(--grade-s)", marginBottom: 6 }}>{isKo ? c.greeting.cardHeading.ko : c.greeting.cardHeading.en}</div>
               <p style={{ fontSize: 13, color: "var(--foreground)", lineHeight: 1.65 }}>
-                {isKo ? "한국에서는 처음 만나는 사람에게 가볍게 고개를 숙여 인사합니다. 15° 가벼운 인사, 30° 일반적 인사, 45° 깊은 감사나 사죄."
-                  : "In Korea, you bow your head slightly when greeting someone new. 15° light acknowledgment, 30° standard greeting, 45° deep gratitude or apology."}
+                {isKo ? c.greeting.cardBody.ko : c.greeting.cardBody.en}
               </p>
             </Card>
             <Card>
-              {[
-                { ok: true,  ko: "어른(나이 많은 분)을 만나면 먼저 인사하세요",             en: "Greet elders (older people) first — always" },
-                { ok: true,  ko: "두 손으로 물건을 받거나 드릴 때 예의 바르게 보입니다",    en: "Use both hands when giving or receiving things" },
-                { ok: true,  ko: "'안녕하세요' 한마디만으로도 큰 호감을 얻습니다",           en: "Saying '안녕하세요' earns you instant goodwill" },
-                { ok: false, ko: "악수할 때 한 손만 내밀면 무례하게 보일 수 있어요",        en: "Don't offer just one hand for a handshake" },
-                { ok: false, ko: "어른 앞에서 먼저 자리에 앉거나 음식을 먹으면 실례입니다", en: "Don't sit down or start eating before elders do" },
-              ].map((r, i) => <RuleItem key={i} ok={r.ok} text={isKo ? r.ko : r.en} />)}
+              {c.greeting.rules.map((r, i) => <RuleItem key={i} ok={r.ok} text={isKo ? r.ko : r.en} />)}
             </Card>
             <Callout color="coral">
-              {isKo ? "'감사합니다'와 '죄송합니다'만 알아도 웬만한 상황을 넘길 수 있습니다." : "'Gamsahamnida' (thank you) and 'Joesonghamnida' (I'm sorry) — learn these two and you'll handle most situations."}
+              {isKo ? c.greeting.calloutCoral.ko : c.greeting.calloutCoral.en}
             </Callout>
           </Section>
         )}
 
         {show("dining") && (
-          <Section title={isKo ? "식당 & 식사 문화" : "Restaurant & Dining Culture"}>
+          <Section title={isKo ? c.dining.title.ko : c.dining.title.en}>
             <Card>
-              <div style={{ fontSize: 12, fontWeight: 800, color: "var(--foreground)", marginBottom: 10 }}>{isKo ? "한국 식당의 규칙" : "Korean Restaurant Rules"}</div>
-              {[
-                { ok: true,  ko: "반찬은 무한 리필! 직원에게 '더 주세요'로 요청하세요",   en: "Side dishes (banchan) are free refills — ask for more anytime" },
-                { ok: true,  ko: "식사 전 어른이 수저를 들기를 기다렸다가 함께 시작하세요", en: "Wait for the eldest to pick up chopsticks before you start eating" },
-                { ok: true,  ko: "음식값은 보통 한 명이 전부 내는 문화",                   en: "One person often pays the whole bill — it rotates naturally" },
-                { ok: false, ko: "수저를 밥그릇에 꽂아 두면 제사(장례) 연상으로 금기",     en: "Never stick chopsticks upright in rice — it resembles funeral rites" },
-                { ok: false, ko: "어른보다 먼저 술잔을 마시는 건 실례입니다",               en: "Don't drink before elders — turn your head away when sipping" },
-              ].map((r, i) => <RuleItem key={i} ok={r.ok} text={isKo ? r.ko : r.en} />)}
+              <div style={{ fontSize: 12, fontWeight: 800, color: "var(--foreground)", marginBottom: 10 }}>{isKo ? c.dining.cardHeading.ko : c.dining.cardHeading.en}</div>
+              {c.dining.rules.map((r, i) => <RuleItem key={i} ok={r.ok} text={isKo ? r.ko : r.en} />)}
             </Card>
             <Callout color="yellow">
-              {isKo ? "술자리 문화: 자신의 잔을 직접 채우지 않고 옆 사람이 채워줍니다. 마시기 싫을 땐 잔을 손으로 가볍게 덮으면 됩니다."
-                : "Drinking culture: you don't pour for yourself — neighbors fill each other's glasses. To decline, lightly cover your glass with your hand."}
+              {isKo ? c.dining.calloutYellow.ko : c.dining.calloutYellow.en}
             </Callout>
           </Section>
         )}
 
         {show("transport") && (
-          <Section title={isKo ? "대중교통 에티켓" : "Public Transport Etiquette"}>
+          <Section title={isKo ? c.transport.title.ko : c.transport.title.en}>
             <Card>
-              {[
-                { ok: true,  ko: "노약자석은 비어 있어도 어른·임산부를 위해 비워두세요",   en: "Priority seats should stay empty even if available" },
-                { ok: true,  ko: "지하철 안에서는 작게 말하거나 이어폰을 끼세요",           en: "Speak quietly or use earphones on the subway" },
-                { ok: true,  ko: "타기 전에 내리는 사람이 다 내릴 때까지 기다리세요",       en: "Wait for passengers to exit before boarding" },
-                { ok: false, ko: "지하철 안에서 음식을 먹으면 눈총을 받아요",               en: "Don't eat on the subway — it's frowned upon" },
-                { ok: false, ko: "에스컬레이터에서 왼쪽은 서있는 줄, 오른쪽은 걷는 줄",   en: "Escalators: stand on the right, walk on the left (Seoul rule)" },
-              ].map((r, i) => <RuleItem key={i} ok={r.ok} text={isKo ? r.ko : r.en} />)}
+              {c.transport.rules.map((r, i) => <RuleItem key={i} ok={r.ok} text={isKo ? r.ko : r.en} />)}
             </Card>
             <Callout color="blue">
-              {isKo ? "버스 정류장에서 버스가 오면 손을 들어 신호를 보내야 합니다. 신호 없으면 버스가 그냥 지나칩니다!"
-                : "At bus stops, you MUST wave your hand to signal the bus. If you don't, it may drive past!"}
+              {isKo ? c.transport.calloutBlue.ko : c.transport.calloutBlue.en}
             </Callout>
           </Section>
         )}
 
         {show("social") && (
-          <Section title={isKo ? "사회생활 & 인간관계" : "Social Life & Relationships"}>
+          <Section title={isKo ? c.social.title.ko : c.social.title.en}>
             <Card accent dark={isDark}>
-              <div style={{ fontSize: 13, fontWeight: 800, color: "var(--grade-s)", marginBottom: 6 }}>{isKo ? "나이와 직급이 중요한 나라" : "Age and rank matter a lot here"}</div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: "var(--grade-s)", marginBottom: 6 }}>{isKo ? c.social.cardHeading.ko : c.social.cardHeading.en}</div>
               <p style={{ fontSize: 13, color: "var(--foreground)", lineHeight: 1.65 }}>
-                {isKo ? "한국은 나이와 직급에 따라 언어(존댓말/반말)와 행동이 달라지는 문화입니다. 처음 만나는 사람에게는 항상 존댓말을 사용하세요."
-                  : "In Korea, language and behavior shift based on age and rank. Always use formal speech (존댓말) with strangers."}
+                {isKo ? c.social.cardBody.ko : c.social.cardBody.en}
               </p>
             </Card>
             <Card>
-              <div style={{ fontSize: 12, fontWeight: 800, color: "var(--foreground)", marginBottom: 10 }}>{isKo ? "자주 받는 질문 — 무례한 게 아니에요!" : "Common Questions — Not Rude in Korean Culture!"}</div>
-              {[
-                { q: isKo ? "몇 살이에요?" : "How old are you?", a: isKo ? "한국은 나이로 호칭이 달라져서 나이를 묻는 것이 자연스럽습니다" : "Age determines speech levels — it's perfectly normal to ask" },
-                { q: isKo ? "밥 먹었어요?" : "Have you eaten?", a: isKo ? "안부 인사예요. '네' 또는 '아직요' 정도로 답하면 됩니다" : "A casual greeting like 'How are you?' — just say yes or not yet" },
-                { q: isKo ? "결혼은 했어요?" : "Are you married?", a: isKo ? "관심의 표현이에요. 불편하면 가볍게 웃으며 넘기면 됩니다" : "An expression of interest. Just smile and deflect if uncomfortable" },
-              ].map((item, i) => (
+              <div style={{ fontSize: 12, fontWeight: 800, color: "var(--foreground)", marginBottom: 10 }}>{isKo ? c.social.qaHeading.ko : c.social.qaHeading.en}</div>
+              {c.social.qa.map((item, i) => (
                 <div key={i} style={{ marginBottom: 10, paddingBottom: 10, borderBottom: i < 2 ? "1px solid var(--border)" : "none" }}>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: "var(--grade-s)", marginBottom: 3 }}>Q: {item.q}</div>
-                  <div style={{ fontSize: 11, color: "var(--foreground-muted)", lineHeight: 1.5 }}>→ {item.a}</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: "var(--grade-s)", marginBottom: 3 }}>Q: {isKo ? item.q.ko : item.q.en}</div>
+                  <div style={{ fontSize: 11, color: "var(--foreground-muted)", lineHeight: 1.5 }}>→ {isKo ? item.a.ko : item.a.en}</div>
                 </div>
               ))}
             </Card>
@@ -443,22 +356,15 @@ function EtiquetteTab({ isKo, isDark }: { isKo: boolean; isDark: boolean }) {
         )}
 
         {show("taboo") && (
-          <Section title={isKo ? "절대 피해야 할 것들" : "Things to Absolutely Avoid"}>
+          <Section title={isKo ? c.taboo.title.ko : c.taboo.title.en}>
             <Callout color="red">
-              {isKo ? "아래 행동들은 한국에서 심각한 실례 또는 금기로 여겨집니다. 꼭 기억하세요!" : "The following are considered seriously rude or taboo in Korea. Keep these in mind!"}
+              {isKo ? c.taboo.calloutRed.ko : c.taboo.calloutRed.en}
             </Callout>
             <Card>
-              {[
-                { ko: "빨간색 잉크로 이름을 쓰면 안 됩니다 — 죽음과 연관된 색으로 여깁니다",   en: "Never write someone's name in red ink — it's associated with death" },
-                { ko: "숫자 '4'가 들어간 선물(예: 4개 묶음)은 불길하게 여깁니다",             en: "Avoid gifts in sets of 4 — the number 4 sounds like 'death' in Korean" },
-                { ko: "집 안에서 신발을 신고 들어가면 안 됩니다. 반드시 벗으세요",             en: "Never wear shoes inside a Korean home — always remove them at the door" },
-                { ko: "발로 문을 열거나 물건을 밀면 실례입니다",                              en: "Don't open doors or push things with your feet" },
-                { ko: "큰 소리로 코를 풀면 시선이 집중됩니다. 화장실에서 하세요",              en: "Blowing your nose loudly in public attracts stares — do it in the restroom" },
-              ].map((r, i) => <RuleItem key={i} ok={false} text={isKo ? r.ko : r.en} />)}
+              {c.taboo.rules.map((r, i) => <RuleItem key={i} ok={r.ok} text={isKo ? r.ko : r.en} />)}
             </Card>
             <Callout color="yellow">
-              {isKo ? "실수해도 괜찮아요! 대부분의 한국인은 외국인의 문화 차이를 이해합니다. 진심 어린 '죄송합니다'면 충분합니다."
-                : "It's okay to make mistakes! Most Koreans understand cultural differences. A sincere '죄송합니다' goes a long way."}
+              {isKo ? c.taboo.calloutYellow.ko : c.taboo.calloutYellow.en}
             </Callout>
           </Section>
         )}
@@ -467,14 +373,7 @@ function EtiquetteTab({ isKo, isDark }: { isKo: boolean; isDark: boolean }) {
         <div style={{ background: "var(--card)", borderRadius: 18, padding: "20px 16px", textAlign: "center", marginBottom: 8, border: "1px solid var(--border)" }}>
           <div style={{ fontSize: 15, fontWeight: 800, color: "var(--foreground)", marginBottom: 14 }}>{isKo ? "핵심 표현 빠른 참고" : "Key Phrases Quick Reference"}</div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            {[
-              { ko: "안녕하세요", rom: "Annyeonghaseyo", en: "Hello" },
-              { ko: "감사합니다", rom: "Gamsahamnida",   en: "Thank you" },
-              { ko: "죄송합니다", rom: "Joesonghamnida", en: "I'm sorry" },
-              { ko: "괜찮아요",   rom: "Gwaenchanayo",   en: "It's okay" },
-              { ko: "잘 먹겠습니다", rom: "Jal meokgesseumnida", en: "I will eat well" },
-              { ko: "잘 먹었습니다", rom: "Jal meogeosseumnida", en: "I ate well" },
-            ].map((p) => (
+            {KEY_PHRASES.map((p) => (
               <div key={p.ko} style={{ background: "var(--content-bg)", borderRadius: 12, padding: "10px 8px", border: "1px solid var(--border)" }}>
                 <div style={{ fontSize: 13, fontWeight: 800, color: "var(--foreground)", marginBottom: 2 }}>{p.ko}</div>
                 <div style={{ fontSize: 9, color: "var(--grade-s)", fontWeight: 600, marginBottom: 3 }}>{p.rom}</div>

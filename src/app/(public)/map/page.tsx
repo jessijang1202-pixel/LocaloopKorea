@@ -6,121 +6,15 @@ import { useTheme } from "@/lib/theme";
 import dynamic from "next/dynamic";
 import { SEED_PLACES, SEED_REGIONS } from "@/data/seed";
 import type { Place } from "@/types";
+import { getRating, GRADE_BG, GRADE_TEXT } from "@/lib/grades";
 import Link from "next/link";
 import Image from "next/image";
+import { ITAEWON, CHIPS, TRAVEL_INFO, HOT_PLACE_IDS, type FilterKey } from "@/content/map";
 
 const KakaoMap = dynamic(
   () => import("@/components/map/KakaoMap").then((m) => m.KakaoMap),
   { ssr: false, loading: () => <div style={{ width: "100%", height: "100%", background: "var(--map-bg)" }} /> }
 );
-
-const ITAEWON = { lat: 37.534, lng: 126.9946 };
-
-function getRating(p: Place): "S" | "A" | "B" | "C" {
-  if (p.english_support && p.card_payment && p.solo_friendly) return "S";
-  if (p.english_support && p.card_payment) return "A";
-  if (p.card_payment) return "B";
-  return "C";
-}
-
-type FilterKey = "all" | "english" | "S" | "restaurant" | "cafe";
-
-const CHIPS: { key: FilterKey; ko: string; en: string; hasIcon?: boolean }[] = [
-  { key: "all",        ko: "전체",    en: "All" },
-  { key: "english",    ko: "영어 OK", en: "English OK", hasIcon: true },
-  { key: "S",          ko: "S등급",   en: "S Grade" },
-  { key: "restaurant", ko: "음식점",   en: "Food" },
-  { key: "cafe",       ko: "카페",    en: "Café" },
-];
-
-// Real travel times & distances from Itaewon
-const TRAVEL_INFO: Record<string, { ko: string; en: string; dist: string }> = {
-  p1: { ko: "지하철 28분", en: "Subway 28 min", dist: "7.0km" },
-  p2: { ko: "지하철 33분", en: "Subway 33 min", dist: "4.1km" },
-  p3: { ko: "지하철 26분", en: "Subway 26 min", dist: "6.0km" },
-  p4: { ko: "지하철 30분", en: "Subway 30 min", dist: "5.3km" },
-  p5: { ko: "지하철 24분", en: "Subway 24 min", dist: "5.6km" },
-  p6: { ko: "KTX 2시간 30분", en: "KTX 2h 30min", dist: "325km" },
-  p7: { ko: "도보 12분", en: "Walk 12 min", dist: "850m" },
-  p8: { ko: "도보 9분", en: "Walk 9 min", dist: "650m" },
-  p9:  { ko: "도보 15분", en: "Walk 15 min",  dist: "1.1km" },
-  p10: { ko: "도보 8분",  en: "Walk 8 min",   dist: "600m"  },
-  p11: { ko: "도보 3분",  en: "Walk 3 min",   dist: "250m"  },
-  p12: { ko: "버스 15분", en: "Bus 15 min",   dist: "2.2km" },
-};
-
-const HOT_PLACE_IDS = ["p7", "p8", "p9", "p10", "p11", "p12"];
-
-const GRADE_BG: Record<string, string> = {
-  S: "var(--grade-s)", A: "var(--grade-a)", B: "var(--grade-b)", C: "var(--grade-c)",
-};
-const GRADE_TEXT: Record<string, string> = {
-  S: "#fff", A: "#fff", B: "#fff", C: "var(--grade-c-text)",
-};
-
-function PlaceRow({ place, isKo }: {
-  place: Place; isKo: boolean;
-}) {
-  const rating = getRating(place);
-  const travel = TRAVEL_INFO[place.id];
-  const badgeBg = GRADE_BG[rating];
-  const badgeFg = GRADE_TEXT[rating];
-
-  return (
-    <Link
-      href={`/places/${place.slug}`}
-      style={{
-        display: "flex", gap: 12, padding: "14px 0",
-        borderBottom: "1px solid var(--border)",
-        cursor: "pointer", alignItems: "flex-start",
-        textDecoration: "none",
-      }}
-    >
-      {/* Grade badge */}
-      <div style={{
-        width: 46, height: 46, borderRadius: 13, flexShrink: 0,
-        background: badgeBg,
-        display: "flex", flexDirection: "column",
-        alignItems: "center", justifyContent: "center",
-        userSelect: "none",
-      }}>
-        <span style={{ fontSize: 17, fontWeight: 800, lineHeight: 1, color: badgeFg }}>{rating}</span>
-        <span style={{ fontSize: 7, fontWeight: 700, letterSpacing: "0.05em", opacity: 0.85, color: badgeFg }}>GRADE</span>
-      </div>
-
-      {/* Info */}
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 15, fontWeight: 700, color: "var(--foreground)", marginBottom: 2 }}>
-          {isKo ? place.name_ko : place.name_en}
-        </div>
-        <div style={{ fontSize: 12, color: "var(--foreground-muted)", marginBottom: 5 }}>
-          {isKo ? place.name_en : place.name_ko}
-        </div>
-        <div style={{ fontSize: 11, color: "var(--foreground-sub)", marginBottom: 6, display: "flex", alignItems: "center", gap: 4 }}>
-          {travel && <span>{isKo ? travel.ko : travel.en} · {travel.dist}</span>}
-          <span style={{ color: "var(--success)", fontWeight: 600 }}>{isKo ? "· 지금 영업중" : "· Open now"}</span>
-        </div>
-        <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-          {place.english_support && (
-            <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 999, background: "var(--badge-en-bg)", color: "var(--badge-en-fg)", fontWeight: 600 }}>
-              {isKo ? "영어 OK" : "English OK"}
-            </span>
-          )}
-          {place.card_payment && (
-            <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 999, background: "var(--badge-card-bg)", color: "var(--badge-card-fg)", fontWeight: 600 }}>
-              {isKo ? "카드 OK" : "Card OK"}
-            </span>
-          )}
-          {place.solo_friendly && (
-            <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 999, background: "var(--badge-solo-bg)", color: "var(--badge-solo-fg)", fontWeight: 600 }}>
-              {isKo ? "혼자 OK" : "Solo OK"}
-            </span>
-          )}
-        </div>
-      </div>
-    </Link>
-  );
-}
 
 // PC left-panel place card (compact)
 function PlaceCardPC({ place, isSelected, isKo, onClick }: {

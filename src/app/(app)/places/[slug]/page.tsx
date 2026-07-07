@@ -5,65 +5,15 @@ import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { SEED_PLACES, SEED_REGIONS } from "@/data/seed";
 import type { Place } from "@/types";
+import { getRating, GRADE_COLOR, GRADE_TEXT } from "@/lib/grades";
 import dynamic from "next/dynamic";
 import { useLang } from "@/lib/lang";
+import { CAT_LABEL, WHY_TAGS } from "@/content/places";
 
 const KakaoMap = dynamic(
   () => import("@/components/map/KakaoMap").then((m) => m.KakaoMap),
   { ssr: false, loading: () => <div style={{ width: "100%", height: "100%", background: "var(--map-bg)" }} /> }
 );
-
-function getRating(p: Place): "S" | "A" | "B" | "C" {
-  if (p.english_support && p.card_payment && p.solo_friendly) return "S";
-  if (p.english_support && p.card_payment) return "A";
-  if (p.card_payment) return "B";
-  return "C";
-}
-
-const GRADE_COLOR: Record<string, string> = {
-  S: "var(--grade-s)", A: "var(--grade-a)", B: "var(--grade-b)", C: "var(--grade-c)",
-};
-
-const GRADE_TEXT: Record<string, string> = {
-  S: "#fff", A: "#fff", B: "#fff", C: "var(--grade-c-text)",
-};
-
-const CAT_LABEL: Record<string, { ko: string; en: string }> = {
-  cafe:       { ko: "카페",    en: "Café" },
-  restaurant: { ko: "음식점",  en: "Restaurant" },
-  bar:        { ko: "바",      en: "Bar" },
-  market:     { ko: "시장",    en: "Market" },
-  shopping:   { ko: "쇼핑",   en: "Shopping" },
-  activity:   { ko: "액티비티", en: "Activity" },
-  health:     { ko: "헬스",   en: "Health" },
-  transport:  { ko: "교통",   en: "Transport" },
-};
-
-const WHY_TAGS: Record<string, { ko: string; en: string }[]> = {
-  S: [
-    { ko: "영어 완전 대응",   en: "Full English Support" },
-    { ko: "외국인 리뷰 84+", en: "84+ Foreign Reviews" },
-    { ko: "지하철 5분",      en: "5 min from Subway" },
-    { ko: "카드 OK",         en: "Card Payment OK" },
-    { ko: "혼자 방문 OK",    en: "Solo-Friendly" },
-    { ko: "예약 쉬움",       en: "Easy Reservation" },
-  ],
-  A: [
-    { ko: "영어 어느 정도 가능", en: "Some English Available" },
-    { ko: "카드 결제 OK",       en: "Card Payment OK" },
-    { ko: "외국인 리뷰 있음",   en: "Has Foreign Reviews" },
-  ],
-  B: [
-    { ko: "카드 결제 OK",   en: "Card Payment OK" },
-    { ko: "픽토그램 메뉴",  en: "Pictogram Menu" },
-    { ko: "구글맵 정보 있음", en: "Google Maps Verified" },
-  ],
-  C: [
-    { ko: "현금 선호",     en: "Cash Preferred" },
-    { ko: "한국어 필요",   en: "Korean Required" },
-    { ko: "기본 방문 가능", en: "Basic Visit OK" },
-  ],
-};
 
 const ROW_SVGS: Record<string, React.ReactNode> = {
   globe: (

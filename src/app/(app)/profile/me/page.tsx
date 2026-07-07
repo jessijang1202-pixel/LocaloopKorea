@@ -4,66 +4,20 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useLang } from "@/lib/lang";
+import { toggleArr } from "@/lib/form-utils";
+import {
+  LANGUAGES_KO, LANGUAGES_EN,
+  GENDERS_KO, GENDERS_EN,
+  DURATIONS_KO, DURATIONS_EN,
+  REGIONS_KO, REGIONS_EN,
+  REGION_SLUGS,
+  LIVING_KO, LIVING_EN,
+  KOREAN_LEVELS_KO, KOREAN_LEVELS_EN,
+  INTERESTS,
+  PURPOSES_PROFILE_KO, PURPOSES_PROFILE_EN,
+} from "@/content/profile-options";
 
 const C = { teal: "var(--grade-s)", tealLight: "rgba(255,86,54,0.08)", tealDark: "#c43e2a", dark: "linear-gradient(160deg, #2A1208 0%, #1E0D06 100%)", text: "var(--foreground)", sub: "var(--foreground-muted)", border: "var(--border)" };
-
-// ─── Option lists ──────────────────────────────────────────────────────────────
-
-const LANGUAGES_KO = ["영어", "일본어", "중국어", "베트남어", "태국어", "프랑스어", "독일어", "기타"];
-const LANGUAGES_EN = ["English", "Japanese", "Chinese", "Vietnamese", "Thai", "French", "German", "Other"];
-const GENDERS_KO = ["남성", "여성", "논바이너리", "무응답"];
-const GENDERS_EN = ["Male", "Female", "Non-binary", "Prefer not to say"];
-const PURPOSES_KO = [
-  { value: "work",     label: "직장 / 비즈니스", desc: "취업, 원격근무, 비즈니스" },
-  { value: "study",    label: "학업",             desc: "어학원, 대학교, 교환학생" },
-  { value: "travel",   label: "여행",             desc: "단기 방문, 관광" },
-  { value: "language", label: "언어 학습",        desc: "한국어 공부가 주목적" },
-  { value: "culture",  label: "문화 체험",        desc: "K-culture, 음식, 생활" },
-  { value: "other",    label: "기타",             desc: "" },
-];
-const PURPOSES_EN = [
-  { value: "work",     label: "Work / Business",      desc: "Employment, remote work, business" },
-  { value: "study",    label: "Study",                desc: "Language school, university, exchange" },
-  { value: "travel",   label: "Travel",               desc: "Short-term visit, tourism" },
-  { value: "language", label: "Language learning",    desc: "Learning Korean is the main goal" },
-  { value: "culture",  label: "Cultural experience",  desc: "K-culture, food, lifestyle" },
-  { value: "other",    label: "Other",                desc: "" },
-];
-const DURATIONS_KO = ["1개월 미만", "1~3개월", "3~6개월", "6개월~1년", "1년 이상", "미정"];
-const DURATIONS_EN = ["< 1 month", "1–3 months", "3–6 months", "6–12 months", "1+ year", "Not sure"];
-const REGIONS_KO = ["홍대", "이태원", "강남", "북촌 / 인사동", "성수", "해운대 (부산)", "전주 한옥마을", "기타"];
-const REGIONS_EN = ["Hongdae", "Itaewon", "Gangnam", "Bukchon / Insadong", "Seongsu", "Haeundae (Busan)", "Jeonju Hanok", "Other"];
-const REGION_SLUGS = ["hongdae", "itaewon", "gangnam", "bukchon", "seongsu", "haeundae", "jeonju-hanok", "other"];
-const LIVING_KO = ["고시원", "원룸 / 오피스텔", "쉐어하우스", "에어비앤비", "친구 / 가족 집", "기타"];
-const LIVING_EN = ["Goshiwon", "Studio / Officetel", "Share house", "Airbnb", "Friend / Family", "Other"];
-const KOREAN_KO = [
-  { label: "전혀 못해요", desc: "한국어를 전혀 모르거나 거의 몰라요" },
-  { label: "초급", desc: "기본 인사 정도만 해요" },
-  { label: "생활 한국어", desc: "편의점, 카페 등에서 소통 가능" },
-  { label: "일상 대화", desc: "간단한 대화는 어렵지 않아요" },
-  { label: "유창해요", desc: "한국어로 자유롭게 대화해요" },
-];
-const KOREAN_EN = [
-  { label: "None", desc: "I don't know any Korean yet" },
-  { label: "Beginner", desc: "Just basic greetings" },
-  { label: "Daily use", desc: "Can manage convenience stores, cafés" },
-  { label: "Conversational", desc: "Comfortable in everyday conversations" },
-  { label: "Fluent", desc: "Speak Korean freely" },
-];
-const INTERESTS_ALL = [
-  { slug: "food",         ko: "🍜 음식",      en: "🍜 Food" },
-  { slug: "language",     ko: "💬 언어 교환",  en: "💬 Language Exchange" },
-  { slug: "kculture",     ko: "🎭 한국 문화",  en: "🎭 K-Culture" },
-  { slug: "hiking",       ko: "🏔️ 등산",      en: "🏔️ Hiking" },
-  { slug: "music",        ko: "🎵 음악",      en: "🎵 Music" },
-  { slug: "art",          ko: "🎨 예술",      en: "🎨 Art" },
-  { slug: "sport",        ko: "⚽ 스포츠",    en: "⚽ Sports" },
-  { slug: "coffee",       ko: "☕ 카페",      en: "☕ Coffee & Cafés" },
-  { slug: "nightlife",    ko: "🌙 야경 / 바", en: "🌙 Nightlife" },
-  { slug: "cooking",      ko: "👨‍🍳 요리",     en: "👨‍🍳 Cooking" },
-  { slug: "photography",  ko: "📷 사진",      en: "📷 Photography" },
-  { slug: "travel",       ko: "✈️ 국내 여행", en: "✈️ Travel in Korea" },
-];
 
 type FormState = {
   main_language: string;
@@ -87,10 +41,6 @@ const INIT: FormState = {
   make_friends: true, language_exchange: true, join_meetups: false,
   nearby_alerts: true, marketing: false,
 };
-
-function toggleArr(arr: string[], val: string) {
-  return arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val];
-}
 
 // ─── Atoms ────────────────────────────────────────────────────────────────────
 
@@ -216,9 +166,9 @@ export default function MePage() {
   const ko = isKo;
   const langs = ko ? LANGUAGES_KO : LANGUAGES_EN;
   const genders = ko ? GENDERS_KO : GENDERS_EN;
-  const purposes = ko ? PURPOSES_KO : PURPOSES_EN;
+  const purposes = ko ? PURPOSES_PROFILE_KO : PURPOSES_PROFILE_EN;
   const durations = ko ? DURATIONS_KO : DURATIONS_EN;
-  const koreanLevels = ko ? KOREAN_KO : KOREAN_EN;
+  const koreanLevels = ko ? KOREAN_LEVELS_KO : KOREAN_LEVELS_EN;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100%" }}>
@@ -303,7 +253,7 @@ export default function MePage() {
           <SectionLabel label={ko ? "관심사" : "Interests"} />
           <p style={{ fontSize: 12, color: C.sub, marginBottom: 12 }}>{ko ? "관심 있는 항목을 모두 선택해 주세요" : "Select everything that interests you"}</p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
-            {INTERESTS_ALL.map(({ slug, ko: labelKo, en: labelEn }) => (
+            {INTERESTS.map(({ slug, ko: labelKo, en: labelEn }) => (
               <Chip
                 key={slug}
                 label={ko ? labelKo : labelEn}

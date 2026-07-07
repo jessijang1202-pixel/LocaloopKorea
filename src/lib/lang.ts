@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useLayoutEffect } from "react";
 
+// keep in sync with the "ll_lang" literal in the inline script in src/app/layout.tsx
 export const LANG_KEY = "ll_lang";
 export const LANG_EVENT = "ll_lang_change";
 
