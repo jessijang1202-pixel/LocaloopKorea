@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useLang } from "@/lib/lang";
 import { useTheme } from "@/lib/theme";
 import { STAGE_NAMES, STAGE_SLUGS, TASKS } from "@/content/tasks";
+import { PriorityNow } from "./PriorityNow";
 
 const CURRENT_STAGE = 1; // 0-indexed
 
@@ -157,6 +158,7 @@ export default function TasksPage() {
 
   return (
     <div style={{ background: "var(--background)", minHeight: "100%" }}>
+      <PriorityNow />
       {stageHero}
       {stageChips}
       {taskList}

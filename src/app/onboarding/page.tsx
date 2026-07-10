@@ -5,6 +5,8 @@ import { useLang, getLang } from "@/lib/lang";
 import { createClient } from "@/lib/supabase/client";
 import { saveOnboarding } from "./actions";
 import { AppNav } from "@/components/layout/AppNav";
+import { saveProfile } from "@/lib/engine";
+import type { UserProfile } from "@/lib/engine";
 import type { OnboardingData } from "@/types/onboarding";
 import { toggleArr } from "@/lib/form-utils";
 import {
@@ -121,6 +123,17 @@ type StepId = "nickname" | "background" | "purpose" | "stay" | "region" | "korea
 const EN_STEPS: StepId[] = ["nickname", "background", "purpose", "stay", "region", "koreanlevel", "interests", "connect"];
 const KO_STEPS: StepId[] = ["nickname", "region", "interests", "connect"];
 
+// Map onboarding's 5-level Korean scale (label string, ko or en) to the engine's
+// 4-level scale. Collapse the top two (Conversational/일상 대화, Fluent/유창해요)
+// into "advanced", per the mapping notes in src/lib/engine/types.ts.
+function mapKoreanLevel(label: string): UserProfile["koreanLevel"] {
+  const enIdx = KOREAN_LEVELS_EN.findIndex((k) => k.label === label);
+  const koIdx = KOREAN_LEVELS_KO.findIndex((k) => k.label === label);
+  const i = enIdx !== -1 ? enIdx : koIdx;
+  const scale = ["beginner", "basic", "intermediate", "advanced", "advanced"] as const;
+  return i === -1 ? null : scale[i];
+}
+
 // ─── Main inner component ─────────────────────────────────────────────────────
 
 function OnboardingInner() {
@@ -155,6 +168,16 @@ function OnboardingInner() {
   async function handleNext() {
     if (isLast) {
       setSaving(true);
+      // Persist a normalized profile for the recommendation engine. This is
+      // client-only (localStorage) so it must run here, before the server action.
+      saveProfile({
+        koreanLevel: mapKoreanLevel(data.koreanLevel),
+        interests: data.interests,           // already INTERESTS slugs
+        purpose: data.purpose || null,
+        region: data.region || null,         // already a REGION_SLUGS slug
+        language: data.mainLanguage || null,
+        stayDays: 0, // onboarding collects a duration bucket, not elapsed days — assume fresh arrival
+      });
       await saveOnboarding(data);
       setSaving(false);
       setDone(true);
