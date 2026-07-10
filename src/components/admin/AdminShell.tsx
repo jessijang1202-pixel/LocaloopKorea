@@ -20,6 +20,14 @@ const NAV = [
     icon: <PinIcon size={18} />,
   },
   {
+    href: "/admin/grading", label: "등급 엔진",
+    icon: (
+      <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <path d="m12 14 4-4" /><path d="M3.34 19a10 10 0 1 1 17.32 0" />
+      </svg>
+    ),
+  },
+  {
     href: "/admin/courses", label: "로컬 코스",
     icon: <BookIcon size={18} />,
   },
@@ -59,6 +67,7 @@ const NAV = [
 const PAGE_TITLES: Record<string, string> = {
   "/admin": "대시보드",
   "/admin/places": "장소 관리",
+  "/admin/grading": "등급 엔진",
   "/admin/courses": "로컬 코스",
   "/admin/users": "사용자 관리",
   "/admin/content": "콘텐츠 관리",
