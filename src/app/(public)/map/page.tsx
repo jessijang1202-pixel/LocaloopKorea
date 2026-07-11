@@ -9,7 +9,13 @@ import type { Place } from "@/types";
 import { getRating, GRADE_BG, GRADE_TEXT } from "@/lib/grades";
 import Link from "next/link";
 import Image from "next/image";
-import { ITAEWON, CHIPS, TRAVEL_INFO, HOT_PLACE_IDS, type FilterKey } from "@/content/map";
+import { ITAEWON, CHIPS, HOT_PLACE_IDS, type FilterKey } from "@/content/map";
+import {
+  fetchLivePlaces,
+  travelFromItaewon,
+  hotPlaceIds,
+  type LiveRegion,
+} from "@/lib/places-live";
 
 const KakaoMap = dynamic(
   () => import("@/components/map/KakaoMap").then((m) => m.KakaoMap),
@@ -47,10 +53,10 @@ function PlaceCardPC({ place, isSelected, isKo, onClick }: {
 }
 
 // 2-column grid card (identical style for both ITAEWON PICK and OTHER REGIONS)
-function PlaceCard2({ place, isKo, hot = false }: { place: Place; isKo: boolean; hot?: boolean }) {
+function PlaceCard2({ place, isKo, hot = false, regions }: { place: Place; isKo: boolean; hot?: boolean; regions: LiveRegion[] }) {
   const rating = getRating(place);
-  const t = TRAVEL_INFO[place.id];
-  const city = !hot ? (SEED_REGIONS.find((r) => r.id === place.region_id)?.city ?? "") : null;
+  const t = travelFromItaewon(place);
+  const city = !hot ? (regions.find((r) => r.id === place.region_id)?.city ?? "") : null;
 
   return (
     <Link
@@ -267,6 +273,11 @@ function WelcomePopup({ isDark, isKo, onClose }: { isDark: boolean; isKo: boolea
 export default function MapPage() {
   const isKo = useLang();
   const theme = useTheme();
+  // DB-first place data with silent seed fallback: initial render is always
+  // the code seed (no flash), then live rows swap in when available.
+  const [livePlaces, setLivePlaces] = useState<Place[]>(SEED_PLACES);
+  const [liveRegions, setLiveRegions] = useState<LiveRegion[]>(SEED_REGIONS);
+  const [liveSource, setLiveSource] = useState<"db" | "seed">("seed");
   const [selected, setSelected] = useState<Place>(
     SEED_PLACES.find((p) => p.id === HOT_PLACE_IDS[0]) ?? SEED_PLACES[0]
   );
@@ -279,6 +290,17 @@ export default function MapPage() {
     if (!localStorage.getItem("ll_welcome_shown")) {
       setShowPopup(true);
     }
+    let cancelled = false;
+    void fetchLivePlaces().then(({ places, regions, source }) => {
+      if (cancelled || source !== "db") return;
+      setLivePlaces(places);
+      setLiveRegions(regions);
+      setLiveSource(source);
+      const hot = hotPlaceIds(places, source);
+      const first = places.find((p) => p.id === hot[0]) ?? places[0];
+      if (first) setSelected(first);
+    });
+    return () => { cancelled = true; };
   }, []);
 
   function closePopup() {
@@ -286,10 +308,11 @@ export default function MapPage() {
     setShowPopup(false);
   }
 
-  const hotPlaces = SEED_PLACES.filter((p) => HOT_PLACE_IDS.includes(p.id));
+  const hotIds = hotPlaceIds(livePlaces, liveSource);
+  const hotPlaces = livePlaces.filter((p) => hotIds.includes(p.id));
 
-  const filtered = SEED_PLACES.filter((p) => {
-    if (HOT_PLACE_IDS.includes(p.id)) return false; // shown in PICK strip above
+  const filtered = livePlaces.filter((p) => {
+    if (hotIds.includes(p.id)) return false; // shown in PICK strip above
     if (chip === "all") return true;
     if (chip === "english") return p.english_support;
     if (chip === "S") return getRating(p) === "S";
@@ -298,7 +321,7 @@ export default function MapPage() {
     return true;
   });
 
-  const pins = SEED_PLACES.filter((p) => p.lat && p.lng).map((p) => ({
+  const pins = livePlaces.filter((p) => p.lat && p.lng).map((p) => ({
     id: p.id, lat: p.lat!, lng: p.lng!, title: p.name_en, rating: getRating(p),
   }));
 
@@ -319,7 +342,7 @@ export default function MapPage() {
           pins={pins}
           center={ITAEWON}
           zoom={5}
-          onPinClick={(id) => { const p = SEED_PLACES.find((x) => x.id === id); if (p) setSelected(p); }}
+          onPinClick={(id) => { const p = livePlaces.find((x) => x.id === id); if (p) setSelected(p); }}
         />
       </div>
 
@@ -450,7 +473,7 @@ export default function MapPage() {
               {isKo ? "이태원 PICK" : "ITAEWON PICK"}
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-              {hotPlaces.map((p) => <PlaceCard2 key={p.id} place={p} isKo={isKo} hot />)}
+              {hotPlaces.map((p) => <PlaceCard2 key={p.id} place={p} isKo={isKo} hot regions={liveRegions} />)}
             </div>
             <button style={{ width: "100%", marginTop: 10, padding: "10px 0", borderRadius: 12, background: "var(--content-bg)", border: "1px solid var(--border)", color: "var(--foreground-muted)", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
               {isKo ? "더보기" : "View more"}
@@ -463,7 +486,7 @@ export default function MapPage() {
               {isKo ? "다른 지역 추천" : "OTHER REGIONS"}
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-              {filtered.map((p) => <PlaceCard2 key={p.id} place={p} isKo={isKo} />)}
+              {filtered.map((p) => <PlaceCard2 key={p.id} place={p} isKo={isKo} regions={liveRegions} />)}
             </div>
             <button style={{ width: "100%", marginTop: 10, padding: "10px 0", borderRadius: 12, background: "var(--content-bg)", border: "1px solid var(--border)", color: "var(--foreground-muted)", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
               {isKo ? "더보기" : "View more"}
@@ -509,7 +532,7 @@ export default function MapPage() {
               {isKo ? "이태원 PICK" : "ITAEWON PICK"}
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-              {hotPlaces.map((p) => <PlaceCard2 key={p.id} place={p} isKo={isKo} hot />)}
+              {hotPlaces.map((p) => <PlaceCard2 key={p.id} place={p} isKo={isKo} hot regions={liveRegions} />)}
             </div>
           </div>
 
@@ -530,7 +553,7 @@ export default function MapPage() {
           pins={pins}
           center={ITAEWON}
           zoom={5}
-          onPinClick={(id) => { const p = SEED_PLACES.find((x) => x.id === id); if (p) setSelected(p); }}
+          onPinClick={(id) => { const p = livePlaces.find((x) => x.id === id); if (p) setSelected(p); }}
         />
         {selected && (
           <div style={{ position: "absolute", bottom: 24, left: "50%", transform: "translateX(-50%)", width: "min(400px, calc(100% - 48px))", background: "var(--card)", borderRadius: 20, border: "1px solid var(--border)", boxShadow: "0 8px 40px rgba(0,0,0,0.18)", padding: "14px 16px", zIndex: 10 }}>

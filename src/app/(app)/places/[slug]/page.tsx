@@ -6,6 +6,7 @@ import Image from "next/image";
 import { SEED_PLACES, SEED_REGIONS } from "@/data/seed";
 import type { Place } from "@/types";
 import { getRating, GRADE_COLOR, GRADE_TEXT } from "@/lib/grades";
+import { fetchLivePlaces } from "@/lib/places-live";
 import dynamic from "next/dynamic";
 import { useLang } from "@/lib/lang";
 import { CAT_LABEL, WHY_TAGS } from "@/content/places";
@@ -79,16 +80,40 @@ export default function PlaceDetailPage() {
   const router = useRouter();
   const isKo = useLang();
 
-  const place = SEED_PLACES.find((p) => p.slug === slug);
+  // Seed-known slugs render instantly and upgrade silently from the DB;
+  // DB-only slugs hold a small loading state until the fetch resolves.
+  const seedPlace = SEED_PLACES.find((p) => p.slug === slug) ?? null;
+  const [place, setPlace] = React.useState<Place | null>(seedPlace);
+  const [regions, setRegions] = React.useState(SEED_REGIONS);
+  const [resolving, setResolving] = React.useState(!seedPlace);
+
+  React.useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      const { places, regions: liveRegions, source } = await fetchLivePlaces();
+      if (cancelled || source !== "db") {
+        if (!cancelled) setResolving(false);
+        return;
+      }
+      const live = places.find((p) => p.slug === slug);
+      if (live) setPlace(live);
+      setRegions(liveRegions as typeof SEED_REGIONS);
+      setResolving(false);
+    })();
+    return () => { cancelled = true; };
+  }, [slug]);
+
   if (!place) {
     return (
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "60dvh", color: "var(--foreground-muted)", fontSize: 15 }}>
-        {isKo ? "장소를 찾을 수 없어요" : "Place not found"}
+        {resolving
+          ? (isKo ? "불러오는 중..." : "Loading...")
+          : (isKo ? "장소를 찾을 수 없어요" : "Place not found")}
       </div>
     );
   }
 
-  const region = SEED_REGIONS.find((r) => r.id === place.region_id);
+  const region = regions.find((r) => r.id === place.region_id);
   const rating = getRating(place);
   const gradeColor = GRADE_COLOR[rating];
   const gradeText = GRADE_TEXT[rating];
