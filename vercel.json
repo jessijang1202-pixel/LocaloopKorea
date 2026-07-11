@@ -3,6 +3,10 @@
     {
       "path": "/api/admin/grading/recompute",
       "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/api/admin/locality/recompute",
+      "schedule": "30 3 * * *"
     }
   ]
 }

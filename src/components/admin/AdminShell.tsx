@@ -28,6 +28,16 @@ const NAV = [
     ),
   },
   {
+    href: "/admin/locality", label: "로컬 지수",
+    icon: (
+      <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="3" />
+        <line x1="12" y1="2" x2="12" y2="5" /><line x1="12" y1="19" x2="12" y2="22" />
+        <line x1="2" y1="12" x2="5" y2="12" /><line x1="19" y1="12" x2="22" y2="12" />
+      </svg>
+    ),
+  },
+  {
     href: "/admin/courses", label: "로컬 코스",
     icon: <BookIcon size={18} />,
   },
@@ -68,6 +78,7 @@ const PAGE_TITLES: Record<string, string> = {
   "/admin": "대시보드",
   "/admin/places": "장소 관리",
   "/admin/grading": "등급 엔진",
+  "/admin/locality": "로컬 지수",
   "/admin/courses": "로컬 코스",
   "/admin/users": "사용자 관리",
   "/admin/content": "콘텐츠 관리",

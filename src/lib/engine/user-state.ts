@@ -21,6 +21,9 @@ export const DEFAULT_PROFILE: UserProfile = {
   interests: [],
   stayDays: null,
   completedTasks: [],
+  adventure: null,
+  budgetPerPerson: null,
+  radiusKm: null,
 };
 
 // ─── Read / write ─────────────────────────────────────────────────────────

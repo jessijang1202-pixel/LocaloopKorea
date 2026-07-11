@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useLang } from "@/lib/lang";
 import { COURSES } from "@/content/courses";
+import { CourseBuilder } from "./CourseBuilder";
 
 const FILTER_CHIPS = {
   ko: ["전체", "반나절", "하루", "음식", "문화", "자연"],
@@ -25,6 +26,9 @@ export default function CoursesPage() {
 
   return (
     <div style={{ background: "var(--background)", minHeight: "100%", paddingBottom: 20 }}>
+
+      {/* Personalized course builder (patent no.3 module 500) */}
+      <CourseBuilder />
 
       {/* Filter chips */}
       <div style={{ padding: "12px 16px 8px", display: "flex", gap: 7, overflowX: "auto", scrollbarWidth: "none" }}>

@@ -48,6 +48,12 @@ export interface UserProfile {
   interests: string[]; // 관심 활동 슬러그 (INTERESTS slug 목록)
   stayDays: number | null; // 입국 후 경과일 (체류 초기 판단; null = 미상, 초기로 간주)
   completedTasks: TaskId[]; // 기 해결 과제
+  // ── Course engine inputs (patent no.3, module 200) — optional add-on fields.
+  // Kept null-able so patent-1 consumers are unaffected; the course engine reads
+  // them via its own CourseProfile adapter.
+  adventure?: "safe" | "bold" | null; // 안전 우선형 / 도전 선호형
+  budgetPerPerson?: number | null; // KRW 1인 예산
+  radiusKm?: number | null; // 코스 반경(km)
 }
 
 export interface ScoredTask {
