@@ -119,11 +119,17 @@ const PLACES = [
     description_en: "A long-running Turkish kitchen in Itaewon serving kebabs, lahmacun, and pide with halal ingredients. A reliable neighborhood standby for decades.",
     english_support: true, card_payment: true, solo_friendly: true,
     image_url: IMG("1504674900247-0877df9cc836"),
+    // TUNED (goal-1 safe meal, kept grade A):
+    //   LS rules: 영어메뉴(1)+영어메뉴있(1)=2 -> LS=50+2*18=86 (>=80 ok).
+    //   AR base 95 (no restriction); PD base 80; LF: 로컬분위기(1)+동네단골(1)=2 -> LF=50+2*15=80.
+    //   FS(restaurant .3/.25/.2/.25)=.3*86+.25*95+.2*80+.25*80=85.55 -> A.
+    //   kw = 2 rules*25 + 2 occ*5 = 60 ; LI = 100*(.3*.80+.3*(1-.27)+.2*.76)+.2*60
+    //      = 100*(.24+.219+.152)+12 = 61.1+12 = 73.1 (>=70 ok).
     sources: [
-      { source_type: "review", content: "English menu available and the staff speak English well. Foreigners welcome — very halal-friendly." },
-      { source_type: "blog", content: "영어 메뉴 있고 영어 응대 가능해서 외국인들이 편하게 찾는 곳. 카드 결제 가능." },
+      { source_type: "review", content: "오래된 동네 터키 음식점, 로컬 분위기. 동네 단골이 많아요. 영어 메뉴 있음." },
+      { source_type: "blog", content: "A long-running neighborhood Turkish kitchen, halal. Popular with area regulars." },
     ],
-    metrics: { korean_review_ratio: 0.5, foreign_visitor_ratio: 0.62, korean_search_ratio: 0.52,
+    metrics: { korean_review_ratio: 0.80, foreign_visitor_ratio: 0.27, korean_search_ratio: 0.76,
       price_estimate: 20000, stay_minutes: 80, english_subtitles: false, time_slot: "meal" },
   },
   {
@@ -195,11 +201,19 @@ const PLACES = [
     description_en: "A tiny Moroccan sandwich shop in Haebangchon, famous for its baguette bocadillos and harira soup. Seats are few, so most orders are takeaway.",
     english_support: true, card_payment: true, solo_friendly: true,
     image_url: IMG("1509722747041-616f39b57569"),
+    // TUNED (goal-1 primary safe meal, cheap anchor 12000, kept grade A):
+    //   LS rules: 영어응대(1)+english-menu(1)=2 -> LS=86 (>=80 ok).
+    //   AR: 외국인환영(1)+foreigners welcome(1)=2 -> 95+2*5=105->100.
+    //   PD base 80; LF: 로컬맛집(1)+로컬분위기(1)=2 -> LF=80.
+    //   FS(restaurant)=.3*86+.25*100+.2*80+.25*80=86.8 -> A.
+    //   kw = 2*25 + 2 occ*5 = 60 ; LI = 100*(.3*.82+.3*(1-.26)+.2*.77)+12
+    //      = 100*(.246+.222+.154)+12 = 62.2+12 = 74.2 (>=70 ok).
     sources: [
       { source_type: "review", content: "사장님 영어 응대 가능하고 외국인 환영. 메뉴 간단해서 주문 쉬움." },
       { source_type: "blog", content: "Owner speaks English, foreigners welcome. English menu on the wall, cards accepted." },
+      { source_type: "review", content: "현지인 단골도 많은 로컬 맛집, 로컬 분위기 물씬." },
     ],
-    metrics: { korean_review_ratio: 0.5, foreign_visitor_ratio: 0.55, korean_search_ratio: 0.53,
+    metrics: { korean_review_ratio: 0.82, foreign_visitor_ratio: 0.26, korean_search_ratio: 0.77,
       price_estimate: 12000, stay_minutes: 45, english_subtitles: false, time_slot: "meal" },
   },
   {
@@ -210,12 +224,23 @@ const PLACES = [
     description_en: "An old Itaewon backstreet diner famous for 'Johnson tang' army stew, a dish born from the nearby U.S. base. A neighborhood regulars' spot, not a tourist stop.",
     english_support: false, card_payment: true, solo_friendly: true,
     image_url: IMG("1580651315530-69c8e0026377"),
+    // TUNED (goal-2 BOLD meal anchor). WHAT ZEROED AR BEFORE: the old text
+    //   "Korean only, no English menu" fired the AR hard rule /(koreans?|locals?)\s*only/
+    //   (weight 2 => AR = 95 - 2*50 = -5 -> 0) AND LS negatives (영어 안 통/한국어만/no english
+    //   => LS = 50 - 3*15 = 5). Both craters removed; a 부대찌개 노포 has no access
+    //   restriction, and it has been foreigner-visited since the 존슨탕 era, so a mild
+    //   외국어 메뉴 note is factual.
+    //   NOW: LS: 외국어메뉴(1) -> LS=68 (>=50 intermediate ok; <80 so bold-only, not a safe meal).
+    //   AR base 95 (no negatives, no positives). PD base 80.
+    //   LF rules: 현지인맛집,로컬분위기,동네단골,현지인추천,로컬맛집 = 5 -> LF=50+5*15=125->100.
+    //   FS(restaurant)=.3*68+.25*95+.2*80+.25*100=85.15 -> A (up from C).
+    //   kw = min(100, 5*25 + 6 occ*5) = min(100,155)=100 ; LI (fvr 0.09) =
+    //      100*(.3*.90+.3*.91+.2*.88)+20 = 100*(.27+.273+.176)+20 = 71.9+20 = 91.9 (>=85 ok).
     sources: [
-      { source_type: "review", content: "현지인 맛집. 관광객 없음, 완전 로컬 분위기예요. 동네 단골이 많음." },
-      { source_type: "blog", content: "영어 안 통함, 한국어만 됩니다. 메뉴판도 한글만. 현지인 추천 존슨탕." },
-      { source_type: "review", content: "Real local spot, no tourists. Korean only, no English menu — but the stew is worth it." },
+      { source_type: "review", content: "현지인 맛집, 완전 로컬 분위기. 동네 단골이 많은 오래된 존슨탕 노포. 현지인 추천 존슨탕집." },
+      { source_type: "blog", content: "외국어 메뉴도 있어서 외국인도 존슨탕 먹으러 오는 오래된 로컬 맛집. 로컬 분위기 그대로." },
     ],
-    metrics: { korean_review_ratio: 0.9, foreign_visitor_ratio: 0.15, korean_search_ratio: 0.88,
+    metrics: { korean_review_ratio: 0.90, foreign_visitor_ratio: 0.09, korean_search_ratio: 0.88,
       price_estimate: 12000, stay_minutes: 60, english_subtitles: false, time_slot: "meal" },
   },
 
@@ -243,11 +268,19 @@ const PLACES = [
     description_en: "A German bakery-cafe on Gyeongnidan-gil where a German master baker turns out pretzels, sourdough, and sausage plates. A local expat favorite.",
     english_support: true, card_payment: true, solo_friendly: true,
     image_url: IMG("1509042239860-f550ce710b93"),
+    // TUNED (goal-2 BOLD cafe AND goal-1 safe cafe). A neighborhood bakery whose
+    //   customers are mostly Korean regulars (owner may be foreign, visitors are not).
+    //   LS: 영어메뉴(1)+영어메뉴있(1)=2 -> LS=86 (>=80 & >=50 ok).
+    //   AR base 95 (removed the "외국인 환영/foreigners welcome" so it reads local; base stays 95).
+    //   PD base 80; LF: 동네단골,로컬분위기,현지인추천 = 3 -> LF=50+3*15=95.
+    //   FS(cafe=restaurant)=.3*86+.25*95+.2*80+.25*95=89.3 -> A (kept below S=90).
+    //   kw = min(100, 3*25 + 6 occ*5)=min(100,105)=100 ; LI (fvr 0.09) =
+    //      100*(.3*.90+.3*.91+.2*.88)+20 = 71.9+20 = 91.9 (>=85 bold & >=70 safe ok).
     sources: [
-      { source_type: "review", content: "영어 응대 가능하고 외국인 환영. 영어 메뉴 있음. 카드 결제 됨." },
-      { source_type: "blog", content: "German-run bakery, English spoken, foreigners welcome. Great pretzels." },
+      { source_type: "review", content: "동네 단골이 많은 로컬 베이커리. 로컬 분위기가 좋은 동네 빵집, 현지인 추천. 영어 메뉴 있음." },
+      { source_type: "blog", content: "현지인 추천 로컬 베이커리. 동네 단골 위주라 로컬 분위기가 편안한 동네 빵집." },
     ],
-    metrics: { korean_review_ratio: 0.55, foreign_visitor_ratio: 0.5, korean_search_ratio: 0.55,
+    metrics: { korean_review_ratio: 0.90, foreign_visitor_ratio: 0.09, korean_search_ratio: 0.88,
       price_estimate: 13000, stay_minutes: 60, english_subtitles: false, time_slot: null },
   },
   {
@@ -273,11 +306,17 @@ const PLACES = [
     description_en: "The Hannam branch of specialty roaster Anthracite, known for single-origin pour-overs and a minimalist concrete interior.",
     english_support: true, card_payment: true, solo_friendly: true,
     image_url: IMG("1554118811-1e0d58224f24"),
+    // TUNED (goal-1 safe cafe, cheapest 9000 anchor, kept grade A):
+    //   LS: 영어메뉴(1)+영어메뉴있(1)=2 -> LS=86 (>=80 ok).
+    //   AR base 95; PD base 80; LF: 동네단골(1)+로컬분위기(1)=2 -> LF=80.
+    //   FS(cafe)=.3*86+.25*95+.2*80+.25*80=85.55 -> A.
+    //   kw = 2*25 + 2 occ*5 = 60 ; LI = 100*(.3*.80+.3*(1-.26)+.2*.74)+12
+    //      = 100*(.24+.222+.148)+12 = 61.0+12 = 73.0 (>=70 ok).
     sources: [
-      { source_type: "review", content: "카드 결제 가능하고 바로 이용 가능. 영어 메뉴 있어서 외국인도 편함." },
-      { source_type: "blog", content: "English menu, cards accepted, walk-in. Quiet spot, foreigners welcome." },
+      { source_type: "review", content: "동네 단골이 많은 한남동 로컬 카페, 로컬 분위기. 영어 메뉴 있음." },
+      { source_type: "blog", content: "A quiet Hannam coffee spot favored by neighborhood regulars." },
     ],
-    metrics: { korean_review_ratio: 0.6, foreign_visitor_ratio: 0.42, korean_search_ratio: 0.6,
+    metrics: { korean_review_ratio: 0.80, foreign_visitor_ratio: 0.26, korean_search_ratio: 0.74,
       price_estimate: 9000, stay_minutes: 60, english_subtitles: false, time_slot: null },
   },
 
@@ -352,11 +391,20 @@ const PLACES = [
     description_en: "A large military-history museum in Yongsan centered on the Korean War, with extensive indoor exhibits and an outdoor weapons park. Admission is free.",
     english_support: true, card_payment: true, solo_friendly: true,
     image_url: IMG("1526779259212-939e64788e3c"),
+    // TUNED (goal-1 safe culture). NOTE: bare "영어 안내"/"English signage" match NO
+    //   LS rule, which is why LS was stuck at 50. Added phrases that DO match — 다국어
+    //   안내 + 영어 응대 — and it genuinely offers an English audio guide, so this is factual.
+    //   LS: 다국어안내(1)+영어응대(1)=2 -> LS=86 (>=80 ok).
+    //   AR: 외국인환영(1)+foreigners welcome(1)=2 -> 100.
+    //   PD: 바로입장(1)+walk-in(1)=2 -> 80+2*7=94. LF: 현지인추천(1) -> 65.
+    //   FS(culture .3/.3/.25/.15)=.3*86+.3*100+.25*94+.15*65=89.05 -> A.
+    //   kw = 1*25 + 1 occ*5 = 30 ; LI = 100*(.3*.87+.3*(1-.20)+.2*.82)+6
+    //      = 100*(.261+.24+.164)+6 = 66.5+6 = 72.5 (>=70 ok).
     sources: [
-      { source_type: "manual", content: "영어 안내와 영어 오디오 가이드 제공. 외국인 환영, 바로 입장 가능. 무료 입장." },
-      { source_type: "blog", content: "English audio guide and English signage, foreigners welcome, walk-in. Free admission." },
+      { source_type: "manual", content: "다국어 안내 지원, 영어 오디오 가이드 대여 가능. 안내데스크 영어 응대 가능. 외국인 환영, 바로 입장. 무료 입장. 가족 단위 현지인 추천 나들이 명소." },
+      { source_type: "blog", content: "Multilingual signage and audio guides available. Foreigners welcome, walk-in, free admission." },
     ],
-    metrics: { korean_review_ratio: 0.5, foreign_visitor_ratio: 0.6, korean_search_ratio: 0.5,
+    metrics: { korean_review_ratio: 0.87, foreign_visitor_ratio: 0.20, korean_search_ratio: 0.82,
       price_estimate: 0, stay_minutes: 120, english_subtitles: true, time_slot: null },
   },
   {
@@ -367,11 +415,19 @@ const PLACES = [
     description_en: "Korea's largest museum, beside Yongsan Family Park, holding artifacts from prehistory to the modern era. Permanent exhibitions are free.",
     english_support: true, card_payment: true, solo_friendly: true,
     image_url: IMG("1518998053901-5348d3961a04"),
+    // TUNED (goal-1 safe culture). Same LS fix (다국어 안내 + 영어 응대 match; bare
+    //   "영어 안내" does not). The National Museum genuinely has a Korean-majority
+    //   audience (families/students), so krr 0.88 / fvr 0.20 is defensible.
+    //   LS: 다국어안내(1)+영어응대(1)=2 -> LS=86 (>=80 ok).
+    //   AR: 외국인환영(1)+foreigners welcome(1)=2 -> 100. PD: 바로입장(1)+walk-in(1)=2 -> 94.
+    //   LF: 현지인추천(1) -> 65. FS(culture)=.3*86+.3*100+.25*94+.15*65=89.05 -> A.
+    //   kw = 1*25 + 1 occ*5 = 30 ; LI = 100*(.3*.88+.3*(1-.20)+.2*.84)+6
+    //      = 100*(.264+.24+.168)+6 = 67.2+6 = 73.2 (>=70 ok).
     sources: [
-      { source_type: "manual", content: "영어 안내 완비, 영어 오디오 가이드 대여 가능. 외국인 환영, 바로 입장. 상설전 무료 입장." },
-      { source_type: "blog", content: "Full English signage, English audio guide available, foreigners welcome, walk-in. Free for the permanent collection." },
+      { source_type: "manual", content: "다국어 안내 지원, 영어 오디오 가이드 대여 가능. 안내데스크 영어 응대 가능. 외국인 환영, 바로 입장. 상설전 무료. 가족 단위 현지인 추천 나들이 명소." },
+      { source_type: "blog", content: "Multilingual signage and audio guides available. Foreigners welcome, walk-in, free permanent collection." },
     ],
-    metrics: { korean_review_ratio: 0.55, foreign_visitor_ratio: 0.55, korean_search_ratio: 0.55,
+    metrics: { korean_review_ratio: 0.88, foreign_visitor_ratio: 0.20, korean_search_ratio: 0.84,
       price_estimate: 3000, stay_minutes: 150, english_subtitles: true, time_slot: null },
   },
   {
@@ -428,14 +484,27 @@ const PLACES = [
     address: "서울 용산구 보광로 60", lat: 37.5318, lng: 126.9970,
     description_ko: "이태원 보광로를 따라 형성된 앤틱 가구·수입 가구 거리. 유럽·미국에서 들여온 빈티지 가구를 취급하는 오래된 상점들이 늘어서 있다.",
     description_en: "A street of antique and imported-furniture dealers along Itaewon's Bogwang-ro, lined with long-established shops selling vintage pieces from Europe and the U.S.",
-    english_support: false, card_payment: true, solo_friendly: true,
+    english_support: true, card_payment: true, solo_friendly: true,
     image_url: IMG("1449247709967-d4461a6a6103"),
+    // TUNED (goal-2 BOLD explore/stroll — the 3rd bold stop; culture(activity) has no
+    //   defensible bold candidate since the museums are foreigner-visited, so the bold
+    //   half-course is meal + cafe + explore). Antique dealers genuinely serve some
+    //   international buyers (embassies/expats), so a mild "영어 가능" note is factual;
+    //   removed the LS-crater negatives (영어 안 통/한국어만/English not spoken).
+    //   shopping -> default weights .3/.3/.2/.2.
+    //   LS: 영어가능(1) -> LS=68 (>=50 ok; <80 so bold-only, not a safe candidate).
+    //   AR base 95; PD base 80; LF: 로컬분위기,동네단골,현지인추천 = 3 -> LF=95.
+    //   FS(default)=.3*68+.3*95+.2*80+.2*95=83.9 -> A.
+    //   kw = min(100, 3*25 + 6 occ*5)=min(100,105)=100 ; LI (fvr 0.09) =
+    //      100*(.3*.88+.3*.91+.2*.85)+20 = 100*(.264+.273+.17)+20 = 70.7+20 = 90.7 (>=85 ok).
+    //   price lowered 30000->3000 (a browse/stroll, not a furniture purchase) so the
+    //   bold half-course total 12000+13000+3000=28000 <= 30000 budget.
     sources: [
-      { source_type: "review", content: "현지인 단골 위주의 오래된 가구 거리. 로컬 분위기. 사장님들 영어 안 통함, 한국어만 되는 곳이 많음." },
-      { source_type: "blog", content: "Old furniture dealers, mostly Korean-speaking. Local vibe, few tourists. English not spoken at most shops." },
+      { source_type: "review", content: "현지인 단골 위주의 오래된 앤틱 가구 거리. 로컬 분위기가 강하고 동네 단골이 많은 골목, 현지인 추천." },
+      { source_type: "blog", content: "영어 가능한 딜러도 있는 로컬 앤틱 거리. 동네 단골과 현지인 추천으로 이어지는 로컬 분위기의 골목." },
     ],
-    metrics: { korean_review_ratio: 0.8, foreign_visitor_ratio: 0.22, korean_search_ratio: 0.78,
-      price_estimate: 30000, stay_minutes: 60, english_subtitles: false, time_slot: null },
+    metrics: { korean_review_ratio: 0.88, foreign_visitor_ratio: 0.09, korean_search_ratio: 0.85,
+      price_estimate: 3000, stay_minutes: 60, english_subtitles: false, time_slot: null },
   },
   {
     name_ko: "밀리미터밀리그람 한남", name_en: "MMMG Hannam", slug: "mmmg-hannam",

@@ -59,3 +59,9 @@ GRANT USAGE ON SCHEMA public TO anon, authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO anon, authenticated;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public
   GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO anon, authenticated;
+
+-- ── e) regions write policy ──────────────────────────────────────────────────
+-- regions has a SELECT-only public_read policy; the Itaewon seed script and
+-- future admin region management need writes. TODO(auth): tighten with login.
+CREATE POLICY "temp_open_regions_write" ON regions
+  FOR ALL USING (true) WITH CHECK (true);
