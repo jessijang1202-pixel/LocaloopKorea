@@ -20,6 +20,15 @@ const NAV = [
     icon: <PinIcon size={18} />,
   },
   {
+    href: "/admin/tasks", label: "태스크 가이드",
+    icon: (
+      <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="4" width="18" height="16" rx="2" />
+        <path d="m7 9 2 2 3-3" /><path d="m7 15 2 2 3-3" /><line x1="15" y1="10" x2="18" y2="10" /><line x1="15" y1="16" x2="18" y2="16" />
+      </svg>
+    ),
+  },
+  {
     href: "/admin/grading", label: "등급 엔진",
     icon: (
       <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -77,6 +86,7 @@ const NAV = [
 const PAGE_TITLES: Record<string, string> = {
   "/admin": "대시보드",
   "/admin/places": "장소 관리",
+  "/admin/tasks": "태스크 가이드",
   "/admin/grading": "등급 엔진",
   "/admin/locality": "로컬 지수",
   "/admin/courses": "로컬 코스",

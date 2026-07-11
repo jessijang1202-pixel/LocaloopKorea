@@ -19,6 +19,7 @@ import type {
 import type { GradeLetter } from "@/lib/grading";
 import type {
   CourseFeedbackCourseSnapshot,
+  CourseFeedbackRow,
   PlaceLocalMetricsRow,
 } from "@/types/course";
 import { SEED_PLACES } from "@/data/seed";
@@ -335,6 +336,33 @@ export async function submitCourseFeedback(
     // Feedback is recorded; the LI write-back failed. Do not throw to the UI.
     return { saved: true, corrected: false };
   }
+}
+
+// ── Feedback admin read/delete (module 500 review) ───────────────────────────
+
+// Most-recent course_feedback rows for the admin locality review list.
+export async function fetchCourseFeedback(
+  limit = 50
+): Promise<CourseFeedbackRow[]> {
+  requireConfigured();
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("course_feedback")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (error) throw new Error(error.message);
+  return (data ?? []) as unknown as CourseFeedbackRow[];
+}
+
+export async function deleteCourseFeedback(id: string): Promise<void> {
+  requireConfigured();
+  const supabase = createClient();
+  const { error } = await supabase
+    .from("course_feedback")
+    .delete()
+    .eq("id", id);
+  if (error) throw new Error(error.message);
 }
 
 // ── Seed fallback (feature works before the migration is applied) ─────────────

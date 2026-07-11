@@ -6,6 +6,7 @@ import {
   fetchSources,
   addSource,
   deleteSource,
+  updateSource,
   saveManualScores,
   setGradeOverride,
   recomputeGrade,
@@ -492,6 +493,11 @@ function DetailPanel({
   const [addingSource, setAddingSource] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editUrl, setEditUrl] = useState("");
+  const [editContent, setEditContent] = useState("");
+  const [savingEdit, setSavingEdit] = useState(false);
+
   const loadSources = useCallback(async () => {
     setSourcesLoading(true);
     setSourcesError(null);
@@ -578,6 +584,40 @@ function DetailPanel({
       setSourcesError(errMessage(e));
     } finally {
       setAddingSource(false);
+    }
+  };
+
+  const startEditSource = (s: GradingSourceRow) => {
+    setEditingId(s.id);
+    setEditUrl(s.url ?? "");
+    setEditContent(s.content);
+    setSourcesError(null);
+  };
+
+  const cancelEditSource = () => {
+    setEditingId(null);
+    setEditUrl("");
+    setEditContent("");
+  };
+
+  const handleSaveEditSource = async (id: string) => {
+    if (!editContent.trim()) {
+      setSourcesError("소스 내용을 입력하세요.");
+      return;
+    }
+    setSavingEdit(true);
+    setSourcesError(null);
+    try {
+      await updateSource(id, {
+        url: editUrl.trim() || null,
+        content: editContent.trim(),
+      });
+      cancelEditSource();
+      await loadSources();
+    } catch (e) {
+      setSourcesError(errMessage(e));
+    } finally {
+      setSavingEdit(false);
     }
   };
 
@@ -846,7 +886,9 @@ function DetailPanel({
           <div style={{ fontSize: 13, color: MUTED }}>소스 불러오는 중...</div>
         ) : sources && sources.length > 0 ? (
           <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 18 }}>
-            {sources.map((s) => (
+            {sources.map((s) => {
+              const editing = editingId === s.id;
+              return (
               <div
                 key={s.id}
                 style={{
@@ -874,48 +916,131 @@ function DetailPanel({
                   <span style={{ fontSize: 12, color: "#B3AC9F", flex: 1 }}>
                     {formatDate(s.collected_at)}
                   </span>
+                  {!editing && (
+                    <button
+                      onClick={() => startEditSource(s)}
+                      disabled={editingId !== null || deletingId === s.id}
+                      style={{
+                        fontSize: 12.5,
+                        color: "#6C665B",
+                        fontWeight: 600,
+                        background: "none",
+                        border: "none",
+                        cursor:
+                          editingId !== null || deletingId === s.id
+                            ? "default"
+                            : "pointer",
+                        opacity:
+                          editingId !== null || deletingId === s.id ? 0.5 : 1,
+                      }}
+                    >
+                      수정
+                    </button>
+                  )}
                   <button
                     onClick={() => handleDeleteSource(s.id)}
-                    disabled={deletingId === s.id}
+                    disabled={deletingId === s.id || editing}
                     style={{
                       fontSize: 12.5,
                       color: ACCENT,
                       fontWeight: 600,
                       background: "none",
                       border: "none",
-                      cursor: deletingId === s.id ? "default" : "pointer",
-                      opacity: deletingId === s.id ? 0.5 : 1,
+                      cursor:
+                        deletingId === s.id || editing ? "default" : "pointer",
+                      opacity: deletingId === s.id || editing ? 0.5 : 1,
                     }}
                   >
                     {deletingId === s.id ? "삭제 중..." : "삭제"}
                   </button>
                 </div>
-                {s.url && (
-                  <div
-                    style={{
-                      fontSize: 12,
-                      color: "#7B4DFF",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {s.url}
+                {editing ? (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                    <input
+                      value={editUrl}
+                      onChange={(e) => setEditUrl(e.target.value)}
+                      placeholder="URL (선택)"
+                      style={{ ...INPUT_BASE, width: "100%" }}
+                    />
+                    <textarea
+                      value={editContent}
+                      onChange={(e) => setEditContent(e.target.value)}
+                      rows={3}
+                      style={{
+                        ...INPUT_BASE,
+                        resize: "vertical",
+                        fontFamily: "inherit",
+                        lineHeight: 1.5,
+                      }}
+                    />
+                    <div style={{ display: "flex", gap: 8 }}>
+                      <button
+                        onClick={() => handleSaveEditSource(s.id)}
+                        disabled={savingEdit}
+                        style={{
+                          padding: "7px 14px",
+                          borderRadius: 9,
+                          background: ACCENT,
+                          color: "#fff",
+                          border: "none",
+                          fontSize: 12.5,
+                          fontWeight: 600,
+                          cursor: savingEdit ? "default" : "pointer",
+                          opacity: savingEdit ? 0.7 : 1,
+                        }}
+                      >
+                        {savingEdit ? "저장 중..." : "저장"}
+                      </button>
+                      <button
+                        onClick={cancelEditSource}
+                        disabled={savingEdit}
+                        style={{
+                          padding: "7px 14px",
+                          borderRadius: 9,
+                          background: "#fff",
+                          color: "#6C665B",
+                          border: "1px solid #E5DED4",
+                          fontSize: 12.5,
+                          fontWeight: 600,
+                          cursor: savingEdit ? "default" : "pointer",
+                          opacity: savingEdit ? 0.6 : 1,
+                        }}
+                      >
+                        취소
+                      </button>
+                    </div>
                   </div>
+                ) : (
+                  <>
+                    {s.url && (
+                      <div
+                        style={{
+                          fontSize: 12,
+                          color: "#7B4DFF",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {s.url}
+                      </div>
+                    )}
+                    <div
+                      style={{
+                        fontSize: 13,
+                        color: "#4E4A42",
+                        lineHeight: 1.5,
+                        maxHeight: 42,
+                        overflow: "hidden",
+                      }}
+                    >
+                      {s.content}
+                    </div>
+                  </>
                 )}
-                <div
-                  style={{
-                    fontSize: 13,
-                    color: "#4E4A42",
-                    lineHeight: 1.5,
-                    maxHeight: 42,
-                    overflow: "hidden",
-                  }}
-                >
-                  {s.content}
-                </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div style={{ fontSize: 13, color: MUTED, marginBottom: 18 }}>

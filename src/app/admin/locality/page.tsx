@@ -5,9 +5,15 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { fetchPlacesWithGrades, type PlaceWithGrade } from "@/lib/grading/db";
-import { fetchAllMetrics, saveMetrics, type PlaceMetricsPatch } from "@/lib/course/db";
+import {
+  fetchAllMetrics,
+  saveMetrics,
+  fetchCourseFeedback,
+  deleteCourseFeedback,
+  type PlaceMetricsPatch,
+} from "@/lib/course/db";
 import { computeLI } from "@/lib/course";
-import type { PlaceLocalMetricsRow } from "@/types/course";
+import type { CourseFeedbackRow, PlaceLocalMetricsRow } from "@/types/course";
 import { CARD_SOFT } from "@/components/admin/adminStyles";
 
 const MUTED = "#8A8478";
@@ -262,6 +268,9 @@ export default function LocalityPage() {
         )}
       </div>
 
+      {/* Course feedback review */}
+      <FeedbackSection />
+
       {/* Detail editor */}
       {selected && (
         <MetricsEditor
@@ -449,6 +458,138 @@ function MetricsEditor({
           저장 시 수동 조정으로 표시되어 자동 재계산에서 제외됩니다.
         </span>
       </div>
+    </div>
+  );
+}
+
+function stopsSummary(course: CourseFeedbackRow["course"]): string {
+  const names = [...(course.stops ?? [])]
+    .sort((a, b) => a.order - b.order)
+    .map((s) => s.name?.ko ?? "")
+    .filter(Boolean);
+  const joined = names.join(" → ");
+  return joined.length > 60 ? `${joined.slice(0, 60)}…` : joined;
+}
+
+function FeedbackSection() {
+  const [rows, setRows] = useState<CourseFeedbackRow[] | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await fetchCourseFeedback();
+      setRows(data);
+    } catch (e) {
+      setError(errMessage(e));
+      setRows(null);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  const handleDeleteClick = (id: string) => {
+    if (confirmId !== id) {
+      setConfirmId(id);
+      window.setTimeout(() => {
+        setConfirmId((cur) => (cur === id ? null : cur));
+      }, 3000);
+      return;
+    }
+    void (async () => {
+      setDeletingId(id);
+      setConfirmId(null);
+      try {
+        await deleteCourseFeedback(id);
+        await load();
+      } catch (e) {
+        setError(errMessage(e));
+      } finally {
+        setDeletingId(null);
+      }
+    })();
+  };
+
+  return (
+    <div style={{ ...CARD_SOFT, padding: "22px 24px 26px", display: "flex", flexDirection: "column", gap: 16 }}>
+      {/* Title row */}
+      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12 }}>
+        <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 14.5, color: "#16151A" }}>
+          사용자 코스 피드백
+        </div>
+        {rows && rows.length > 0 && (
+          <span style={{ fontSize: 12.5, color: MUTED }}>{rows.length}건</span>
+        )}
+      </div>
+
+      {loading ? (
+        <div style={{ fontSize: 13, color: MUTED }}>불러오는 중...</div>
+      ) : error ? (
+        <div style={{ color: ACCENT, fontSize: 13 }}>
+          <div style={{ fontWeight: 600, marginBottom: 6 }}>{error}</div>
+          <div style={{ color: MUTED, fontSize: 12.5 }}>
+            마이그레이션 20260711_course_engine.sql 적용 여부를 확인하세요.
+          </div>
+        </div>
+      ) : !rows || rows.length === 0 ? (
+        <div style={{ fontSize: 13.5, color: MUTED }}>아직 수집된 피드백이 없습니다.</div>
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {rows.map((r) => {
+            const confirming = confirmId === r.id;
+            const deleting = deletingId === r.id;
+            return (
+              <div
+                key={r.id}
+                style={{
+                  border: "1px solid #F0EBDE", borderRadius: 12, padding: "12px 14px",
+                  display: "flex", flexDirection: "column", gap: 8,
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <span style={{ fontSize: 12.5, color: "#B3AC9F", flexShrink: 0 }}>
+                    {formatDate(r.created_at)}
+                  </span>
+                  {r.applied ? (
+                    <StatusChip label="반영됨" bg="rgba(18,160,90,0.12)" color={POSITIVE} />
+                  ) : (
+                    <StatusChip label="미반영" bg="#F2EDE4" color={MUTED} />
+                  )}
+                  <span style={{ flex: 1 }} />
+                  <button
+                    onClick={() => handleDeleteClick(r.id)}
+                    disabled={deleting}
+                    style={{
+                      fontSize: 12.5, fontWeight: 600, background: "none", border: "none",
+                      color: ACCENT, cursor: deleting ? "default" : "pointer",
+                      opacity: deleting ? 0.5 : 1, whiteSpace: "nowrap", flexShrink: 0,
+                    }}
+                  >
+                    {deleting ? "삭제 중..." : confirming ? "정말 삭제? 다시 클릭" : "삭제"}
+                  </button>
+                </div>
+                <div style={{ fontSize: 13.5, color: "#16151A", lineHeight: 1.5 }}>
+                  {stopsSummary(r.course) || "코스 정보 없음"}
+                </div>
+                <div style={{ fontSize: 12.5, color: "#6C665B" }}>
+                  만족도 {r.rating}/5 · 로컬 체감 {r.local_feel}/5
+                </div>
+                {r.comment && (
+                  <div style={{ fontSize: 13, color: MUTED, lineHeight: 1.5 }}>{r.comment}</div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

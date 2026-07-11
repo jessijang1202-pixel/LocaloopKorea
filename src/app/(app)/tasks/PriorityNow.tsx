@@ -18,6 +18,7 @@ import {
   TASK_GUIDES,
   TASK_NODES,
 } from "@/lib/engine";
+import { fetchGuidesWithOverrides } from "@/lib/engine/guide-overrides";
 import type { Bi } from "@/types/content";
 import type { TaskId } from "@/lib/engine";
 
@@ -32,6 +33,13 @@ export function PriorityNow() {
   const isKo = useLang();
   const [profile, { complete, uncomplete }] = useNavigatorProfile();
   const [openId, setOpenId] = useState<TaskId | null>(null);
+
+  // Guides render from the code defaults immediately, then upgrade to any
+  // admin-edited overrides once loaded (best-effort; never throws).
+  const [guides, setGuides] = useState(TASK_GUIDES);
+  useEffect(() => {
+    void fetchGuidesWithOverrides().then(setGuides);
+  }, []);
 
   // Defer render until mounted so SSR / first client render (default profile)
   // never disagrees with the localStorage-hydrated profile.
@@ -75,7 +83,7 @@ export function PriorityNow() {
         {top.map((s, i) => {
           const task = s.task;
           const open = openId === task.id;
-          const guide = TASK_GUIDES[task.id];
+          const guide = guides[task.id];
           return (
             <div key={task.id} style={{
               background: "var(--card)",
