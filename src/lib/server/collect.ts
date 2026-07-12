@@ -32,14 +32,15 @@ export function isKakaoConfigured(): boolean {
   return Boolean(process.env.KAKAO_REST_API_KEY);
 }
 
-// Keyword search against the Kakao Local REST API. Returns [] silently when the
-// key is missing or the request fails, so callers stay resilient.
+// Keyword search against the Kakao Local REST API. Throws with a descriptive
+// message on failure so the collect route can surface the cause to the admin
+// (a silent [] here previously made failures look like empty regions).
 export async function kakaoLocalSearch(
   query: string,
   categoryGroupCode: string | null,
   size: number
 ): Promise<KakaoPlace[]> {
-  const key = process.env.KAKAO_REST_API_KEY;
+  const key = process.env.KAKAO_REST_API_KEY?.trim();
   if (!key) return [];
 
   const params = new URLSearchParams({
@@ -50,17 +51,18 @@ export async function kakaoLocalSearch(
 
   const url = `https://dapi.kakao.com/v2/local/search/keyword.json?${params.toString()}`;
 
-  try {
-    const res = await fetch(url, {
-      headers: { Authorization: `KakaoAK ${key}` },
-      cache: "no-store",
-    });
-    if (!res.ok) return [];
-    const json = (await res.json()) as KakaoResponse;
-    return json.documents ?? [];
-  } catch {
-    return [];
+  const res = await fetch(url, {
+    headers: { Authorization: `KakaoAK ${key}` },
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    const detail = await res.text().catch(() => "");
+    throw new Error(
+      `Kakao Local API ${res.status}: ${detail.slice(0, 200) || res.statusText}`
+    );
   }
+  const json = (await res.json()) as KakaoResponse;
+  return json.documents ?? [];
 }
 
 // ── Naver Search (blog) ──────────────────────────────────────────────────────

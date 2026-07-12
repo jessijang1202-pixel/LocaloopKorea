@@ -160,11 +160,18 @@ export async function POST(request: Request): Promise<Response> {
     const collected: KakaoPlace[] = [];
     for (const category of finalCategories) {
       const cfg = CATEGORY_SEARCH[category];
-      const places = await kakaoLocalSearch(
-        `${region} ${cfg.suffix}`,
-        cfg.groupCode,
-        limit
-      );
+      let places: KakaoPlace[] = [];
+      try {
+        places = await kakaoLocalSearch(
+          `${region} ${cfg.suffix}`,
+          cfg.groupCode,
+          limit
+        );
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        result.errors.push(`${category}: ${message}`);
+        continue;
+      }
       let taken = 0;
       for (const p of places) {
         if (taken >= limit) break;
