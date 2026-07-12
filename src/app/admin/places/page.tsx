@@ -126,6 +126,7 @@ export default function PlacesPage() {
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
+  const [showCollect, setShowCollect] = useState(false);
 
   const regionMap = useMemo(() => {
     const m = new Map<string, RegionOption>();
@@ -195,23 +196,41 @@ export default function PlacesPage() {
           장소를 추가·수정·삭제하면 등급 엔진과 로컬 지수, 사용자 앱에 바로
           반영됩니다.
         </div>
-        <button
-          onClick={openCreate}
-          style={{
-            padding: "10px 18px",
-            borderRadius: 12,
-            background: ACCENT,
-            color: "#fff",
-            border: "none",
-            cursor: "pointer",
-            fontSize: 14,
-            fontWeight: 600,
-            flexShrink: 0,
-          }}
-        >
-          새 장소 추가
-        </button>
+        <div style={{ display: "flex", gap: 10, flexShrink: 0 }}>
+          <button
+            onClick={() => setShowCollect((v) => !v)}
+            style={{
+              padding: "10px 18px",
+              borderRadius: 12,
+              background: "#fff",
+              color: ACCENT,
+              border: `1px solid ${ACCENT}`,
+              cursor: "pointer",
+              fontSize: 14,
+              fontWeight: 600,
+            }}
+          >
+            데이터 수집
+          </button>
+          <button
+            onClick={openCreate}
+            style={{
+              padding: "10px 18px",
+              borderRadius: 12,
+              background: ACCENT,
+              color: "#fff",
+              border: "none",
+              cursor: "pointer",
+              fontSize: 14,
+              fontWeight: 600,
+            }}
+          >
+            새 장소 추가
+          </button>
+        </div>
       </div>
+
+      {showCollect && <CollectPanel onCollected={reload} />}
 
       {/* Places table */}
       <div style={{ ...CARD_SOFT, overflow: "hidden" }}>
@@ -325,6 +344,237 @@ export default function PlacesPage() {
           }}
         />
       ) : null}
+    </div>
+  );
+}
+
+// ── Data collection panel (patent no.2 module 100) ──────────────────────────
+
+const COLLECT_CATEGORIES: { value: string; label: string }[] = [
+  { value: "restaurant", label: "음식점" },
+  { value: "cafe", label: "카페" },
+  { value: "bar", label: "바" },
+  { value: "activity", label: "문화·명소" },
+  { value: "accommodation", label: "숙박" },
+];
+
+interface CollectResponse {
+  found: number;
+  added: number;
+  updated: number;
+  sourcesCollected: number;
+  graded: number;
+  errors: string[];
+  naverEnabled: boolean;
+}
+
+function CollectPanel({ onCollected }: { onCollected: () => Promise<void> }) {
+  const [region, setRegion] = useState("");
+  const [selected, setSelected] = useState<Record<string, boolean>>({
+    restaurant: true,
+    cafe: true,
+    bar: true,
+    activity: true,
+    accommodation: false,
+  });
+  const [limit, setLimit] = useState(5);
+  const [running, setRunning] = useState(false);
+  const [result, setResult] = useState<CollectResponse | null>(null);
+  const [keyError, setKeyError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const toggle = (value: string) =>
+    setSelected((s) => ({ ...s, [value]: !s[value] }));
+
+  const run = async () => {
+    const categories = COLLECT_CATEGORIES.map((c) => c.value).filter(
+      (v) => selected[v]
+    );
+    if (!region.trim()) {
+      setError("지역을 입력하세요.");
+      return;
+    }
+    if (categories.length === 0) {
+      setError("카테고리를 하나 이상 선택하세요.");
+      return;
+    }
+    setRunning(true);
+    setError(null);
+    setKeyError(null);
+    setResult(null);
+    try {
+      const res = await fetch("/api/admin/collect", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          region: region.trim(),
+          categories,
+          limitPerCategory: limit,
+        }),
+      });
+      const json = (await res.json()) as CollectResponse & { error?: string };
+      if (res.status === 501) {
+        setKeyError(json.error ?? "KAKAO_REST_API_KEY가 설정되지 않았습니다.");
+        return;
+      }
+      if (!res.ok) {
+        setError(json.error ?? `수집 실패 (${res.status})`);
+        return;
+      }
+      setResult(json);
+      await onCollected();
+    } catch (e) {
+      setError(errMessage(e));
+    } finally {
+      setRunning(false);
+    }
+  };
+
+  return (
+    <div
+      style={{
+        ...CARD_SOFT,
+        borderTop: `3px solid ${ACCENT}`,
+        padding: "20px 24px 24px",
+        display: "flex",
+        flexDirection: "column",
+        gap: 18,
+      }}
+    >
+      <div>
+        <div
+          style={{
+            fontFamily: "'Space Grotesk', sans-serif",
+            fontWeight: 700,
+            fontSize: 15,
+            color: "#16151A",
+          }}
+        >
+          데이터 수집
+        </div>
+        <div style={{ fontSize: 12.5, color: MUTED, marginTop: 4, lineHeight: 1.6 }}>
+          지역을 입력하면 카카오 로컬 API로 장소를 자동 발견하고, 네이버 리뷰를
+          모아 등급·로컬 지수를 산출합니다.
+        </div>
+      </div>
+
+      <Field label="지역">
+        <input
+          value={region}
+          onChange={(e) => setRegion(e.target.value)}
+          placeholder="예: 압구정, 성수동, 연남동"
+          style={{ ...INPUT_BASE, maxWidth: 360 }}
+        />
+      </Field>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        <span style={{ fontSize: 12.5, color: "#6C665B", fontWeight: 500 }}>
+          카테고리
+        </span>
+        <div style={{ display: "flex", gap: 18, flexWrap: "wrap" }}>
+          {COLLECT_CATEGORIES.map((c) => (
+            <label
+              key={c.value}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 7,
+                fontSize: 13.5,
+                color: "#16151A",
+                cursor: "pointer",
+              }}
+            >
+              <input
+                type="checkbox"
+                checked={selected[c.value] ?? false}
+                onChange={() => toggle(c.value)}
+                style={{ width: 16, height: 16, accentColor: ACCENT }}
+              />
+              {c.label}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ display: "flex", alignItems: "flex-end", gap: 16, flexWrap: "wrap" }}>
+        <Field label="개수 (카테고리별)">
+          <select
+            value={limit}
+            onChange={(e) => setLimit(Number(e.target.value))}
+            style={{ ...INPUT_BASE, width: 120 }}
+          >
+            <option value={3}>3</option>
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+          </select>
+        </Field>
+        <button
+          onClick={run}
+          disabled={running}
+          style={{
+            padding: "10px 20px",
+            borderRadius: 10,
+            background: ACCENT,
+            color: "#fff",
+            border: "none",
+            fontSize: 14,
+            fontWeight: 600,
+            cursor: running ? "default" : "pointer",
+            opacity: running ? 0.7 : 1,
+          }}
+        >
+          {running ? "수집 중..." : "실행"}
+        </button>
+      </div>
+
+      {error && (
+        <div style={{ color: ACCENT, fontSize: 12.5 }}>{error}</div>
+      )}
+
+      {keyError && (
+        <div
+          style={{
+            background: "#FBF4F1",
+            borderRadius: 10,
+            padding: "12px 14px",
+            fontSize: 12.5,
+            color: "#6C665B",
+            lineHeight: 1.7,
+          }}
+        >
+          <div style={{ color: ACCENT, fontWeight: 600, marginBottom: 4 }}>
+            {keyError}
+          </div>
+          카카오 개발자 콘솔(developers.kakao.com) &gt; 내 애플리케이션 &gt; 앱 키
+          &gt; REST API 키를 복사해 .env.local과 Vercel 환경변수에
+          KAKAO_REST_API_KEY로 추가하세요.
+        </div>
+      )}
+
+      {result && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ fontSize: 13.5, color: "#16151A", fontWeight: 500 }}>
+            {result.found}곳 발견, {result.added}곳 추가, {result.sourcesCollected}건
+            리뷰 수집, {result.graded}곳 등급 산출
+          </div>
+          {!result.naverEnabled && (
+            <div style={{ fontSize: 12, color: MUTED, lineHeight: 1.6 }}>
+              네이버 API 키(NAVER_CLIENT_ID/SECRET)가 없어 리뷰 수집은 건너뜀 —
+              장소만 추가되고 등급은 소스 추가 후 산출됩니다.
+            </div>
+          )}
+          {result.errors.length > 0 && (
+            <div style={{ fontSize: 12, color: ACCENT, lineHeight: 1.6 }}>
+              {result.errors.slice(0, 5).map((e, i) => (
+                <div key={i}>{e}</div>
+              ))}
+              {result.errors.length > 5 && (
+                <div>외 {result.errors.length - 5}건</div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

@@ -41,3 +41,33 @@ node scripts/seed-itaewon.mjs
 시드된 `places.ls/ar/pd/lf_score` + `grade`, `place_local_metrics.local_keyword_score` + `li`는 아직 0/기본값입니다.
 
 **관리자에서 등급 엔진 / 로컬 지수 전체 재계산을 실행하거나 해당 API를 호출**하면 `grading_sources` 텍스트로부터 서브 점수·등급·로컬 지수가 도출됩니다.
+
+## 데이터 수집 API 키 (특허2 모듈 100)
+
+관리자 `장소` 페이지의 **데이터 수집** 기능은 지역명(예: 압구정)으로 카카오 로컬 API에서 장소를 자동 발견하고, 선택적으로 네이버 검색 API로 블로그 리뷰 텍스트를 모아 등급·로컬 지수를 산출합니다. 서버 라우트 `POST /api/admin/collect`가 이 작업을 수행합니다.
+
+두 키 모두 **서버 전용**입니다. `NEXT_PUBLIC_` 접두사를 붙이지 마세요 (붙이면 브라우저에 노출됩니다).
+
+### 1. 카카오 REST API 키 (필수)
+
+- `NEXT_PUBLIC_KAKAO_MAP_KEY`(지도용 JavaScript 키)는 REST API에 사용할 수 없습니다. 별도의 REST API 키가 필요합니다.
+- 발급: [developers.kakao.com](https://developers.kakao.com) > 내 애플리케이션 > (앱 선택) > 앱 키 > **REST API 키** 복사.
+- 환경변수 이름: `KAKAO_REST_API_KEY`
+
+키가 없으면 `/api/admin/collect`는 501과 한국어 안내 메시지를 반환하고, 관리자 UI에 설정 방법이 표시됩니다.
+
+### 2. 네이버 검색 API 키 (선택 — 리뷰 수집용)
+
+- 없으면 장소만 추가되고 리뷰 수집·등급 산출은 건너뜁니다 (응답의 `naverEnabled: false`).
+- 발급: [developers.naver.com](https://developers.naver.com) > Application > 애플리케이션 등록 > **검색** API 사용 설정 후 Client ID / Client Secret 확인.
+- 환경변수 이름: `NAVER_CLIENT_ID`, `NAVER_CLIENT_SECRET`
+
+### 설정 위치
+
+- 로컬: 프로젝트 루트 `.env.local`
+  ```
+  KAKAO_REST_API_KEY=발급받은_REST_키
+  NAVER_CLIENT_ID=네이버_클라이언트_ID
+  NAVER_CLIENT_SECRET=네이버_클라이언트_시크릿
+  ```
+- 배포: Vercel > 프로젝트 > Settings > Environment Variables 에 동일한 이름으로 추가한 뒤 재배포.

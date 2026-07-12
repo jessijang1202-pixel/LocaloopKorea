@@ -12,8 +12,10 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/is-configured";
-import { gradePlace } from "@/lib/grading";
-import { mapCategoryToGradingType } from "@/lib/grading/db";
+import {
+  recomputeGradingForPlace,
+  type SupabaseServer,
+} from "@/lib/server/recompute";
 
 export const dynamic = "force-dynamic";
 
@@ -29,8 +31,6 @@ interface RecomputeResult {
   skipped: number;
   errors: string[];
 }
-
-type SupabaseServer = Awaited<ReturnType<typeof createClient>>;
 
 interface PlaceRow {
   id: string;
@@ -60,73 +60,14 @@ async function recompute(
 
   for (const place of places) {
     try {
-      // Load collected source text (module 100).
-      const { data: sourcesData, error: sourcesErr } = await supabase
-        .from("grading_sources")
-        .select("content")
-        .eq("place_id", place.id);
-      if (sourcesErr) throw new Error(sourcesErr.message);
-
-      const contents = (sourcesData ?? [])
-        .map((s) => (s as { content: string | null }).content ?? "")
-        .filter((c) => c.trim().length > 0);
-
-      if (contents.length === 0) {
-        result.skipped++;
-        continue;
-      }
-
-      // Respect a manual override unless force is set.
-      const { data: detailRow, error: detailErr } = await supabase
-        .from("place_grade_details")
-        .select("manual_override")
-        .eq("place_id", place.id)
-        .maybeSingle();
-      if (detailErr) throw new Error(detailErr.message);
-
-      if (
-        !force &&
-        (detailRow as { manual_override: boolean } | null)?.manual_override
-      ) {
-        result.skipped++;
-        continue;
-      }
-
-      const placeType = mapCategoryToGradingType(place.category ?? "");
-      const graded = gradePlace(contents, placeType);
-      const { subScores } = graded;
-
-      // Write sub-scores; the places_grade_trigger recomputes the letter grade.
-      const { error: updErr } = await supabase
-        .from("places")
-        .update({
-          ls_score: Math.round(subScores.LS),
-          ar_score: Math.round(subScores.AR),
-          pd_score: Math.round(subScores.PD),
-          lf_score: Math.round(subScores.LF),
-        })
-        .eq("id", place.id);
-      if (updErr) throw new Error(updErr.message);
-
-      const { error: upsertErr } = await supabase
-        .from("place_grade_details")
-        .upsert(
-          {
-            place_id: place.id,
-            fs: graded.fs,
-            place_type: placeType,
-            weights: graded.weights,
-            evidence: graded.evidence,
-            risk_flags: graded.riskFlags,
-            manual_override: false,
-            computed_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          },
-          { onConflict: "place_id" }
-        );
-      if (upsertErr) throw new Error(upsertErr.message);
-
-      result.updated++;
+      const outcome = await recomputeGradingForPlace(
+        supabase,
+        place.id,
+        place.category,
+        force
+      );
+      if (outcome === "updated") result.updated++;
+      else result.skipped++;
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       result.errors.push(`${place.id}: ${message}`);
