@@ -141,11 +141,19 @@ export type AppCategory =
   | "cafe"
   | "bar"
   | "activity"
-  | "accommodation";
+  | "accommodation"
+  | "health"
+  | "beauty"
+  | "market";
 
 // Bars share the FD6 food group in Kakao, so they are detected from the
 // category breadcrumb text rather than a distinct group code.
 const BAR_RE = /호프|맥주|바|펍|술집|포차|와인|칵테일/;
+
+// Beauty shops have no Kakao group code — detected from the breadcrumb. Checked
+// BEFORE the bar regex because breadcrumbs like "미용 > 바버샵" would otherwise
+// false-match BAR_RE's "바".
+const BEAUTY_RE = /미용|네일|뷰티|헤어|피부관리|왁싱|바버/;
 
 // Map a Kakao place to one of our app categories.
 //
@@ -166,7 +174,9 @@ export function kakaoGroupToCategory(place: {
   const name = place.category_name ?? "";
   const code = place.category_group_code ?? "";
 
-  // 1) bar detection from the breadcrumb text.
+  // 1) breadcrumb detections without a dedicated group code. Beauty runs
+  //    before bar (see BEAUTY_RE note).
+  if (BEAUTY_RE.test(name)) return "beauty";
   if (BAR_RE.test(name)) return "bar";
 
   // 2) trust the group code when Kakao provides one.
@@ -180,12 +190,21 @@ export function kakaoGroupToCategory(place: {
       return "activity";
     case "AD5":
       return "accommodation";
+    case "HP8": // 병원
+    case "PM9": // 약국
+      return "health";
+    case "MT1": // 대형마트
+      return "market";
   }
 
   // 3) generic keyword search — classify by the leading breadcrumb segment.
   const head = name.split(">")[0]?.trim() ?? "";
   if (head.includes("음식점")) return "restaurant";
   if (head.includes("카페")) return "cafe";
+  if (head.includes("의료") || name.includes("병원") || name.includes("약국")) {
+    return "health";
+  }
+  if (name.includes("마트") || name.includes("시장")) return "market";
   if (
     head.includes("관광") ||
     head.includes("명소") ||
@@ -201,16 +220,31 @@ export function kakaoGroupToCategory(place: {
   return "restaurant";
 }
 
-// Per-category Kakao search configuration used by the collect route. The
-// activity group uses AT4 (관광명소); CT1 (문화시설) results that surface through
-// generic breadcrumbs are still mapped to `activity` by kakaoGroupToCategory.
+// Per-category Kakao search configuration used by the collect route. Some app
+// categories map to MULTIPLE Kakao searches (e.g. health = 병원 HP8 + 약국 PM9),
+// so each entry is a list; the route runs every search and pools the results
+// under the app category. The activity group uses AT4 (관광명소); CT1 (문화시설)
+// results that surface through generic breadcrumbs are still mapped to
+// `activity` by kakaoGroupToCategory.
 export const CATEGORY_SEARCH: Record<
   AppCategory,
-  { suffix: string; groupCode: string | null }
+  { suffix: string; groupCode: string | null }[]
 > = {
-  restaurant: { suffix: "음식점", groupCode: "FD6" },
-  cafe: { suffix: "카페", groupCode: "CE7" },
-  bar: { suffix: "주점", groupCode: null },
-  activity: { suffix: "가볼만한곳", groupCode: "AT4" },
-  accommodation: { suffix: "숙소", groupCode: "AD5" },
+  restaurant: [{ suffix: "음식점", groupCode: "FD6" }],
+  cafe: [{ suffix: "카페", groupCode: "CE7" }],
+  bar: [{ suffix: "주점", groupCode: null }],
+  activity: [{ suffix: "가볼만한곳", groupCode: "AT4" }],
+  accommodation: [{ suffix: "숙소", groupCode: "AD5" }],
+  health: [
+    { suffix: "병원", groupCode: "HP8" },
+    { suffix: "약국", groupCode: "PM9" },
+  ],
+  beauty: [
+    { suffix: "미용실", groupCode: null },
+    { suffix: "네일샵", groupCode: null },
+  ],
+  market: [
+    { suffix: "마트", groupCode: "MT1" },
+    { suffix: "시장", groupCode: null },
+  ],
 };

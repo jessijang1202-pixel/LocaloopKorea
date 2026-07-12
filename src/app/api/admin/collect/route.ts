@@ -45,12 +45,18 @@ const ALL_CATEGORIES: AppCategory[] = [
   "bar",
   "activity",
   "accommodation",
+  "health",
+  "beauty",
+  "market",
 ];
 const DEFAULT_CATEGORIES: AppCategory[] = [
   "restaurant",
   "cafe",
   "bar",
   "activity",
+  "health",
+  "beauty",
+  "market",
 ];
 
 interface CollectBody {
@@ -159,26 +165,30 @@ export async function POST(request: Request): Promise<Response> {
     const seen = new Set<string>();
     const collected: KakaoPlace[] = [];
     for (const category of finalCategories) {
-      const cfg = CATEGORY_SEARCH[category];
-      let places: KakaoPlace[] = [];
-      try {
-        places = await kakaoLocalSearch(
-          `${region} ${cfg.suffix}`,
-          cfg.groupCode,
-          limit
-        );
-      } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        result.errors.push(`${category}: ${message}`);
-        continue;
-      }
+      // A category may map to several Kakao searches (e.g. health = 병원 + 약국);
+      // the per-category limit applies to the pooled results.
       let taken = 0;
-      for (const p of places) {
+      for (const cfg of CATEGORY_SEARCH[category]) {
         if (taken >= limit) break;
-        if (seen.has(p.id)) continue;
-        seen.add(p.id);
-        collected.push(p);
-        taken++;
+        let places: KakaoPlace[] = [];
+        try {
+          places = await kakaoLocalSearch(
+            `${region} ${cfg.suffix}`,
+            cfg.groupCode,
+            limit
+          );
+        } catch (err) {
+          const message = err instanceof Error ? err.message : String(err);
+          result.errors.push(`${category}(${cfg.suffix}): ${message}`);
+          continue;
+        }
+        for (const p of places) {
+          if (taken >= limit) break;
+          if (seen.has(p.id)) continue;
+          seen.add(p.id);
+          collected.push(p);
+          taken++;
+        }
       }
     }
     result.found = collected.length;

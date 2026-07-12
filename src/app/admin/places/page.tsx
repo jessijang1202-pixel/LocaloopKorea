@@ -22,10 +22,11 @@ const CATEGORY_OPTIONS: { value: string; label: string }[] = [
   { value: "restaurant", label: "음식점" },
   { value: "cafe", label: "카페" },
   { value: "bar", label: "바" },
-  { value: "market", label: "시장" },
+  { value: "market", label: "시장/마트" },
   { value: "accommodation", label: "숙박" },
   { value: "activity", label: "액티비티" },
-  { value: "health", label: "헬스/체육" },
+  { value: "health", label: "병원/약국" },
+  { value: "beauty", label: "뷰티" },
   { value: "shopping", label: "쇼핑" },
 ];
 
