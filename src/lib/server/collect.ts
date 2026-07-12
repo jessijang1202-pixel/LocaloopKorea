@@ -171,22 +171,76 @@ interface RedditResponse {
   };
 }
 
-// Search Reddit's public JSON endpoint for English-language mentions of a place.
-// No auth (Reddit allows anonymous read with a descriptive User-Agent), but the
-// unauthenticated rate limit is tight — callers must space requests out.
-// Throws with the status on !res.ok so the route can surface 429 rate limits;
-// returns [] when the payload has no usable results.
+const REDDIT_UA = "LocaloopKorea/1.0 (foreigner-friendliness research)";
+
+export function isRedditConfigured(): boolean {
+  return Boolean(
+    process.env.REDDIT_CLIENT_ID && process.env.REDDIT_CLIENT_SECRET
+  );
+}
+
+// Application-only OAuth token (client_credentials), cached in-module until
+// shortly before expiry. Reddit blocks anonymous .json access from server IPs
+// (403), so the official OAuth API is mandatory. Free tier: 100 requests/min.
+let redditToken: { value: string; expiresAt: number } | null = null;
+
+async function getRedditToken(): Promise<string> {
+  const id = process.env.REDDIT_CLIENT_ID?.trim();
+  const secret = process.env.REDDIT_CLIENT_SECRET?.trim();
+  if (!id || !secret) {
+    throw new Error(
+      "REDDIT_CLIENT_ID/REDDIT_CLIENT_SECRET가 설정되지 않았습니다."
+    );
+  }
+  if (redditToken && Date.now() < redditToken.expiresAt) {
+    return redditToken.value;
+  }
+
+  const res = await fetch("https://www.reddit.com/api/v1/access_token", {
+    method: "POST",
+    headers: {
+      Authorization: `Basic ${Buffer.from(`${id}:${secret}`).toString("base64")}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+      "User-Agent": REDDIT_UA,
+    },
+    body: "grant_type=client_credentials",
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    const detail = await res.text().catch(() => "");
+    throw new Error(
+      `Reddit token ${res.status}: ${detail.slice(0, 200) || res.statusText}`
+    );
+  }
+  const json = (await res.json()) as {
+    access_token?: string;
+    expires_in?: number;
+  };
+  if (!json.access_token) throw new Error("Reddit token: no access_token");
+  redditToken = {
+    value: json.access_token,
+    // refresh 60s before actual expiry
+    expiresAt: Date.now() + ((json.expires_in ?? 3600) - 60) * 1000,
+  };
+  return redditToken.value;
+}
+
+// Search Reddit for English-language mentions of a place via the official
+// OAuth API. Throws with the status on failure so the route can surface
+// 401/403/429; returns [] when the payload has no usable results.
 export async function redditSearch(
   query: string,
   limit = 6
 ): Promise<RedditPost[]> {
-  const url = `https://www.reddit.com/search.json?q=${encodeURIComponent(
+  const token = await getRedditToken();
+  const url = `https://oauth.reddit.com/search?q=${encodeURIComponent(
     query
-  )}&limit=${limit}&sort=relevance&t=all`;
+  )}&limit=${limit}&sort=relevance&t=all&type=link`;
 
   const res = await fetch(url, {
     headers: {
-      "User-Agent": "LocaloopKorea/1.0 (foreigner-friendliness research)",
+      Authorization: `Bearer ${token}`,
+      "User-Agent": REDDIT_UA,
     },
     cache: "no-store",
   });
@@ -210,10 +264,16 @@ export async function redditSearch(
     }));
 }
 
-// True when the string contains at least 3 consecutive latin letters — the
-// signal that a place has a real English name worth searching Reddit for.
+// True when the name is DOMINANTLY latin — a real English name worth searching
+// Reddit for. Requires a 3+ letter latin run AND latin letters making up at
+// least 40% of the non-space characters, so initials-only names like
+// "CNP차앤박피부과" or "IBK기업은행365" are excluded.
 export function hasLatinName(name: string): boolean {
-  return /[A-Za-z]{3,}/.test(name);
+  if (!/[A-Za-z]{3,}/.test(name)) return false;
+  const compact = name.replace(/\s+/g, "");
+  if (compact.length === 0) return false;
+  const latin = (compact.match(/[A-Za-z]/g) ?? []).length;
+  return latin / compact.length >= 0.4;
 }
 
 // ── Category mapping ─────────────────────────────────────────────────────────

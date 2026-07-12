@@ -26,7 +26,11 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { isSupabaseConfigured } from "@/lib/supabase/is-configured";
-import { redditSearch, hasLatinName } from "@/lib/server/collect";
+import {
+  redditSearch,
+  hasLatinName,
+  isRedditConfigured,
+} from "@/lib/server/collect";
 import {
   recomputeGradingForPlace,
   recomputeLocalityForPlace,
@@ -74,6 +78,18 @@ function matchToken(nameEn: string): string | null {
 }
 
 export async function POST(request: Request): Promise<Response> {
+  // Reddit blocks anonymous server-side access (403) — the official OAuth API
+  // requires a free app registration. Surface precise setup guidance.
+  if (!isRedditConfigured()) {
+    return Response.json(
+      {
+        error:
+          "REDDIT_CLIENT_ID/REDDIT_CLIENT_SECRET가 설정되지 않았습니다. reddit.com/prefs/apps에서 script 타입 앱을 만들어 키를 .env.local과 Vercel 환경변수에 추가하세요.",
+      },
+      { status: 501 }
+    );
+  }
+
   if (!isSupabaseConfigured()) {
     return Response.json(
       { error: "Supabase is not configured." },

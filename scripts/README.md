@@ -71,3 +71,22 @@ node scripts/seed-itaewon.mjs
   NAVER_CLIENT_SECRET=네이버_클라이언트_시크릿
   ```
 - 배포: Vercel > 프로젝트 > Settings > Environment Variables 에 동일한 이름으로 추가한 뒤 재배포.
+
+## Reddit API 키 (Reddit 보강용)
+
+Reddit은 서버에서의 익명 접근을 차단하므로 무료 OAuth 앱이 필요합니다.
+
+1. https://www.reddit.com/prefs/apps 접속 (Reddit 계정 필요, 무료)
+2. 하단 "create another app..." 클릭
+3. 이름: Localoop / 타입: **script** 선택 / redirect uri: http://localhost (사용 안 하지만 필수 입력)
+4. 생성 후:
+   - 앱 이름 바로 아래 문자열 = **client id**
+   - "secret" 항목 = **client secret**
+5. `.env.local`과 Vercel 환경변수에 추가:
+
+```
+REDDIT_CLIENT_ID=클라이언트ID
+REDDIT_CLIENT_SECRET=시크릿
+```
+
+무료 한도: 분당 100회. 관리자 > 등급 엔진 > "Reddit 보강" 버튼으로 실행합니다.
