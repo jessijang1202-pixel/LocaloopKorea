@@ -29,6 +29,7 @@ import {
   isKakaoConfigured,
   isNaverConfigured,
   CATEGORY_SEARCH,
+  fnv1a,
   type KakaoPlace,
   type AppCategory,
 } from "@/lib/server/collect";
@@ -148,18 +149,34 @@ export async function POST(request: Request): Promise<Response> {
   jobId = (jobData as { id: string } | null)?.id ?? null;
 
   try {
-    // 1) Upsert the region.
-    const regionSlug = slugify(region) || `region-${Date.now()}`;
-    const { data: regionRow, error: regionErr } = await supabase
+    // 1) Resolve the region. Look it up by name_ko FIRST — slugify() returns ""
+    //    for Korean-only names, so the old `region-${Date.now()}` fallback minted
+    //    a brand-new region row on EVERY collect call. Only insert when absent,
+    //    using a STABLE slug (latin slug when available, else an fnv1a hash of the
+    //    Korean name) so reruns converge on a single row.
+    let regionId: string;
+    const { data: existingRegion, error: findRegionErr } = await supabase
       .from("regions")
-      .upsert(
-        { name_ko: region, name_en: region, slug: regionSlug },
-        { onConflict: "slug" }
-      )
       .select("id")
-      .single();
-    if (regionErr) throw new Error(`region: ${regionErr.message}`);
-    const regionId = (regionRow as { id: string }).id;
+      .eq("name_ko", region)
+      .maybeSingle();
+    if (findRegionErr) throw new Error(`region lookup: ${findRegionErr.message}`);
+
+    if (existingRegion) {
+      regionId = (existingRegion as { id: string }).id;
+    } else {
+      const regionSlug = slugify(region) || `kr-${fnv1a(region).toString(36)}`;
+      const { data: regionRow, error: regionErr } = await supabase
+        .from("regions")
+        .upsert(
+          { name_ko: region, name_en: region, slug: regionSlug },
+          { onConflict: "slug" }
+        )
+        .select("id")
+        .single();
+      if (regionErr) throw new Error(`region: ${regionErr.message}`);
+      regionId = (regionRow as { id: string }).id;
+    }
 
     // 2) Kakao search per category, deduped across categories by Kakao id.
     const seen = new Set<string>();

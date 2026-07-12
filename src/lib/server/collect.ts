@@ -9,6 +9,21 @@
 //
 // Every function degrades gracefully when its keys are missing.
 
+// ── Hashing ──────────────────────────────────────────────────────────────────
+
+// FNV-1a 32-bit hash. Deterministic across runs, used to derive a STABLE slug
+// for regions whose name has no latin characters (slugify() returns "" there,
+// which previously fell back to a per-call `region-${Date.now()}` slug and minted
+// a fresh region row on every collect). Returned as an unsigned 32-bit integer.
+export function fnv1a(str: string): number {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return h >>> 0;
+}
+
 // ── Kakao Local ──────────────────────────────────────────────────────────────
 
 export interface KakaoPlace {
@@ -132,6 +147,73 @@ export async function naverBlogSearch(
   } catch {
     return [];
   }
+}
+
+// ── Reddit search (patent no.2 — foreign-language / English review source) ────
+
+export interface RedditPost {
+  title: string;
+  snippet: string;
+  permalink: string;
+  subreddit: string;
+}
+
+interface RedditResponse {
+  data?: {
+    children?: {
+      data?: {
+        title?: string;
+        selftext?: string;
+        permalink?: string;
+        subreddit?: string;
+      };
+    }[];
+  };
+}
+
+// Search Reddit's public JSON endpoint for English-language mentions of a place.
+// No auth (Reddit allows anonymous read with a descriptive User-Agent), but the
+// unauthenticated rate limit is tight — callers must space requests out.
+// Throws with the status on !res.ok so the route can surface 429 rate limits;
+// returns [] when the payload has no usable results.
+export async function redditSearch(
+  query: string,
+  limit = 6
+): Promise<RedditPost[]> {
+  const url = `https://www.reddit.com/search.json?q=${encodeURIComponent(
+    query
+  )}&limit=${limit}&sort=relevance&t=all`;
+
+  const res = await fetch(url, {
+    headers: {
+      "User-Agent": "LocaloopKorea/1.0 (foreigner-friendliness research)",
+    },
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    const detail = await res.text().catch(() => "");
+    throw new Error(
+      `Reddit search ${res.status}: ${detail.slice(0, 200) || res.statusText}`
+    );
+  }
+
+  const json = (await res.json()) as RedditResponse;
+  const children = json.data?.children ?? [];
+  return children
+    .map((c) => c.data)
+    .filter((d): d is NonNullable<typeof d> => Boolean(d))
+    .map((d) => ({
+      title: (d.title ?? "").trim(),
+      snippet: (d.selftext ?? "").slice(0, 400).trim(),
+      permalink: d.permalink ? `https://www.reddit.com${d.permalink}` : "",
+      subreddit: d.subreddit ?? "",
+    }));
+}
+
+// True when the string contains at least 3 consecutive latin letters — the
+// signal that a place has a real English name worth searching Reddit for.
+export function hasLatinName(name: string): boolean {
+  return /[A-Za-z]{3,}/.test(name);
 }
 
 // ── Category mapping ─────────────────────────────────────────────────────────

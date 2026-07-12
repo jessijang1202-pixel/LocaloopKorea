@@ -24,6 +24,15 @@ import { CARD_SOFT } from "@/components/admin/adminStyles";
 
 const GRADES: ("S" | "A" | "B" | "C" | "D")[] = ["S", "A", "B", "C", "D"];
 
+interface RedditEnrichResult {
+  total: number;
+  enriched: number;
+  sourcesAdded: number;
+  ratioUpdated: number;
+  skippedNoLatin: number;
+  errors: string[];
+}
+
 const CATEGORY_LABELS: Record<string, string> = {
   restaurant: "음식점",
   bar: "바",
@@ -173,6 +182,12 @@ export default function GradingPage() {
   );
   const [recomputeError, setRecomputeError] = useState<string | null>(null);
 
+  const [redditBusy, setRedditBusy] = useState(false);
+  const [redditResult, setRedditResult] = useState<RedditEnrichResult | null>(
+    null
+  );
+  const [redditError, setRedditError] = useState<string | null>(null);
+
   const selected = useMemo(
     () => places?.find((p) => p.id === selectedId) ?? null,
     [places, selectedId]
@@ -211,6 +226,31 @@ export default function GradingPage() {
     }
   };
 
+  const runReddit = async () => {
+    setRedditBusy(true);
+    setRedditError(null);
+    setRedditResult(null);
+    try {
+      const res = await fetch("/api/admin/enrich/reddit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ all: true, limit: 30 }),
+      });
+      const json = (await res.json()) as RedditEnrichResult & {
+        error?: string;
+      };
+      if (!res.ok) {
+        throw new Error(json.error ?? `Reddit 보강 실패 (${res.status})`);
+      }
+      setRedditResult(json);
+      await reload();
+    } catch (e) {
+      setRedditError(errMessage(e));
+    } finally {
+      setRedditBusy(false);
+    }
+  };
+
   return (
     <div
       style={{
@@ -234,6 +274,10 @@ export default function GradingPage() {
         <div style={{ fontSize: 13, color: MUTED, maxWidth: 560, lineHeight: 1.6 }}>
           웹 데이터 키워드 분석으로 외국인 친화도 등급을 자동 산출합니다. 매일
           03:00 자동 갱신됩니다.
+          <div style={{ marginTop: 4, fontSize: 12, color: MUTED, lineHeight: 1.55 }}>
+            Reddit 보강은 영문 이름이 있는 장소만 검색합니다. 영문 리뷰는 언어
+            지원 등급과 외국인 방문 비율 추정에 반영됩니다.
+          </div>
           {(recomputeResult || recomputeError) && (
             <div style={{ marginTop: 8 }}>
               {recomputeError ? (
@@ -251,6 +295,23 @@ export default function GradingPage() {
               ) : null}
             </div>
           )}
+          {(redditResult || redditError) && (
+            <div style={{ marginTop: 8 }}>
+              {redditError ? (
+                <span style={{ color: ACCENT, fontSize: 12.5 }}>
+                  {redditError}
+                </span>
+              ) : redditResult ? (
+                <span style={{ color: MUTED, fontSize: 12.5 }}>
+                  대상 {redditResult.total}곳, 소스 {redditResult.sourcesAdded}건
+                  추가, 비율 갱신 {redditResult.ratioUpdated}곳
+                  {redditResult.errors.length > 0
+                    ? `, ${redditResult.errors.length}건 오류`
+                    : ""}
+                </span>
+              ) : null}
+            </div>
+          )}
         </div>
 
         <div
@@ -261,6 +322,25 @@ export default function GradingPage() {
             flexShrink: 0,
           }}
         >
+          <button
+            onClick={() => void runReddit()}
+            disabled={redditBusy || recomputing !== null}
+            title="영문 이름이 있는 장소의 Reddit 영문 리뷰를 수집합니다"
+            style={{
+              padding: "9px 14px",
+              borderRadius: 12,
+              background: "#fff",
+              color: "#6C665B",
+              border: "1px solid #E5DED4",
+              cursor:
+                redditBusy || recomputing !== null ? "default" : "pointer",
+              fontSize: 13,
+              fontWeight: 600,
+              opacity: redditBusy || recomputing !== null ? 0.6 : 1,
+            }}
+          >
+            {redditBusy ? "보강 중..." : "Reddit 보강"}
+          </button>
           <button
             onClick={() => void runRecompute("force")}
             disabled={recomputing !== null}
