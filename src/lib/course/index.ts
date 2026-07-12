@@ -60,6 +60,7 @@ export {
 // Themed courses — alternate composition path over the collected-places dataset
 export {
   THEMES,
+  FALLBACK_THEME,
   THEME_MIN_STOPS,
   themeById,
   centroidOf,

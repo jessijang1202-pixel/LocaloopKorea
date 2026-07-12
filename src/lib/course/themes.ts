@@ -62,6 +62,30 @@ function gradeRank(grade: string | null): number {
 }
 const THEME_MIN_GRADE_RANK = THEME_GRADE_RANK["B"]; // 2 — exclude C, D, ungraded
 
+// ─── Fallback theme ──────────────────────────────────────────────────────────
+// Used by the course builder when the strict patent filter (custom mode) yields
+// no composable course for the selected region: a neutral cafe-meal-experience
+// mix under the relaxed themed gate, so first-time users always see a result.
+// Not listed in THEMES (no chip) — it is an automatic relaxation, not a choice.
+
+export const FALLBACK_THEME: CourseTheme = {
+  id: "best-mix",
+  name: { ko: "베스트 믹스", en: "Best Mix" },
+  tagline: {
+    ko: "이 지역에서 평가가 좋은 곳들로 구성한 기본 코스",
+    en: "A default course from the best-rated spots in this area.",
+  },
+  sortBy: "grade",
+  slots: [
+    { groups: ["cafe"], label: { ko: "카페", en: "Cafe" } },
+    { groups: ["restaurant"], label: { ko: "식사", en: "Meal" } },
+    {
+      groups: ["activity", "market", "shopping", "bar"],
+      label: { ko: "체험·구경", en: "Experience" },
+    },
+  ],
+};
+
 // ─── The 8 themes (Korean-first, English mirror) ─────────────────────────────
 
 export const THEMES: CourseTheme[] = [

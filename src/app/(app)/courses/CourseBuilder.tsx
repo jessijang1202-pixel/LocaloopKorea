@@ -4,13 +4,14 @@
 // Composes a half-day / full-day local-experience course from the engine in
 // src/lib/course, using the patent-1 navigator profile for personalization.
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLang } from "@/lib/lang";
 import { useNavigatorProfile } from "@/lib/engine";
 import {
   filterCandidates,
   composeCourse,
   THEMES,
+  FALLBACK_THEME,
   filterForTheme,
   composeThemedCourse,
   centroidOf,
@@ -90,6 +91,10 @@ export function CourseBuilder() {
   const [attempted, setAttempted] = useState(false);
   const [dataSource, setDataSource] = useState<"db" | "seed" | null>(null);
   const [usedProfile, setUsedProfile] = useState<CourseProfile | null>(null);
+  // True when custom mode found nothing and the relaxed fallback kicked in.
+  const [relaxed, setRelaxed] = useState(false);
+  const autoRan = useRef(false);
+  const resultRef = useRef<HTMLDivElement>(null);
 
   // Feedback state (claim 5)
   const [rating, setRating] = useState(0);
@@ -117,6 +122,16 @@ export function CourseBuilder() {
     };
   }, []);
 
+  // Auto-compose one course on first load (no click needed) so the page opens
+  // with a real recommendation instead of an empty panel. runGenerate is
+  // defined below the mount guard, so it is reached through a ref.
+  const runGenerateRef = useRef<(scrollToResult: boolean) => void>(() => {});
+  useEffect(() => {
+    if (!mounted || regionId === null || autoRan.current) return;
+    autoRan.current = true;
+    runGenerateRef.current(false);
+  }, [mounted, regionId]);
+
   if (!mounted) return null;
 
   const selectedTheme: CourseTheme | null =
@@ -134,7 +149,7 @@ export function CourseBuilder() {
   const toggleInterest = (k: string) =>
     setInterests((cur) => (cur.includes(k) ? cur.filter((x) => x !== k) : [...cur, k]));
 
-  const generate = async () => {
+  const runGenerate = async (scrollToResult: boolean) => {
     setGenerating(true);
     setFeedbackDone(false); setRating(0); setLocalFeel(0); setComment(""); setFeedbackError("");
     try {
@@ -147,29 +162,31 @@ export function CourseBuilder() {
       // Origin = centroid of the region's candidates (fallback: Itaewon).
       const origin = centroidOf(regionCandidates) ?? ITAEWON;
 
-      if (selectedTheme) {
-        // Themed path: looser quality gate + themed greedy composition.
-        const themed = filterForTheme(places, {
+      const themedCandidates = () =>
+        filterForTheme(places, {
           regionId,
           budgetPerPerson: effBudget,
           languageLevel: level ?? "basic",
         });
-        const composed = composeThemedCourse(themed, selectedTheme, {
+      const synthProfile = (theme: CourseTheme): CourseProfile => ({
+        languageLevel: level ?? "basic",
+        adventure: "safe",
+        budgetPerPerson: effBudget,
+        radiusKm: 5,
+        interests: [theme.id],
+        duration: theme.slots.length <= 3 ? "half" : "full",
+        origin,
+      });
+
+      if (selectedTheme) {
+        // Themed path: looser quality gate + themed greedy composition.
+        const composed = composeThemedCourse(themedCandidates(), selectedTheme, {
           budgetPerPerson: effBudget,
           origin,
         });
-        // Synthesized profile so the feedback block (claim 5) still works.
-        const synth: CourseProfile = {
-          languageLevel: level ?? "basic",
-          adventure: "safe",
-          budgetPerPerson: effBudget,
-          radiusKm: 5,
-          interests: [selectedTheme.id],
-          duration: selectedTheme.slots.length <= 3 ? "half" : "full",
-          origin,
-        };
         setCourse(composed);
-        setUsedProfile(synth);
+        setUsedProfile(synthProfile(selectedTheme));
+        setRelaxed(false);
       } else {
         // 자유 구성 (custom): existing patent filter/compose, now region-scoped.
         const cp: CourseProfile = {
@@ -182,16 +199,41 @@ export function CourseBuilder() {
           origin,
         };
         const candidates = filterCandidates(regionCandidates, cp);
-        setCourse(composeCourse(candidates, cp));
-        setUsedProfile(cp);
+        const strict = composeCourse(candidates, cp);
+        if (strict) {
+          setCourse(strict);
+          setUsedProfile(cp);
+          setRelaxed(false);
+        } else {
+          // The patent gate (grade A + LI 70 + LS floor) is often too strict
+          // for auto-collected regions — retry with the relaxed fallback mix
+          // so first-time users always see a course, with a note.
+          const fallback = composeThemedCourse(themedCandidates(), FALLBACK_THEME, {
+            budgetPerPerson: effBudget,
+            origin,
+          });
+          setCourse(fallback);
+          setUsedProfile(fallback ? synthProfile(FALLBACK_THEME) : cp);
+          setRelaxed(Boolean(fallback));
+        }
       }
 
       setDataSource(source);
       setAttempted(true);
+      if (scrollToResult) {
+        // Result renders below the panel — on mobile it can be off-screen,
+        // which reads as "nothing happened". Scroll after paint.
+        setTimeout(() => {
+          resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 80);
+      }
     } finally {
       setGenerating(false);
     }
   };
+
+  runGenerateRef.current = runGenerate;
+  const generate = () => runGenerate(true);
 
   const sendFeedback = async () => {
     if (!course || !usedProfile || rating === 0 || localFeel === 0) return;
@@ -310,11 +352,12 @@ export function CourseBuilder() {
       </div>
 
       {/* Result */}
+      <div ref={resultRef}>
       {attempted && !course && (
         <div style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 16, padding: 18, marginTop: 12, fontSize: 13, color: "var(--foreground-muted)", textAlign: "center" }}>
           {isKo
-            ? "조건에 맞는 코스를 만들 수 없습니다. 예산이나 성향을 조정해 보세요."
-            : "No course fits these conditions. Try adjusting budget or style."}
+            ? "이 지역에서 조건에 맞는 코스를 만들 수 없습니다. 예산을 올리거나 다른 지역·테마를 골라 보세요."
+            : "No course fits these conditions in this area. Try a higher budget or another area or theme."}
         </div>
       )}
 
@@ -333,6 +376,13 @@ export function CourseBuilder() {
               </span>
             )}
           </div>
+          {relaxed && (
+            <div style={{ fontSize: 11.5, color: "var(--foreground-muted)", marginBottom: 6 }}>
+              {isKo
+                ? "설정 조건이 엄격해 이 지역의 평가 좋은 곳들로 기본 코스를 구성했어요"
+                : "Strict settings had no match - composed from this area's best-rated spots instead"}
+            </div>
+          )}
           {course.swappedForBudget.length > 0 && (
             <div style={{ fontSize: 11.5, color: "var(--foreground-muted)", marginBottom: 6 }}>
               {isKo
@@ -457,6 +507,7 @@ export function CourseBuilder() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }
