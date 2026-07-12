@@ -10,6 +10,7 @@
 
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/is-configured";
+import { fetchAllRows } from "@/lib/supabase/fetch-all";
 import { computeLI, adjustLIWithFeedback } from "@/lib/course";
 import type {
   CandidatePlace,
@@ -22,7 +23,7 @@ import type {
   CourseFeedbackRow,
   PlaceLocalMetricsRow,
 } from "@/types/course";
-import { SEED_PLACES } from "@/data/seed";
+import { SEED_PLACES, SEED_REGIONS } from "@/data/seed";
 
 function requireConfigured() {
   if (!isSupabaseConfigured()) {
@@ -36,7 +37,7 @@ function requireConfigured() {
 
 // places columns needed to build a CandidatePlace (grade/ls come from patent-2).
 const PLACE_COLUMNS =
-  "id,slug,name_ko,name_en,category,lat,lng,ls_score,grade";
+  "id,slug,name_ko,name_en,category,region_id,lat,lng,ls_score,grade";
 
 interface PlaceCandidateColumns {
   id: string;
@@ -44,6 +45,7 @@ interface PlaceCandidateColumns {
   name_ko: string;
   name_en: string | null;
   category: string;
+  region_id: string | null;
   lat: number | null;
   lng: number | null;
   ls_score: number | null;
@@ -103,6 +105,7 @@ function toCandidate(
     slug: place.slug,
     name: { ko: place.name_ko, en: place.name_en ?? place.name_ko },
     category: place.category,
+    regionId: place.region_id ?? null,
     lat: place.lat,
     lng: place.lng,
     li: metrics.li,
@@ -125,16 +128,14 @@ export async function fetchCandidatePlaces(): Promise<CandidatePlace[]> {
   requireConfigured();
   const supabase = createClient();
 
-  const [placesRes, metricsRes] = await Promise.all([
-    supabase.from("places").select(PLACE_COLUMNS).order("name_ko"),
-    supabase.from("place_local_metrics").select("*"),
+  const [places, metrics] = await Promise.all([
+    fetchAllRows<PlaceCandidateColumns>((from, to) =>
+      supabase.from("places").select(PLACE_COLUMNS).order("name_ko").range(from, to)
+    ),
+    fetchAllRows<PlaceLocalMetricsRow>((from, to) =>
+      supabase.from("place_local_metrics").select("*").order("place_id").range(from, to)
+    ),
   ]);
-
-  if (placesRes.error) throw new Error(placesRes.error.message);
-  if (metricsRes.error) throw new Error(metricsRes.error.message);
-
-  const places = (placesRes.data ?? []) as unknown as PlaceCandidateColumns[];
-  const metrics = (metricsRes.data ?? []) as unknown as PlaceLocalMetricsRow[];
 
   const byPlace = new Map<string, PlaceLocalMetricsRow>();
   for (const m of metrics) byPlace.set(m.place_id, m);
@@ -149,11 +150,9 @@ export async function fetchCandidatePlaces(): Promise<CandidatePlace[]> {
 export async function fetchAllMetrics(): Promise<PlaceLocalMetricsRow[]> {
   requireConfigured();
   const supabase = createClient();
-  const { data, error } = await supabase
-    .from("place_local_metrics")
-    .select("*");
-  if (error) throw new Error(error.message);
-  return (data ?? []) as unknown as PlaceLocalMetricsRow[];
+  return fetchAllRows<PlaceLocalMetricsRow>((from, to) =>
+    supabase.from("place_local_metrics").select("*").order("place_id").range(from, to)
+  );
 }
 
 export async function fetchMetrics(
@@ -435,6 +434,7 @@ function seedCandidates(): CandidatePlace[] {
       slug: p.slug,
       name: { ko: p.name_ko, en: p.name_en },
       category,
+      regionId: p.region_id ?? null,
       lat: p.lat,
       lng: p.lng,
       li,
@@ -463,5 +463,74 @@ export async function fetchCandidatePlacesWithFallback(): Promise<{
     return { places, source: "db" };
   } catch {
     return { places: seedCandidates(), source: "seed" };
+  }
+}
+
+// ── Region options (themed course area picker) ───────────────────────────────
+
+export interface RegionOption {
+  id: string;
+  name_ko: string;
+  name_en: string;
+  placeCount: number;
+}
+
+// SEED_REGIONS mapped with place counts from SEED_PLACES — used both as the
+// error fallback for fetchRegionOptions and (implicitly) to keep the picker
+// working before the collected-places dataset is live.
+function seedRegionOptions(): RegionOption[] {
+  const counts = new Map<string, number>();
+  for (const p of SEED_PLACES) {
+    if (p.region_id == null) continue;
+    counts.set(p.region_id, (counts.get(p.region_id) ?? 0) + 1);
+  }
+  return SEED_REGIONS.map((r) => ({
+    id: r.id,
+    name_ko: r.name_ko,
+    name_en: r.name_en,
+    placeCount: counts.get(r.id) ?? 0,
+  }))
+    .filter((r) => r.placeCount > 0)
+    .sort((a, b) => b.placeCount - a.placeCount);
+}
+
+// Regions joined with a client-side places count (two queries), sorted by
+// placeCount desc, excluding regions with 0 places. On error (or empty) fall
+// back to the seed regions so the area picker always has options.
+export async function fetchRegionOptions(): Promise<RegionOption[]> {
+  try {
+    requireConfigured();
+    const supabase = createClient();
+
+    const [regions, places] = await Promise.all([
+      fetchAllRows<{ id: string; name_ko: string; name_en: string | null }>(
+        (from, to) =>
+          supabase.from("regions").select("id,name_ko,name_en").order("id").range(from, to)
+      ),
+      fetchAllRows<{ region_id: string | null }>((from, to) =>
+        supabase.from("places").select("region_id").order("id").range(from, to)
+      ),
+    ]);
+
+    const counts = new Map<string, number>();
+    for (const p of places) {
+      if (p.region_id == null) continue;
+      counts.set(p.region_id, (counts.get(p.region_id) ?? 0) + 1);
+    }
+
+    const options = regions
+      .map((r) => ({
+        id: r.id,
+        name_ko: r.name_ko,
+        name_en: r.name_en ?? r.name_ko,
+        placeCount: counts.get(r.id) ?? 0,
+      }))
+      .filter((r) => r.placeCount > 0)
+      .sort((a, b) => b.placeCount - a.placeCount);
+
+    if (options.length === 0) return seedRegionOptions();
+    return options;
+  } catch {
+    return seedRegionOptions();
   }
 }

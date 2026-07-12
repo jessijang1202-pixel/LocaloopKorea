@@ -9,6 +9,7 @@
 
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/is-configured";
+import { fetchAllRows } from "@/lib/supabase/fetch-all";
 import { SEED_PLACES, SEED_REGIONS } from "@/data/seed";
 import type { Place, Region } from "@/types";
 import { ITAEWON, TRAVEL_INFO, HOT_PLACE_IDS } from "@/content/map";
@@ -46,22 +47,19 @@ export async function fetchLivePlaces(): Promise<LivePlacesResult> {
   if (!isSupabaseConfigured()) return seedResult();
   try {
     const supabase = createClient();
-    const [placesRes, regionsRes] = await Promise.all([
-      supabase.from("places").select(PLACE_COLUMNS).order("name_ko"),
-      supabase.from("regions").select("id,name_ko,name_en,slug,city"),
+    const [placeRows, regions] = await Promise.all([
+      fetchAllRows<Record<string, unknown>>((from, to) =>
+        supabase.from("places").select(PLACE_COLUMNS).order("name_ko").range(from, to)
+      ),
+      fetchAllRows<LiveRegion>((from, to) =>
+        supabase.from("regions").select("id,name_ko,name_en,slug,city").order("id").range(from, to)
+      ),
     ]);
-    if (placesRes.error || regionsRes.error) return seedResult();
 
-    const places = (placesRes.data ?? []).map((r) =>
-      coercePlace(r as Record<string, unknown>)
-    );
+    const places = placeRows.map(coercePlace);
     if (places.length === 0) return seedResult();
 
-    return {
-      places,
-      regions: (regionsRes.data ?? []) as LiveRegion[],
-      source: "db",
-    };
+    return { places, regions, source: "db" };
   } catch {
     return seedResult();
   }

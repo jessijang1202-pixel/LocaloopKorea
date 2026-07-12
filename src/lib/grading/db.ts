@@ -6,6 +6,7 @@
 
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/is-configured";
+import { fetchAllRows } from "@/lib/supabase/fetch-all";
 import {
   computeFS,
   WEIGHTS_BY_TYPE,
@@ -76,20 +77,19 @@ const PLACE_COLUMNS =
   "id,name_ko,name_en,slug,category,grade,grade_override,ls_score,ar_score,pd_score,lf_score";
 
 // Two queries (places + place_grade_details) merged client-side on place_id.
+// Paged — Supabase caps selects at 1,000 rows and the dataset exceeds that.
 export async function fetchPlacesWithGrades(): Promise<PlaceWithGrade[]> {
   requireConfigured();
   const supabase = createClient();
 
-  const [placesRes, detailsRes] = await Promise.all([
-    supabase.from("places").select(PLACE_COLUMNS).order("name_ko"),
-    supabase.from("place_grade_details").select("*"),
+  const [places, details] = await Promise.all([
+    fetchAllRows<PlaceGradeColumns>((from, to) =>
+      supabase.from("places").select(PLACE_COLUMNS).order("name_ko").range(from, to)
+    ),
+    fetchAllRows<PlaceGradeDetailsRow>((from, to) =>
+      supabase.from("place_grade_details").select("*").order("place_id").range(from, to)
+    ),
   ]);
-
-  if (placesRes.error) throw new Error(placesRes.error.message);
-  if (detailsRes.error) throw new Error(detailsRes.error.message);
-
-  const places = (placesRes.data ?? []) as unknown as PlaceGradeColumns[];
-  const details = (detailsRes.data ?? []) as unknown as PlaceGradeDetailsRow[];
 
   const byPlace = new Map<string, PlaceGradeDetailsRow>();
   for (const d of details) byPlace.set(d.place_id, d);

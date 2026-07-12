@@ -50,6 +50,7 @@ export interface CandidatePlace {
   slug: string;
   name: { ko: string; en: string };
   category: string; // places.category vocabulary (restaurant/cafe/bar/activity/...)
+  regionId: string | null; // places.region_id — themed courses gate on this
   lat: number | null;
   lng: number | null;
   li: number; // locality index 0-100 (module 100)

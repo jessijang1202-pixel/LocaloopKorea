@@ -10,12 +10,23 @@ import { useNavigatorProfile } from "@/lib/engine";
 import {
   filterCandidates,
   composeCourse,
+  THEMES,
+  filterForTheme,
+  composeThemedCourse,
+  centroidOf,
   type AdventureStyle,
   type CourseDuration,
   type CourseProfile,
   type ComposedCourse,
+  type CandidatePlace,
+  type CourseTheme,
 } from "@/lib/course";
-import { fetchCandidatePlacesWithFallback, submitCourseFeedback } from "@/lib/course/db";
+import {
+  fetchCandidatePlacesWithFallback,
+  fetchRegionOptions,
+  submitCourseFeedback,
+  type RegionOption,
+} from "@/lib/course/db";
 import { ITAEWON } from "@/content/map";
 
 const BUDGETS = [10000, 30000, 50000, 100000];
@@ -69,6 +80,11 @@ export function CourseBuilder() {
   const [budget, setBudget] = useState<number | null>(null);
   const [interests, setInterests] = useState<string[]>([]);
 
+  // Area + theme controls
+  const [regionOptions, setRegionOptions] = useState<RegionOption[]>([]);
+  const [regionId, setRegionId] = useState<string | null>(null);
+  const [themeId, setThemeId] = useState<string | null>(null); // null = 자유 구성
+
   const [generating, setGenerating] = useState(false);
   const [course, setCourse] = useState<ComposedCourse | null>(null);
   const [attempted, setAttempted] = useState(false);
@@ -84,7 +100,27 @@ export function CourseBuilder() {
   const [feedbackError, setFeedbackError] = useState("");
 
   useEffect(() => setMounted(true), []);
+
+  // Load region options once; default to the region named 이태원 if present.
+  useEffect(() => {
+    let alive = true;
+    fetchRegionOptions().then((opts) => {
+      if (!alive) return;
+      setRegionOptions(opts);
+      const itaewon = opts.find(
+        (o) => o.name_ko === "이태원" || o.name_en === "Itaewon",
+      );
+      setRegionId((cur) => cur ?? (itaewon ?? opts[0])?.id ?? null);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
   if (!mounted) return null;
+
+  const selectedTheme: CourseTheme | null =
+    themeId != null ? (THEMES.find((t) => t.id === themeId) ?? null) : null;
 
   const effAdventure = adventure ?? profile.adventure ?? "safe";
   const effBudget = budget ?? profile.budgetPerPerson ?? 30000;
@@ -103,18 +139,53 @@ export function CourseBuilder() {
     setFeedbackDone(false); setRating(0); setLocalFeel(0); setComment(""); setFeedbackError("");
     try {
       const { places, source } = await fetchCandidatePlacesWithFallback();
-      const cp: CourseProfile = {
-        languageLevel: level ?? "basic",
-        adventure: effAdventure,
-        budgetPerPerson: effBudget,
-        radiusKm: profile.radiusKm ?? 10,
-        interests,
-        duration,
-        origin: ITAEWON,
-      };
-      const candidates = filterCandidates(places, cp);
-      setCourse(composeCourse(candidates, cp));
-      setUsedProfile(cp);
+
+      // Candidates within the selected region (region is always concrete here).
+      const regionCandidates: CandidatePlace[] = places.filter(
+        (p) => regionId == null || p.regionId === regionId,
+      );
+      // Origin = centroid of the region's candidates (fallback: Itaewon).
+      const origin = centroidOf(regionCandidates) ?? ITAEWON;
+
+      if (selectedTheme) {
+        // Themed path: looser quality gate + themed greedy composition.
+        const themed = filterForTheme(places, {
+          regionId,
+          budgetPerPerson: effBudget,
+          languageLevel: level ?? "basic",
+        });
+        const composed = composeThemedCourse(themed, selectedTheme, {
+          budgetPerPerson: effBudget,
+          origin,
+        });
+        // Synthesized profile so the feedback block (claim 5) still works.
+        const synth: CourseProfile = {
+          languageLevel: level ?? "basic",
+          adventure: "safe",
+          budgetPerPerson: effBudget,
+          radiusKm: 5,
+          interests: [selectedTheme.id],
+          duration: selectedTheme.slots.length <= 3 ? "half" : "full",
+          origin,
+        };
+        setCourse(composed);
+        setUsedProfile(synth);
+      } else {
+        // 자유 구성 (custom): existing patent filter/compose, now region-scoped.
+        const cp: CourseProfile = {
+          languageLevel: level ?? "basic",
+          adventure: effAdventure,
+          budgetPerPerson: effBudget,
+          radiusKm: profile.radiusKm ?? 10,
+          interests,
+          duration,
+          origin,
+        };
+        const candidates = filterCandidates(regionCandidates, cp);
+        setCourse(composeCourse(candidates, cp));
+        setUsedProfile(cp);
+      }
+
       setDataSource(source);
       setAttempted(true);
     } finally {
@@ -151,15 +222,62 @@ export function CourseBuilder() {
             : "Auto-compose a genuinely local course matched to your language level and style"}
         </div>
 
-        <ControlRow label={isKo ? "시간" : "Duration"}>
-          <Pill active={duration === "half"} label={isKo ? "반나절" : "Half-day"} onClick={() => setDuration("half")} />
-          <Pill active={duration === "full"} label={isKo ? "하루" : "Full day"} onClick={() => setDuration("full")} />
+        <ControlRow label={isKo ? "지역" : "Area"}>
+          <select
+            value={regionId ?? ""}
+            onChange={(e) => setRegionId(e.target.value || null)}
+            style={{
+              padding: "8px 12px", borderRadius: 10, fontSize: 13,
+              background: "var(--content-bg)", border: "1px solid var(--border)",
+              color: "var(--foreground)", outline: "none", minWidth: 180,
+            }}
+          >
+            {regionOptions.length === 0 && (
+              <option value="">{isKo ? "이태원" : "Itaewon"}</option>
+            )}
+            {regionOptions.map((o) => (
+              <option key={o.id} value={o.id}>
+                {(isKo ? o.name_ko : o.name_en) + ` (${o.placeCount})`}
+              </option>
+            ))}
+          </select>
         </ControlRow>
 
-        <ControlRow label={isKo ? "성향" : "Style"}>
-          <Pill active={effAdventure === "safe"} label={isKo ? "안전 우선" : "Safe first"} onClick={() => pickAdventure("safe")} />
-          <Pill active={effAdventure === "bold"} label={isKo ? "도전 선호" : "Bold local"} onClick={() => pickAdventure("bold")} />
+        <ControlRow label={isKo ? "테마" : "Theme"}>
+          <Pill
+            active={themeId === null}
+            label={isKo ? "자유 구성" : "Custom"}
+            onClick={() => setThemeId(null)}
+          />
+          {THEMES.map((t) => (
+            <Pill
+              key={t.id}
+              active={themeId === t.id}
+              label={isKo ? t.name.ko : t.name.en}
+              onClick={() => setThemeId(t.id)}
+            />
+          ))}
         </ControlRow>
+
+        {selectedTheme && (
+          <div style={{ fontSize: 12, color: "var(--foreground-muted)", marginTop: -4, marginBottom: 12 }}>
+            {isKo ? selectedTheme.tagline.ko : selectedTheme.tagline.en}
+          </div>
+        )}
+
+        {!selectedTheme && (
+          <>
+            <ControlRow label={isKo ? "시간" : "Duration"}>
+              <Pill active={duration === "half"} label={isKo ? "반나절" : "Half-day"} onClick={() => setDuration("half")} />
+              <Pill active={duration === "full"} label={isKo ? "하루" : "Full day"} onClick={() => setDuration("full")} />
+            </ControlRow>
+
+            <ControlRow label={isKo ? "성향" : "Style"}>
+              <Pill active={effAdventure === "safe"} label={isKo ? "안전 우선" : "Safe first"} onClick={() => pickAdventure("safe")} />
+              <Pill active={effAdventure === "bold"} label={isKo ? "도전 선호" : "Bold local"} onClick={() => pickAdventure("bold")} />
+            </ControlRow>
+          </>
+        )}
 
         <ControlRow label={isKo ? "1인 예산" : "Budget per person"}>
           {BUDGETS.map((b) => (
@@ -169,12 +287,14 @@ export function CourseBuilder() {
           ))}
         </ControlRow>
 
-        <ControlRow label={isKo ? "관심 (선택 없음 = 전체)" : "Interests (none = all)"}>
-          {INTEREST_CHIPS.map((c) => (
-            <Pill key={c.key} active={interests.includes(c.key)}
-              label={isKo ? c.ko : c.en} onClick={() => toggleInterest(c.key)} />
-          ))}
-        </ControlRow>
+        {!selectedTheme && (
+          <ControlRow label={isKo ? "관심 (선택 없음 = 전체)" : "Interests (none = all)"}>
+            {INTEREST_CHIPS.map((c) => (
+              <Pill key={c.key} active={interests.includes(c.key)}
+                label={isKo ? c.ko : c.en} onClick={() => toggleInterest(c.key)} />
+            ))}
+          </ControlRow>
+        )}
 
         <div style={{ fontSize: 12, color: "var(--foreground-muted)", marginBottom: 14 }}>
           {isKo ? "언어 수준: " : "Language level: "}{levelLabel}

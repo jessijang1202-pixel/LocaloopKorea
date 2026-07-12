@@ -9,6 +9,7 @@
 
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/is-configured";
+import { fetchAllRows } from "@/lib/supabase/fetch-all";
 
 function requireConfigured() {
   if (!isSupabaseConfigured()) {
@@ -86,15 +87,13 @@ export function slugify(source: string): string {
 
 // ── Reads ────────────────────────────────────────────────────────────────────
 
+// Paged — Supabase caps selects at 1,000 rows and the dataset exceeds that.
 export async function fetchAdminPlaces(): Promise<AdminPlaceRow[]> {
   requireConfigured();
   const supabase = createClient();
-  const { data, error } = await supabase
-    .from("places")
-    .select(PLACE_COLUMNS)
-    .order("name_ko");
-  if (error) throw new Error(error.message);
-  return (data ?? []) as unknown as AdminPlaceRow[];
+  return fetchAllRows<AdminPlaceRow>((from, to) =>
+    supabase.from("places").select(PLACE_COLUMNS).order("name_ko").range(from, to)
+  );
 }
 
 export async function fetchRegions(): Promise<RegionOption[]> {

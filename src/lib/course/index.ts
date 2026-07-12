@@ -56,3 +56,14 @@ export {
   WALK_MIN_PER_KM,
   composeCourse,
 } from "./compose";
+
+// Themed courses — alternate composition path over the collected-places dataset
+export {
+  THEMES,
+  THEME_MIN_STOPS,
+  themeById,
+  centroidOf,
+  filterForTheme,
+  composeThemedCourse,
+} from "./themes";
+export type { CourseTheme, ThemeSlot } from "./themes";
