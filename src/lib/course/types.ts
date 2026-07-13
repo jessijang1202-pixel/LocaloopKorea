@@ -53,6 +53,7 @@ export interface CandidatePlace {
   regionId: string | null; // places.region_id — themed courses gate on this
   lat: number | null;
   lng: number | null;
+  imageUrl: string | null; // places.image_url — cover image for course cards
   li: number; // locality index 0-100 (module 100)
   ls: number; // language support score (patent-2 LS sub-score 0-100)
   grade: GradeLetter | null; // patent-2 friendliness grade (null = ungraded)

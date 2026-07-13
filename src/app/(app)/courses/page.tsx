@@ -6,11 +6,13 @@
 // content below live content read as broken. The static detail pages under
 // /courses/[slug] remain URL-reachable via src/content/courses.ts.
 
+import { RecommendedCourses } from "./RecommendedCourses";
 import { CourseBuilder } from "./CourseBuilder";
 
 export default function CoursesPage() {
   return (
     <div style={{ background: "var(--background)", minHeight: "100%", paddingBottom: 20 }}>
+      <RecommendedCourses />
       <CourseBuilder />
     </div>
   );

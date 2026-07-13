@@ -37,7 +37,7 @@ function requireConfigured() {
 
 // places columns needed to build a CandidatePlace (grade/ls come from patent-2).
 const PLACE_COLUMNS =
-  "id,slug,name_ko,name_en,category,region_id,lat,lng,ls_score,grade";
+  "id,slug,name_ko,name_en,category,region_id,lat,lng,image_url,ls_score,grade";
 
 interface PlaceCandidateColumns {
   id: string;
@@ -48,6 +48,7 @@ interface PlaceCandidateColumns {
   region_id: string | null;
   lat: number | null;
   lng: number | null;
+  image_url: string | null;
   ls_score: number | null;
   grade: string | null;
 }
@@ -108,6 +109,7 @@ function toCandidate(
     regionId: place.region_id ?? null,
     lat: place.lat,
     lng: place.lng,
+    imageUrl: place.image_url ?? null,
     li: metrics.li,
     ls: place.ls_score ?? 0,
     grade: (place.grade as GradeLetter | null) ?? null,
@@ -437,6 +439,7 @@ function seedCandidates(): CandidatePlace[] {
       regionId: p.region_id ?? null,
       lat: p.lat,
       lng: p.lng,
+      imageUrl: p.image_url ?? null,
       li,
       ls,
       grade,
