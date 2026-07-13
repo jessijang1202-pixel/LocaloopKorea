@@ -5,7 +5,8 @@ import { useLang } from "@/lib/lang";
 import { useTheme } from "@/lib/theme";
 import Link from "next/link";
 import { Section, Card, Callout, RuleItem } from "@/components/guide/primitives";
-import { ETIQUETTE_CATEGORIES, KEY_PHRASES, ETIQUETTE_GUIDE_TAB } from "@/content/etiquette";
+import { ETIQUETTE_CATEGORIES, KEY_PHRASES, ETIQUETTE_FULL } from "@/content/etiquette";
+import { EtiquetteChatbot } from "./EtiquetteChatbot";
 
 // ── Guide-only helpers (not shared) ─────────────────────────────────
 function RatingBadge({ r }: { r: "S" | "A" | "B" | "C" }) {
@@ -266,13 +267,14 @@ function UserGuideTab({ isKo }: { isKo: boolean }) {
 }
 
 // ── 문화 & 에티켓 탭 ────────────────────────────────────────────────
-// Copy comes from ETIQUETTE_GUIDE_TAB — the intentionally trimmed dataset (see
-// src/content/etiquette.ts). It is deliberately shorter than the /etiquette
-// page's ETIQUETTE_FULL: fewer rule rows, condensed sentences, no dining grid,
-// and no gift-culture callout. Do not sync the two datasets.
+// Copy comes from ETIQUETTE_GUIDE_TAB. Per the 2026-07-12 merge decision (see
+// src/content/etiquette.ts) that export is now a straight alias of
+// ETIQUETTE_FULL — the guide tab shows the FULL content, and the previously
+// trimmed variant was retired. Hosts the floating <EtiquetteChatbot />, which is
+// mounted only on this tab.
 function EtiquetteTab({ isKo, isDark }: { isKo: boolean; isDark: boolean }) {
   const [activeFilter, setActiveFilter] = useState("all");
-  const c = ETIQUETTE_GUIDE_TAB;
+  const c = ETIQUETTE_FULL;
   function show(cat: string) { return activeFilter === "all" || activeFilter === cat; }
 
   return (
@@ -324,6 +326,17 @@ function EtiquetteTab({ isKo, isDark }: { isKo: boolean; isDark: boolean }) {
           </Section>
         )}
 
+        {show("drinking") && (
+          <Section title={isKo ? c.drinking.title.ko : c.drinking.title.en}>
+            <Card>
+              {c.drinking.rules.map((r, i) => <RuleItem key={i} ok={r.ok} text={isKo ? r.ko : r.en} />)}
+            </Card>
+            <Callout color="blue">
+              {isKo ? c.drinking.calloutBlue.ko : c.drinking.calloutBlue.en}
+            </Callout>
+          </Section>
+        )}
+
         {show("transport") && (
           <Section title={isKo ? c.transport.title.ko : c.transport.title.en}>
             <Card>
@@ -331,6 +344,17 @@ function EtiquetteTab({ isKo, isDark }: { isKo: boolean; isDark: boolean }) {
             </Card>
             <Callout color="blue">
               {isKo ? c.transport.calloutBlue.ko : c.transport.calloutBlue.en}
+            </Callout>
+          </Section>
+        )}
+
+        {show("transport") && (
+          <Section title={isKo ? c.taxi.title.ko : c.taxi.title.en}>
+            <Card>
+              {c.taxi.rules.map((r, i) => <RuleItem key={i} ok={r.ok} text={isKo ? r.ko : r.en} />)}
+            </Card>
+            <Callout color="blue">
+              {isKo ? c.taxi.calloutBlue.ko : c.taxi.calloutBlue.en}
             </Callout>
           </Section>
         )}
@@ -346,12 +370,23 @@ function EtiquetteTab({ isKo, isDark }: { isKo: boolean; isDark: boolean }) {
             <Card>
               <div style={{ fontSize: 12, fontWeight: 800, color: "var(--foreground)", marginBottom: 10 }}>{isKo ? c.social.qaHeading.ko : c.social.qaHeading.en}</div>
               {c.social.qa.map((item, i) => (
-                <div key={i} style={{ marginBottom: 10, paddingBottom: 10, borderBottom: i < 2 ? "1px solid var(--border)" : "none" }}>
+                <div key={i} style={{ marginBottom: 10, paddingBottom: 10, borderBottom: i < c.social.qa.length - 1 ? "1px solid var(--border)" : "none" }}>
                   <div style={{ fontSize: 12, fontWeight: 700, color: "var(--grade-s)", marginBottom: 3 }}>Q: {isKo ? item.q.ko : item.q.en}</div>
                   <div style={{ fontSize: 11, color: "var(--foreground-muted)", lineHeight: 1.5 }}>→ {isKo ? item.a.ko : item.a.en}</div>
                 </div>
               ))}
             </Card>
+          </Section>
+        )}
+
+        {show("payment") && (
+          <Section title={isKo ? c.payment.title.ko : c.payment.title.en}>
+            <Card>
+              {c.payment.rules.map((r, i) => <RuleItem key={i} ok={r.ok} text={isKo ? r.ko : r.en} />)}
+            </Card>
+            <Callout color="blue">
+              {isKo ? c.payment.calloutBlue.ko : c.payment.calloutBlue.en}
+            </Callout>
           </Section>
         )}
 
@@ -365,6 +400,28 @@ function EtiquetteTab({ isKo, isDark }: { isKo: boolean; isDark: boolean }) {
             </Card>
             <Callout color="yellow">
               {isKo ? c.taboo.calloutYellow.ko : c.taboo.calloutYellow.en}
+            </Callout>
+          </Section>
+        )}
+
+        {show("bathhouse") && (
+          <Section title={isKo ? c.bathhouse.title.ko : c.bathhouse.title.en}>
+            <Card>
+              {c.bathhouse.rules.map((r, i) => <RuleItem key={i} ok={r.ok} text={isKo ? r.ko : r.en} />)}
+            </Card>
+            <Callout color="blue">
+              {isKo ? c.bathhouse.calloutBlue.ko : c.bathhouse.calloutBlue.en}
+            </Callout>
+          </Section>
+        )}
+
+        {show("hiking") && (
+          <Section title={isKo ? c.hiking.title.ko : c.hiking.title.en}>
+            <Card>
+              {c.hiking.rules.map((r, i) => <RuleItem key={i} ok={r.ok} text={isKo ? r.ko : r.en} />)}
+            </Card>
+            <Callout color="blue">
+              {isKo ? c.hiking.calloutBlue.ko : c.hiking.calloutBlue.en}
             </Callout>
           </Section>
         )}
@@ -383,6 +440,9 @@ function EtiquetteTab({ isKo, isDark }: { isKo: boolean; isDark: boolean }) {
           </div>
         </div>
       </div>
+
+      {/* Floating FAQ chatbot — mounted only on the Culture & Etiquette tab */}
+      <EtiquetteChatbot />
     </div>
   );
 }

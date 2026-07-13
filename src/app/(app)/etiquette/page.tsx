@@ -128,6 +128,21 @@ export default function EtiquettePage() {
           </Section>
         )}
 
+        {/* TAXI & TRANSPORT (ADVANCED) */}
+        {show("transport") && (
+          <Section variant="etiquette" title={isKo ? c.taxi.title.ko : c.taxi.title.en}>
+            <Card variant="etiquette">
+              {c.taxi.rules.map((r, i) => (
+                <RuleItem key={i} ok={r.ok} text={isKo ? r.ko : r.en} />
+              ))}
+            </Card>
+
+            <Callout color="blue">
+              {isKo ? c.taxi.calloutBlue.ko : c.taxi.calloutBlue.en}
+            </Callout>
+          </Section>
+        )}
+
         {/* SOCIAL */}
         {show("social") && (
           <Section variant="etiquette" title={isKo ? c.social.title.ko : c.social.title.en}>
@@ -175,6 +190,36 @@ export default function EtiquettePage() {
 
             <Callout color="yellow">
               {isKo ? c.taboo.calloutYellow.ko : c.taboo.calloutYellow.en}
+            </Callout>
+          </Section>
+        )}
+
+        {/* JJIMJILBANG & BATHHOUSE */}
+        {show("bathhouse") && (
+          <Section variant="etiquette" title={isKo ? c.bathhouse.title.ko : c.bathhouse.title.en}>
+            <Card variant="etiquette">
+              {c.bathhouse.rules.map((r, i) => (
+                <RuleItem key={i} ok={r.ok} text={isKo ? r.ko : r.en} />
+              ))}
+            </Card>
+
+            <Callout color="blue">
+              {isKo ? c.bathhouse.calloutBlue.ko : c.bathhouse.calloutBlue.en}
+            </Callout>
+          </Section>
+        )}
+
+        {/* HIKING & OUTDOORS */}
+        {show("hiking") && (
+          <Section variant="etiquette" title={isKo ? c.hiking.title.ko : c.hiking.title.en}>
+            <Card variant="etiquette">
+              {c.hiking.rules.map((r, i) => (
+                <RuleItem key={i} ok={r.ok} text={isKo ? r.ko : r.en} />
+              ))}
+            </Card>
+
+            <Callout color="blue">
+              {isKo ? c.hiking.calloutBlue.ko : c.hiking.calloutBlue.en}
             </Callout>
           </Section>
         )}
