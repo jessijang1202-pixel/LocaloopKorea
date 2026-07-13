@@ -284,6 +284,10 @@ export default function MapPage() {
   const [chip, setChip] = useState<FilterKey>("all");
   const [sheetExpanded, setSheetExpanded] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  // Progressive lists: show 10, reveal +10 per "view more" tap.
+  const PAGE_SIZE = 10;
+  const [hotShown, setHotShown] = useState(PAGE_SIZE);
+  const [otherShown, setOtherShown] = useState(PAGE_SIZE);
   const dragStartY = useRef<number | null>(null);
 
   useEffect(() => {
@@ -320,6 +324,11 @@ export default function MapPage() {
     if (chip === "cafe") return p.category === "cafe";
     return true;
   });
+
+  const hotVisible = hotPlaces.slice(0, hotShown);
+  const otherVisible = filtered.slice(0, otherShown);
+  const hotHasMore = hotPlaces.length > hotShown;
+  const otherHasMore = filtered.length > otherShown;
 
   const pins = livePlaces.filter((p) => p.lat && p.lng).map((p) => ({
     id: p.id, lat: p.lat!, lng: p.lng!, title: p.name_en, rating: getRating(p),
@@ -473,11 +482,13 @@ export default function MapPage() {
               {isKo ? "이태원 PICK" : "ITAEWON PICK"}
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-              {hotPlaces.map((p) => <PlaceCard2 key={p.id} place={p} isKo={isKo} hot regions={liveRegions} />)}
+              {hotVisible.map((p) => <PlaceCard2 key={p.id} place={p} isKo={isKo} hot regions={liveRegions} />)}
             </div>
-            <button style={{ width: "100%", marginTop: 10, padding: "10px 0", borderRadius: 12, background: "var(--content-bg)", border: "1px solid var(--border)", color: "var(--foreground-muted)", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
-              {isKo ? "더보기" : "View more"}
-            </button>
+            {hotHasMore && (
+              <button onClick={() => setHotShown((n) => n + PAGE_SIZE)} style={{ width: "100%", marginTop: 10, padding: "10px 0", borderRadius: 12, background: "var(--content-bg)", border: "1px solid var(--border)", color: "var(--foreground-muted)", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+                {isKo ? `더보기 (${hotPlaces.length - hotShown})` : `View more (${hotPlaces.length - hotShown})`}
+              </button>
+            )}
           </div>
 
           {/* 다른 지역 추천 — 2×3 grid, medium badge + city label */}
@@ -486,11 +497,13 @@ export default function MapPage() {
               {isKo ? "다른 지역 추천" : "OTHER REGIONS"}
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-              {filtered.map((p) => <PlaceCard2 key={p.id} place={p} isKo={isKo} regions={liveRegions} />)}
+              {otherVisible.map((p) => <PlaceCard2 key={p.id} place={p} isKo={isKo} regions={liveRegions} />)}
             </div>
-            <button style={{ width: "100%", marginTop: 10, padding: "10px 0", borderRadius: 12, background: "var(--content-bg)", border: "1px solid var(--border)", color: "var(--foreground-muted)", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
-              {isKo ? "더보기" : "View more"}
-            </button>
+            {otherHasMore && (
+              <button onClick={() => setOtherShown((n) => n + PAGE_SIZE)} style={{ width: "100%", marginTop: 10, padding: "10px 0", borderRadius: 12, background: "var(--content-bg)", border: "1px solid var(--border)", color: "var(--foreground-muted)", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+                {isKo ? `더보기 (${filtered.length - otherShown})` : `View more (${filtered.length - otherShown})`}
+              </button>
+            )}
           </div>
 
           {/* Safe-area spacer for nav bar */}
@@ -532,17 +545,27 @@ export default function MapPage() {
               {isKo ? "이태원 PICK" : "ITAEWON PICK"}
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-              {hotPlaces.map((p) => <PlaceCard2 key={p.id} place={p} isKo={isKo} hot regions={liveRegions} />)}
+              {hotVisible.map((p) => <PlaceCard2 key={p.id} place={p} isKo={isKo} hot regions={liveRegions} />)}
             </div>
+            {hotHasMore && (
+              <button onClick={() => setHotShown((n) => n + PAGE_SIZE)} style={{ width: "100%", marginTop: 8, padding: "9px 0", borderRadius: 12, background: "var(--content-bg)", border: "1px solid var(--border)", color: "var(--foreground-muted)", fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}>
+                {isKo ? `더보기 (${hotPlaces.length - hotShown})` : `View more (${hotPlaces.length - hotShown})`}
+              </button>
+            )}
           </div>
 
           {/* 다른 지역 추천 */}
           <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.1em", color: "var(--foreground-muted)", marginBottom: 8 }}>
             {isKo ? "다른 지역 추천" : "OTHER REGIONS"}
           </div>
-          {filtered.map((place) => (
+          {otherVisible.map((place) => (
             <PlaceCardPC key={place.id} place={place} isSelected={selected?.id === place.id} isKo={isKo} onClick={() => setSelected(place)} />
           ))}
+          {otherHasMore && (
+            <button onClick={() => setOtherShown((n) => n + PAGE_SIZE)} style={{ width: "100%", marginTop: 4, marginBottom: 8, padding: "9px 0", borderRadius: 12, background: "var(--content-bg)", border: "1px solid var(--border)", color: "var(--foreground-muted)", fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}>
+              {isKo ? `더보기 (${filtered.length - otherShown})` : `View more (${filtered.length - otherShown})`}
+            </button>
+          )}
         </div>
       </div>
 

@@ -98,7 +98,8 @@ export function travelFromItaewon(place: {
 // within 2km of Itaewon station, capped at 8.
 
 const HOT_RADIUS_KM = 2;
-const HOT_CAP = 8;
+// The map shows 10 and reveals the rest via "view more", so gather plenty.
+const HOT_CAP = 30;
 
 export function hotPlaceIds(places: Place[], source: "db" | "seed"): string[] {
   if (source === "seed") return HOT_PLACE_IDS;
