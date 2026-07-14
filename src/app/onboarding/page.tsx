@@ -45,14 +45,13 @@ const INIT: OnboardingData = {
 // ─── Design tokens ────────────────────────────────────────────────────────────
 
 const C = {
-  teal: "#15b6c1",
-  tealLight: "#d4f4f6",
-  tealDark: "#0b7a82",
-  yellow: "#ffd600",
-  dark: "#0B1E2D",
-  text: "#1a2b2c",
-  sub: "#4a6467",
-  border: "#e0e8ea",
+  teal: "var(--grade-s)",
+  tealLight: "rgba(255,86,54,0.08)",
+  tealDark: "#c43e2a",
+  dark: "linear-gradient(160deg, #2A1208 0%, #1E0D06 100%)",
+  text: "var(--foreground)",
+  sub: "var(--foreground-muted)",
+  border: "var(--border)",
 };
 
 // ─── Reusable atoms ───────────────────────────────────────────────────────────
@@ -62,7 +61,7 @@ function Chip({ label, on, onClick }: { label: string; on: boolean; onClick: () 
     <button type="button" onClick={onClick} style={{
       padding: "8px 16px", borderRadius: 20,
       border: `1.5px solid ${on ? C.teal : C.border}`,
-      background: on ? C.tealLight : "#fff",
+      background: on ? C.tealLight : "var(--card)",
       color: on ? C.tealDark : C.sub,
       fontWeight: on ? 700 : 400, fontSize: 13,
       cursor: "pointer", transition: "all 0.15s",
@@ -78,7 +77,7 @@ function SelectCard({ label, desc, on, onClick }: { label: string; desc?: string
       width: "100%", textAlign: "left",
       padding: "13px 16px", borderRadius: 14,
       border: `1.5px solid ${on ? C.teal : C.border}`,
-      background: on ? C.tealLight : "#fff",
+      background: on ? C.tealLight : "var(--card)",
       cursor: "pointer", marginBottom: 8, transition: "all 0.15s",
     }}>
       <div style={{ fontSize: 14, fontWeight: 600, color: on ? C.tealDark : C.text }}>{label}</div>
@@ -104,7 +103,7 @@ function Toggle({ on, onChange, label, desc }: { on: boolean; onChange: () => vo
       </div>
       <button type="button" onClick={onChange} role="switch" aria-checked={on} style={{
         width: 44, height: 24, borderRadius: 12,
-        background: on ? C.teal : "#c8d5d7",
+        background: on ? C.teal : "var(--border)",
         border: "none", cursor: "pointer",
         position: "relative", flexShrink: 0, transition: "background 0.2s",
       }}>
@@ -262,7 +261,7 @@ function OnboardingInner() {
   const sChipWrap: React.CSSProperties = { display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 8 };
   const sInput: React.CSSProperties = {
     width: "100%", padding: "13px 16px", borderRadius: 14,
-    border: `1.5px solid ${C.border}`, background: "#fff",
+    border: `1.5px solid ${C.border}`, background: "var(--card)",
     fontSize: 16, color: C.text, outline: "none", boxSizing: "border-box",
   };
 
@@ -448,14 +447,14 @@ function OnboardingInner() {
         <div className="ll-content" style={{
           display: "flex", flexDirection: "column",
           alignItems: "center", justifyContent: "center",
-          background: `linear-gradient(160deg, ${C.dark} 0%, #1a3a4a 100%)`,
+          background: C.dark,
           padding: 24,
         }}>
           <div style={{
             width: 72, height: 72, borderRadius: "50%",
             background: C.teal, display: "flex", alignItems: "center", justifyContent: "center",
             fontSize: 36, marginBottom: 24,
-            boxShadow: `0 0 0 12px rgba(21,182,193,0.2)`,
+            boxShadow: `0 0 0 12px rgba(255,86,54,0.2)`,
           }}>
             ✓
           </div>
@@ -468,8 +467,10 @@ function OnboardingInner() {
           <button
             onClick={() => { window.location.href = "/map"; }}
             style={{
-              background: C.yellow, color: C.dark, border: "none", borderRadius: 16,
+              background: `linear-gradient(135deg, ${C.teal} 0%, ${C.tealDark} 100%)`,
+              color: "#fff", border: "none", borderRadius: 16,
               padding: "16px 48px", fontSize: 16, fontWeight: 800, cursor: "pointer",
+              boxShadow: "0 4px 16px rgba(255,86,54,0.35)",
             }}
           >
             {t.doneBtn}
@@ -495,9 +496,9 @@ function OnboardingInner() {
   const progress = ((stepIdx + 1) / totalSteps) * 100;
 
   return (
-    <div style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", background: "#fff" }}>
+    <div style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", background: "var(--background)" }}>
       {/* Top bar */}
-      <div style={{ background: C.dark, paddingTop: 48, paddingBottom: 20, paddingInline: 20, flexShrink: 0 }}>
+      <div style={{ background: C.dark, paddingTop: 44, paddingBottom: 20, paddingInline: 20, flexShrink: 0 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
           <span style={{ fontSize: 13, fontWeight: 800, color: "#fff" }}>
             Localoop<span style={{ color: C.teal }}>Korea</span>
@@ -507,7 +508,7 @@ function OnboardingInner() {
           </span>
         </div>
 
-        <h1 style={{ fontSize: 20, fontWeight: 900, color: "#fff", marginBottom: 4 }}>
+        <h1 style={{ fontSize: 20, fontWeight: 800, color: "#fff", marginBottom: 4, letterSpacing: "-0.02em" }}>
           {t.hero}
         </h1>
         <p style={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}>
@@ -541,14 +542,14 @@ function OnboardingInner() {
         padding: "16px 20px",
         paddingBottom: "calc(16px + env(safe-area-inset-bottom))",
         borderTop: `1px solid ${C.border}`,
-        background: "#fff", display: "flex", gap: 10,
+        background: "var(--card)", display: "flex", gap: 10,
       }}>
         {stepIdx > 0 && (
           <button
             onClick={() => setStepIdx((i) => Math.max(0, i - 1))}
             style={{
               flex: 0, padding: "0 20px", height: 50, borderRadius: 14,
-              border: `1.5px solid ${C.border}`, background: "#fff", color: C.sub,
+              border: `1.5px solid ${C.border}`, background: "var(--card)", color: C.sub,
               fontWeight: 600, fontSize: 14, cursor: "pointer",
             }}
           >
