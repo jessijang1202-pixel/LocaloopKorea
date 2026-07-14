@@ -1,10 +1,12 @@
 // Foreigner Life Task Graph — module 400 data (step-by-step guides).
 //
-// One TaskGuide per task node (T1..T11 — see task-graph.ts for why the
-// patent's original 8 stages are now 11: three broad stages were split into
-// their natural sub-activities). Every string is bilingual (Bi). Content is
-// written to be genuinely useful for a newly arrived foreigner living around
-// Seoul. No emojis (project rule).
+// One TaskGuide per task node (T1..T17 — see task-graph.ts for the two
+// expansions beyond the patent's original 8: T1-T11 split three broad stages
+// into their natural sub-activities, T12-T17 add the administrative and
+// healthcare tasks — ARC, visa, banking, housing, insurance, hospital/pharmacy
+// — that the original graph never covered at all). Every string is bilingual
+// (Bi). Content is written to be genuinely useful for a newly arrived
+// foreigner living around Seoul. No emojis (project rule).
 
 import type { Bi } from "@/types/content";
 import type { TaskId } from "@/lib/engine/types";
@@ -495,6 +497,280 @@ export const TASK_GUIDES: Record<TaskId, TaskGuide> = {
       {
         ko: "온라인에서 몇 번 대화를 나눈 뒤 오프라인으로 만나는 순서가 안전해요. 첫 만남은 낮 시간, 공공장소를 권장해요.",
         en: "It's safer to chat online a few times before meeting in person — prefer a daytime, public-place first meeting.",
+      },
+    ],
+  },
+
+  // ── T12 외국인 등록증 발급 / Alien Registration Card ──────────────────────
+  T12: {
+    taskId: "T12",
+    what: {
+      ko: "90일 이상 체류하는 외국인이 입국 후 90일 이내에 관할 출입국·외국인청에서 외국인 등록증(ARC)을 신청하는 과제예요. ARC는 은행 계좌, 장기 통신 요금제, 건강보험 등 이후 모든 행정 절차의 기준이 되는 신분증입니다.",
+      en: "Apply for your Alien Registration Card (ARC) at the immigration office within 90 days of arrival if you're staying long-term. The ARC becomes your key ID for almost everything that follows — bank accounts, long-term phone plans, and national health insurance.",
+    },
+    steps: [
+      {
+        ko: "하이코리아(HiKorea) 웹사이트에서 관할 출입국·외국인청을 확인하고 방문 예약을 잡아요. 많은 사무소가 사전예약이 필수예요.",
+        en: "Check your jurisdiction's immigration office on the HiKorea website and book a visit — many offices require an appointment.",
+      },
+      {
+        ko: "여권, 여권용 사진, 임대차계약서 등 거주지 증빙, 수수료(약 3만 원)를 준비해요.",
+        en: "Prepare your passport, a passport photo, proof of address (like a lease), and the fee (about 30,000 won).",
+      },
+      {
+        ko: "신청서를 작성하고 지문 등록과 사진 촬영을 진행해요.",
+        en: "Fill out the application and complete fingerprinting and a photo at the office.",
+      },
+      {
+        ko: "2~3주 후 등록증이 나오면 사무소 방문 또는 우편으로 수령해요.",
+        en: "The card is usually ready in 2-3 weeks — pick it up at the office or have it mailed.",
+      },
+    ],
+    prepare: [
+      { ko: "여권과 여권용 사진", en: "Passport and a passport photo" },
+      { ko: "거주지 증빙 (임대차계약서 등)", en: "Proof of address (a lease contract, etc.)" },
+      { ko: "수수료 (현금 또는 카드, 약 3만 원)", en: "The fee (cash or card, about 30,000 won)" },
+    ],
+    cautions: [
+      {
+        ko: "입국 후 90일을 초과하면 과태료가 부과될 수 있어요. 여유를 두고 신청하세요.",
+        en: "Overstaying the 90-day window before applying can bring a fine — apply with some buffer time.",
+      },
+      {
+        ko: "방문 예약 없이 가면 대기시간이 매우 길거나 당일 처리가 불가능할 수 있어요.",
+        en: "Showing up without a reservation can mean an extremely long wait or no service that day.",
+      },
+      {
+        ko: "등록증 수령 전까지는 은행 계좌, 휴대폰 장기 요금제 등 일부 서비스 이용이 제한될 수 있어요.",
+        en: "Until the card arrives, some services like bank accounts and long-term phone plans may stay restricted.",
+      },
+    ],
+  },
+
+  // ── T13 비자 상태 관리 / Visa Status Management ───────────────────────────
+  T13: {
+    taskId: "T13",
+    what: {
+      ko: "본인의 체류자격(비자 종류)과 만료일을 확인하고, 연장이나 자격 변경이 필요할 때 절차를 준비하는 과제예요. 체류기간을 넘기면 불이익이 크기 때문에 정기적으로 확인하는 습관이 중요해요.",
+      en: "Check your visa status and expiry date, and prepare the paperwork if you need to extend or change it. Overstaying carries real consequences, so checking this regularly matters.",
+    },
+    steps: [
+      {
+        ko: "외국인 등록증 또는 여권의 비자 스티커에서 체류자격과 만료일을 확인해요.",
+        en: "Check your visa status and expiry date on your Alien Registration Card or passport visa sticker.",
+      },
+      {
+        ko: "하이코리아(HiKorea)에서 온라인으로 체류기간 연장 신청이 가능한지 확인해요.",
+        en: "Check on HiKorea whether you can apply online for a stay-period extension.",
+      },
+      {
+        ko: "자격 변경(예: 어학연수 → 취업)이 필요하면 필요 서류를 관할 출입국사무소에 문의해요.",
+        en: "If you need a status change (e.g. language student to work visa), ask your immigration office what documents it requires.",
+      },
+      {
+        ko: "만료일 최소 2~4주 전에 연장 신청을 마쳐요.",
+        en: "Finish any extension application at least 2-4 weeks before your expiry date.",
+      },
+    ],
+    prepare: [
+      { ko: "외국인등록증과 여권", en: "Alien Registration Card and passport" },
+      { ko: "체류자격별 필요 서류 (재직증명서, 재학증명서 등)", en: "Documents specific to your status (employment certificate, enrollment certificate, etc.)" },
+    ],
+    cautions: [
+      {
+        ko: "체류기간을 넘기면 범칙금이나 출국명령 등 불이익이 있을 수 있어요. 만료일을 캘린더에 미리 등록하세요.",
+        en: "Overstaying can bring fines or a departure order — put your expiry date in your calendar well ahead of time.",
+      },
+      {
+        ko: "자격에 따라 필요 서류가 크게 달라요. 방문 전 하이코리아 콜센터(1345)로 확인하는 게 안전해요.",
+        en: "Required documents vary a lot by status — calling the HiKorea hotline (1345) before you go is the safe move.",
+      },
+      {
+        ko: "대행업체(행정사)를 이용하면 비용이 들지만 복잡한 자격 변경 시 시간을 아낄 수 있어요.",
+        en: "A licensed agent (haengjeongsa) costs money but can save time for a complex status change.",
+      },
+    ],
+  },
+
+  // ── T14 은행 계좌 개설 / Bank Account Setup ───────────────────────────────
+  T14: {
+    taskId: "T14",
+    what: {
+      ko: "국내 은행 계좌를 개설하고 체크카드를 발급받아, 월급 수령·공과금 자동이체·온라인 결제를 준비하는 과제예요. 대부분의 생활 서비스가 계좌 하나를 기준으로 돌아가기 때문에 초반에 해결해두면 이후가 훨씬 편해져요.",
+      en: "Open a bank account and get a debit card so you can receive pay, set up auto-billing, and pay online. Almost every other service assumes you have one account, so getting this done early makes everything after it easier.",
+    },
+    steps: [
+      {
+        ko: "외국인 친화적인 은행(KB국민·신한·우리·하나 등) 지점을 찾거나 비대면 개설이 가능한지 앱에서 확인해요.",
+        en: "Find a foreigner-friendly bank (KB Kookmin, Shinhan, Woori, Hana, etc.) or check whether its app supports remote account opening.",
+      },
+      {
+        ko: "여권, 외국인등록증, 재직증명서(있는 경우)를 지참해 지점을 방문해요.",
+        en: "Visit a branch with your passport, Alien Registration Card, and employment certificate if you have one.",
+      },
+      {
+        ko: "계좌 개설 신청서를 작성하고 체크카드, 인터넷/모바일 뱅킹을 함께 신청해요.",
+        en: "Fill out the account application and apply for a debit card and internet/mobile banking at the same time.",
+      },
+      {
+        ko: "모바일 뱅킹 앱을 설치하고 공동인증서 또는 간편 인증을 등록해요.",
+        en: "Install the mobile banking app and register a digital certificate or simple authentication.",
+      },
+    ],
+    prepare: [
+      { ko: "여권과 외국인등록증", en: "Passport and Alien Registration Card" },
+      { ko: "한국 휴대폰 번호", en: "A Korean phone number" },
+      { ko: "재직증명서 (선택)", en: "Employment certificate (optional)" },
+    ],
+    cautions: [
+      {
+        ko: "보이스피싱 방지로 신규 계좌는 이체한도가 낮게 설정돼요. 지점에서 한도 상향을 요청할 수 있어요.",
+        en: "New accounts get a low transfer limit as a fraud-prevention measure — you can ask the branch to raise it.",
+      },
+      {
+        ko: "일부 은행은 외국인등록증 없이는 계좌 개설이 제한적이에요 (한도계좌만 가능).",
+        en: "Some banks limit account opening without an ARC to a restricted 'limited account' only.",
+      },
+      {
+        ko: "인터넷뱅킹 앱은 한국 휴대폰 번호 인증이 필수인 경우가 많아요.",
+        en: "Internet banking apps often require verification via a Korean phone number.",
+      },
+    ],
+  },
+
+  // ── T15 집 렌트·계약 / Housing Lease ───────────────────────────────────────
+  T15: {
+    taskId: "T15",
+    what: {
+      ko: "월세 또는 전세 매물을 찾고 계약서 내용을 확인한 뒤 서명하는 과제예요. 한국의 임대 방식은 큰 보증금 구조가 독특해서, 미리 알아두면 계약 사고를 피할 수 있어요.",
+      en: "Find a monthly or key-money lease and review the contract before signing. Korea's large-deposit rental system is unusual internationally, so knowing the basics up front helps you avoid a bad contract.",
+    },
+    steps: [
+      {
+        ko: "직방, 다방, 네이버부동산 앱이나 동네 공인중개사를 통해 매물을 찾아요.",
+        en: "Search listings on apps like Zigbang, Dabang, or Naver Real Estate, or work with a local licensed agent.",
+      },
+      {
+        ko: "월세(보증금+매달 임대료)와 전세(큰 보증금, 임대료 없음) 방식의 차이를 이해하고 예산에 맞는 쪽을 선택해요.",
+        en: "Understand the difference between wolse (deposit + monthly rent) and jeonse (large deposit, no monthly rent), and pick what fits your budget.",
+      },
+      {
+        ko: "마음에 드는 매물은 직접 방문해 상태를 확인하고, 공인중개사를 통해 계약을 진행해요.",
+        en: "Visit any place you like in person to check its condition, then go through a licensed agent to arrange the contract.",
+      },
+      {
+        ko: "계약서의 보증금·계약기간·특약사항을 꼼꼼히 확인하고, 서명 전 등기부등본으로 집주인을 확인해요.",
+        en: "Carefully check the deposit, contract term, and special clauses, and verify the landlord against the property registry before signing.",
+      },
+    ],
+    prepare: [
+      { ko: "여권 또는 외국인등록증", en: "Passport or Alien Registration Card" },
+      { ko: "보증금과 중개수수료", en: "The deposit and agent's commission" },
+      { ko: "소득 증빙 (필요시)", en: "Proof of income (if required)" },
+    ],
+    cautions: [
+      {
+        ko: "등기부등본을 확인하지 않고 계약하면 이중계약이나 근저당 문제에 노출될 수 있어요. 반드시 계약 전 확인하세요.",
+        en: "Skipping the property registry check can expose you to double contracts or existing liens — always check before signing.",
+      },
+      {
+        ko: "외국인은 전세보다 월세 계약이 더 일반적이고 진행이 수월해요.",
+        en: "Wolse (monthly rent) contracts are more common and easier to arrange for foreigners than jeonse.",
+      },
+      {
+        ko: "계약 해지·보증금 반환 조건을 특약사항에 명확히 적어두세요.",
+        en: "Spell out the termination and deposit-return terms clearly in the contract's special clauses.",
+      },
+    ],
+  },
+
+  // ── T16 국민건강보험 가입 / National Health Insurance ─────────────────────
+  T16: {
+    taskId: "T16",
+    what: {
+      ko: "국민건강보험에 가입하거나 가입 여부를 확인하고, 매달 보험료를 납부하는 방법을 익히는 과제예요. 6개월 이상 체류하는 외국인은 대부분 지역가입자로 자동 가입돼요.",
+      en: "Confirm or apply for National Health Insurance and learn how to pay the monthly premium. Foreigners staying 6+ months are usually auto-enrolled as regional subscribers.",
+    },
+    steps: [
+      {
+        ko: "국민건강보험공단(1577-1000) 또는 The K 앱에서 가입 여부와 가입자 유형(직장/지역)을 확인해요.",
+        en: "Check your enrollment status and type (workplace or regional) via the National Health Insurance Service (1577-1000) or The K app.",
+      },
+      {
+        ko: "직장가입자가 아니라면 체류지 관할 공단 지사에서 지역가입자로 신청해요 (자동 가입되는 경우도 많아요).",
+        en: "If you're not covered through an employer, apply as a regional subscriber at your local NHIS branch — many people are enrolled automatically.",
+      },
+      {
+        ko: "매달 고지되는 보험료를 계좌 자동이체나 카드로 납부하도록 설정해요.",
+        en: "Set up automatic bank transfer or card payment for the monthly premium bill.",
+      },
+      {
+        ko: "건강보험증(모바일 The K 앱으로도 확인 가능)을 병원 방문 시 제시할 수 있도록 준비해요.",
+        en: "Keep your insurance card (or the The K app) ready to show when you visit a hospital or clinic.",
+      },
+    ],
+    prepare: [
+      { ko: "외국인등록증", en: "Alien Registration Card" },
+      { ko: "국내 계좌 (자동이체용)", en: "A Korean bank account (for auto-payment)" },
+    ],
+    cautions: [
+      {
+        ko: "보험료를 미납하면 병원에서 건강보험 혜택을 받지 못하고, 체류기간 연장에도 불이익이 있을 수 있어요.",
+        en: "Missing premium payments can cost you insurance coverage at hospitals and even affect visa extensions.",
+      },
+      {
+        ko: "지역가입자 보험료는 소득·재산 추정 기준으로 산정돼 예상보다 높게 나올 수 있어요. 이의신청 제도를 활용할 수 있어요.",
+        en: "Regional-subscriber premiums are estimated from income and assets and can come out higher than expected — there's an appeal process if that happens.",
+      },
+      {
+        ko: "유학생은 별도 가입 시기·기준이 적용될 수 있으니 학교 국제처에 확인하세요.",
+        en: "Students may have different enrollment timing and rules — check with your school's international office.",
+      },
+    ],
+  },
+
+  // ── T17 병원·약국 이용 / Hospital & Pharmacy ──────────────────────────────
+  T17: {
+    taskId: "T17",
+    what: {
+      ko: "약국에서 상비약을 사고, 동네 병원(의원)과 응급실을 상황에 맞게 이용하는 방법을 익히는 과제예요. 보험 가입 여부와 상관없이 알아두면 급할 때 큰 도움이 돼요.",
+      en: "Learn how to buy over-the-counter medicine at a pharmacy, and when to use a local clinic versus the ER. Worth knowing regardless of insurance status — it matters most exactly when you're in a hurry.",
+    },
+    steps: [
+      {
+        ko: "가벼운 증상은 동네 약국에서 증상을 설명(번역 앱 활용 가능)하고 일반의약품을 구매해요.",
+        en: "For minor symptoms, describe them at a local pharmacy (a translation app helps) and buy over-the-counter medicine.",
+      },
+      {
+        ko: "감기·통증 등은 동네 의원(내과·이비인후과 등)을 예약 없이 방문해 진료받아요.",
+        en: "For colds or pain, walk into a local clinic (internal medicine, ENT, etc.) — no appointment needed.",
+      },
+      {
+        ko: "영어 진료가 가능한 병원은 '영어 진료 병원' 검색이나 1339(질병관리청) 안내를 통해 찾아요.",
+        en: "Find English-speaking clinics by searching '영어 진료 병원' or calling the 1339 public health hotline.",
+      },
+      {
+        ko: "응급 상황에는 119에 전화하거나 대형병원 응급실로 이동해요. 야간·주말에는 '달빛어린이병원' 등 야간진료 기관을 확인해요.",
+        en: "In an emergency, call 119 or head to a major hospital's ER. For nights and weekends, check night-service clinics like 'Dalbit Children's Hospital'.",
+      },
+    ],
+    prepare: [
+      { ko: "건강보험증 (가입한 경우)", en: "Insurance card (if enrolled)" },
+      { ko: "여권 또는 외국인등록증", en: "Passport or Alien Registration Card" },
+      { ko: "번역 앱", en: "A translation app" },
+    ],
+    cautions: [
+      {
+        ko: "응급실은 진료비가 높고 대기시간이 길 수 있어요. 경증이면 다음 날 동네 병원을 이용하는 게 나아요.",
+        en: "The ER is expensive and can involve a long wait — for minor issues, a local clinic the next day is usually better.",
+      },
+      {
+        ko: "보험 미가입 상태에서는 진료비 전액을 본인이 부담해요. 큰 병원 방문 전 예상 비용을 문의하세요.",
+        en: "Without insurance you pay the full cost — ask about the expected price before visiting a large hospital.",
+      },
+      {
+        ko: "처방전이 필요한 약은 반드시 병원 처방 후 약국에서 받아야 해요. 처방전 없이 살 수 있는 약과 구분하세요.",
+        en: "Prescription medicine requires a doctor's prescription before the pharmacy can give it to you — know which medicines need one and which don't.",
       },
     ],
   },

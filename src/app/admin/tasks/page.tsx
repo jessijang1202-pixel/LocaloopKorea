@@ -1,6 +1,6 @@
 "use client";
 
-// Patent no.1 admin — life-task guide (T1~T11) content editor.
+// Patent no.1 admin — life-task guide (T1~T17) content editor.
 //
 // Lists the tasks from the code task graph, shows which have a DB override in
 // task_guides, and lets an admin edit the effective guide (override if present,
@@ -151,7 +151,7 @@ export default function TaskGuidesPage() {
       {/* Header row */}
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
         <div style={{ fontSize: 13, color: MUTED, maxWidth: 620, lineHeight: 1.6 }}>
-          생활 태스크 그래프(T1~T11)의 과제별 행동 가이드를 편집합니다. 저장한
+          생활 태스크 그래프(T1~T17)의 과제별 행동 가이드를 편집합니다. 저장한
           가이드는 앱의 기본 콘텐츠보다 우선 적용됩니다.
           {(seedResult !== null || seedError) && (
             <div style={{ marginTop: 8 }}>

@@ -35,6 +35,17 @@
 // progression. T10/T11 (사회적 연결의 두 갈래) have no incoming edge in the
 // patent's arrow column either — same conservative interpretation as before:
 // social connection is the final stage, gated on neighborhood exploration.
+//
+// ── T12-T17: administrative/bureaucratic tasks (second expansion) ──────────
+// The patent's 8 stages never covered the paperwork a foreigner actually has
+// to clear first — alien registration, visa status, banking, housing
+// contracts, national health insurance, hospital/pharmacy access. These are
+// added as their own subgraph: T12 (외국인등록증) is the hub most of the rest
+// depend on, since Korean banks, NHIS enrollment, and long visa procedures
+// all key off the ARC number in practice. T15 (housing) and T17
+// (hospital/pharmacy) are deliberately NOT gated on the ARC — you may need to
+// search for housing before registering an address, and you may need a
+// pharmacy on day one regardless of paperwork status.
 
 import type { TaskEdge, TaskId, TaskNode } from "./types";
 
@@ -171,6 +182,78 @@ export const TASK_NODES: Record<TaskId, TaskNode> = {
     simple: false,
     interestTags: ["language"],
   },
+  T12: {
+    id: "T12",
+    slug: "alien-registration-card",
+    name: { ko: "외국인 등록증 발급", en: "Alien Registration Card" },
+    summary: {
+      ko: "출입국관리사무소에서 외국인 등록증(ARC) 신청하기",
+      en: "Apply for your Alien Registration Card (ARC) at immigration",
+    },
+    essential: true,
+    simple: false,
+    interestTags: [],
+  },
+  T13: {
+    id: "T13",
+    slug: "visa-status",
+    name: { ko: "비자 상태 관리", en: "Visa Status Management" },
+    summary: {
+      ko: "체류자격 확인, 연장·변경 절차 파악하기",
+      en: "Understand your visa status and how to extend or change it",
+    },
+    essential: true,
+    simple: false,
+    interestTags: [],
+  },
+  T14: {
+    id: "T14",
+    slug: "bank-account",
+    name: { ko: "은행 계좌 개설", en: "Bank Account Setup" },
+    summary: {
+      ko: "은행 방문 또는 비대면으로 계좌 개설, 체크카드 발급받기",
+      en: "Open a bank account and get a debit card, in person or online",
+    },
+    essential: true,
+    simple: false,
+    interestTags: [],
+  },
+  T15: {
+    id: "T15",
+    slug: "housing-lease",
+    name: { ko: "집 렌트·계약", en: "Housing Lease" },
+    summary: {
+      ko: "월세·전세 매물 찾기, 계약서 확인하고 서명하기",
+      en: "Find a monthly or key-money lease and review the contract before signing",
+    },
+    essential: true,
+    simple: false,
+    interestTags: [],
+  },
+  T16: {
+    id: "T16",
+    slug: "national-health-insurance",
+    name: { ko: "국민건강보험 가입", en: "National Health Insurance" },
+    summary: {
+      ko: "건강보험 가입 확인·신청, 보험료 납부 방법 익히기",
+      en: "Confirm or apply for National Health Insurance and learn how to pay premiums",
+    },
+    essential: true,
+    simple: false,
+    interestTags: [],
+  },
+  T17: {
+    id: "T17",
+    slug: "hospital-pharmacy",
+    name: { ko: "병원·약국 이용", en: "Hospital & Pharmacy" },
+    summary: {
+      ko: "약국·동네 병원·응급실 이용 방법 익히기",
+      en: "Learn how to use pharmacies, local clinics, and the ER",
+    },
+    essential: false,
+    simple: true,
+    interestTags: [],
+  },
 };
 
 // Ordered list of all nodes (T-id ascending) — used for deterministic tie-break.
@@ -186,6 +269,12 @@ export const ALL_TASKS: TaskNode[] = [
   TASK_NODES.T9,
   TASK_NODES.T10,
   TASK_NODES.T11,
+  TASK_NODES.T12,
+  TASK_NODES.T13,
+  TASK_NODES.T14,
+  TASK_NODES.T15,
+  TASK_NODES.T16,
+  TASK_NODES.T17,
 ];
 
 // Directed dependency graph (도 2, expanded — see interpretation note at top).
@@ -198,6 +287,9 @@ export const TASK_EDGES: TaskEdge[] = [
   { from: ["T4", "T5", "T8"], to: "T9", type: "requires" }, // 복합 선행 — 문화+로컬 음식 경험 후 지역 탐색
   { from: "T9", to: "T10", type: "requires" }, // 해석: 사회적 연결은 최종 단계 (문서 상단 주석 참조)
   { from: "T9", to: "T11", type: "requires" }, // 해석: 사회적 연결은 최종 단계 (문서 상단 주석 참조)
+  { from: "T12", to: "T13", type: "requires" }, // 외국인등록증 이후 비자 연장·변경 절차 진행
+  { from: "T12", to: "T14", type: "requires" }, // 은행 다수가 정식 계좌 개설에 외국인등록번호 요구
+  { from: "T12", to: "T16", type: "requires" }, // 건강보험 가입은 외국인등록번호 기준으로 처리
 ];
 
 // Normalize an edge's `from` (single id or array) to an array.
