@@ -39,6 +39,14 @@ export const GENDERS_EN = ["Male", "Female", "Non-binary", "Prefer not to say"];
 export const DURATIONS_KO = ["1개월 미만", "1~3개월", "3~6개월", "6개월~1년", "1년 이상", "미정"];
 export const DURATIONS_EN = ["< 1 month", "1–3 months", "3–6 months", "6–12 months", "1+ year", "Not sure"];
 
+// "How long since you arrived" — distinct from DURATIONS above (which asks how
+// long the user PLANS to stay). Parallel-indexed with ARRIVED_DAYS, which feeds
+// UserProfile.stayDays (src/lib/engine/types.ts) so the task engine can tell
+// early-stay users from long-timers instead of always assuming day 0.
+export const ARRIVED_KO = ["1주 미만", "1주~1개월", "1~3개월", "3~6개월", "6개월~1년", "1년 이상"];
+export const ARRIVED_EN = ["< 1 week", "1–4 weeks", "1–3 months", "3–6 months", "6–12 months", "1+ year"];
+export const ARRIVED_DAYS = [3, 21, 60, 120, 270, 400];
+
 export const REGIONS_KO = ["홍대", "이태원", "강남", "북촌 / 인사동", "성수", "해운대 (부산)", "전주 한옥마을", "기타"];
 export const REGIONS_EN = ["Hongdae", "Itaewon", "Gangnam", "Bukchon / Insadong", "Seongsu", "Haeundae (Busan)", "Jeonju Hanok", "Other"];
 

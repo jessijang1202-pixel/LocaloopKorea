@@ -13,6 +13,7 @@ export type OnboardingData = {
   gender: string;
   purpose: string;
   stayDuration: string;
+  arrivedDuration: string; // client-only — feeds engine UserProfile.stayDays, not persisted to Supabase
   region: string;
   living: string;
   koreanLevel: string;

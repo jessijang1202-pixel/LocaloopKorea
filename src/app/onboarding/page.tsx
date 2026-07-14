@@ -13,6 +13,7 @@ import {
   LANGUAGES_KO, LANGUAGES_EN,
   GENDERS_KO, GENDERS_EN,
   DURATIONS_KO, DURATIONS_EN,
+  ARRIVED_KO, ARRIVED_EN, ARRIVED_DAYS,
   REGIONS_KO, REGIONS_EN,
   REGION_SLUGS,
   LIVING_KO, LIVING_EN,
@@ -29,6 +30,7 @@ const INIT: OnboardingData = {
   gender: "",
   purpose: "",
   stayDuration: "",
+  arrivedDuration: "",
   region: "",
   living: "",
   koreanLevel: "",
@@ -118,9 +120,9 @@ function Toggle({ on, onChange, label, desc }: { on: boolean; onChange: () => vo
 
 // ─── Step IDs ─────────────────────────────────────────────────────────────────
 
-type StepId = "nickname" | "background" | "purpose" | "stay" | "region" | "koreanlevel" | "interests" | "connect";
+type StepId = "nickname" | "background" | "purpose" | "stay" | "arrived" | "region" | "koreanlevel" | "interests" | "connect";
 
-const EN_STEPS: StepId[] = ["nickname", "background", "purpose", "stay", "region", "koreanlevel", "interests", "connect"];
+const EN_STEPS: StepId[] = ["nickname", "background", "purpose", "stay", "arrived", "region", "koreanlevel", "interests", "connect"];
 const KO_STEPS: StepId[] = ["nickname", "region", "interests", "connect"];
 
 // Map onboarding's 5-level Korean scale (label string, ko or en) to the engine's
@@ -170,13 +172,17 @@ function OnboardingInner() {
       setSaving(true);
       // Persist a normalized profile for the recommendation engine. This is
       // client-only (localStorage) so it must run here, before the server action.
+      const arrivedIdx = (isKo ? ARRIVED_KO : ARRIVED_EN).indexOf(data.arrivedDuration);
       saveProfile({
         koreanLevel: mapKoreanLevel(data.koreanLevel),
         interests: data.interests,           // already INTERESTS slugs
         purpose: data.purpose || null,
         region: data.region || null,         // already a REGION_SLUGS slug
         language: data.mainLanguage || null,
-        stayDays: 0, // onboarding collects a duration bucket, not elapsed days — assume fresh arrival
+        // "arrived" step is EN_STEPS-only (KO_STEPS is the Korean-local shortcut
+        // flow, which never asks this) — arrivedIdx stays -1 there, same as
+        // the unanswered case, and falls back to a fresh-arrival assumption.
+        stayDays: arrivedIdx !== -1 ? ARRIVED_DAYS[arrivedIdx] : 0,
       });
       await saveOnboarding(data);
       setSaving(false);
@@ -199,6 +205,7 @@ function OnboardingInner() {
         background: { title: "나에 대해 알려주세요", sub: "국적, 언어, 성별을 선택해 주세요" },
         purpose: { title: "한국에 온 목적은요?", sub: "가장 잘 맞는 항목을 선택해 주세요" },
         stay: { title: "얼마나 계실 건가요?", sub: "체류 기간을 선택해 주세요" },
+        arrived: { title: "한국에 오신 지 얼마나 되셨나요?", sub: "체류 초기인지 알려주시면 더 맞는 태스크를 보여드려요" },
         region: { title: "주로 어디서 지내세요?", sub: "가장 가까운 지역을 선택해 주세요" },
         koreanlevel: { title: "한국어 실력은?", sub: "현재 수준을 선택해 주세요" },
         interests: { title: "어떤 걸 좋아하세요?", sub: "관심 있는 항목을 모두 선택해 주세요" },
@@ -215,6 +222,7 @@ function OnboardingInner() {
         background: { title: "Tell us about yourself", sub: "Select your nationality, language, and gender" },
         purpose: { title: "Why are you in Korea?", sub: "Pick the option that fits best" },
         stay: { title: "How long are you staying?", sub: "Select your expected stay duration" },
+        arrived: { title: "How long have you been in Korea?", sub: "This helps us show tasks that actually match where you're at" },
         region: { title: "Where are you based?", sub: "Pick the area closest to where you live" },
         koreanlevel: { title: "What's your Korean level?", sub: "Choose your current level" },
         interests: { title: "What are you into?", sub: "Select everything that interests you" },
@@ -238,6 +246,8 @@ function OnboardingInner() {
   const PURPOSES = isKo ? PURPOSES_ONBOARDING_KO : PURPOSES_ONBOARDING_EN;
 
   const DURATIONS = isKo ? DURATIONS_KO : DURATIONS_EN;
+
+  const ARRIVED = isKo ? ARRIVED_KO : ARRIVED_EN;
 
   const REGIONS = isKo ? REGIONS_KO : REGIONS_EN;
 
@@ -323,6 +333,19 @@ function OnboardingInner() {
             <div style={sChipWrap}>
               {DURATIONS.map((d) => (
                 <Chip key={d} label={d} on={data.stayDuration === d} onClick={() => set("stayDuration", d)} />
+              ))}
+            </div>
+          </div>
+        );
+
+      case "arrived":
+        return (
+          <div>
+            <h2 style={sTitle}>{st.title}</h2>
+            <p style={sSub}>{st.sub}</p>
+            <div style={sChipWrap}>
+              {ARRIVED.map((a) => (
+                <Chip key={a} label={a} on={data.arrivedDuration === a} onClick={() => set("arrivedDuration", a)} />
               ))}
             </div>
           </div>
