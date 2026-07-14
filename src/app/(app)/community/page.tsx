@@ -122,6 +122,16 @@ function CommunityInner() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      {/* Page header */}
+      <div style={{ padding: "16px 16px 6px", flexShrink: 0 }}>
+        <div style={{ fontSize: 20, fontWeight: 800, color: "var(--foreground)", letterSpacing: "-0.02em" }}>
+          {isKo ? "커뮤니티" : "Community"}
+        </div>
+        <div style={{ fontSize: 12.5, color: "var(--foreground-muted)", marginTop: 3 }}>
+          {isKo ? "같은 고민을 하는 외국인과 한국인을 여기서 만나보세요." : "Meet foreigners and locals figuring out the same things you are."}
+        </div>
+      </div>
+
       {/* Tab switcher */}
       <div style={{ display: "flex", background: "var(--card)", borderBottom: "1px solid var(--border)", flexShrink: 0 }}>
         {TABS.map((t) => (

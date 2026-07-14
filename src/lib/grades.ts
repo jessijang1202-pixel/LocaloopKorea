@@ -19,6 +19,21 @@ export function getRating(p: Place): "S" | "A" | "B" | "C" {
   return "C";
 }
 
+// The bilingual "OK" tags shown under the grade badge — same three booleans
+// getRating() uses, surfaced individually so a card can show which criteria
+// a place actually meets instead of a redundant bilingual name line.
+export interface OkTag { ko: string; en: string }
+
+const OK_TAG_DEFS: { key: "english_support" | "card_payment" | "solo_friendly"; ko: string; en: string }[] = [
+  { key: "english_support", ko: "영어 OK", en: "English OK" },
+  { key: "card_payment",    ko: "카드 OK", en: "Card OK" },
+  { key: "solo_friendly",   ko: "혼자 OK", en: "Solo OK" },
+];
+
+export function okTags(p: Place): OkTag[] {
+  return OK_TAG_DEFS.filter((t) => Boolean(p[t.key])).map(({ ko, en }) => ({ ko, en }));
+}
+
 // map/page.tsx — CSS-var badge background
 export const GRADE_BG: Record<string, string> = {
   S: "var(--grade-s)", A: "var(--grade-a)", B: "var(--grade-b)", C: "var(--grade-c)",

@@ -6,9 +6,10 @@ import { useTheme } from "@/lib/theme";
 import dynamic from "next/dynamic";
 import { SEED_PLACES, SEED_REGIONS } from "@/data/seed";
 import type { Place } from "@/types";
-import { getRating, GRADE_BG, GRADE_TEXT } from "@/lib/grades";
+import { getRating, okTags, GRADE_BG, GRADE_TEXT } from "@/lib/grades";
 import Link from "next/link";
 import { PlaceGridCard } from "@/components/places/PlaceGridCard";
+import { CAT_LABEL } from "@/content/places";
 import { ITAEWON, CHIPS, HOT_PLACE_IDS, type FilterKey } from "@/content/map";
 import {
   fetchLivePlaces,
@@ -31,6 +32,26 @@ function otherMetaLine(place: Place, isKo: boolean, regions: LiveRegion[]): stri
   if (city) parts.push(city);
   if (t) parts.push(`${isKo ? t.ko : t.en} · ${t.dist}`);
   return parts.length ? parts.join(" · ") : null;
+}
+
+// Shared OK-tag pill row for PlaceCardPC and the PC selected-place card —
+// replaces the old duplicate bilingual name line.
+function TagRow({ place, isKo, fontSize }: { place: Place; isKo: boolean; fontSize: number }) {
+  const tags = okTags(place);
+  const catLabel = CAT_LABEL[place.category];
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+      {tags.length > 0 ? (
+        tags.map((tag) => (
+          <span key={tag.en} style={{ fontSize, fontWeight: 700, padding: "2px 6px", borderRadius: 999, background: "var(--badge-en-bg)", color: "var(--badge-en-fg)", whiteSpace: "nowrap" }}>
+            {isKo ? tag.ko : tag.en}
+          </span>
+        ))
+      ) : catLabel ? (
+        <span style={{ fontSize: fontSize + 1.5, color: "var(--foreground-muted)" }}>{isKo ? catLabel.ko : catLabel.en}</span>
+      ) : null}
+    </div>
+  );
 }
 
 const KakaoMap = dynamic(
@@ -62,7 +83,7 @@ function PlaceCardPC({ place, isSelected, isKo, onClick }: {
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ fontSize: 13, fontWeight: 700, color: "var(--foreground)", marginBottom: 2 }}>{isKo ? place.name_ko : place.name_en}</div>
-        <div style={{ fontSize: 11, color: "var(--foreground-muted)" }}>{isKo ? place.name_en : place.name_ko}</div>
+        <TagRow place={place} isKo={isKo} fontSize={9.5} />
       </div>
     </div>
   );
@@ -344,6 +365,17 @@ export default function MapPage() {
           </div>
         </div>
 
+        {/* Row 1.5: Tagline caption */}
+        <div style={{ pointerEvents: "none" }}>
+          <span style={{
+            display: "inline-block", background: chipBg, color: chipFg,
+            borderRadius: 999, padding: "6px 12px", fontSize: 11.5, fontWeight: 600,
+            boxShadow: "0 2px 10px rgba(0,0,0,0.12)",
+          }}>
+            {isKo ? "들어가기 전에, 외국인 환영 여부부터 확인하세요." : "Check if a place welcomes foreigners — before you walk in."}
+          </span>
+        </div>
+
         {/* Row 2: Search */}
         <div style={{ pointerEvents: "auto" }}>
           <div style={{ background: chipBg, borderRadius: 16, padding: "10px 14px", display: "flex", alignItems: "center", gap: 8, boxShadow: "0 2px 12px rgba(0,0,0,0.12)" }}>
@@ -472,7 +504,10 @@ export default function MapPage() {
       {/* Left: search + filters + list */}
       <div className="ll-split-panel">
         <div className="ll-split-panel-sticky">
-          <div style={{ padding: "10px 14px 8px" }}>
+          <div style={{ padding: "10px 14px 0", fontSize: 12, fontWeight: 600, color: "var(--foreground-muted)" }}>
+            {isKo ? "들어가기 전에, 외국인 환영 여부부터 확인하세요." : "Check if a place welcomes foreigners — before you walk in."}
+          </div>
+          <div style={{ padding: "6px 14px 8px" }}>
             <div style={{ background: "var(--content-bg)", borderRadius: 12, padding: "9px 14px", display: "flex", alignItems: "center", gap: 8 }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--foreground-muted)" strokeWidth="2" strokeLinecap="round">
                 <circle cx="11" cy="11" r="7" /><path d="M21 21l-4.35-4.35" />
@@ -536,7 +571,7 @@ export default function MapPage() {
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 14, fontWeight: 700, color: "var(--foreground)", marginBottom: 2 }}>{isKo ? selected.name_ko : selected.name_en}</div>
-                <div style={{ fontSize: 11, color: "var(--foreground-muted)" }}>{isKo ? selected.name_en : selected.name_ko}</div>
+                <TagRow place={selected} isKo={isKo} fontSize={9.5} />
               </div>
               <Link href={`/places/${selected.slug}`} style={{ padding: "7px 14px", borderRadius: 999, border: "none", background: "var(--grade-s)", color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer", textDecoration: "none" }}>
                 {isKo ? "상세보기" : "Details"}

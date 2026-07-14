@@ -54,6 +54,9 @@ export default function ProfilePage() {
             {loading ? "…" : initial}
           </div>
           <p style={{ fontSize: 16, fontWeight: 800, color: "#fff", marginBottom: 4 }}>{loading ? t.loading : displayName}</p>
+          <p style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", marginBottom: 8, textAlign: "center" }}>
+            {isKo ? "당신의 한국 정착 여정, 한눈에 확인하세요." : "Your Korea journey, tracked in one place."}
+          </p>
           {userTypeLabel && <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 20, background: "rgba(255,86,54,0.18)", color: "var(--grade-s)" }}>{userTypeLabel}</span>}
         </div>
         {/* Stats */}
@@ -145,6 +148,9 @@ export default function ProfilePage() {
             </div>
             <div>
               <p style={{ fontSize: 16, fontWeight: 800, color: "#fff", marginBottom: 3 }}>{loading ? t.loading : displayName}</p>
+              <p style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>
+                {isKo ? "당신의 한국 정착 여정, 한눈에 확인하세요." : "Your Korea journey, tracked in one place."}
+              </p>
               {userTypeLabel && <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 20, background: "rgba(255,86,54,0.18)", color: "var(--grade-s)" }}>{userTypeLabel}</span>}
             </div>
           </div>

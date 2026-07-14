@@ -8,7 +8,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Place } from "@/types";
-import { getRating, GRADE_BG, GRADE_TEXT } from "@/lib/grades";
+import { getRating, okTags, GRADE_BG, GRADE_TEXT } from "@/lib/grades";
+import { CAT_LABEL } from "@/content/places";
 
 export function PlaceGridCard({
   place,
@@ -20,6 +21,8 @@ export function PlaceGridCard({
   metaLine?: string | null;
 }) {
   const rating = getRating(place);
+  const tags = okTags(place);
+  const catLabel = CAT_LABEL[place.category];
 
   return (
     <Link
@@ -51,8 +54,16 @@ export function PlaceGridCard({
             <div style={{ fontSize: 12, fontWeight: 700, color: "var(--foreground)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
               {isKo ? place.name_ko : place.name_en}
             </div>
-            <div style={{ fontSize: 10, color: "var(--foreground-muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-              {isKo ? place.name_en : place.name_ko}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+              {tags.length > 0 ? (
+                tags.map((tag) => (
+                  <span key={tag.en} style={{ fontSize: 8.5, fontWeight: 700, padding: "2px 6px", borderRadius: 999, background: "var(--badge-en-bg)", color: "var(--badge-en-fg)", whiteSpace: "nowrap" }}>
+                    {isKo ? tag.ko : tag.en}
+                  </span>
+                ))
+              ) : catLabel ? (
+                <span style={{ fontSize: 10, color: "var(--foreground-muted)" }}>{isKo ? catLabel.ko : catLabel.en}</span>
+              ) : null}
             </div>
           </div>
         </div>

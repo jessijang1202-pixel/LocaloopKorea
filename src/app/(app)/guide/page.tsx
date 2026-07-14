@@ -465,7 +465,7 @@ export default function GuidePage() {
           {isKo ? "가이드" : "Guide"}
         </h1>
         <p style={{ fontSize: 13, color: "rgba(255,255,255,0.55)", lineHeight: 1.5, marginTop: 6 }}>
-          {isKo ? "사용 방법과 한국 문화를 한번에" : "How to use Localoop + Korean culture tips"}
+          {isKo ? "모르면 실수하는 한국 문화, 여기서 미리 배우세요." : "Learn the Korean customs that trip up newcomers — before you do."}
         </p>
       </div>
 
