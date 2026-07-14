@@ -13,6 +13,7 @@ export const CAT_LABEL: Record<string, { ko: string; en: string }> = {
   market:     { ko: "시장",    en: "Market" },
   shopping:   { ko: "쇼핑",   en: "Shopping" },
   activity:   { ko: "액티비티", en: "Activity" },
+  experience: { ko: "체험",   en: "Experience" },
   health:     { ko: "헬스",   en: "Health" },
   transport:  { ko: "교통",   en: "Transport" },
 };

@@ -25,6 +25,7 @@ const CATEGORY_OPTIONS: { value: string; label: string }[] = [
   { value: "market", label: "시장/마트" },
   { value: "accommodation", label: "숙박" },
   { value: "activity", label: "액티비티" },
+  { value: "experience", label: "체험(원데이클래스)" },
   { value: "health", label: "병원/약국" },
   { value: "beauty", label: "뷰티" },
   { value: "shopping", label: "쇼핑" },
@@ -356,6 +357,7 @@ const COLLECT_CATEGORIES: { value: string; label: string }[] = [
   { value: "cafe", label: "카페" },
   { value: "bar", label: "바" },
   { value: "activity", label: "문화·명소" },
+  { value: "experience", label: "체험(원데이클래스)" },
   { value: "accommodation", label: "숙박" },
 ];
 

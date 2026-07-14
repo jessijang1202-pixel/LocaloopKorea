@@ -49,7 +49,7 @@ export function isMealCategory(category: string): boolean {
 // a sensible default.
 const INTEREST_CATEGORY_GROUPS: Record<string, string[]> = {
   food: ["restaurant", "cafe", "bar", "market"],
-  culture: ["culture", "cinema", "performance", "activity"],
+  culture: ["culture", "cinema", "performance", "activity", "experience"],
 };
 
 function matchesInterest(category: string, interests: string[]): boolean {

@@ -283,6 +283,7 @@ export type AppCategory =
   | "cafe"
   | "bar"
   | "activity"
+  | "experience"
   | "accommodation"
   | "health"
   | "beauty"
@@ -297,6 +298,16 @@ const BAR_RE = /호프|맥주|바|펍|술집|포차|와인|칵테일/;
 // false-match BAR_RE's "바".
 const BEAUTY_RE = /미용|네일|뷰티|헤어|피부관리|왁싱|바버/;
 
+// Hands-on experience venues (cooking classes, pottery/ceramics studios, craft
+// workshops) have no dedicated Kakao group code either and would otherwise
+// fall through to the generic-restaurant default. Worse, their category
+// BREADCRUMB is often a generic "음식점 > 카페" or "학원" that carries none of
+// these keywords at all — Kakao tends to classify a cooking-class studio like
+// a restaurant/cafe rather than as its own type. The business NAME is the
+// reliable signal instead (e.g. "박쌤쿠킹클래스", "이연공방"), so this is
+// checked against both the breadcrumb and the place name.
+const EXPERIENCE_RE = /공방|클래스|원데이|쿠킹|플라워|캘리그라피|도자기|베이킹|가죽공예|목공/;
+
 // Map a Kakao place to one of our app categories.
 //
 // Precedence:
@@ -310,15 +321,18 @@ const BEAUTY_RE = /미용|네일|뷰티|헤어|피부관리|왁싱|바버/;
 //        숙박 → accommodation.
 //   4. Fallback → restaurant (the most common Kakao place type).
 export function kakaoGroupToCategory(place: {
+  place_name?: string;
   category_name: string;
   category_group_code: string;
 }): AppCategory {
+  const placeName = place.place_name ?? "";
   const name = place.category_name ?? "";
   const code = place.category_group_code ?? "";
 
-  // 1) breadcrumb detections without a dedicated group code. Beauty runs
-  //    before bar (see BEAUTY_RE note).
+  // 1) breadcrumb + name detections without a dedicated group code. Beauty and
+  //    experience run before bar (see their notes above).
   if (BEAUTY_RE.test(name)) return "beauty";
+  if (EXPERIENCE_RE.test(name) || EXPERIENCE_RE.test(placeName)) return "experience";
   if (BAR_RE.test(name)) return "bar";
 
   // 2) trust the group code when Kakao provides one.
@@ -376,6 +390,14 @@ export const CATEGORY_SEARCH: Record<
   cafe: [{ suffix: "카페", groupCode: "CE7" }],
   bar: [{ suffix: "주점", groupCode: null }],
   activity: [{ suffix: "가볼만한곳", groupCode: "AT4" }],
+  // Own category with its own search budget — bundling these under `activity`
+  // would starve them, since 가볼만한곳 (AT4) alone usually fills the
+  // per-category result limit before these keyword searches ever run.
+  experience: [
+    { suffix: "쿠킹클래스", groupCode: null },
+    { suffix: "도자기공방", groupCode: null },
+    { suffix: "원데이클래스", groupCode: null },
+  ],
   accommodation: [{ suffix: "숙소", groupCode: "AD5" }],
   health: [
     { suffix: "병원", groupCode: "HP8" },

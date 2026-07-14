@@ -80,7 +80,7 @@ export const FALLBACK_THEME: CourseTheme = {
     { groups: ["cafe"], label: { ko: "카페", en: "Cafe" } },
     { groups: ["restaurant"], label: { ko: "식사", en: "Meal" } },
     {
-      groups: ["activity", "market", "shopping", "bar"],
+      groups: ["activity", "experience", "market", "shopping", "bar"],
       label: { ko: "체험·구경", en: "Experience" },
     },
   ],
@@ -186,7 +186,7 @@ export const THEMES: CourseTheme[] = [
     },
     sortBy: "grade",
     slots: [
-      { groups: ["activity"], label: { ko: "전시·문화", en: "Culture" } },
+      { groups: ["activity", "experience"], label: { ko: "전시·문화", en: "Culture" } },
       { groups: ["cafe"], label: { ko: "사색", en: "Coffee" } },
       { groups: ["activity"], label: { ko: "명소 산책", en: "Landmark walk" } },
       { groups: ["restaurant"], label: { ko: "저녁", en: "Dinner" } },
@@ -203,7 +203,22 @@ export const THEMES: CourseTheme[] = [
     slots: [
       { groups: ["beauty"], label: { ko: "케어", en: "Care" } },
       { groups: ["cafe"], label: { ko: "휴식", en: "Rest" } },
-      { groups: ["activity"], label: { ko: "가벼운 산책", en: "Easy stroll" } },
+      { groups: ["activity", "experience"], label: { ko: "가벼운 산책", en: "Easy stroll" } },
+    ],
+  },
+  {
+    id: "hands-on-class",
+    name: { ko: "원데이클래스 체험", en: "Hands-on Experience Day" },
+    tagline: {
+      ko: "쿠킹 클래스, 도자기 공방 같은 직접 만들어보는 체험",
+      en: "Cooking classes, pottery studios — make something with your hands.",
+    },
+    sortBy: "grade",
+    slots: [
+      { groups: ["cafe"], label: { ko: "가볍게 시작", en: "Warm-up coffee" } },
+      { groups: ["experience"], label: { ko: "체험 클래스", en: "Experience class" } },
+      { groups: ["experience", "activity"], label: { ko: "두 번째 체험", en: "Second experience" } },
+      { groups: ["restaurant"], label: { ko: "마무리 식사", en: "Wrap-up meal" } },
     ],
   },
 ];

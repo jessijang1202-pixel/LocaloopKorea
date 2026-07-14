@@ -5,6 +5,7 @@ export const PLACE_CATEGORIES = [
   { value: "market", label_en: "Market", label_ko: "시장", icon: "🛒" },
   { value: "accommodation", label_en: "Accommodation", label_ko: "숙소", icon: "🏨" },
   { value: "activity", label_en: "Activity", label_ko: "체험", icon: "🎭" },
+  { value: "experience", label_en: "Hands-on Experience", label_ko: "원데이클래스", icon: "🧑‍🍳" },
   { value: "health", label_en: "Health", label_ko: "건강", icon: "🏥" },
   { value: "shopping", label_en: "Shopping", label_ko: "쇼핑", icon: "🛍️" },
 ];
