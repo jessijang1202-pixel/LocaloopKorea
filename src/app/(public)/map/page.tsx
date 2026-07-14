@@ -8,7 +8,7 @@ import { SEED_PLACES, SEED_REGIONS } from "@/data/seed";
 import type { Place } from "@/types";
 import { getRating, GRADE_BG, GRADE_TEXT } from "@/lib/grades";
 import Link from "next/link";
-import Image from "next/image";
+import { PlaceGridCard } from "@/components/places/PlaceGridCard";
 import { ITAEWON, CHIPS, HOT_PLACE_IDS, type FilterKey } from "@/content/map";
 import {
   fetchLivePlaces,
@@ -16,6 +16,22 @@ import {
   hotPlaceIds,
   type LiveRegion,
 } from "@/lib/places-live";
+
+// Single muted meta line for the grid cards. ITAEWON PICK cards show the
+// travel line; other-region cards prepend the city.
+function hotMetaLine(place: Place, isKo: boolean): string | null {
+  const t = travelFromItaewon(place);
+  return t ? `${isKo ? t.ko : t.en} · ${t.dist}` : null;
+}
+
+function otherMetaLine(place: Place, isKo: boolean, regions: LiveRegion[]): string | null {
+  const city = regions.find((r) => r.id === place.region_id)?.city ?? "";
+  const t = travelFromItaewon(place);
+  const parts: string[] = [];
+  if (city) parts.push(city);
+  if (t) parts.push(`${isKo ? t.ko : t.en} · ${t.dist}`);
+  return parts.length ? parts.join(" · ") : null;
+}
 
 const KakaoMap = dynamic(
   () => import("@/components/map/KakaoMap").then((m) => m.KakaoMap),
@@ -49,62 +65,6 @@ function PlaceCardPC({ place, isSelected, isKo, onClick }: {
         <div style={{ fontSize: 11, color: "var(--foreground-muted)" }}>{isKo ? place.name_en : place.name_ko}</div>
       </div>
     </div>
-  );
-}
-
-// 2-column grid card (identical style for both ITAEWON PICK and OTHER REGIONS)
-function PlaceCard2({ place, isKo, hot = false, regions }: { place: Place; isKo: boolean; hot?: boolean; regions: LiveRegion[] }) {
-  const rating = getRating(place);
-  const t = travelFromItaewon(place);
-  const city = !hot ? (regions.find((r) => r.id === place.region_id)?.city ?? "") : null;
-
-  return (
-    <Link
-      href={`/places/${place.slug}`}
-      style={{
-        background: "var(--content-bg)", borderRadius: 14,
-        textDecoration: "none", display: "flex", flexDirection: "column",
-        border: "1px solid var(--border)", overflow: "hidden",
-      }}
-    >
-      {/* Thumbnail */}
-      <div style={{ position: "relative", width: "100%", height: 80, background: "var(--muted)", flexShrink: 0 }}>
-        {place.image_url && (
-          <Image src={place.image_url} alt={isKo ? place.name_ko : place.name_en} fill sizes="200px" style={{ objectFit: "cover" }} />
-        )}
-      </div>
-      {/* Info */}
-      <div style={{ padding: "9px 10px", display: "flex", flexDirection: "column", gap: 5 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-          <div style={{
-            width: 34, height: 34, borderRadius: 9, flexShrink: 0,
-            background: GRADE_BG[rating],
-            display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-          }}>
-            <span style={{ fontSize: 12, fontWeight: 800, color: GRADE_TEXT[rating], lineHeight: 1 }}>{rating}</span>
-            <span style={{ fontSize: 6, fontWeight: 700, letterSpacing: "0.05em", opacity: 0.85, color: GRADE_TEXT[rating] }}>GRADE</span>
-          </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: "var(--foreground)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-              {isKo ? place.name_ko : place.name_en}
-            </div>
-            <div style={{ fontSize: 10, color: "var(--foreground-muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-              {isKo ? place.name_en : place.name_ko}
-            </div>
-          </div>
-        </div>
-        {city && (
-          <div style={{ fontSize: 10, fontWeight: 600, color: "var(--foreground-muted)", letterSpacing: "0.02em" }}>
-            {city}
-          </div>
-        )}
-        {t && (
-          <div style={{ fontSize: 10, color: "var(--foreground-sub)", fontWeight: 500 }}>
-            {isKo ? t.ko : t.en} · {t.dist}
-          </div>
-        )}
-      </div>
-    </Link>
   );
 }
 
@@ -284,10 +244,6 @@ export default function MapPage() {
   const [chip, setChip] = useState<FilterKey>("all");
   const [sheetExpanded, setSheetExpanded] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-  // Progressive lists: show 10, reveal +10 per "view more" tap.
-  const PAGE_SIZE = 10;
-  const [hotShown, setHotShown] = useState(PAGE_SIZE);
-  const [otherShown, setOtherShown] = useState(PAGE_SIZE);
   const dragStartY = useRef<number | null>(null);
 
   useEffect(() => {
@@ -325,10 +281,11 @@ export default function MapPage() {
     return true;
   });
 
-  const hotVisible = hotPlaces.slice(0, hotShown);
-  const otherVisible = filtered.slice(0, otherShown);
-  const hotHasMore = hotPlaces.length > hotShown;
-  const otherHasMore = filtered.length > otherShown;
+  // Fixed 10-item previews; "view more" now navigates to the area pages.
+  const hotVisible = hotPlaces.slice(0, 10);
+  const otherVisible = filtered.slice(0, 10);
+  const itaewonRegionSlug =
+    liveRegions.find((r) => r.name_ko === "이태원")?.slug ?? "itaewon";
 
   const pins = livePlaces.filter((p) => p.lat && p.lng).map((p) => ({
     id: p.id, lat: p.lat!, lng: p.lng!, title: p.name_en, rating: getRating(p),
@@ -482,13 +439,11 @@ export default function MapPage() {
               {isKo ? "이태원 PICK" : "ITAEWON PICK"}
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-              {hotVisible.map((p) => <PlaceCard2 key={p.id} place={p} isKo={isKo} hot regions={liveRegions} />)}
+              {hotVisible.map((p) => <PlaceGridCard key={p.id} place={p} isKo={isKo} metaLine={hotMetaLine(p, isKo)} />)}
             </div>
-            {hotHasMore && (
-              <button onClick={() => setHotShown((n) => n + PAGE_SIZE)} style={{ width: "100%", marginTop: 10, padding: "10px 0", borderRadius: 12, background: "var(--content-bg)", border: "1px solid var(--border)", color: "var(--foreground-muted)", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
-                {isKo ? `더보기 (${hotPlaces.length - hotShown})` : `View more (${hotPlaces.length - hotShown})`}
-              </button>
-            )}
+            <Link href={`/areas/${itaewonRegionSlug}`} style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", marginTop: 10, padding: "10px 0", borderRadius: 12, background: "var(--content-bg)", border: "1px solid var(--border)", color: "var(--foreground-muted)", fontSize: 13, fontWeight: 600, cursor: "pointer", textDecoration: "none" }}>
+              {isKo ? "이태원 전체 보기" : "View all Itaewon"}
+            </Link>
           </div>
 
           {/* 다른 지역 추천 — 2×3 grid, medium badge + city label */}
@@ -497,13 +452,11 @@ export default function MapPage() {
               {isKo ? "다른 지역 추천" : "OTHER REGIONS"}
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-              {otherVisible.map((p) => <PlaceCard2 key={p.id} place={p} isKo={isKo} regions={liveRegions} />)}
+              {otherVisible.map((p) => <PlaceGridCard key={p.id} place={p} isKo={isKo} metaLine={otherMetaLine(p, isKo, liveRegions)} />)}
             </div>
-            {otherHasMore && (
-              <button onClick={() => setOtherShown((n) => n + PAGE_SIZE)} style={{ width: "100%", marginTop: 10, padding: "10px 0", borderRadius: 12, background: "var(--content-bg)", border: "1px solid var(--border)", color: "var(--foreground-muted)", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
-                {isKo ? `더보기 (${filtered.length - otherShown})` : `View more (${filtered.length - otherShown})`}
-              </button>
-            )}
+            <Link href="/areas" style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", marginTop: 10, padding: "10px 0", borderRadius: 12, background: "var(--content-bg)", border: "1px solid var(--border)", color: "var(--foreground-muted)", fontSize: 13, fontWeight: 600, cursor: "pointer", textDecoration: "none" }}>
+              {isKo ? "지역별 전체 보기" : "Browse all areas"}
+            </Link>
           </div>
 
           {/* Safe-area spacer for nav bar */}
@@ -545,13 +498,11 @@ export default function MapPage() {
               {isKo ? "이태원 PICK" : "ITAEWON PICK"}
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-              {hotVisible.map((p) => <PlaceCard2 key={p.id} place={p} isKo={isKo} hot regions={liveRegions} />)}
+              {hotVisible.map((p) => <PlaceGridCard key={p.id} place={p} isKo={isKo} metaLine={hotMetaLine(p, isKo)} />)}
             </div>
-            {hotHasMore && (
-              <button onClick={() => setHotShown((n) => n + PAGE_SIZE)} style={{ width: "100%", marginTop: 8, padding: "9px 0", borderRadius: 12, background: "var(--content-bg)", border: "1px solid var(--border)", color: "var(--foreground-muted)", fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}>
-                {isKo ? `더보기 (${hotPlaces.length - hotShown})` : `View more (${hotPlaces.length - hotShown})`}
-              </button>
-            )}
+            <Link href={`/areas/${itaewonRegionSlug}`} style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", marginTop: 8, padding: "9px 0", borderRadius: 12, background: "var(--content-bg)", border: "1px solid var(--border)", color: "var(--foreground-muted)", fontSize: 12.5, fontWeight: 600, cursor: "pointer", textDecoration: "none" }}>
+              {isKo ? "이태원 전체 보기" : "View all Itaewon"}
+            </Link>
           </div>
 
           {/* 다른 지역 추천 */}
@@ -561,11 +512,9 @@ export default function MapPage() {
           {otherVisible.map((place) => (
             <PlaceCardPC key={place.id} place={place} isSelected={selected?.id === place.id} isKo={isKo} onClick={() => setSelected(place)} />
           ))}
-          {otherHasMore && (
-            <button onClick={() => setOtherShown((n) => n + PAGE_SIZE)} style={{ width: "100%", marginTop: 4, marginBottom: 8, padding: "9px 0", borderRadius: 12, background: "var(--content-bg)", border: "1px solid var(--border)", color: "var(--foreground-muted)", fontSize: 12.5, fontWeight: 600, cursor: "pointer" }}>
-              {isKo ? `더보기 (${filtered.length - otherShown})` : `View more (${filtered.length - otherShown})`}
-            </button>
-          )}
+          <Link href="/areas" style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", marginTop: 4, marginBottom: 8, padding: "9px 0", borderRadius: 12, background: "var(--content-bg)", border: "1px solid var(--border)", color: "var(--foreground-muted)", fontSize: 12.5, fontWeight: 600, cursor: "pointer", textDecoration: "none" }}>
+            {isKo ? "지역별 전체 보기" : "Browse all areas"}
+          </Link>
         </div>
       </div>
 
