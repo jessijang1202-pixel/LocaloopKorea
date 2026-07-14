@@ -51,6 +51,7 @@ export interface UserProfile {
   interests: string[]; // 관심 활동 슬러그 (INTERESTS slug 목록)
   stayDays: number | null; // 입국 후 경과일 (체류 초기 판단; null = 미상, 초기로 간주)
   completedTasks: TaskId[]; // 기 해결 과제
+  skippedTasks: TaskId[]; // 사용자가 건너뛴 과제 — 추천 대상에서는 빠지되, 기록은 남아 히스토리로 표시됨
   // ── Course engine inputs (patent no.3, module 200) — optional add-on fields.
   // Kept null-able so patent-1 consumers are unaffected; the course engine reads
   // them via its own CourseProfile adapter.

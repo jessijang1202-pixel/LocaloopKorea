@@ -2,12 +2,20 @@
 
 // "지금 할 일" / "Do This Now" — priority recommendation section.
 //
-// Renders the top unlocked life-tasks from the recommendation engine
-// (src/lib/engine) using the same Gen-2 inline-style / CSS-variable / isKo
-// visual language as the rest of /tasks. Mounted after the client hydrates
-// (useNavigatorProfile loads its profile from localStorage in an effect), so
-// this component guards its own render with a `mounted` flag to avoid any
-// hydration mismatch — mirroring how useLang defers to the client.
+// Renders the full ranked, unlocked-and-unresolved task list from the
+// recommendation engine (src/lib/engine) using the same Gen-2 inline-style /
+// CSS-variable / isKo visual language as the rest of /tasks. No top-N cap:
+// living abroad means doing a lot of things you didn't choose to be
+// interested in, so every unlocked task stays visible until it's completed
+// or explicitly skipped — interest/language bonuses only affect ORDER, never
+// whether a task is shown at all. Completed and skipped tasks are kept
+// (never deleted) in a history row at the top, struck through, so the list
+// doubles as a visible record of how far the user has settled in.
+//
+// Mounted after the client hydrates (useNavigatorProfile loads its profile
+// from localStorage in an effect), so this component guards its own render
+// with a `mounted` flag to avoid any hydration mismatch — mirroring how
+// useLang defers to the client.
 
 import { useState, useEffect } from "react";
 import { useLang } from "@/lib/lang";
@@ -31,7 +39,7 @@ const REASON_LABEL: Record<string, Bi> = {
 
 export function PriorityNow() {
   const isKo = useLang();
-  const [profile, { complete, uncomplete }] = useNavigatorProfile();
+  const [profile, { complete, uncomplete, skip, unskip }] = useNavigatorProfile();
   const [openId, setOpenId] = useState<TaskId | null>(null);
 
   // Guides render from the code defaults immediately, then upgrade to any
@@ -49,9 +57,14 @@ export function PriorityNow() {
 
   const bi = (b: Bi) => (isKo ? b.ko : b.en);
 
-  const top = computePriorities(profile, 3);
+  // No topN — the full unlocked-and-unresolved list, ranked. Interest/language
+  // bonuses only reorder it; nothing unlocked ever disappears from view.
+  const active = computePriorities(profile);
   const locked = computeAllScored(profile).filter((s) => !s.unlocked);
-  const doneCount = profile.completedTasks.length;
+  const history: { id: TaskId; status: "done" | "skipped" }[] = [
+    ...profile.completedTasks.map((id) => ({ id, status: "done" as const })),
+    ...profile.skippedTasks.map((id) => ({ id, status: "skipped" as const })),
+  ];
 
   // Small uppercase sub-label used inside the expanded guide.
   const subLabel = (text: string) => (
@@ -68,19 +81,57 @@ export function PriorityNow() {
           {isKo ? "지금 할 일" : "Do This Now"}
         </div>
         <div style={{ fontSize: 12, color: "var(--foreground-muted)", marginTop: 2 }}>
-          {isKo ? "내 상황에 맞춘 우선 과제" : "Priority tasks for your situation"}
+          {isKo ? "내 상황에 맞춘 전체 과제" : "Every task that applies to your situation"}
         </div>
       </div>
 
-      {/* Top-3 cards */}
+      {/* History — completed + skipped, never deleted, struck through */}
+      {history.length > 0 && (
+        <div style={{ marginBottom: 14 }}>
+          <div style={{ fontSize: 11, fontWeight: 800, color: "var(--foreground-muted)", letterSpacing: "0.08em", marginBottom: 8 }}>
+            {isKo ? `완료 · 건너뜀 (${history.length})` : `DONE · SKIPPED (${history.length})`}
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {history.map(({ id, status }) => (
+              <div key={id} style={{
+                display: "flex", alignItems: "center", gap: 8,
+                background: "var(--content-bg)", borderRadius: 10, border: "1px solid var(--border)",
+                padding: "9px 12px",
+              }}>
+                <span style={{
+                  fontSize: 10, fontWeight: 700, padding: "2px 7px", borderRadius: 999, flexShrink: 0,
+                  background: status === "done" ? "var(--grade-a)" : "var(--muted)",
+                  color: status === "done" ? "#fff" : "var(--foreground-muted)",
+                }}>
+                  {status === "done" ? (isKo ? "완료" : "Done") : (isKo ? "건너뜀" : "Skipped")}
+                </span>
+                <span style={{
+                  fontSize: 12.5, fontWeight: 600, color: "var(--foreground-muted)",
+                  textDecoration: "line-through", flex: 1, minWidth: 0,
+                }}>
+                  {bi(TASK_NODES[id].name)}
+                </span>
+                <button
+                  onClick={() => (status === "done" ? uncomplete(id) : unskip(id))}
+                  style={{ flexShrink: 0, background: "none", border: "none", cursor: "pointer", fontSize: 11, color: "var(--grade-s)", fontWeight: 600, padding: 0 }}
+                >
+                  {isKo ? "되돌리기" : "Undo"}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Active cards — full ranked unlocked list, no cap */}
       <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
-        {top.length === 0 && (
+        {active.length === 0 && (
           <div style={{ background: "var(--card)", borderRadius: 16, border: "1px solid var(--border)", padding: "16px 14px", fontSize: 13, color: "var(--foreground-muted)", textAlign: "center" }}>
             {isKo ? "지금 추천할 과제가 없어요. 잘 하고 계세요!" : "No priority tasks right now. You're all caught up!"}
           </div>
         )}
 
-        {top.map((s, i) => {
+        {active.map((s, i) => {
           const task = s.task;
           const open = openId === task.id;
           const guide = guides[task.id];
@@ -194,16 +245,28 @@ export function PriorityNow() {
                     </>
                   )}
 
-                  {/* Complete button */}
-                  <button
-                    onClick={() => { complete(task.id); setOpenId(null); }}
-                    style={{
-                      width: "100%", height: 44, borderRadius: 12, border: "none",
-                      background: "var(--grade-a)", color: "#fff", fontSize: 14, fontWeight: 700, cursor: "pointer",
-                    }}
-                  >
-                    {isKo ? "완료로 표시" : "Mark as done"}
-                  </button>
+                  {/* Complete / Skip */}
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <button
+                      onClick={() => { skip(task.id); setOpenId(null); }}
+                      style={{
+                        flexShrink: 0, height: 44, padding: "0 16px", borderRadius: 12,
+                        border: "1px solid var(--border)", background: "var(--content-bg)",
+                        color: "var(--foreground-muted)", fontSize: 13, fontWeight: 600, cursor: "pointer",
+                      }}
+                    >
+                      {isKo ? "건너뛰기" : "Skip"}
+                    </button>
+                    <button
+                      onClick={() => { complete(task.id); setOpenId(null); }}
+                      style={{
+                        flex: 1, height: 44, borderRadius: 12, border: "none",
+                        background: "var(--grade-a)", color: "#fff", fontSize: 14, fontWeight: 700, cursor: "pointer",
+                      }}
+                    >
+                      {isKo ? "완료로 표시" : "Mark as done"}
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
@@ -213,7 +276,7 @@ export function PriorityNow() {
 
       {/* Locked tasks — muted collapsed row */}
       {locked.length > 0 && (
-        <div style={{ marginTop: 14 }}>
+        <div style={{ marginTop: 14, marginBottom: 8 }}>
           <div style={{ fontSize: 11, fontWeight: 800, color: "var(--foreground-muted)", letterSpacing: "0.08em", marginBottom: 8 }}>
             {isKo ? "잠긴 과제" : "Locked"}
           </div>
@@ -238,20 +301,6 @@ export function PriorityNow() {
               </div>
             ))}
           </div>
-        </div>
-      )}
-
-      {/* Completed count + reset */}
-      {doneCount > 0 && (
-        <div style={{ marginTop: 12, textAlign: "center" }}>
-          <button
-            onClick={() => profile.completedTasks.forEach((id) => uncomplete(id))}
-            style={{ background: "transparent", border: "none", cursor: "pointer", fontSize: 11, color: "var(--foreground-muted)" }}
-          >
-            {isKo
-              ? `완료한 과제 ${doneCount}개 · 초기화`
-              : `${doneCount} done · reset`}
-          </button>
         </div>
       )}
     </div>

@@ -21,6 +21,7 @@ export const DEFAULT_PROFILE: UserProfile = {
   interests: [],
   stayDays: null,
   completedTasks: [],
+  skippedTasks: [],
   adventure: null,
   budgetPerPerson: null,
   radiusKm: null,
@@ -40,6 +41,7 @@ export function getProfile(): UserProfile {
       ...parsed,
       interests: Array.isArray(parsed.interests) ? parsed.interests : [],
       completedTasks: Array.isArray(parsed.completedTasks) ? parsed.completedTasks : [],
+      skippedTasks: Array.isArray(parsed.skippedTasks) ? parsed.skippedTasks : [],
     };
   } catch {
     return { ...DEFAULT_PROFILE };
@@ -57,11 +59,18 @@ export function saveProfile(p: Partial<UserProfile>): void {
 }
 
 // ─── S900 — task completion ─────────────────────────────────────────────────
+//
+// completed/skipped are mutually exclusive — completing a task clears any
+// skip on it and vice versa, so a task never shows up in both history rows.
 
 export function completeTask(id: TaskId): void {
   const profile = getProfile();
   if (profile.completedTasks.includes(id)) return;
-  write({ ...profile, completedTasks: [...profile.completedTasks, id] });
+  write({
+    ...profile,
+    completedTasks: [...profile.completedTasks, id],
+    skippedTasks: profile.skippedTasks.filter((t) => t !== id),
+  });
 }
 
 export function uncompleteTask(id: TaskId): void {
@@ -73,11 +82,32 @@ export function uncompleteTask(id: TaskId): void {
   });
 }
 
+export function skipTask(id: TaskId): void {
+  const profile = getProfile();
+  if (profile.skippedTasks.includes(id)) return;
+  write({
+    ...profile,
+    skippedTasks: [...profile.skippedTasks, id],
+    completedTasks: profile.completedTasks.filter((t) => t !== id),
+  });
+}
+
+export function unskipTask(id: TaskId): void {
+  const profile = getProfile();
+  if (!profile.skippedTasks.includes(id)) return;
+  write({
+    ...profile,
+    skippedTasks: profile.skippedTasks.filter((t) => t !== id),
+  });
+}
+
 // ─── React hook ───────────────────────────────────────────────────────────
 
 export interface NavigatorActions {
   complete(id: TaskId): void;
   uncomplete(id: TaskId): void;
+  skip(id: TaskId): void;
+  unskip(id: TaskId): void;
   save(p: Partial<UserProfile>): void;
 }
 
@@ -100,6 +130,8 @@ export function useNavigatorProfile(): [UserProfile, NavigatorActions] {
   const actions: NavigatorActions = {
     complete: completeTask,
     uncomplete: uncompleteTask,
+    skip: skipTask,
+    unskip: unskipTask,
     save: saveProfile,
   };
 

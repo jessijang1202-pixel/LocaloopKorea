@@ -47,7 +47,9 @@ function isLowKoreanLevel(profile: UserProfile): boolean {
 // ─── S300 ───────────────────────────────────────────────────────────────────
 
 export function getUnresolvedTasks(profile: UserProfile): TaskNode[] {
-  return ALL_TASKS.filter((task) => !profile.completedTasks.includes(task.id));
+  return ALL_TASKS.filter(
+    (task) => !profile.completedTasks.includes(task.id) && !profile.skippedTasks.includes(task.id)
+  );
 }
 
 // ─── S400 ───────────────────────────────────────────────────────────────────
