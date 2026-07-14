@@ -252,11 +252,26 @@ export function RecommendedCourses() {
   if (loading) {
     return (
       <div style={{ margin: "12px 16px 0" }}>
+        <div style={{
+          display: "flex", alignItems: "center", gap: 10,
+          padding: "12px 14px", marginBottom: 12,
+          borderRadius: 14, background: "var(--content-bg)",
+        }}>
+          <div style={{
+            width: 16, height: 16, borderRadius: "50%", flexShrink: 0,
+            border: "2.5px solid var(--border)", borderTopColor: "var(--grade-s)",
+            animation: "ll-courses-spin 0.8s linear infinite",
+          }} />
+          <span style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)" }}>
+            {isKo ? "당신의 위치에서 코스를 찾고 있어요…" : "Finding courses near your location…"}
+          </span>
+        </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
           {[0, 1, 2, 3, 4, 5].map((i) => (
-            <div key={i} style={{ height: 150, borderRadius: 14, background: "var(--content-bg)", opacity: 0.55 }} />
+            <div key={i} className="skeleton" style={{ height: 150, borderRadius: 14 }} />
           ))}
         </div>
+        <style>{`@keyframes ll-courses-spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );
   }
