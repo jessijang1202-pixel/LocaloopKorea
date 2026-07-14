@@ -11,7 +11,9 @@ import type { Bi } from "@/types/content";
 
 // ─── Patent module vocabulary ───────────────────────────────────────────────
 
-export type TaskId = "T1" | "T2" | "T3" | "T4" | "T5" | "T6" | "T7" | "T8";
+export type TaskId =
+  | "T1" | "T2" | "T3" | "T4" | "T5" | "T6"
+  | "T7" | "T8" | "T9" | "T10" | "T11";
 
 // 선행(→) = requires, 병렬(‖) = parallel (independent, no ordering constraint)
 export type EdgeType = "requires" | "parallel";

@@ -1,8 +1,10 @@
 // Foreigner Life Task Graph — module 400 data (step-by-step guides).
 //
-// One TaskGuide per task node (T1..T8). Every string is bilingual (Bi).
-// Content is written to be genuinely useful for a newly arrived foreigner
-// living around Seoul. No emojis (project rule).
+// One TaskGuide per task node (T1..T11 — see task-graph.ts for why the
+// patent's original 8 stages are now 11: three broad stages were split into
+// their natural sub-activities). Every string is bilingual (Bi). Content is
+// written to be genuinely useful for a newly arrived foreigner living around
+// Seoul. No emojis (project rule).
 
 import type { Bi } from "@/types/content";
 import type { TaskId } from "@/lib/engine/types";
@@ -152,12 +154,12 @@ export const TASK_GUIDES: Record<TaskId, TaskGuide> = {
     ],
   },
 
-  // ── T4 문화생활 접근 / Cultural Life ──────────────────────────────────────
+  // ── T4 영화·공연 관람 / Movies & Shows ────────────────────────────────────
   T4: {
     taskId: "T4",
     what: {
-      ko: "영화 예매 앱으로 표를 예매하고, 영어 자막 상영관이나 외국인 대상 문화 공연 정보를 확인해 문화생활을 즐기는 과제예요.",
-      en: "Book tickets with a movie app and find English-subtitle screenings or foreigner-friendly cultural events so you can enjoy cultural life here.",
+      ko: "영화 예매 앱으로 표를 예매하고, 영어 자막 상영관을 찾아 영화·공연을 즐기는 과제예요. 자막 표기와 결제 방식만 익히면 매주 즐길 거리가 됩니다.",
+      en: "Book movie tickets with a cinema app and find English-subtitle screenings so you can enjoy films and shows regularly. Once you know how subtitles and payment work, this becomes an easy weekly outing.",
     },
     steps: [
       {
@@ -173,8 +175,8 @@ export const TASK_GUIDES: Record<TaskId, TaskGuide> = {
         en: "Pick a seat, pay by card in the app, then print the ticket at a lobby kiosk or enter with the QR code.",
       },
       {
-        ko: "공연·전시는 인터파크 티켓, 서울시 문화포털에서 외국인 대상 프로그램을 검색해요.",
-        en: "For concerts and exhibitions, search Interpark Ticket and the Seoul culture portal for programs aimed at foreigners.",
+        ko: "조조(아침)·심야 시간대는 요금이 30~50% 저렴해요. 평일 조조 상영을 노리면 비용을 아낄 수 있어요.",
+        en: "Early-morning and late-night showtimes are 30-50% cheaper — weekday early screenings are an easy way to save.",
       },
     ],
     prepare: [
@@ -191,35 +193,121 @@ export const TASK_GUIDES: Record<TaskId, TaskGuide> = {
         en: "Some in-app payments accept only Korea-issued cards; if a foreign card is declined, try paying at the on-site kiosk.",
       },
       {
-        ko: "인기 상영·공연은 빠르게 매진돼요. 주말은 미리 예매하는 게 좋아요.",
-        en: "Popular showings and performances sell out fast — book weekends in advance.",
+        ko: "인기 상영은 빠르게 매진돼요. 주말은 미리 예매하는 게 좋아요.",
+        en: "Popular showings sell out fast — book weekends in advance.",
       },
     ],
   },
 
-  // ── T5 생활 예절 이해 / Everyday Etiquette ────────────────────────────────
+  // ── T5 전시·문화행사 참여 / Exhibitions & Cultural Events ─────────────────
   T5: {
     taskId: "T5",
     what: {
-      ko: "식당·지하철 매너와 분리수거 등 한국의 일상 예절을 익히는 과제예요. 사소해 보여도 지역 사회에 자연스럽게 녹아드는 데 큰 도움이 돼요.",
-      en: "Learn everyday Korean etiquette — dining and subway manners, sorting recycling, and more. Small habits go a long way toward blending into the local community.",
+      ko: "미술관·박물관 전시와 콘서트·공연을 예매하고, 외국인 대상 문화 프로그램을 찾아 참여하는 과제예요. 영화관과는 결이 다른, 더 깊은 문화 체험을 계획할 수 있어요.",
+      en: "Book exhibitions and performances, and find cultural programs aimed at foreigners. This covers a deeper kind of cultural experience than a night at the movies.",
     },
     steps: [
       {
-        ko: "식당 예절을 익혀요. 물·반찬은 보통 셀프이고, 웃어른이 먼저 수저를 든 뒤 식사를 시작하는 문화가 있어요. 팁은 주지 않아요.",
-        en: "Learn dining manners: water and side dishes are usually self-serve, elders often start eating first, and tipping is not expected.",
+        ko: "인터파크 티켓, 서울시 문화포털에서 전시·공연 정보를 검색해요.",
+        en: "Search Interpark Ticket and the Seoul culture portal for exhibitions and performances.",
       },
       {
-        ko: "지하철·버스 매너를 지켜요. 노약자석은 비워두고, 통화는 조용히, 리어카·유모차는 우측 통행을 지켜요.",
-        en: "Follow transit manners: leave priority seats empty, keep phone calls quiet, and keep to the right in stations.",
+        ko: "'영어 도슨트', '외국인 대상' 같은 키워드로 필터링하면 언어 부담 없는 프로그램을 찾기 쉬워요.",
+        en: "Filter with keywords like 'English docent' or 'for foreigners' to find programs with no language barrier.",
       },
       {
-        ko: "분리수거를 익혀요. 일반쓰레기·음식물·재활용(플라스틱·캔·유리·종이)을 나누고, 음식물은 전용 봉투나 카드로 배출해요.",
-        en: "Learn recycling: separate general waste, food waste, and recyclables (plastic, cans, glass, paper); food waste needs a designated bag or card.",
+        ko: "온라인 예매가 가능한 전시는 미리 결제하고, 현장 구매만 되는 곳은 오픈 시간과 대기열을 확인해요.",
+        en: "Pre-pay online where booking is available; for walk-in-only venues, check opening times and expected queues.",
+      },
+      {
+        ko: "매월 마지막 수요일 '문화가 있는 날'에는 국공립 전시관 다수가 할인 또는 무료로 개방돼요.",
+        en: "On 'Culture Day' (the last Wednesday of each month), many national and public venues offer discounted or free admission.",
+      },
+    ],
+    prepare: [
+      { ko: "결제 가능한 신용/체크카드", en: "A credit or debit card for payment" },
+      { ko: "인터파크 티켓 계정", en: "An Interpark Ticket account" },
+    ],
+    cautions: [
+      {
+        ko: "인기 전시·공연은 예매 오픈과 동시에 매진되는 경우가 많아요. 예매 일정을 미리 알아두세요.",
+        en: "Popular exhibitions and concerts can sell out the moment booking opens — check the on-sale date in advance.",
+      },
+      {
+        ko: "일부 전시는 사진 촬영이 금지돼요. 입구 안내를 확인하세요.",
+        en: "Some exhibitions ban photography — check the signage at the entrance.",
+      },
+      {
+        ko: "'문화가 있는 날' 할인은 시설마다 조건이 달라요. 방문 전 해당 시설의 공지를 확인하세요.",
+        en: "Culture Day discount terms vary by venue — check that venue's own notice before you go.",
+      },
+    ],
+  },
+
+  // ── T6 식당·대중교통 매너 / Dining & Transit Manners ──────────────────────
+  T6: {
+    taskId: "T6",
+    what: {
+      ko: "식당 예절과 지하철·버스 매너를 익히는 과제예요. 사소해 보여도 지역 사회에 자연스럽게 녹아드는 데 큰 도움이 되고, 앞으로 식당·대중교통을 이용할 때마다 계속 쓰이는 기본기예요.",
+      en: "Learn Korean dining etiquette and subway/bus manners. These habits seem small but go a long way toward blending into daily life, and you'll use them every time you eat out or take transit.",
+    },
+    steps: [
+      {
+        ko: "식당에 앉으면 물·기본 반찬은 셀프인 곳이 많아요. 테이블 위 벨을 누르거나 '여기요'라고 불러 주문해요.",
+        en: "After sitting down, water and basic side dishes are often self-serve at many restaurants. Order by pressing the table bell or calling out 'yeogiyo'.",
+      },
+      {
+        ko: "웃어른이 먼저 수저를 든 뒤 식사를 시작하는 문화가 있어요. 팁은 주지 않는 것이 기본이에요.",
+        en: "It's customary for the eldest at the table to start eating first. Tipping is not expected.",
+      },
+      {
+        ko: "지하철·버스에서는 노약자석을 비워두고, 통화는 조용히, 큰 짐이나 유모차는 우측 통행을 지켜요.",
+        en: "On the subway or bus, leave priority seats empty, keep phone calls quiet, and keep to the right with large bags or strollers.",
+      },
+      {
+        ko: "택시나 카카오T 호출 시 정확한 출발지·목적지를 알려주고, 하차 시 카드로 결제하면 간단해요.",
+        en: "When taking a taxi or calling one via Kakao T, give a clear pickup and destination, and pay by card when you get off.",
+      },
+    ],
+    prepare: [
+      { ko: "특별한 준비물은 없어요", en: "No special items needed" },
+      { ko: "'여기요', '감사합니다' 같은 기본 한국어 인사", en: "A few basic Korean phrases like 'yeogiyo' and 'thank you'" },
+    ],
+    cautions: [
+      {
+        ko: "지하철에서 음식 섭취·큰 소리 통화는 눈총을 받아요. 조용히 이용하는 것이 기본 예절이에요.",
+        en: "Eating or loud calls on the subway draws disapproval — staying quiet is basic etiquette.",
+      },
+      {
+        ko: "일부 식당은 1인 방문이나 특정 시간대 주문에 제약이 있어요. 방문 전 리뷰에서 확인하면 헛걸음을 줄일 수 있어요.",
+        en: "Some restaurants restrict solo diners or certain order times — checking reviews beforehand avoids a wasted trip.",
+      },
+    ],
+  },
+
+  // ── T7 분리수거·생활 쓰레기 / Recycling & Waste ───────────────────────────
+  T7: {
+    taskId: "T7",
+    what: {
+      ko: "분리수거 방법과 종량제 봉투 사용법을 익히는 과제예요. 규정을 모르고 배출하면 수거가 안 되거나 과태료를 받을 수 있어서, 도착 초기에 한 번 확실히 익혀두면 계속 편해져요.",
+      en: "Learn how to sort recycling and use volume-rate trash bags. Getting this wrong can mean your trash isn't collected or you're fined, so it's worth learning properly once, early on.",
+    },
+    steps: [
+      {
+        ko: "일반쓰레기·음식물·재활용(플라스틱·캔·유리·종이)을 나누는 기준을 익혀요.",
+        en: "Learn the categories: general waste, food waste, and recyclables (plastic, cans, glass, paper).",
+      },
+      {
+        ko: "음식물 쓰레기는 전용 봉투나 카드로 배출해요. 동에 따라 방식이 다르니 건물 안내를 확인하세요.",
+        en: "Food waste needs a designated bag or card to dispose of — the exact method varies by neighborhood, so check your building's signage.",
       },
       {
         ko: "종량제 봉투를 동네 편의점·마트에서 구매해요. 일반쓰레기는 반드시 지정 종량제 봉투에 담아야 해요.",
         en: "Buy volume-rate trash bags at a local convenience store or mart — general waste must go in the designated bag.",
+      },
+      {
+        ko: "거주 건물의 분리수거 배출 요일·장소를 관리실이나 집주인에게 미리 물어봐요.",
+        en: "Ask your building's management office or landlord about the recycling day and drop-off spot ahead of time.",
       },
     ],
     prepare: [
@@ -235,16 +323,12 @@ export const TASK_GUIDES: Record<TaskId, TaskGuide> = {
         ko: "음식물 쓰레기에 비닐·뼈·씨앗류를 섞으면 안 돼요. 배출 규정을 어기면 과태료가 있을 수 있어요.",
         en: "Do not mix plastic, bones, or large seeds into food waste; violating the rules can bring a fine.",
       },
-      {
-        ko: "지하철에서 음식 섭취·큰 소리 통화는 눈총을 받아요. 조용히 이용하는 것이 기본 예절이에요.",
-        en: "Eating or loud calls on the subway draws disapproval — staying quiet is basic etiquette.",
-      },
     ],
   },
 
-  // ── T6 로컬 음식 체험 / Local Food ────────────────────────────────────────
-  T6: {
-    taskId: "T6",
+  // ── T8 로컬 음식 체험 / Local Food ────────────────────────────────────────
+  T8: {
+    taskId: "T8",
     what: {
       ko: "로컬 음식점을 찾아가 주문 방식을 익히고, 현지인처럼 식사를 즐기는 과제예요. 키오스크 주문, 반찬 문화, 배달 앱까지 익혀 두면 식생활이 훨씬 편해져요.",
       en: "Find local eateries, learn how to order, and eat like a local. Getting comfortable with kiosk ordering, side-dish culture, and delivery apps makes daily meals much easier.",
@@ -287,9 +371,9 @@ export const TASK_GUIDES: Record<TaskId, TaskGuide> = {
     ],
   },
 
-  // ── T7 지역 탐색 / Neighborhood Exploration ───────────────────────────────
-  T7: {
-    taskId: "T7",
+  // ── T9 지역 탐색 / Neighborhood Exploration ───────────────────────────────
+  T9: {
+    taskId: "T9",
     what: {
       ko: "내가 사는 동네와 주변 지역의 명소·숨은 장소를 직접 탐색하는 과제예요. 산책 코스, 카페, 시장, 전망 좋은 장소를 알아 두면 일상이 훨씬 풍요로워져요.",
       en: "Explore the highlights and hidden spots of your neighborhood and nearby areas. Knowing walking routes, cafés, markets, and viewpoints makes daily life much richer.",
@@ -333,12 +417,12 @@ export const TASK_GUIDES: Record<TaskId, TaskGuide> = {
     ],
   },
 
-  // ── T8 사회적 연결 / Social Connection ────────────────────────────────────
-  T8: {
-    taskId: "T8",
+  // ── T10 모임·커뮤니티 참여 / Meetups & Communities ────────────────────────
+  T10: {
+    taskId: "T10",
     what: {
-      ko: "지역 모임에 참여하고 한국인 친구를 만들며 사회적 관계를 넓히는 과제예요. 언어 교환, 취미 모임, 동네 커뮤니티를 통해 한국 생활에 깊이 뿌리내릴 수 있어요.",
-      en: "Broaden your social ties by joining local meetups and making Korean friends. Language exchanges, hobby groups, and neighborhood communities help you put down real roots.",
+      ko: "취미·지역 기반 모임을 찾아 참여하며 사람들과 어울리는 과제예요. 러닝 크루, 등산, 보드게임처럼 진입장벽이 낮은 모임부터 시작하면 한국 생활에 훨씬 빨리 녹아들 수 있어요.",
+      en: "Find and join hobby and neighborhood meetups. Starting with low-barrier groups like running crews, hiking, or board games helps you settle into Korean life much faster.",
     },
     steps: [
       {
@@ -346,12 +430,12 @@ export const TASK_GUIDES: Record<TaskId, TaskGuide> = {
         en: "Find groups that match your interests — search Meetup, the BAND app, the Somoim app, and Facebook groups by area and hobby.",
       },
       {
-        ko: "언어 교환을 원하면 HelloTalk·Tandem 앱이나 동네 랭귀지 익스체인지 이벤트에 참여해요.",
-        en: "For language exchange, use the HelloTalk or Tandem app, or join a local language-exchange event.",
+        ko: "러닝 크루·등산·보드게임 모임처럼 진입장벽이 낮은 곳부터 첫 모임에 참석해요.",
+        en: "Start with easy-to-enter groups like running crews, hiking, or board-game meetups for your first outing.",
       },
       {
-        ko: "첫 모임에는 부담 없이 참석해 자기소개를 준비해 가요. 러닝 크루·등산·보드게임 모임은 진입장벽이 낮아요.",
-        en: "Show up to a first meetup casually with a short self-introduction ready; running crews, hiking, and board-game groups are easy to enter.",
+        ko: "부담 없이 자기소개를 준비해 가요. 관심사나 국적 이야기가 자연스러운 대화 소재가 돼요.",
+        en: "Prepare a short, casual self-introduction — your interests or where you're from make easy conversation starters.",
       },
       {
         ko: "카카오톡 오픈채팅으로 후속 연락을 이어가며 정기 모임에 꾸준히 참여해요.",
@@ -361,7 +445,6 @@ export const TASK_GUIDES: Record<TaskId, TaskGuide> = {
     prepare: [
       { ko: "카카오톡 계정 (모임 연락의 기본 수단)", en: "A KakaoTalk account (the standard way groups stay in touch)" },
       { ko: "관심사 기반 모임 앱 (Meetup·BAND·소모임 등)", en: "An interest-based meetup app (Meetup, BAND, Somoim, etc.)" },
-      { ko: "간단한 한국어 인사·자기소개", en: "A few Korean greetings and a short self-introduction" },
     ],
     cautions: [
       {
@@ -372,9 +455,46 @@ export const TASK_GUIDES: Record<TaskId, TaskGuide> = {
         ko: "첫 만남은 낮 시간, 사람이 많은 공공장소를 권장해요. 안전을 우선하세요.",
         en: "Prefer daytime meetups in busy public places for first meetings — put safety first.",
       },
+    ],
+  },
+
+  // ── T11 언어교환 파트너 찾기 / Find a Language Exchange Partner ───────────
+  T11: {
+    taskId: "T11",
+    what: {
+      ko: "언어교환 앱과 모임을 통해 한국어를 배우고, 동시에 나의 언어를 나눌 파트너를 찾는 과제예요. 정기적인 파트너가 생기면 한국어 실력도, 친구도 함께 늘어나요.",
+      en: "Use language-exchange apps and meetups to learn Korean while sharing your own language with a partner. A regular partner grows both your Korean and your circle of friends.",
+    },
+    steps: [
       {
-        ko: "언어 교환은 한쪽 언어만 계속 쓰기 쉬워요. 시간을 반씩 나눠 쓰기로 미리 합의하면 좋아요.",
-        en: "Language exchanges tend to drift into one language — agree upfront to split the time evenly.",
+        ko: "HelloTalk·Tandem 같은 언어교환 앱을 설치하고 프로필에 관심사와 목표 언어를 적어요.",
+        en: "Install a language-exchange app like HelloTalk or Tandem and fill in your interests and target language in your profile.",
+      },
+      {
+        ko: "동네 랭귀지 익스체인지 이벤트를 모임 앱이나 SNS에서 검색해 참여해요.",
+        en: "Search meetup apps and social media for local language-exchange events and join one.",
+      },
+      {
+        ko: "첫 대화 주제를 미리 준비해요. 서로의 취미나 문화 이야기로 시작하면 자연스러워요.",
+        en: "Prepare a few conversation topics in advance — starting with hobbies or culture makes it flow naturally.",
+      },
+      {
+        ko: "시간을 반씩 나눠 쓰기로 미리 합의해요. 한쪽 언어로만 계속 대화하기 쉬우니 명확히 정해두는 게 좋아요.",
+        en: "Agree upfront to split the time evenly — conversations easily drift into one language, so setting this clearly helps.",
+      },
+    ],
+    prepare: [
+      { ko: "언어교환 앱 (HelloTalk·Tandem 등)", en: "A language-exchange app (HelloTalk, Tandem, etc.)" },
+      { ko: "간단한 한국어 인사·자기소개", en: "A few Korean greetings and a short self-introduction" },
+    ],
+    cautions: [
+      {
+        ko: "일부 프로필은 언어교환을 가장한 상업 광고나 과외 유도예요. 대화 목적이 불분명하면 거리를 두세요.",
+        en: "Some profiles use language exchange as a front for ads or paid tutoring pitches — keep your distance if the intent seems off.",
+      },
+      {
+        ko: "온라인에서 몇 번 대화를 나눈 뒤 오프라인으로 만나는 순서가 안전해요. 첫 만남은 낮 시간, 공공장소를 권장해요.",
+        en: "It's safer to chat online a few times before meeting in person — prefer a daytime, public-place first meeting.",
       },
     ],
   },
