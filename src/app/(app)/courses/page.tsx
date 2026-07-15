@@ -5,9 +5,14 @@
 // sample cards with stock imagery) was removed once real data landed: sample
 // content below live content read as broken. The static detail pages under
 // /courses/[slug] remain URL-reachable via src/content/courses.ts.
+//
+// Page order: region-independent monthly picks, then the location-based feed,
+// then a hand-curated "hidden Korean food" corner, then the course finder.
 
 import { useLang } from "@/lib/lang";
+import { MonthlyPicks } from "./MonthlyPicks";
 import { RecommendedCourses } from "./RecommendedCourses";
+import { HiddenKoreanFood } from "./HiddenKoreanFood";
 import { CourseBuilder } from "./CourseBuilder";
 
 export default function CoursesPage() {
@@ -23,7 +28,9 @@ export default function CoursesPage() {
           {isKo ? "진짜 로컬을 경험하고 싶다면, 여기부터 가보세요." : "Want the real local experience? Start here."}
         </div>
       </div>
+      <MonthlyPicks />
       <RecommendedCourses />
+      <HiddenKoreanFood />
       <CourseBuilder />
     </div>
   );
