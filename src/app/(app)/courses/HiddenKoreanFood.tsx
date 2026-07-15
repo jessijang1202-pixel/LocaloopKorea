@@ -30,7 +30,18 @@ export function HiddenKoreanFood() {
             padding: 10,
           }}>
             <div style={{ position: "relative", width: 76, height: 76, borderRadius: 10, overflow: "hidden", flexShrink: 0, background: "var(--content-bg)" }}>
-              <Image src={item.imageUrl} alt={item.name_ko} fill sizes="76px" style={{ objectFit: "cover" }} />
+              {item.imageUrl ? (
+                <Image src={item.imageUrl} alt={item.name_ko} fill sizes="76px" style={{ objectFit: "cover" }} />
+              ) : (
+                <div style={{
+                  width: "100%", height: "100%",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  background: "linear-gradient(135deg, #FF8A5B 0%, #FF5636 100%)",
+                  color: "#fff", fontSize: 24, fontWeight: 800,
+                }}>
+                  {item.name_ko.charAt(0)}
+                </div>
+              )}
             </div>
             <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
               <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 4, flexWrap: "wrap" }}>

@@ -13,7 +13,10 @@ import type { Bi } from "@/types/content";
 export interface HiddenFoodItem {
   name_ko: string;
   name_en: string; // romanization + short English gloss
-  imageUrl: string;
+  // Optional — a couple of dishes (오리주물럭) have no accurately-tagged
+  // Wikimedia Commons photo, so the card falls back to a gradient/initial
+  // rather than risk an inaccurate or mislabeled image.
+  imageUrl?: string;
   desc: Bi; // why it's good + why foreigners rarely encounter it
 }
 
@@ -70,6 +73,169 @@ export const HIDDEN_KOREAN_FOODS: HiddenFoodItem[] = [
     desc: {
       ko: "겨울에 청어나 꽁치를 얼렸다 녹였다 반복해 말린 포항 지역 별미. 향이 강해서 한국인 중에서도 호불호가 갈리는, 진짜 '로컬 중의 로컬' 메뉴예요.",
       en: "A Pohang winter specialty — fish repeatedly frozen and thawed outdoors until wind-dried. The smell is strong enough that even Koreans are split on it, which is exactly what makes it a true local's-only dish.",
+    },
+  },
+  {
+    name_ko: "돼지국밥",
+    name_en: "Dwaeji-gukbap (pork & rice soup)",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Dwaeji-gukbap.jpg/500px-Dwaeji-gukbap.jpg",
+    desc: {
+      ko: "돼지 뼈와 고기를 오래 우린 국물에 밥을 만 부산 대표 음식. 새우젓으로 간을 맞추는 게 특징인데, 낯선 향 때문에 시도를 꺼리는 외국인이 많아요.",
+      en: "A Busan specialty of rice in a long-simmered pork bone broth, seasoned with salted shrimp. The unfamiliar smell alone is enough to make most foreigners hesitate before trying it.",
+    },
+  },
+  {
+    name_ko: "닭발",
+    name_en: "Dakbal (spicy grilled chicken feet)",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Chicken_feet_2.jpg/500px-Chicken_feet_2.jpg",
+    desc: {
+      ko: "매콤하게 양념해 구운 닭발. 술안주로 한국인에게 인기지만, 뼈째 씹어먹는 방식과 강한 매운맛 때문에 외국인은 거의 시도하지 않아요.",
+      en: "Spicy grilled chicken feet, a beloved Korean drinking snack. Gnawing meat off tiny bones and the fierce heat level keep most foreigners from ever trying it.",
+    },
+  },
+  {
+    name_ko: "곱창/막창",
+    name_en: "Gopchang/Makchang (grilled intestines)",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Gopchang_2.jpg/500px-Gopchang_2.jpg",
+    desc: {
+      ko: "소·돼지 내장을 숯불에 구워 먹는 요리. 손질이 잘 된 곳에서 먹으면 쫄깃하고 고소한데, '내장'이라는 이유만으로 메뉴판도 못 펼쳐보는 외국인이 많아요.",
+      en: "Grilled beef or pork intestines over charcoal. Done right, it's chewy and rich — but the word 'intestines' alone stops most foreigners from even opening the menu.",
+    },
+  },
+  {
+    name_ko: "삼계탕",
+    name_en: "Samgyetang (ginseng chicken soup)",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Dish_of_Samgyetang.jpg/500px-Dish_of_Samgyetang.jpg",
+    desc: {
+      ko: "어린 닭 속에 인삼·찹쌀·대추를 채워 끓인 보양식. 삼복더위에 뜨거운 국물을 먹는 문화 자체가 낯설어서, 이름은 알아도 실제로 먹어본 외국인은 적어요.",
+      en: "A whole young chicken stuffed with ginseng, glutinous rice, and jujube, simmered as a summer vitality tonic. Eating scalding soup on the hottest days of the year is a very Korean idea — most foreigners know the name but have never actually tried it.",
+    },
+  },
+  {
+    name_ko: "선지국밥",
+    name_en: "Seonji-gukbap (ox blood & rice soup)",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Seonji-guk.jpg/500px-Seonji-guk.jpg",
+    desc: {
+      ko: "소의 선지(피)를 굳혀 넣고 끓인 해장국. 순대국과 비슷해 보이지만 선지 함량이 훨씬 높아서, 재료를 알고 나면 더 도전하기 어려워하는 메뉴예요.",
+      en: "A hangover soup built around coagulated ox blood. It looks similar to sundae-guk but has far more blood in it — once foreigners learn what's in the bowl, it gets even harder to talk them into a spoonful.",
+    },
+  },
+  {
+    name_ko: "꼼장어",
+    name_en: "Kkomjangeo (grilled hagfish)",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Korean_cuisine-Kkomjangeo_bokkeum-01.jpg/500px-Korean_cuisine-Kkomjangeo_bokkeum-01.jpg",
+    desc: {
+      ko: "껍질 벗긴 먹장어를 매콤하게 볶거나 구운 부산·경상도 명물. 장어와는 다른 미끌미끌한 식감 때문에 현지인도 호불호가 갈리는, 그야말로 로컬 중의 로컬 메뉴예요.",
+      en: "Skinned hagfish, stir-fried or grilled with a spicy sauce — a Busan and Gyeongsang-do specialty. The slippery texture (different from regular eel) splits even locals, making it about as local as local food gets.",
+    },
+  },
+  {
+    name_ko: "홍어",
+    name_en: "Hongeo (fermented skate)",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Hongeo.jpg/500px-Hongeo.jpg",
+    desc: {
+      ko: "삭혀서 톡 쏘는 암모니아 향이 나는 전라도 발효 음식. 한국인 중에도 못 먹는 사람이 많을 만큼 향이 강렬해서, 외국인에게는 거의 알려지지 않았어요.",
+      en: "Fermented skate from Jeolla-do with a sharp ammonia bite. The smell is intense enough that plenty of Koreans can't handle it either — it barely registers on most foreigners' radar at all.",
+    },
+  },
+  {
+    name_ko: "삼합",
+    name_en: "Samhap (skate + pork belly + kimchi)",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Korean_cuisine-Samhap-01.jpg/500px-Korean_cuisine-Samhap-01.jpg",
+    desc: {
+      ko: "홍어·삶은 돼지고기·묵은지를 한 입에 싸 먹는 전라도 잔치 음식. 홍어의 향과 낯선 조합 때문에 외국인은 존재조차 모르는 경우가 대부분이에요.",
+      en: "A Jeolla-do celebration bite combining fermented skate, boiled pork belly, and aged kimchi in one wrap. Between the skate's smell and the unusual combo, most foreigners don't even know this exists.",
+    },
+  },
+  {
+    name_ko: "돼지껍데기",
+    name_en: "Dwaeji-kkeopdegi (grilled pork skin)",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Kkeopdegi.jpg/500px-Kkeopdegi.jpg",
+    desc: {
+      ko: "콜라겐 가득한 돼지 껍데기를 매콤하게 볶아 먹는 술안주. 쫄깃한 식감이 매력인데, '껍데기'라는 이름만 듣고 지레 겁먹는 외국인이 많아요.",
+      en: "Collagen-rich pork skin, stir-fried with a spicy glaze — a classic drinking snack. The chewy texture is the whole point, but the word 'skin' alone scares most foreigners off before they taste it.",
+    },
+  },
+  {
+    name_ko: "산낙지",
+    name_en: "Sannakji (live octopus)",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Sannakji.jpg/500px-Sannakji.jpg",
+    desc: {
+      ko: "살아 움직이는 낙지를 잘라 참기름에 버무려 먹는 요리. 빨판이 입 안에서 움직이는 느낌 때문에 유튜브로는 봤어도 직접 먹어본 외국인은 드물어요.",
+      en: "Live octopus, cut and tossed in sesame oil while the suction cups are still moving. Plenty of foreigners have seen it on YouTube — almost none have actually eaten it.",
+    },
+  },
+  {
+    name_ko: "쫄면",
+    name_en: "Jjolmyeon (chewy spicy cold noodles)",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Boiled_jjolmyeon.jpg/500px-Boiled_jjolmyeon.jpg",
+    desc: {
+      ko: "아주 쫄깃한 면발에 새콤달콤 매운 양념을 비벼 먹는 분식집 메뉴. 냉면과 헷갈려 지나치기 쉬운데, 식감부터 완전히 다른 로컬 별미예요.",
+      en: "Extra-chewy noodles tossed in a sweet-spicy-tangy sauce — a snack-shop staple. Easy to mistake for naengmyeon and walk right past, but the texture alone makes it a completely different, very local dish.",
+    },
+  },
+  {
+    name_ko: "밀면",
+    name_en: "Milmyeon (Busan wheat cold noodles)",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Busan_Milmyeon_20200522_001.jpg/500px-Busan_Milmyeon_20200522_001.jpg",
+    desc: {
+      ko: "밀가루 면을 시원한 육수에 말아 먹는 부산의 여름 별미. 냉면의 사촌 격이지만 부산을 벗어나면 잘 안 보여서, 다른 지역 외국인은 접할 기회 자체가 적어요.",
+      en: "Wheat noodles in a cold savory broth — a Busan summer specialty, naengmyeon's cousin. It rarely shows up outside Busan, so foreigners elsewhere simply never get the chance to try it.",
+    },
+  },
+  {
+    name_ko: "칼국수",
+    name_en: "Kalguksu (hand-cut knife noodles)",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Korean_noodles-Kalguksu-01.jpg/500px-Korean_noodles-Kalguksu-01.jpg",
+    desc: {
+      ko: "밀가루 반죽을 칼로 썰어 육수에 끓인 국수. 한국인에게는 편안한 집밥 메뉴인데, 메뉴판에 사진이 드물어 외국인은 잘 주문하지 않아요.",
+      en: "Wheat dough hand-cut with a knife and simmered in broth. It's ultimate comfort food for Koreans, but menus rarely have photos, so foreigners tend to order around it.",
+    },
+  },
+  {
+    name_ko: "조개구이",
+    name_en: "Jogae-gui (grilled shellfish)",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Jogae-gui.jpg/500px-Jogae-gui.jpg",
+    desc: {
+      ko: "다양한 조개를 불판에 올려 그대로 구워 먹는 해산물 요리. 껍데기째 손으로 까먹어야 해서, 먹는 방법을 몰라 시도 자체를 못 하는 외국인이 많아요.",
+      en: "An assortment of shellfish grilled right on the table, shells and all. Not knowing how to crack them open by hand stops a lot of foreigners before they even start.",
+    },
+  },
+  {
+    name_ko: "굴찜",
+    name_en: "Gul-jjim (steamed oysters)",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Steamed_oyster_%284440062341%29.jpg/500px-Steamed_oyster_%284440062341%29.jpg",
+    desc: {
+      ko: "껍데기째 쪄낸 굴을 초고추장에 찍어 먹는 겨울 별미. 생굴은 알아도 찜으로 먹는 방식은 몰라서 그냥 지나치는 외국인이 많아요.",
+      en: "Oysters steamed in the shell, dipped in spicy vinegar-chili sauce — a winter specialty. Foreigners know raw oysters but rarely realize steaming is even an option, and walk right past it.",
+    },
+  },
+  {
+    name_ko: "홍게찜",
+    name_en: "Honggye-jjim (steamed red snow crab)",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Boiled_Echizen_crab_%28snow_crab%29_male_and_female.jpg/500px-Boiled_Echizen_crab_%28snow_crab%29_male_and_female.jpg",
+    desc: {
+      ko: "동해에서 잡은 붉은대게를 통째로 쪄낸 요리. 대게보다 저렴하면서도 맛은 비슷해 한국인에게는 가성비 별미지만, 관광지 메뉴판엔 잘 없어요.",
+      en: "Red snow crab from the East Sea, steamed whole. Cheaper than king crab with similar flavor — a great-value local favorite that rarely makes it onto a tourist menu.",
+    },
+  },
+  {
+    name_ko: "오리백숙",
+    name_en: "Ori-baeksuk (whole duck soup)",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/%EC%98%A4%EB%A6%AC%ED%83%95_%EC%82%AC%EC%A7%84.jpg/500px-%EC%98%A4%EB%A6%AC%ED%83%95_%EC%82%AC%EC%A7%84.jpg",
+    desc: {
+      ko: "오리 한 마리를 인삼·황기 등 한약재와 통째로 푹 고아낸 보양식. 삼계탕의 오리 버전인데, 삼계탕보다도 훨씬 덜 알려져 있어요.",
+      en: "A whole duck slow-simmered with ginseng and other medicinal herbs — the duck version of samgyetang, and even less known than samgyetang itself.",
+    },
+  },
+  {
+    name_ko: "오리주물럭",
+    name_en: "Ori-jumulleok (spicy stir-fried duck)",
+    // No accurately Korea-tagged photo found on Wikimedia Commons after an
+    // extensive search — omitted rather than risk a mislabeled image.
+    desc: {
+      ko: "오리고기를 매콤한 양념에 재워 채소와 함께 볶아 먹는 요리. 닭갈비의 오리 버전 같은 메뉴인데, 오리고기 자체가 생소해서 외국인에게는 거의 안 알려져 있어요.",
+      en: "Duck marinated in a spicy sauce and stir-fried with vegetables — think dakgalbi's duck cousin. Duck itself is an unfamiliar protein for most visitors, so this stays almost entirely off their radar.",
     },
   },
 ];
