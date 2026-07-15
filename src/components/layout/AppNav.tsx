@@ -11,7 +11,7 @@ type Tab = { href: string; icon: string; labelKo: string; labelEn: string };
 const SIDEBAR_TABS: Tab[] = [
   { href: "/map",       icon: "map",       labelKo: "지도",     labelEn: "Map" },
   { href: "/tasks",     icon: "tasks",     labelKo: "태스크",   labelEn: "Tasks" },
-  { href: "/courses",   icon: "courses",   labelKo: "코스",     labelEn: "Courses" },
+  { href: "/courses",   icon: "courses",   labelKo: "리얼로컬",  labelEn: "Real Local" },
   { href: "/community", icon: "community", labelKo: "커뮤니티",  labelEn: "Community" },
   { href: "/guide",     icon: "culture",   labelKo: "가이드",   labelEn: "Guide" },
   { href: "/profile",   icon: "profile",   labelKo: "나",       labelEn: "Me" },
