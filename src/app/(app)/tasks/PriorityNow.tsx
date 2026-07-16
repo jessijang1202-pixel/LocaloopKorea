@@ -36,8 +36,10 @@ import type { TaskId, ScoredTask } from "@/lib/engine";
 const REASON_LABEL: Record<string, Bi> = {
   "early-stay": { ko: "체류 초기 필수", en: "Essential early on" },
   "language-simple": { ko: "간단한 절차", en: "Simple steps" },
-  "interest-match": { ko: "관심사 일치", en: "Matches your interests" },
 };
+// "interest-match" renders separately as a small badge next to the task
+// title instead of in the chip row below (shorter word, more prominent spot).
+const INTEREST_MATCH_LABEL: Bi = { ko: "맞춤", en: "For You" };
 
 export function PriorityNow() {
   const isKo = useLang();
@@ -115,8 +117,18 @@ export function PriorityNow() {
           </span>
 
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: "var(--foreground)" }}>
-              {bi(task.name)}
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "var(--foreground)" }}>
+                {bi(task.name)}
+              </div>
+              {s.reasons.includes("interest-match") && (
+                <span style={{
+                  fontSize: 9.5, fontWeight: 700, padding: "2px 7px", borderRadius: 999, flexShrink: 0,
+                  background: "var(--nat-bg)", color: "var(--nat-fg)",
+                }}>
+                  {bi(INTEREST_MATCH_LABEL)}
+                </span>
+              )}
             </div>
             <div style={{ fontSize: 11, color: "var(--foreground-muted)", marginTop: 2, lineHeight: 1.5 }}>
               {bi(task.summary)}
@@ -270,8 +282,10 @@ export function PriorityNow() {
         {
           href: "/map",
           label: { ko: "지도에서 시작하기", en: "Start on Map" },
+          gradient: "linear-gradient(135deg, #FF5636 0%, #c43e2a 100%)",
+          shadow: "0 6px 16px rgba(255,86,54,0.35)",
           icon: (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--grade-s)" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
               <circle cx="12" cy="9" r="2.5" />
             </svg>
@@ -280,8 +294,10 @@ export function PriorityNow() {
         {
           href: "/courses",
           label: { ko: "리얼 로컬 체험", en: "Real Local" },
+          gradient: "linear-gradient(135deg, #12BFB6 0%, #0e9a93 100%)",
+          shadow: "0 6px 16px rgba(18,191,182,0.35)",
           icon: (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--grade-s)" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
               <path d="M8 21h8M12 17v4M5 4h14l-1.5 8a5.5 5.5 0 01-11 0L5 4zM3 4h3M21 4h-3" />
             </svg>
           ),
@@ -289,8 +305,10 @@ export function PriorityNow() {
         {
           href: "/guide",
           label: { ko: "유저 가이드", en: "User Guide" },
+          gradient: "linear-gradient(135deg, #7B4DFF 0%, #5f35d1 100%)",
+          shadow: "0 6px 16px rgba(123,77,255,0.35)",
           icon: (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--grade-s)" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
               <path d="M17 8C8 10 5.9 16.17 3.82 19.82" />
               <path d="M21 3A17 17 0 003.82 19.82" />
               <path d="M3.82 19.82L4 21" />
@@ -304,11 +322,11 @@ export function PriorityNow() {
           style={{
             display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8,
             padding: "16px 8px", borderRadius: 14, textDecoration: "none",
-            background: "var(--card)", border: "1px solid var(--border)",
+            background: box.gradient, boxShadow: box.shadow, border: "none",
           }}
         >
           {box.icon}
-          <span style={{ fontSize: 11.5, fontWeight: 700, color: "var(--foreground)", textAlign: "center" }}>
+          <span style={{ fontSize: 11.5, fontWeight: 700, color: "#fff", textAlign: "center" }}>
             {isKo ? box.label.ko : box.label.en}
           </span>
         </Link>
