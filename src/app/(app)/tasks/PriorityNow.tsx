@@ -18,6 +18,7 @@
 // useLang defers to the client.
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { useLang } from "@/lib/lang";
 import {
   computePriorities,
@@ -57,10 +58,17 @@ export function PriorityNow() {
 
   const bi = (b: Bi) => (isKo ? b.ko : b.en);
 
-  // No topN — the full unlocked-and-unresolved list, ranked. Interest/language
-  // bonuses only reorder it; nothing unlocked ever disappears from view.
+  // Ranked, unlocked-and-unresolved list. Interest/language bonuses only
+  // reorder it — nothing unlocked is EXCLUDED, but only the top 10 render as
+  // active interactive cards; the rest fold into the locked section below
+  // (still real, just not competing for attention at the top of the screen).
   const active = computePriorities(profile);
-  const locked = computeAllScored(profile).filter((s) => !s.unlocked);
+  const visible = active.slice(0, 10);
+  const overflow = active.slice(10);
+  const dependencyLocked = computeAllScored(profile).filter((s) => !s.unlocked);
+  // Overflow (rank > 10) first — those are closer to becoming visible than
+  // true dependency-locked tasks, which still need a prerequisite finished.
+  const locked = [...overflow, ...dependencyLocked];
   const history: { id: TaskId; status: "done" | "skipped" }[] = [
     ...profile.completedTasks.map((id) => ({ id, status: "done" as const })),
     ...profile.skippedTasks.map((id) => ({ id, status: "skipped" as const })),
@@ -123,15 +131,15 @@ export function PriorityNow() {
         </div>
       )}
 
-      {/* Active cards — full ranked unlocked list, no cap */}
+      {/* Active cards — top 10 by rank; the rest fold into "잠긴 과제" below */}
       <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
-        {active.length === 0 && (
+        {visible.length === 0 && (
           <div style={{ background: "var(--card)", borderRadius: 16, border: "1px solid var(--border)", padding: "16px 14px", fontSize: 13, color: "var(--foreground-muted)", textAlign: "center" }}>
             {isKo ? "지금 추천할 과제가 없어요. 잘 하고 계세요!" : "No priority tasks right now. You're all caught up!"}
           </div>
         )}
 
-        {active.map((s, i) => {
+        {visible.map((s, i) => {
           const task = s.task;
           const open = openId === task.id;
           const guide = guides[task.id];
@@ -245,26 +253,59 @@ export function PriorityNow() {
                     </>
                   )}
 
-                  {/* Complete / Skip */}
+                  {/* 맵으로 이동 — Stage 2 wires the ?task= param to a filtered
+                      map view; for now it just links to the plain map. */}
+                  <Link
+                    href={`/map?task=${task.id}`}
+                    style={{
+                      display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                      width: "100%", height: 46, borderRadius: 12, textDecoration: "none",
+                      background: "var(--grade-s)", color: "#fff", fontSize: 14, fontWeight: 700,
+                      marginBottom: 10,
+                    }}
+                  >
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+                      <circle cx="12" cy="9" r="2.5" />
+                    </svg>
+                    {isKo ? "맵으로 이동" : "Go to Map"}
+                  </Link>
+
+                  {/* Skip / Done — checkbox-style, both act immediately */}
                   <div style={{ display: "flex", gap: 8 }}>
                     <button
                       onClick={() => { skip(task.id); setOpenId(null); }}
+                      role="checkbox"
+                      aria-checked={false}
                       style={{
-                        flexShrink: 0, height: 44, padding: "0 16px", borderRadius: 12,
+                        flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                        height: 44, borderRadius: 12,
                         border: "1px solid var(--border)", background: "var(--content-bg)",
                         color: "var(--foreground-muted)", fontSize: 13, fontWeight: 600, cursor: "pointer",
                       }}
                     >
+                      <span style={{ width: 16, height: 16, borderRadius: 4, border: "1.5px solid var(--foreground-muted)", flexShrink: 0 }} />
                       {isKo ? "건너뛰기" : "Skip"}
                     </button>
                     <button
                       onClick={() => { complete(task.id); setOpenId(null); }}
+                      role="checkbox"
+                      aria-checked={false}
                       style={{
-                        flex: 1, height: 44, borderRadius: 12, border: "none",
-                        background: "var(--grade-a)", color: "#fff", fontSize: 14, fontWeight: 700, cursor: "pointer",
+                        flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                        height: 44, borderRadius: 12, border: "1px solid var(--grade-a)",
+                        background: "var(--grade-a)", color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer",
                       }}
                     >
-                      {isKo ? "완료로 표시" : "Mark as done"}
+                      <span style={{
+                        width: 16, height: 16, borderRadius: 4, flexShrink: 0,
+                        border: "1.5px solid #fff", display: "flex", alignItems: "center", justifyContent: "center",
+                      }}>
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M20 6L9 17l-5-5" />
+                        </svg>
+                      </span>
+                      {isKo ? "완료" : "Done"}
                     </button>
                   </div>
                 </div>
@@ -303,6 +344,57 @@ export function PriorityNow() {
           </div>
         </div>
       )}
+
+      {/* Quick links — map browse / real local / guide */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 18, marginBottom: 20 }}>
+        {[
+          {
+            href: "/map",
+            label: { ko: "지도에서 찾기", en: "Find on Map" },
+            icon: (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--grade-s)" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+                <circle cx="12" cy="9" r="2.5" />
+              </svg>
+            ),
+          },
+          {
+            href: "/courses",
+            label: { ko: "리얼 로컬 체험", en: "Real Local" },
+            icon: (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--grade-s)" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M8 21h8M12 17v4M5 4h14l-1.5 8a5.5 5.5 0 01-11 0L5 4zM3 4h3M21 4h-3" />
+              </svg>
+            ),
+          },
+          {
+            href: "/guide",
+            label: { ko: "유저 가이드", en: "User Guide" },
+            icon: (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--grade-s)" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M17 8C8 10 5.9 16.17 3.82 19.82" />
+                <path d="M21 3A17 17 0 003.82 19.82" />
+                <path d="M3.82 19.82L4 21" />
+              </svg>
+            ),
+          },
+        ].map((box) => (
+          <Link
+            key={box.href}
+            href={box.href}
+            style={{
+              display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8,
+              padding: "16px 8px", borderRadius: 14, textDecoration: "none",
+              background: "var(--card)", border: "1px solid var(--border)",
+            }}
+          >
+            {box.icon}
+            <span style={{ fontSize: 11.5, fontWeight: 700, color: "var(--foreground)", textAlign: "center" }}>
+              {isKo ? box.label.ko : box.label.en}
+            </span>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }

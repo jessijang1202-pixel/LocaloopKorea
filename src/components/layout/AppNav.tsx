@@ -6,9 +6,11 @@ import { useLang, setLang } from "@/lib/lang";
 import { useTheme, toggleTheme } from "@/lib/theme";
 import { PinIcon, SunIcon, MoonIcon } from "@/components/icons";
 
-type Tab = { href: string; icon: string; labelKo: string; labelEn: string };
+export type Tab = { href: string; icon: string; labelKo: string; labelEn: string };
 
-const SIDEBAR_TABS: Tab[] = [
+// Also used by HamburgerMenu (mobile nav — the bottom tab bar was replaced by
+// a top-right hamburger drawer that reuses this same list).
+export const SIDEBAR_TABS: Tab[] = [
   { href: "/map",       icon: "map",       labelKo: "지도",     labelEn: "Map" },
   { href: "/tasks",     icon: "tasks",     labelKo: "태스크",   labelEn: "Tasks" },
   { href: "/courses",   icon: "courses",   labelKo: "리얼로컬",  labelEn: "Real Local" },
@@ -17,10 +19,7 @@ const SIDEBAR_TABS: Tab[] = [
   { href: "/profile",   icon: "profile",   labelKo: "나",       labelEn: "Me" },
 ];
 
-// 5 tabs on mobile — chat embedded in community, profile via sidebar on PC
-const BOTTOM_TABS: Tab[] = SIDEBAR_TABS.filter(t => t.href !== "/profile");
-
-function TabIcon({ name, size = 22 }: { name: string; size?: number }) {
+export function TabIcon({ name, size = 22 }: { name: string; size?: number }) {
   const base = { width: size, height: size, fill: "none", stroke: "currentColor", strokeWidth: 1.75, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
   if (name === "map") return <PinIcon size={size} strokeWidth={1.75} />;
   if (name === "tasks") return (
@@ -56,6 +55,12 @@ function TabIcon({ name, size = 22 }: { name: string; size?: number }) {
       <path d="M17 8C8 10 5.9 16.17 3.82 19.82" />
       <path d="M21 3A17 17 0 003.82 19.82" />
       <path d="M3.82 19.82L4 21" />
+    </svg>
+  );
+  if (name === "profile") return (
+    <svg viewBox="0 0 24 24" {...base}>
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" />
     </svg>
   );
   return null;
@@ -152,30 +157,6 @@ export function AppNav() {
           </button>
         </div>
       </aside>
-
-      {/* Mobile: bottom tab bar — white/dark bg, coral active */}
-      <nav className="ll-bottomnav">
-        {BOTTOM_TABS.map((tab) => {
-          const active = isActive(tab.href);
-          return (
-            <Link
-              key={tab.href}
-              href={tab.href}
-              style={{
-                flex: 1,
-                display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-                gap: 4, padding: "8px 2px 2px", textDecoration: "none",
-                color: active ? "var(--grade-s)" : "var(--foreground-muted)",
-              }}
-            >
-              <TabIcon name={tab.icon} size={24} />
-              <span style={{ fontSize: 10, fontWeight: active ? 700 : 500, lineHeight: 1 }}>
-                {isKo ? tab.labelKo : tab.labelEn}
-              </span>
-            </Link>
-          );
-        })}
-      </nav>
     </>
   );
 }

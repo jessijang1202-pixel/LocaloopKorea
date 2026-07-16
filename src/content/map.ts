@@ -2,6 +2,13 @@
 
 export const ITAEWON = { lat: 37.534, lng: 126.9946 };
 
+// Incheon International Airport — the app's new default origin: where a
+// newly-arrived foreigner actually lands, used for the /intro home screen
+// and as the fallback origin for the task-filtered map (replacing Itaewon
+// for that flow specifically; /map's own "이태원 PICK" section keeps its
+// existing Itaewon anchor unchanged).
+export const INCHEON_AIRPORT = { lat: 37.4602, lng: 126.4407 };
+
 export type FilterKey = "all" | "english" | "S" | "restaurant" | "cafe";
 
 export const CHIPS: { key: FilterKey; ko: string; en: string; hasIcon?: boolean }[] = [

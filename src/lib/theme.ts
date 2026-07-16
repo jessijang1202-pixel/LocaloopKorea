@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 type Theme = "dark" | "light";
 // keep in sync with the "ll-theme" literal in the inline script in src/app/layout.tsx
 const THEME_KEY = "ll-theme";
-const DEFAULT: Theme = "dark";
+const DEFAULT: Theme = "light";
 
 export function getTheme(): Theme {
   if (typeof window === "undefined") return DEFAULT;

@@ -87,7 +87,7 @@ function FeedTab({ isKo }: { isKo: boolean }) {
       </div>
 
       {/* FAB */}
-      <button style={{ position: "fixed", bottom: "calc(76px + 20px)", right: 20, width: 56, height: 56, borderRadius: "50%", background: "var(--grade-s)", border: "none", cursor: "pointer", zIndex: 30, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 20px -4px rgba(255,86,54,0.55)" }}>
+      <button style={{ position: "fixed", bottom: "calc(env(safe-area-inset-bottom, 0px) + 20px)", right: 20, width: 56, height: 56, borderRadius: "50%", background: "var(--grade-s)", border: "none", cursor: "pointer", zIndex: 30, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 20px -4px rgba(255,86,54,0.55)" }}>
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
           <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
         </svg>

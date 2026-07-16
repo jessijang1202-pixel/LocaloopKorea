@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useLang } from "@/lib/lang";
 import { LangToggleInline, ThemeToggle } from "@/components/LangToggle";
+import { HamburgerMenu } from "./HamburgerMenu";
 
 export function PageHeader() {
   const isKo = useLang();
@@ -77,6 +78,9 @@ export function PageHeader() {
       >
         MY
       </Link>
+
+      {/* 삼선 메뉴 — replaces the old bottom tab bar */}
+      <HamburgerMenu />
     </div>
   );
 }

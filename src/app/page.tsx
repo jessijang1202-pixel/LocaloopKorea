@@ -12,7 +12,7 @@ export default async function HomePage() {
   if (isSupabaseConfigured()) {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
-    if (user) redirect("/map");
+    if (user) redirect("/intro");
   }
-  redirect("/map");
+  redirect("/intro");
 }

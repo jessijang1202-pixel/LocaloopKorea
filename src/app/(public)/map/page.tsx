@@ -9,6 +9,7 @@ import type { Place } from "@/types";
 import { getRating, okTags, GRADE_BG, GRADE_TEXT } from "@/lib/grades";
 import Link from "next/link";
 import { PlaceGridCard } from "@/components/places/PlaceGridCard";
+import { HamburgerMenu } from "@/components/layout/HamburgerMenu";
 import { CAT_LABEL } from "@/content/places";
 import { ITAEWON, CHIPS, HOT_PLACE_IDS, type FilterKey } from "@/content/map";
 import {
@@ -362,6 +363,7 @@ export default function MapPage() {
           <div style={{ display: "flex", gap: 8 }}>
             <button onClick={() => setLang(isKo ? "en" : "ko")} style={{ width: 36, height: 36, borderRadius: 999, background: chipBg, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 700, color: chipFg, boxShadow: "0 2px 8px rgba(0,0,0,0.14)" }}>{isKo ? "EN" : "KO"}</button>
             <Link href="/profile" style={{ width: 36, height: 36, borderRadius: 999, background: "var(--grade-s)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, color: "#fff", textDecoration: "none", boxShadow: "0 2px 8px rgba(255,86,54,0.4)" }}>MY</Link>
+            <HamburgerMenu triggerStyle={{ width: 36, height: 36, borderRadius: 999, background: chipBg, border: "none", color: chipFg, boxShadow: "0 2px 8px rgba(0,0,0,0.14)" }} />
           </div>
         </div>
 
@@ -491,8 +493,8 @@ export default function MapPage() {
             </Link>
           </div>
 
-          {/* Safe-area spacer for nav bar */}
-          <div style={{ height: "calc(env(safe-area-inset-bottom, 0px) + 88px)" }} />
+          {/* Safe-area spacer */}
+          <div style={{ height: "env(safe-area-inset-bottom, 0px)" }} />
         </div>
       </div>
     </div>

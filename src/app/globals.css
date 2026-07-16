@@ -116,11 +116,6 @@
 [data-theme="dark"] body {
   background: #121016;
 }
-[data-theme="dark"] .ll-bottomnav {
-  background: #1D1A22;
-  border-top-color: #2C2833;
-}
-
 * {
   box-sizing: border-box;
   padding: 0;
@@ -821,25 +816,15 @@ html {
 .ll-sidebar {
   display: none; /* hidden on mobile */
 }
-.ll-bottomnav {
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  background: #fff;
-  border-top: 1px solid #EBE5D9;
-  display: flex;
-  align-items: center;
-  z-index: 50;
-  height: 76px;
-  padding-bottom: env(safe-area-inset-bottom);
-}
 .ll-content {
-  padding-bottom: calc(76px + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
   min-height: 100dvh;
 }
 /* Pages that need to fill exactly the available viewport (map, chat) */
-/* 76px = bottom nav, 50px = shared PageHeader on mobile */
+/* 50px = shared PageHeader on mobile (bottom nav removed — replaced by the
+   HamburgerMenu drawer, which floats over content instead of reserving space) */
 .ll-fullpage {
-  height: calc(100dvh - 76px - 50px);
+  height: calc(100dvh - 50px);
 }
 @media (min-width: 768px) {
   /* Sidebar is position:fixed at left 0, 168px wide.
@@ -863,7 +848,6 @@ html {
     z-index: 100;
     overflow: hidden;
   }
-  .ll-bottomnav { display: none; }
   .ll-page-header { display: none !important; }
   /* Normal pages: full height, scrollable */
   .ll-content { padding-bottom: 0; padding-top: 0; height: 100dvh; overflow-y: auto; }

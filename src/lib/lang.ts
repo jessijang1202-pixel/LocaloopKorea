@@ -15,8 +15,8 @@ export function getLang(): "ko" | "en" {
   if (typeof window === "undefined") return "en";
   const saved = localStorage.getItem(LANG_KEY);
   if (saved === "ko" || saved === "en") return saved;
-  // No saved preference → follow OS / browser language
-  return navigator.language.startsWith("ko") ? "ko" : "en";
+  // No saved preference → English by default (product decision, not OS-detected)
+  return "en";
 }
 
 export function setLang(lang: "ko" | "en") {

@@ -56,9 +56,9 @@ export default function RootLayout({
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
       </head>
       <body className="min-h-full bg-[var(--background)] text-[var(--foreground)] antialiased">
-        {/* Theme init (default dark) + install prompt capture — must run before React mounts */}
+        {/* Theme init (default light) + install prompt capture — must run before React mounts */}
         {/* The "ll-theme" and "ll_lang" literals below must stay in sync with THEME_KEY in src/lib/theme.ts and LANG_KEY in src/lib/lang.ts */}
-        <script dangerouslySetInnerHTML={{ __html: `(function(){var t=localStorage.getItem("ll-theme")||"dark";document.documentElement.setAttribute("data-theme",t);var l=localStorage.getItem("ll_lang")||(navigator.language.startsWith("ko")?"ko":"en");document.documentElement.setAttribute("data-lang",l);})();window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.deferredPrompt=e;});` }} />
+        <script dangerouslySetInnerHTML={{ __html: `(function(){var t=localStorage.getItem("ll-theme")||"light";document.documentElement.setAttribute("data-theme",t);var l=localStorage.getItem("ll_lang")||"en";document.documentElement.setAttribute("data-lang",l);})();window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.deferredPrompt=e;});` }} />
         {children}
       </body>
     </html>
