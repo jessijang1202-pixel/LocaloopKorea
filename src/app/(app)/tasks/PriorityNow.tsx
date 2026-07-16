@@ -28,6 +28,7 @@ import {
   TASK_NODES,
 } from "@/lib/engine";
 import { fetchGuidesWithOverrides } from "@/lib/engine/guide-overrides";
+import { TASK_MAP_CATEGORIES } from "@/content/task-map-categories";
 import type { Bi } from "@/types/content";
 import type { TaskId } from "@/lib/engine";
 
@@ -253,23 +254,26 @@ export function PriorityNow() {
                     </>
                   )}
 
-                  {/* 맵으로 이동 — Stage 2 wires the ?task= param to a filtered
-                      map view; for now it just links to the plain map. */}
-                  <Link
-                    href={`/map?task=${task.id}`}
-                    style={{
-                      display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                      width: "100%", height: 46, borderRadius: 12, textDecoration: "none",
-                      background: "var(--grade-s)", color: "#fff", fontSize: 14, fontWeight: 700,
-                      marginBottom: 10,
-                    }}
-                  >
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-                      <circle cx="12" cy="9" r="2.5" />
-                    </svg>
-                    {isKo ? "맵으로 이동" : "Go to Map"}
-                  </Link>
+                  {/* 맵으로 이동 — only for tasks with a real place category
+                      behind them (T7 분리수거, T10/T11 모임/언어교환 etc. are
+                      behaviors, not places, so the button just hides). */}
+                  {TASK_MAP_CATEGORIES[task.id] !== null && (
+                    <Link
+                      href={`/map?task=${task.id}`}
+                      style={{
+                        display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                        width: "100%", height: 46, borderRadius: 12, textDecoration: "none",
+                        background: "var(--grade-s)", color: "#fff", fontSize: 14, fontWeight: 700,
+                        marginBottom: 10,
+                      }}
+                    >
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+                        <circle cx="12" cy="9" r="2.5" />
+                      </svg>
+                      {isKo ? "맵으로 이동" : "Go to Map"}
+                    </Link>
+                  )}
 
                   {/* Skip / Done — checkbox-style, both act immediately */}
                   <div style={{ display: "flex", gap: 8 }}>

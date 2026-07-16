@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { useLang, setLang } from "@/lib/lang";
 import { useTheme } from "@/lib/theme";
 import dynamic from "next/dynamic";
@@ -10,8 +11,13 @@ import { getRating, okTags, GRADE_BG, GRADE_TEXT } from "@/lib/grades";
 import Link from "next/link";
 import { PlaceGridCard } from "@/components/places/PlaceGridCard";
 import { HamburgerMenu } from "@/components/layout/HamburgerMenu";
+import { LocationConsent } from "@/components/map/LocationConsent";
+import { useLocationWithConsent } from "@/lib/geo-consent";
 import { CAT_LABEL } from "@/content/places";
-import { ITAEWON, CHIPS, HOT_PLACE_IDS, type FilterKey } from "@/content/map";
+import { ITAEWON, INCHEON_AIRPORT, CHIPS, MORE_CHIPS, HOT_PLACE_IDS, type FilterKey } from "@/content/map";
+import { TASK_MAP_CATEGORIES } from "@/content/task-map-categories";
+import { TASK_NODES, type TaskId } from "@/lib/engine";
+import { haversineKm } from "@/lib/course/geo";
 import {
   fetchLivePlaces,
   travelFromItaewon,
@@ -90,171 +96,171 @@ function PlaceCardPC({ place, isSelected, isKo, onClick }: {
   );
 }
 
-function WelcomePopup({ isDark, isKo, onClose }: { isDark: boolean; isKo: boolean; onClose: () => void }) {
-  const cardBg      = isDark ? "#1D1A22" : "#ffffff";
-  const cardBorder  = isDark ? "1px solid #2C2833" : "none";
-  const scrimBg     = isDark ? "rgba(0,0,0,0.68)" : "rgba(10,8,6,0.60)";
-  const eyebrow     = isDark ? "#FF8A6D" : "#E2431F";
-  const headline    = isDark ? "#F4F0E8" : "#16151A";
-  const bodyText    = isDark ? "#C9C4D6" : "#3A3630";
-  const closeBg     = isDark ? "#2A2733" : "#F3EEE4";
-  const closeColor  = isDark ? "#8B8598" : "#6C665B";
-  const btnBg       = isDark ? "#FF6A4D" : "#FF5636";
+// Task-filtered map — reached via "맵으로 이동" on a task card
+// (/map?task=<id>). Filters livePlaces down to the categories that task
+// actually needs (TASK_MAP_CATEGORIES), sorted by distance from the
+// resolved location (Incheon Airport fallback — replaces Itaewon as the
+// origin specifically for this flow; the browse mode below keeps its own
+// Itaewon anchor unchanged). Same card/grade UI as the rest of /map.
+function TaskFilteredView({
+  taskId,
+  isKo,
+  isDark,
+  livePlaces,
+}: {
+  taskId: TaskId;
+  isKo: boolean;
+  isDark: boolean;
+  livePlaces: Place[];
+}) {
+  const { coords, showModal, allow, skip } = useLocationWithConsent();
+  const origin = coords ?? INCHEON_AIRPORT;
+  const categories = TASK_MAP_CATEGORIES[taskId];
+  const taskNode = TASK_NODES[taskId];
+  const taskName = taskNode ? (isKo ? taskNode.name.ko : taskNode.name.en) : "";
 
-  const rows = [
-    {
-      chipBg: isDark ? "#3A1A14" : "#FFF0EC",
-      iconColor: isDark ? "#FF8A6D" : "#E2431F",
-      text: isKo
-        ? "들어가기 전에, 그 장소가 외국인을 환영하는지 먼저 알 수 있어요."
-        : "Know if a place actually welcomes you — before you walk in.",
-      icon: (
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-          <path d="M12 2L4 6v6c0 4.6 3.5 8.9 8 9.9 4.5-1 8-5.3 8-9.9V6l-8-4z" fill="currentColor" opacity="0.25"/>
-          <path d="M12 2L4 6v6c0 4.6 3.5 8.9 8 9.9 4.5-1 8-5.3 8-9.9V6l-8-4z" stroke="currentColor" strokeWidth="1.5" fill="none"/>
-          <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
-      ),
-    },
-    {
-      chipBg: isDark ? "#0C3B38" : "#D6F5F2",
-      iconColor: isDark ? "#7FF0E6" : "#0A8C84",
-      text: isKo
-        ? "지금 내 상황에 맞게 설계된 단계별 가이드를 받아보세요."
-        : "Get a step-by-step guide built for where you are right now.",
-      icon: (
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="7" cy="17" r="2.2" fill="currentColor" stroke="none"/>
-          <circle cx="17" cy="7" r="2.2" fill="currentColor" stroke="none"/>
-          <path d="M17 9.2C17 13.2 14 14.8 12 14.8S7 15.8 7 17"/>
-        </svg>
-      ),
-    },
-    {
-      chipBg: isDark ? "#3A2E0C" : "#FFF3CC",
-      iconColor: isDark ? "#FFD98A" : "#9A6000",
-      text: isKo
-        ? "관광객이 아닌, 현지인들이 진짜 가는 장소를 찾아보세요."
-        : "Find spots locals love, not the ones tourists are sent to.",
-      icon: (
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M13.5 2.1C13.5 2.1 16 5.5 16 8.5c0 1.8-1.2 3-2 3.5 1-1 1.2-3.5-.5-5.5C14 8 13 10 11 10c1.5-1.8 1-5-1-6.5C9 5 8 7.5 8 9.5c0 3 2 5.5 4 6.5 2-1 4-3.5 4-6.5 0-3.5-2.5-7.4-2.5-7.4z" opacity="0.9"/>
-          <path d="M9 17c0 1.7 1.3 3 3 3s3-1.3 3-3" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-        </svg>
-      ),
-    },
-    {
-      chipBg: isDark ? "#2A1F52" : "#EEE4FF",
-      iconColor: isDark ? "#C3A8FF" : "#7B4DFF",
-      text: isKo
-        ? "진짜 한국을 보여줄 준비가 된 사람들을 만나보세요."
-        : "Meet people who are ready to show you the real Korea.",
-      icon: (
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
-          <circle cx="9" cy="7" r="3"/>
-          <path d="M3 21v-2a5 5 0 015-5h4a5 5 0 015 5v2"/>
-          <circle cx="17.5" cy="7" r="2.2"/>
-          <path d="M21 21v-1.5a4 4 0 00-3.5-3.97"/>
-        </svg>
-      ),
-    },
-  ];
+  const matches = livePlaces
+    .filter((p) => categories?.includes(p.category) && p.lat != null && p.lng != null)
+    .map((p) => ({ place: p, km: haversineKm(origin, { lat: p.lat as number, lng: p.lng as number }) }))
+    .sort((a, b) => a.km - b.km);
 
   return (
-    <div
-      onClick={onClose}
-      style={{
-        position: "fixed", inset: 0, zIndex: 9999,
-        background: scrimBg,
-        backdropFilter: "blur(3px)",
-        WebkitBackdropFilter: "blur(3px)",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        padding: "24px 20px",
-      }}
-    >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          background: cardBg,
-          border: cardBorder,
-          borderRadius: 26,
-          width: "100%",
-          maxWidth: 332,
-          boxShadow: isDark
-            ? "0 24px 60px rgba(0,0,0,0.6)"
-            : "0 16px 48px rgba(22,21,26,0.22)",
-          padding: "28px 24px 24px",
-          position: "relative",
-        }}
-      >
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          style={{
-            position: "absolute", top: 20, right: 20,
-            width: 30, height: 30, borderRadius: "50%",
-            background: closeBg, border: "none", cursor: "pointer",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            color: closeColor,
-          }}
-        >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-            <path d="M18 6L6 18M6 6l12 12"/>
-          </svg>
-        </button>
+    <div style={{ minHeight: "100dvh", background: "var(--background)" }}>
+      <div style={{ padding: "16px 16px 14px", borderBottom: "1px solid var(--border)" }}>
+        <Link href="/tasks" style={{ display: "inline-flex", alignItems: "center", gap: 5, textDecoration: "none", color: "var(--foreground-muted)", fontSize: 13, fontWeight: 600, marginBottom: 10 }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+          {isKo ? "태스크로 돌아가기" : "Back to Tasks"}
+        </Link>
+        <div style={{ fontSize: 19, fontWeight: 800, color: "var(--foreground)", letterSpacing: "-0.02em" }}>
+          {isKo ? `${taskName}에 필요한 장소` : `Places for ${taskName}`}
+        </div>
+        <div style={{ fontSize: 12.5, color: "var(--foreground-muted)", marginTop: 4 }}>
+          {isKo
+            ? `${matches.length}곳 · ${coords ? "가까운 순" : "인천공항 기준"}`
+            : `${matches.length} places · ${coords ? "nearest first" : "from Incheon Airport"}`}
+        </div>
+      </div>
 
-        {/* Eyebrow */}
-        <div style={{ fontSize: 11, fontWeight: 700, color: eyebrow, letterSpacing: "0.22em", marginBottom: 10 }}>
-          DIG INTO LOCAL KOREA
+      <div style={{ padding: 16 }}>
+        {matches.length === 0 ? (
+          <div style={{ background: "var(--card)", borderRadius: 16, border: "1px solid var(--border)", padding: "20px 16px", fontSize: 13, color: "var(--foreground-muted)", textAlign: "center" }}>
+            {isKo ? "아직 이 지역에 수집된 장소가 없어요." : "No collected places here yet."}
+          </div>
+        ) : (
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            {matches.map(({ place, km }) => (
+              <PlaceGridCard key={place.id} place={place} isKo={isKo} metaLine={`${km < 1 ? `${Math.round(km * 1000)}m` : `${km.toFixed(1)}km`}`} />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {showModal && <LocationConsent isDark={isDark} isKo={isKo} onAllow={allow} onSkip={skip} />}
+    </div>
+  );
+}
+
+// 지도위의 찾기 — small search modal: location / category / grade / name.
+// Native <select>/<input> kept minimal (no custom dropdown component exists
+// in this codebase yet); styled to match the card/scrim pattern used
+// everywhere else on this page.
+function SearchModal({
+  isDark, isKo, regions,
+  name, region, grade, category,
+  onApply, onClose,
+}: {
+  isDark: boolean;
+  isKo: boolean;
+  regions: LiveRegion[];
+  name: string;
+  region: string | null;
+  grade: string | null;
+  category: FilterKey;
+  onApply: (v: { name: string; region: string | null; grade: string | null; category: FilterKey }) => void;
+  onClose: () => void;
+}) {
+  const [localName, setLocalName] = useState(name);
+  const [localRegion, setLocalRegion] = useState(region);
+  const [localGrade, setLocalGrade] = useState(grade);
+  const [localCategory, setLocalCategory] = useState<FilterKey>(category);
+
+  const cardBg = isDark ? "#1D1A22" : "#ffffff";
+  const scrimBg = isDark ? "rgba(0,0,0,0.5)" : "rgba(10,8,6,0.42)";
+  const fieldBg = isDark ? "#252129" : "var(--content-bg)";
+  const textColor = isDark ? "#F4F0E8" : "#16151A";
+  const labelColor = "var(--foreground-muted)";
+  const allCategoryOptions = [...CHIPS, ...MORE_CHIPS].filter((c) => c.key !== "all" && c.key !== "english" && c.key !== "S");
+
+  const selectStyle: React.CSSProperties = {
+    width: "100%", height: 44, borderRadius: 12, border: "1px solid var(--border)",
+    background: fieldBg, color: textColor, fontSize: 14, padding: "0 12px",
+  };
+
+  return (
+    <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 9999, background: scrimBg, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 20px" }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ background: cardBg, borderRadius: 24, width: "100%", maxWidth: 360, padding: "24px 22px", boxShadow: "0 20px 56px rgba(0,0,0,0.3)" }}>
+        <div style={{ fontSize: 17, fontWeight: 800, color: textColor, marginBottom: 18 }}>
+          {isKo ? "장소 검색" : "Search Places"}
         </div>
 
-        {/* Headline */}
-        <h2 style={{ fontSize: 25, fontWeight: 700, color: headline, letterSpacing: "-0.5px", lineHeight: 1.25, marginBottom: 20 }}>
-          {isKo ? <>한국 생활,<br />여기서 시작하세요.</> : <>Your Korea life<br />starts here.</>}
-        </h2>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 20 }}>
+          <div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: labelColor, marginBottom: 5 }}>{isKo ? "지역" : "Area"}</div>
+            <select value={localRegion ?? ""} onChange={(e) => setLocalRegion(e.target.value || null)} style={selectStyle}>
+              <option value="">{isKo ? "전체 지역" : "All areas"}</option>
+              {regions.map((r) => (
+                <option key={r.id} value={r.id}>{isKo ? r.name_ko : r.name_en}</option>
+              ))}
+            </select>
+          </div>
 
-        {/* Value-prop rows */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 22 }}>
-          {rows.map((row, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
-              <div style={{
-                width: 32, height: 32, borderRadius: 10, flexShrink: 0,
-                background: row.chipBg,
-                color: row.iconColor,
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
-                {row.icon}
-              </div>
-              <p style={{ fontSize: 13, color: bodyText, lineHeight: 1.55, margin: 0, paddingTop: 3 }}>
-                {row.text}
-              </p>
-            </div>
-          ))}
+          <div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: labelColor, marginBottom: 5 }}>{isKo ? "카테고리" : "Category"}</div>
+            <select value={localCategory} onChange={(e) => setLocalCategory(e.target.value as FilterKey)} style={selectStyle}>
+              <option value="all">{isKo ? "전체 카테고리" : "All categories"}</option>
+              {allCategoryOptions.map((c) => (
+                <option key={c.key} value={c.key}>{isKo ? c.ko : c.en}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: labelColor, marginBottom: 5 }}>{isKo ? "그레이드" : "Grade"}</div>
+            <select value={localGrade ?? ""} onChange={(e) => setLocalGrade(e.target.value || null)} style={selectStyle}>
+              <option value="">{isKo ? "전체 등급" : "All grades"}</option>
+              {["S", "A", "B", "C"].map((g) => <option key={g} value={g}>{g}</option>)}
+            </select>
+          </div>
+
+          <div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: labelColor, marginBottom: 5 }}>{isKo ? "상호명" : "Shop name"}</div>
+            <input
+              value={localName}
+              onChange={(e) => setLocalName(e.target.value)}
+              placeholder={isKo ? "이름으로 검색…" : "Search by name…"}
+              style={selectStyle}
+            />
+          </div>
         </div>
 
-        {/* CTA button */}
         <button
-          onClick={onClose}
+          onClick={() => onApply({ name: localName, region: localRegion, grade: localGrade, category: localCategory })}
           style={{
-            width: "100%", height: 50, borderRadius: 14,
-            background: btnBg, border: "none", cursor: "pointer",
-            display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-            boxShadow: "0 4px 16px rgba(255,86,54,0.32)",
+            width: "100%", height: 48, borderRadius: 14, border: "none", cursor: "pointer",
+            background: "var(--grade-s)", color: "#fff", fontSize: 15, fontWeight: 700,
           }}
         >
-          <span style={{ fontSize: 15, fontWeight: 700, color: "#fff" }}>{isKo ? "둘러보기 시작" : "Start Exploring"}</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M5 12h14M13 6l6 6-6 6"/>
-          </svg>
+          {isKo ? "검색" : "Search"}
         </button>
       </div>
     </div>
   );
 }
 
-export default function MapPage() {
+function MapPageInner() {
   const isKo = useLang();
   const theme = useTheme();
+  const searchParams = useSearchParams();
   // DB-first place data with silent seed fallback: initial render is always
   // the code seed (no flash), then live rows swap in when available.
   const [livePlaces, setLivePlaces] = useState<Place[]>(SEED_PLACES);
@@ -265,13 +271,18 @@ export default function MapPage() {
   );
   const [chip, setChip] = useState<FilterKey>("all");
   const [sheetExpanded, setSheetExpanded] = useState(false);
-  const [showPopup, setShowPopup] = useState(false);
+  const [showMoreCats, setShowMoreCats] = useState(false);
+  const [showSearchModal, setShowSearchModal] = useState(false);
+  const [nameQuery, setNameQuery] = useState("");
+  const [regionFilter, setRegionFilter] = useState<string | null>(null);
+  const [gradeFilter, setGradeFilter] = useState<string | null>(null);
   const dragStartY = useRef<number | null>(null);
 
+  // 지도에서 찾기 (browse mode) location consent — same shared flag/hook as
+  // the task-filtered view, so granting once anywhere never re-prompts.
+  const { coords, showModal: showConsent, allow: allowLocation, skip: skipLocation } = useLocationWithConsent();
+
   useEffect(() => {
-    if (!localStorage.getItem("ll_welcome_shown")) {
-      setShowPopup(true);
-    }
     let cancelled = false;
     void fetchLivePlaces().then(({ places, regions, source }) => {
       if (cancelled || source !== "db") return;
@@ -285,23 +296,49 @@ export default function MapPage() {
     return () => { cancelled = true; };
   }, []);
 
-  function closePopup() {
-    localStorage.setItem("ll_welcome_shown", "1");
-    setShowPopup(false);
+  const isDark = theme === "dark";
+
+  // 맵으로 이동 (task-filtered mode) — bail out to the dedicated view before
+  // building any of the browse-mode layout below. TASK_MAP_CATEGORIES lookup
+  // doubles as validation: an unknown/no-mapping task id just falls through
+  // to the normal browse map instead of an empty filtered screen.
+  const taskParam = searchParams.get("task") as TaskId | null;
+  const taskCategories = taskParam ? TASK_MAP_CATEGORIES[taskParam] : null;
+  if (taskParam && taskCategories) {
+    return <TaskFilteredView taskId={taskParam} isKo={isKo} isDark={isDark} livePlaces={livePlaces} />;
   }
 
   const hotIds = hotPlaceIds(livePlaces, liveSource);
   const hotPlaces = livePlaces.filter((p) => hotIds.includes(p.id));
 
-  const filtered = livePlaces.filter((p) => {
+  // Category chips (CHIPS ∪ MORE_CHIPS) match p.category directly by key —
+  // only "all"/"english"/"S" need special handling.
+  const CATEGORY_CHIP_KEYS = new Set([...CHIPS, ...MORE_CHIPS].map((c) => c.key));
+  let filtered = livePlaces.filter((p) => {
     if (hotIds.includes(p.id)) return false; // shown in PICK strip above
+    if (nameQuery && !p.name_ko.includes(nameQuery) && !p.name_en.toLowerCase().includes(nameQuery.toLowerCase())) return false;
+    if (regionFilter && p.region_id !== regionFilter) return false;
+    if (gradeFilter && getRating(p) !== gradeFilter) return false;
     if (chip === "all") return true;
     if (chip === "english") return p.english_support;
     if (chip === "S") return getRating(p) === "S";
-    if (chip === "restaurant") return p.category === "restaurant";
-    if (chip === "cafe") return p.category === "cafe";
+    if (CATEGORY_CHIP_KEYS.has(chip)) return p.category === chip;
     return true;
   });
+
+  // Once location is granted, "다른 지역 추천" sorts by actual distance from
+  // the user instead of arbitrary DB order — "위치기반으로 모든 데이터가 다
+  // 뜨도록" per the 지도에서 찾기 spec. Falls back to the existing order
+  // (Itaewon-relative, via travelFromItaewon in otherMetaLine) when no coords.
+  if (coords) {
+    filtered = [...filtered].sort((a, b) => {
+      if (a.lat == null || a.lng == null) return 1;
+      if (b.lat == null || b.lng == null) return -1;
+      const da = haversineKm(coords, { lat: a.lat, lng: a.lng });
+      const db = haversineKm(coords, { lat: b.lat, lng: b.lng });
+      return da - db;
+    });
+  }
 
   // Fixed 10-item previews; "view more" now navigates to the area pages.
   const hotVisible = hotPlaces.slice(0, 10);
@@ -313,7 +350,6 @@ export default function MapPage() {
     id: p.id, lat: p.lat!, lng: p.lng!, title: p.name_en, rating: getRating(p),
   }));
 
-  const isDark = theme === "dark";
   const pillBg = isDark ? "#F4F0E8" : "#16151A";
   const pillFg = isDark ? "#16151A" : "#F4F0E8";
   const pillMuted = isDark ? "#8B8598" : "#9A9488";
@@ -378,17 +414,20 @@ export default function MapPage() {
           </span>
         </div>
 
-        {/* Row 2: Search */}
+        {/* Row 2: Search — opens the 지도위의 찾기 modal (location/category/grade/name) */}
         <div style={{ pointerEvents: "auto" }}>
-          <div style={{ background: chipBg, borderRadius: 16, padding: "10px 14px", display: "flex", alignItems: "center", gap: 8, boxShadow: "0 2px 12px rgba(0,0,0,0.12)" }}>
+          <button
+            onClick={() => setShowSearchModal(true)}
+            style={{ width: "100%", background: chipBg, border: "none", cursor: "pointer", borderRadius: 16, padding: "10px 14px", display: "flex", alignItems: "center", gap: 8, boxShadow: "0 2px 12px rgba(0,0,0,0.12)" }}
+          >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--foreground-muted)" strokeWidth="2" strokeLinecap="round">
               <circle cx="11" cy="11" r="7" /><path d="M21 21l-4.35-4.35" />
             </svg>
             <span style={{ fontSize: 14, color: "var(--foreground-muted)" }}>{isKo ? "장소, 동네 검색…" : "Search places…"}</span>
-          </div>
+          </button>
         </div>
 
-        {/* Row 3: Filter chips */}
+        {/* Row 3: Filter chips + 더보기 */}
         <div style={{ display: "flex", gap: 7, overflowX: "auto", scrollbarWidth: "none", pointerEvents: "auto", paddingRight: 4 }}>
           {CHIPS.map((c) => {
             const active = chip === c.key;
@@ -406,12 +445,48 @@ export default function MapPage() {
                   display: "flex", alignItems: "center", gap: 4,
                 }}
               >
-                {/* no icon */}
                 {isKo ? c.ko : c.en}
               </button>
             );
           })}
+          <button
+            onClick={() => setShowMoreCats((v) => !v)}
+            style={{
+              flexShrink: 0, padding: "7px 13px", borderRadius: 999,
+              background: showMoreCats ? "var(--grade-s)" : chipBg,
+              color: showMoreCats ? "#fff" : chipFg,
+              border: "none", cursor: "pointer",
+              fontSize: 13, fontWeight: 500, boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+            }}
+          >
+            {isKo ? "더보기" : "More"}
+          </button>
         </div>
+
+        {/* Row 3.5: More category chips */}
+        {showMoreCats && (
+          <div style={{ display: "flex", gap: 7, overflowX: "auto", scrollbarWidth: "none", pointerEvents: "auto", paddingRight: 4 }}>
+            {MORE_CHIPS.map((c) => {
+              const active = chip === c.key;
+              return (
+                <button
+                  key={c.key}
+                  onClick={() => setChip(c.key)}
+                  style={{
+                    flexShrink: 0, padding: "7px 13px", borderRadius: 999,
+                    background: active ? "var(--grade-s)" : chipBg,
+                    color: active ? "#fff" : chipFg,
+                    border: "none", cursor: "pointer",
+                    fontSize: 13, fontWeight: active ? 700 : 500,
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                  }}
+                >
+                  {isKo ? c.ko : c.en}
+                </button>
+              );
+            })}
+          </div>
+        )}
 
         {/* Row 4: Logged-out hint */}
         <div style={{ pointerEvents: "auto", alignSelf: "flex-start" }}>
@@ -510,12 +585,15 @@ export default function MapPage() {
             {isKo ? "들어가기 전에, 외국인 환영 여부부터 확인하세요." : "Check if a place welcomes foreigners — before you walk in."}
           </div>
           <div style={{ padding: "6px 14px 8px" }}>
-            <div style={{ background: "var(--content-bg)", borderRadius: 12, padding: "9px 14px", display: "flex", alignItems: "center", gap: 8 }}>
+            <button
+              onClick={() => setShowSearchModal(true)}
+              style={{ width: "100%", background: "var(--content-bg)", border: "none", cursor: "pointer", borderRadius: 12, padding: "9px 14px", display: "flex", alignItems: "center", gap: 8 }}
+            >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--foreground-muted)" strokeWidth="2" strokeLinecap="round">
                 <circle cx="11" cy="11" r="7" /><path d="M21 21l-4.35-4.35" />
               </svg>
               <span style={{ fontSize: 13, color: "var(--foreground-muted)" }}>{isKo ? "장소, 동네 검색…" : "Search places…"}</span>
-            </div>
+            </button>
           </div>
           <div style={{ display: "flex", gap: 7, padding: "0 14px 10px", overflowX: "auto", scrollbarWidth: "none" }}>
             {CHIPS.map((c) => {
@@ -526,7 +604,22 @@ export default function MapPage() {
                 </button>
               );
             })}
+            <button onClick={() => setShowMoreCats((v) => !v)} style={{ flexShrink: 0, padding: "5px 12px", borderRadius: 999, border: showMoreCats ? "none" : "1px solid var(--border)", background: showMoreCats ? "var(--grade-s)" : "var(--content-bg)", color: showMoreCats ? "#fff" : "var(--foreground-muted)", fontSize: 12, fontWeight: 400, cursor: "pointer" }}>
+              {isKo ? "더보기" : "More"}
+            </button>
           </div>
+          {showMoreCats && (
+            <div style={{ display: "flex", gap: 7, padding: "0 14px 10px", overflowX: "auto", scrollbarWidth: "none" }}>
+              {MORE_CHIPS.map((c) => {
+                const active = chip === c.key;
+                return (
+                  <button key={c.key} onClick={() => setChip(c.key)} style={{ flexShrink: 0, padding: "5px 12px", borderRadius: 999, border: active ? "none" : "1px solid var(--border)", background: active ? "var(--grade-s)" : "var(--content-bg)", color: active ? "#fff" : "var(--foreground-muted)", fontSize: 12, fontWeight: active ? 700 : 400, cursor: "pointer" }}>
+                    {isKo ? c.ko : c.en}
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
         <div style={{ flex: 1, overflowY: "auto", minHeight: 0, padding: "8px 14px" }}>
           {/* 이태원 PICK — PC, big badge via PlaceCard2 hot */}
@@ -589,7 +682,35 @@ export default function MapPage() {
     <>
       {mobileView}
       {pcView}
-      {showPopup && <WelcomePopup isDark={isDark} isKo={isKo} onClose={closePopup} />}
+      {showConsent && <LocationConsent isDark={isDark} isKo={isKo} onAllow={allowLocation} onSkip={skipLocation} />}
+      {showSearchModal && (
+        <SearchModal
+          isDark={isDark}
+          isKo={isKo}
+          regions={liveRegions}
+          name={nameQuery}
+          region={regionFilter}
+          grade={gradeFilter}
+          category={chip}
+          onClose={() => setShowSearchModal(false)}
+          onApply={(v) => {
+            setNameQuery(v.name);
+            setRegionFilter(v.region);
+            setGradeFilter(v.grade);
+            setChip(v.category);
+            setShowSearchModal(false);
+          }}
+        />
+      )}
     </>
+  );
+}
+
+// useSearchParams requires a Suspense boundary in the App Router.
+export default function MapPage() {
+  return (
+    <Suspense>
+      <MapPageInner />
+    </Suspense>
   );
 }

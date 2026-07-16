@@ -9,14 +9,33 @@ export const ITAEWON = { lat: 37.534, lng: 126.9946 };
 // existing Itaewon anchor unchanged).
 export const INCHEON_AIRPORT = { lat: 37.4602, lng: 126.4407 };
 
-export type FilterKey = "all" | "english" | "S" | "restaurant" | "cafe";
+export type FilterKey =
+  | "all" | "english" | "S"
+  | "restaurant" | "cafe" | "bar" | "market" | "activity" | "experience"
+  | "health" | "beauty" | "shopping"
+  | "telecom" | "bank" | "government" | "realestate";
 
+// Always-visible row. "더보기" reveals MORE_CHIPS below it (지도에서 찾기 mode).
 export const CHIPS: { key: FilterKey; ko: string; en: string; hasIcon?: boolean }[] = [
   { key: "all",        ko: "전체",    en: "All" },
   { key: "english",    ko: "영어 OK", en: "English OK", hasIcon: true },
   { key: "S",          ko: "S등급",   en: "S Grade" },
   { key: "restaurant", ko: "음식점",   en: "Food" },
   { key: "cafe",       ko: "카페",    en: "Café" },
+];
+
+export const MORE_CHIPS: { key: FilterKey; ko: string; en: string }[] = [
+  { key: "bar",        ko: "술집",    en: "Bar" },
+  { key: "market",     ko: "마트/시장", en: "Market" },
+  { key: "activity",   ko: "액티비티", en: "Activity" },
+  { key: "experience", ko: "체험",    en: "Experience" },
+  { key: "health",     ko: "병원/약국", en: "Health" },
+  { key: "beauty",     ko: "뷰티",    en: "Beauty" },
+  { key: "shopping",   ko: "쇼핑",    en: "Shopping" },
+  { key: "telecom",    ko: "통신사",   en: "Telecom" },
+  { key: "bank",       ko: "은행",    en: "Bank" },
+  { key: "government", ko: "공공기관", en: "Government" },
+  { key: "realestate", ko: "부동산",   en: "Real Estate" },
 ];
 
 // Real travel times & distances from Itaewon
