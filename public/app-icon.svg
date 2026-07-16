@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#13273f"/>
+      <stop offset="1" stop-color="#0a1828"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <text x="256" y="238" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="800" font-size="48" fill="#ffffff" letter-spacing="-1">Localoop</text>
+  <text x="256" y="286" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="800" font-size="30" fill="#FF6A4D" letter-spacing="7">KOREA</text>
+  <text x="256" y="330" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="500" font-size="17" fill="#C9C4D6">Dig into local Korea</text>
+</svg>

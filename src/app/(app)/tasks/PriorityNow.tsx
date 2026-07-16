@@ -190,7 +190,7 @@ export function PriorityNow() {
                 {subLabel(isKo ? "유의사항" : "CAUTIONS")}
                 <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 14 }}>
                   {guide.cautions.map((cn, ci) => (
-                    <div key={ci} style={{ fontSize: 11, color: "var(--foreground-muted)", background: "var(--content-bg)", borderRadius: 8, padding: "8px 10px", lineHeight: 1.6, borderLeft: "3px solid var(--grade-s)" }}>
+                    <div key={ci} style={{ fontSize: 11, color: "var(--foreground-muted)", background: "var(--content-bg)", borderRadius: 8, padding: "8px 10px", lineHeight: 1.6 }}>
                       {bi(cn)}
                     </div>
                   ))}
@@ -269,7 +269,7 @@ export function PriorityNow() {
       {[
         {
           href: "/map",
-          label: { ko: "지도에서 찾기", en: "Find on Map" },
+          label: { ko: "지도에서 시작하기", en: "Start on Map" },
           icon: (
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--grade-s)" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
@@ -367,7 +367,8 @@ export function PriorityNow() {
       )}
 
       {/* Active cards — top 10 by rank; the rest fold into "잠긴 과제" below.
-          The quick-link row sits after card 7, not at the very bottom. */}
+          The quick-link row sits after card 3, so it lands near the bottom
+          of a phone screen right after landing on the page. */}
       <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
         {visible.length === 0 && (
           <div style={{ background: "var(--card)", borderRadius: 16, border: "1px solid var(--border)", padding: "16px 14px", fontSize: 13, color: "var(--foreground-muted)", textAlign: "center" }}>
@@ -375,16 +376,16 @@ export function PriorityNow() {
           </div>
         )}
 
-        {visible.slice(0, 7).map(renderCard)}
+        {visible.slice(0, 3).map(renderCard)}
       </div>
 
-      {visible.length > 7 && quickLinks}
+      {visible.length > 3 && quickLinks}
 
       <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
-        {visible.slice(7).map((s, i) => renderCard(s, i + 7))}
+        {visible.slice(3).map((s, i) => renderCard(s, i + 3))}
       </div>
 
-      {visible.length <= 7 && quickLinks}
+      {visible.length <= 3 && quickLinks}
 
       {/* Locked tasks — muted collapsed row */}
       {locked.length > 0 && (

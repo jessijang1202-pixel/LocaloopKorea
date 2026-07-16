@@ -12,9 +12,9 @@ export default function manifest(): MetadataRoute.Manifest {
     orientation: "portrait",
     icons: [
       {
-        src: "/korea-map.png",
+        src: "/app-icon.svg",
         sizes: "any",
-        type: "image/png",
+        type: "image/svg+xml",
         purpose: "any",
       },
     ],

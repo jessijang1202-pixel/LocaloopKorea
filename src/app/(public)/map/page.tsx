@@ -14,7 +14,7 @@ import { HamburgerMenu } from "@/components/layout/HamburgerMenu";
 import { LocationConsent } from "@/components/map/LocationConsent";
 import { useLocationWithConsent } from "@/lib/geo-consent";
 import { CAT_LABEL } from "@/content/places";
-import { ITAEWON, INCHEON_AIRPORT, CHIPS, MORE_CHIPS, HOT_PLACE_IDS, type FilterKey } from "@/content/map";
+import { INCHEON_AIRPORT, CHIPS, MORE_CHIPS, HOT_PLACE_IDS, type FilterKey } from "@/content/map";
 import { TASK_MAP_CATEGORIES } from "@/content/task-map-categories";
 import { TASK_NODES, type TaskId } from "@/lib/engine";
 import { haversineKm } from "@/lib/course/geo";
@@ -381,7 +381,7 @@ function MapPageInner() {
         <KakaoMap
           lang={isKo ? "ko" : "en"}
           pins={pins}
-          center={ITAEWON}
+          center={coords ?? INCHEON_AIRPORT}
           zoom={5}
           onPinClick={(id) => { const p = livePlaces.find((x) => x.id === id); if (p) setSelected(p); }}
         />
@@ -407,8 +407,7 @@ function MapPageInner() {
               <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="var(--grade-s)" />
               <circle cx="12" cy="9" r="2.8" fill="white" />
             </svg>
-            <span style={{ fontSize: 14, fontWeight: 700 }}>{isKo ? "이태원" : "Itaewon"}</span>
-            <span style={{ fontSize: 12, color: pillMuted }}>{isKo ? "Itaewon" : "이태원"}</span>
+            <span style={{ fontSize: 14, fontWeight: 700 }}>{coords ? (isKo ? "내 위치" : "My Location") : (isKo ? "인천공항" : "Incheon Airport")}</span>
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
               <path d="M6 9l6 6 6-6" />
             </svg>
@@ -512,7 +511,7 @@ function MapPageInner() {
               <rect x="3" y="11" width="18" height="11" rx="2" />
               <path d="M7 11V7a5 5 0 0110 0v4" strokeLinecap="round" />
             </svg>
-            <span style={{ fontSize: 11, color: "#F4F0E8", fontWeight: 500 }}>{isKo ? "로그인 전 · 이태원 기본" : "Guest · Itaewon default"}</span>
+            <span style={{ fontSize: 11, color: "#F4F0E8", fontWeight: 500 }}>{isKo ? "로그인 전 · 위치 기반" : "Guest · Location-based"}</span>
           </div>
         </div>
       </div>
@@ -670,7 +669,7 @@ function MapPageInner() {
         <KakaoMap
           lang={isKo ? "ko" : "en"}
           pins={pins}
-          center={ITAEWON}
+          center={coords ?? INCHEON_AIRPORT}
           zoom={5}
           onPinClick={(id) => { const p = livePlaces.find((x) => x.id === id); if (p) setSelected(p); }}
         />

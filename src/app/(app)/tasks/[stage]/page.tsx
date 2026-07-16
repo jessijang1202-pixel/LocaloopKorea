@@ -179,7 +179,7 @@ export default function StageDetailPage() {
 
                 {/* Tip — always visible */}
                 {!done && (
-                  <div style={{ fontSize: 11, color: "var(--foreground-muted)", background: "var(--content-bg)", borderRadius: 8, padding: "7px 10px", lineHeight: 1.6, borderLeft: "3px solid var(--grade-s)" }}>
+                  <div style={{ fontSize: 11, color: "var(--foreground-muted)", background: "var(--content-bg)", borderRadius: 8, padding: "7px 10px", lineHeight: 1.6 }}>
                     {info.tip}
                   </div>
                 )}
