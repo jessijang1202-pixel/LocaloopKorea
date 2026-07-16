@@ -15,12 +15,15 @@ export default function TasksPage() {
 
   return (
     <div style={{ background: "var(--background)", minHeight: "100%", paddingBottom: 24 }}>
-      <div style={{ padding: "16px 16px 6px" }}>
-        <div style={{ fontSize: 20, fontWeight: 800, color: "var(--foreground)", letterSpacing: "-0.02em" }}>
-          {isKo ? "태스크" : "Tasks"}
+      {/* Hero headline — /tasks is the de facto home screen now (landed from
+          the /intro intent popup), so this gets the big impactful treatment
+          instead of the small page-title pattern other pages use. */}
+      <div style={{ padding: "22px 16px 10px" }}>
+        <div style={{ fontSize: 23, fontWeight: 900, color: "var(--foreground)", letterSpacing: "-0.02em", lineHeight: 1.3 }}>
+          {isKo ? <>여기서부터,<br />진짜 한국 생활이 시작돼요.</> : <>This is where your<br />real life in Korea begins.</>}
         </div>
-        <div style={{ fontSize: 12.5, color: "var(--foreground-muted)", marginTop: 3 }}>
-          {isKo ? "한국 도착 이후, 지금 당신이 해야 할 일들." : "Everything you need to do after landing in Korea."}
+        <div style={{ fontSize: 13.5, color: "var(--foreground-muted)", marginTop: 8, lineHeight: 1.5 }}>
+          {isKo ? "당신의 완벽한 한국 적응을, 하나씩 도와드릴게요." : "We'll help you settle in perfectly — one step at a time."}
         </div>
       </div>
 

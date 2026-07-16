@@ -20,7 +20,8 @@ const KakaoMap = dynamic(
 function IntentPopup({ isDark, isKo, onStart }: { isDark: boolean; isKo: boolean; onStart: () => void }) {
   const cardBg = isDark ? "#1D1A22" : "#ffffff";
   const cardBorder = isDark ? "1px solid #2C2833" : "none";
-  const scrimBg = isDark ? "rgba(0,0,0,0.68)" : "rgba(10,8,6,0.60)";
+  // No blur — the map behind the popup should read clearly, not obscured.
+  const scrimBg = isDark ? "rgba(0,0,0,0.38)" : "rgba(10,8,6,0.32)";
   const eyebrow = isDark ? "#FF8A6D" : "#E2431F";
   const headline = isDark ? "#F4F0E8" : "#16151A";
   const bodyText = isDark ? "#C9C4D6" : "#3A3630";
@@ -29,7 +30,7 @@ function IntentPopup({ isDark, isKo, onStart }: { isDark: boolean; isKo: boolean
   return (
     <div style={{
       position: "fixed", inset: 0, zIndex: 9999,
-      background: scrimBg, backdropFilter: "blur(3px)", WebkitBackdropFilter: "blur(3px)",
+      background: scrimBg,
       display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 20px",
     }}>
       <div style={{
