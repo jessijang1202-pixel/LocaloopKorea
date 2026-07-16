@@ -287,7 +287,15 @@ export type AppCategory =
   | "accommodation"
   | "health"
   | "beauty"
-  | "market";
+  | "market"
+  // Task-driven categories — added so the task-filtered map ("맵으로 이동" on
+  // a task card) has real places to show for admin tasks: T2(SIM)→telecom,
+  // T12/T13/T16(ARC/visa/health insurance)→government, T14(bank)→bank,
+  // T15(housing)→realestate.
+  | "telecom"
+  | "bank"
+  | "government"
+  | "realestate";
 
 // Bars share the FD6 food group in Kakao, so they are detected from the
 // category breadcrumb text rather than a distinct group code.
@@ -307,6 +315,20 @@ const BEAUTY_RE = /미용|네일|뷰티|헤어|피부관리|왁싱|바버/;
 // reliable signal instead (e.g. "박쌤쿠킹클래스", "이연공방"), so this is
 // checked against both the breadcrumb and the place name.
 const EXPERIENCE_RE = /공방|클래스|원데이|쿠킹|플라워|캘리그라피|도자기|베이킹|가죽공예|목공/;
+
+// Phone/carrier shops have no dedicated Kakao group code either (they land
+// under a generic 서비스업/판매업 breadcrumb) — name + breadcrumb keyword
+// match, same approach as EXPERIENCE_RE above.
+const TELECOM_RE = /휴대폰|핸드폰|이동통신|스마트폰|SK텔레콤|LG\s?U\+|알뜰폰|텔레콤대리점/;
+
+// Government offices (immigration, national health insurance branches) come
+// back from Kakao with category_group_code "" (empty) — NOT "PO3" as its docs
+// suggest. Requesting with category_group_code=PO3 as a filter therefore
+// silently zeroes out every real result (verified directly against the raw
+// Kakao API — a 서울출입국외국인청 hit carries category_name "사회,공공기관 >
+// 행정기관 > 법무부 > 출입국/외국인정책본부" with an empty group code). Detected
+// from the breadcrumb instead, same as the other keyword-only categories.
+const GOVERNMENT_RE = /출입국|공공기관|행정기관|건강보험공단|주민센터|구청|시청/;
 
 // Map a Kakao place to one of our app categories.
 //
@@ -329,10 +351,12 @@ export function kakaoGroupToCategory(place: {
   const name = place.category_name ?? "";
   const code = place.category_group_code ?? "";
 
-  // 1) breadcrumb + name detections without a dedicated group code. Beauty and
-  //    experience run before bar (see their notes above).
+  // 1) breadcrumb + name detections without a dedicated group code. Beauty,
+  //    experience, and telecom run before bar (see their notes above).
   if (BEAUTY_RE.test(name)) return "beauty";
   if (EXPERIENCE_RE.test(name) || EXPERIENCE_RE.test(placeName)) return "experience";
+  if (TELECOM_RE.test(name) || TELECOM_RE.test(placeName)) return "telecom";
+  if (GOVERNMENT_RE.test(name)) return "government";
   if (BAR_RE.test(name)) return "bar";
 
   // 2) trust the group code when Kakao provides one.
@@ -351,6 +375,12 @@ export function kakaoGroupToCategory(place: {
       return "health";
     case "MT1": // 대형마트
       return "market";
+    case "BK9": // 은행
+      return "bank";
+    case "AG2": // 부동산중개
+      return "realestate";
+    case "PO3": // 공공기관
+      return "government";
   }
 
   // 3) generic keyword search — classify by the leading breadcrumb segment.
@@ -411,4 +441,18 @@ export const CATEGORY_SEARCH: Record<
     { suffix: "마트", groupCode: "MT1" },
     { suffix: "시장", groupCode: null },
   ],
+  // Task-driven categories (see AppCategory note above) — each gets its own
+  // search budget rather than riding along with a broader category.
+  telecom: [
+    { suffix: "휴대폰매장", groupCode: null },
+    { suffix: "이동통신", groupCode: null },
+  ],
+  bank: [{ suffix: "은행", groupCode: "BK9" }],
+  // No groupCode filter — Kakao doesn't actually tag these with PO3 (see
+  // GOVERNMENT_RE note above); filtering by it returns zero real results.
+  government: [
+    { suffix: "출입국관리사무소", groupCode: null },
+    { suffix: "국민건강보험공단", groupCode: null },
+  ],
+  realestate: [{ suffix: "부동산", groupCode: "AG2" }],
 };

@@ -8,6 +8,10 @@ export const PLACE_CATEGORIES = [
   { value: "experience", label_en: "Hands-on Experience", label_ko: "원데이클래스", icon: "🧑‍🍳" },
   { value: "health", label_en: "Health", label_ko: "건강", icon: "🏥" },
   { value: "shopping", label_en: "Shopping", label_ko: "쇼핑", icon: "🛍️" },
+  { value: "telecom", label_en: "Telecom", label_ko: "통신사", icon: "📱" },
+  { value: "bank", label_en: "Bank", label_ko: "은행", icon: "🏦" },
+  { value: "government", label_en: "Government Office", label_ko: "공공기관", icon: "🏛️" },
+  { value: "realestate", label_en: "Real Estate", label_ko: "부동산", icon: "🏠" },
 ];
 
 export const GUIDE_CATEGORIES = [

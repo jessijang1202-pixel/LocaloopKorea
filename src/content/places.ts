@@ -16,6 +16,10 @@ export const CAT_LABEL: Record<string, { ko: string; en: string }> = {
   experience: { ko: "체험",   en: "Experience" },
   health:     { ko: "헬스",   en: "Health" },
   transport:  { ko: "교통",   en: "Transport" },
+  telecom:    { ko: "통신사",  en: "Telecom" },
+  bank:       { ko: "은행",   en: "Bank" },
+  government: { ko: "공공기관", en: "Government" },
+  realestate: { ko: "부동산",  en: "Real Estate" },
 };
 
 export const WHY_TAGS: Record<string, { ko: string; en: string }[]> = {

@@ -3,8 +3,11 @@
 // POST { region, categories?, limitPerCategory? }
 //   - region            required — a Korean neighborhood name, e.g. "압구정".
 //   - categories        subset of restaurant|cafe|bar|activity|experience|
-//                       accommodation|health|beauty|market.
-//                       Default: everything except accommodation.
+//                       accommodation|health|beauty|market|telecom|bank|
+//                       government|realestate.
+//                       Default: everything except accommodation and the
+//                       task-driven categories (telecom/bank/government/
+//                       realestate — opt-in only, same as accommodation).
 //   - limitPerCategory  1..10, default 5.
 //
 // Flow:
@@ -51,6 +54,10 @@ const ALL_CATEGORIES: AppCategory[] = [
   "health",
   "beauty",
   "market",
+  "telecom",
+  "bank",
+  "government",
+  "realestate",
 ];
 const DEFAULT_CATEGORIES: AppCategory[] = [
   "restaurant",

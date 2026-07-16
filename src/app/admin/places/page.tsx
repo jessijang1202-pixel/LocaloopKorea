@@ -29,6 +29,10 @@ const CATEGORY_OPTIONS: { value: string; label: string }[] = [
   { value: "health", label: "병원/약국" },
   { value: "beauty", label: "뷰티" },
   { value: "shopping", label: "쇼핑" },
+  { value: "telecom", label: "통신사" },
+  { value: "bank", label: "은행" },
+  { value: "government", label: "공공기관" },
+  { value: "realestate", label: "부동산" },
 ];
 
 const CATEGORY_LABELS: Record<string, string> = Object.fromEntries(
@@ -359,6 +363,10 @@ const COLLECT_CATEGORIES: { value: string; label: string }[] = [
   { value: "activity", label: "문화·명소" },
   { value: "experience", label: "체험(원데이클래스)" },
   { value: "accommodation", label: "숙박" },
+  { value: "telecom", label: "통신사" },
+  { value: "bank", label: "은행" },
+  { value: "government", label: "공공기관" },
+  { value: "realestate", label: "부동산" },
 ];
 
 interface CollectResponse {
