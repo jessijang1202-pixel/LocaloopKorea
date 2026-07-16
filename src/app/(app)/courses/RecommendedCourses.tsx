@@ -295,54 +295,66 @@ export function RecommendedCourses() {
         )}
       </div>
 
-      {/* Card grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-        {cards.map((card, i) => (
-          <CardButton
-            key={`${card.region.id}-${card.theme.id}`}
-            card={card}
-            isKo={isKo}
-            active={selected === i}
-            onClick={() => setSelected(i)}
-          />
-        ))}
-      </div>
-
-      {/* Expanded selection */}
-      {active && (
-        <div ref={expandedRef} style={{ marginTop: 12 }}>
-          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: 8 }}>
-            <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 14.5, fontWeight: 700, color: "var(--foreground)" }}>
-                {isKo ? active.theme.name.ko : active.theme.name.en}
-              </div>
-              <div style={{ fontSize: 11.5, color: "var(--foreground-muted)" }}>
-                {isKo ? active.region.name_ko : active.region.name_en}
-              </div>
+      {/* Card grid, rendered row by row so the expanded panel can slot in
+          directly under the clicked card instead of at the bottom of the
+          whole grid. */}
+      {Array.from({ length: Math.ceil(cards.length / 2) }).map((_, row) => {
+        const rowCards = cards.slice(row * 2, row * 2 + 2);
+        const rowHasActive = selected !== null && Math.floor(selected / 2) === row;
+        return (
+          <div key={row} style={{ marginBottom: 10 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+              {rowCards.map((card, ci) => {
+                const i = row * 2 + ci;
+                return (
+                  <CardButton
+                    key={`${card.region.id}-${card.theme.id}`}
+                    card={card}
+                    isKo={isKo}
+                    active={selected === i}
+                    onClick={() => setSelected(selected === i ? null : i)}
+                  />
+                );
+              })}
             </div>
-            <button
-              onClick={() => setSelected(null)}
-              aria-label={isKo ? "닫기" : "Close"}
-              style={{
-                flexShrink: 0, width: 30, height: 30, borderRadius: "50%",
-                background: "var(--content-bg)", border: "1px solid var(--border)",
-                color: "var(--foreground-muted)", cursor: "pointer",
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}
-            >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-                <path d="M18 6L6 18M6 6l12 12" />
-              </svg>
-            </button>
+
+            {rowHasActive && active && (
+              <div ref={expandedRef} style={{ marginTop: 10 }}>
+                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: 8 }}>
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: 14.5, fontWeight: 700, color: "var(--foreground)" }}>
+                      {isKo ? active.theme.name.ko : active.theme.name.en}
+                    </div>
+                    <div style={{ fontSize: 11.5, color: "var(--foreground-muted)" }}>
+                      {isKo ? active.region.name_ko : active.region.name_en}
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setSelected(null)}
+                    aria-label={isKo ? "닫기" : "Close"}
+                    style={{
+                      flexShrink: 0, width: 30, height: 30, borderRadius: "50%",
+                      background: "var(--content-bg)", border: "1px solid var(--border)",
+                      color: "var(--foreground-muted)", cursor: "pointer",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                    }}
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                      <path d="M18 6L6 18M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                <CourseResultView
+                  course={active.course}
+                  profile={active.profile}
+                  isKo={isKo}
+                  note={isKo ? active.theme.tagline.ko : active.theme.tagline.en}
+                />
+              </div>
+            )}
           </div>
-          <CourseResultView
-            course={active.course}
-            profile={active.profile}
-            isKo={isKo}
-            note={isKo ? active.theme.tagline.ko : active.theme.tagline.en}
-          />
-        </div>
-      )}
+        );
+      })}
     </div>
   );
 }

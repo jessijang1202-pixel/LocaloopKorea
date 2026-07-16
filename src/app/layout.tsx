@@ -57,8 +57,12 @@ export default function RootLayout({
       </head>
       <body className="min-h-full bg-[var(--background)] text-[var(--foreground)] antialiased">
         {/* Theme init (default light) + install prompt capture — must run before React mounts */}
-        {/* The "ll-theme" and "ll_lang" literals below must stay in sync with THEME_KEY in src/lib/theme.ts and LANG_KEY in src/lib/lang.ts */}
-        <script dangerouslySetInnerHTML={{ __html: `(function(){var t=localStorage.getItem("ll-theme")||"light";document.documentElement.setAttribute("data-theme",t);var l=localStorage.getItem("ll_lang")||"en";document.documentElement.setAttribute("data-lang",l);})();window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.deferredPrompt=e;});` }} />
+        {/* The "ll-theme", "ll_lang", and "ll_default_migrated_v1" literals below must stay in sync
+            with THEME_KEY/DEFAULT_MIGRATION_KEY in src/lib/theme.ts and LANG_KEY/DEFAULT_MIGRATION_KEY in src/lib/lang.ts.
+            The migration reset clears any pre-existing "ko"/"dark" values from before this app defaulted
+            to light+English, so the new default actually takes effect instead of being silently
+            overridden forever by a stale stored preference. */}
+        <script dangerouslySetInnerHTML={{ __html: `(function(){if(!localStorage.getItem("ll_default_migrated_v1")){localStorage.removeItem("ll-theme");localStorage.removeItem("ll_lang");localStorage.setItem("ll_default_migrated_v1","1");}var t=localStorage.getItem("ll-theme")||"light";document.documentElement.setAttribute("data-theme",t);var l=localStorage.getItem("ll_lang")||"en";document.documentElement.setAttribute("data-lang",l);})();window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.deferredPrompt=e;});` }} />
         {children}
       </body>
     </html>

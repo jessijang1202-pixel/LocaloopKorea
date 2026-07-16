@@ -19,6 +19,16 @@ export function getRating(p: Place): "S" | "A" | "B" | "C" {
   return "C";
 }
 
+// Categories that are administrative/infrastructure errands rather than
+// consumer-facing hospitality — a foreigner-friendliness grade doesn't mean
+// much for a government office or a telecom counter, so the map marks them
+// with a plain pin instead of a grade badge (KakaoMap.tsx, map/page.tsx).
+export const NON_GRADE_CATEGORIES = new Set(["telecom", "bank", "government", "realestate", "transport"]);
+
+export function isGradeableCategory(category: string): boolean {
+  return !NON_GRADE_CATEGORIES.has(category);
+}
+
 // The bilingual "OK" tags shown under the grade badge — same three booleans
 // getRating() uses, surfaced individually so a card can show which criteria
 // a place actually meets instead of a redundant bilingual name line.

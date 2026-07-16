@@ -124,8 +124,25 @@ function TaskFilteredView({
     .map((p) => ({ place: p, km: haversineKm(origin, { lat: p.lat as number, lng: p.lng as number }) }))
     .sort((a, b) => a.km - b.km);
 
+  const pins = matches.map(({ place }) => ({
+    id: place.id, lat: place.lat as number, lng: place.lng as number,
+    title: place.name_en, rating: getRating(place), category: place.category,
+  }));
+
   return (
     <div style={{ minHeight: "100dvh", background: "var(--background)" }}>
+      {/* Map first — real pins for this task's category, centered on the
+          resolved location (Incheon Airport fallback) — then the matching
+          places list below, same as the browse map's map-then-list layout. */}
+      <div style={{ position: "relative", width: "100%", height: 260 }}>
+        <KakaoMap
+          lang={isKo ? "ko" : "en"}
+          pins={pins}
+          center={origin}
+          zoom={6}
+        />
+      </div>
+
       <div style={{ padding: "16px 16px 14px", borderBottom: "1px solid var(--border)" }}>
         <Link href="/tasks" style={{ display: "inline-flex", alignItems: "center", gap: 5, textDecoration: "none", color: "var(--foreground-muted)", fontSize: 13, fontWeight: 600, marginBottom: 10 }}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
@@ -347,7 +364,7 @@ function MapPageInner() {
     liveRegions.find((r) => r.name_ko === "이태원")?.slug ?? "itaewon";
 
   const pins = livePlaces.filter((p) => p.lat && p.lng).map((p) => ({
-    id: p.id, lat: p.lat!, lng: p.lng!, title: p.name_en, rating: getRating(p),
+    id: p.id, lat: p.lat!, lng: p.lng!, title: p.name_en, rating: getRating(p), category: p.category,
   }));
 
   const pillBg = isDark ? "#F4F0E8" : "#16151A";

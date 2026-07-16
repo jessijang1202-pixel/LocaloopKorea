@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { RATING_COLORS, RATING_TEXT } from "@/lib/grades";
+import { RATING_COLORS, RATING_TEXT, isGradeableCategory } from "@/lib/grades";
 
 export interface MapPin {
   id: string;
@@ -9,6 +9,7 @@ export interface MapPin {
   lng: number;
   title: string;
   rating?: string;
+  category?: string;
 }
 
 interface KakaoMapProps {
@@ -55,19 +56,29 @@ export function KakaoMap({ pins, center, zoom = 5, onPinClick, lang = "ko" }: Ka
       const pos = new kakao.maps.LatLng(pin.lat, pin.lng);
       if (!bounds.contain(pos)) continue;
 
-      const color = RATING_COLORS[pin.rating ?? "C"] ?? "#FFC93C";
-      const textColor = RATING_TEXT[pin.rating ?? "C"] ?? "#3a2c00";
-
       // HTMLElement content so the overlay itself is clickable (CustomOverlay
       // does not support kakao event listeners).
       const el = document.createElement("div");
       el.style.cssText =
         "display:flex;flex-direction:column;align-items:center;cursor:pointer;filter:drop-shadow(0 3px 8px rgba(0,0,0,0.28));";
-      el.innerHTML = `
-        <div style="background:${color};border-radius:10px;padding:5px 11px;font-size:14px;font-weight:800;color:${textColor};letter-spacing:0.04em;line-height:1;">
-          ${pin.rating ?? "?"}
-        </div>
-        <div style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid ${color};"></div>`;
+
+      if (pin.category && !isGradeableCategory(pin.category)) {
+        // Administrative/infrastructure places (telecom, bank, government,
+        // real estate) — plain neutral pin, no grade badge.
+        el.innerHTML = `
+          <div style="width:26px;height:26px;border-radius:50%;background:#5B5568;border:2px solid #fff;display:flex;align-items:center;justify-content:center;">
+            <div style="width:8px;height:8px;border-radius:50%;background:#fff;"></div>
+          </div>
+          <div style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid #5B5568;margin-top:-1px;"></div>`;
+      } else {
+        const color = RATING_COLORS[pin.rating ?? "C"] ?? "#FFC93C";
+        const textColor = RATING_TEXT[pin.rating ?? "C"] ?? "#3a2c00";
+        el.innerHTML = `
+          <div style="background:${color};border-radius:10px;padding:5px 11px;font-size:14px;font-weight:800;color:${textColor};letter-spacing:0.04em;line-height:1;">
+            ${pin.rating ?? "?"}
+          </div>
+          <div style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid ${color};"></div>`;
+      }
       const pinId = pin.id;
       el.addEventListener("click", () => onPinClickRef.current?.(pinId));
 
