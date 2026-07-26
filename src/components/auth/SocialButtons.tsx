@@ -43,7 +43,7 @@ export function SocialButtons() {
   async function signInWith(provider: Provider) {
     await supabase.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: `${window.location.origin}/auth/callback?next=/map` },
+      options: { redirectTo: `${window.location.origin}/auth/callback?next=/tasks` },
     });
   }
 

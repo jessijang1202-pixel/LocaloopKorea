@@ -46,9 +46,11 @@ export function requestLocation(): Promise<UserCoords | null> {
 export interface LocationConsentState {
   coords: UserCoords | null;
   resolved: boolean; // true once we have an answer (coords or confirmed null)
+  refreshing: boolean;
   showModal: boolean;
   allow: () => void;
   skip: () => void;
+  refresh: () => void;
 }
 
 // Drives LocationConsent.tsx: shows the modal only the first time anywhere
@@ -57,6 +59,7 @@ export interface LocationConsentState {
 export function useLocationWithConsent(): LocationConsentState {
   const [coords, setCoords] = useState<UserCoords | null>(null);
   const [resolved, setResolved] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
@@ -85,5 +88,17 @@ export function useLocationWithConsent(): LocationConsentState {
     setResolved(true);
   }
 
-  return { coords, resolved, showModal, allow, skip };
+  // On-demand re-request — e.g. a "recenter to my location" map control.
+  // The consent modal never reappears here (already answered once); the
+  // browser's own native permission prompt handles a not-yet-decided state.
+  function refresh() {
+    setRefreshing(true);
+    void requestLocation().then((c) => {
+      setCoords(c);
+      setResolved(true);
+      setRefreshing(false);
+    });
+  }
+
+  return { coords, resolved, refreshing, showModal, allow, skip, refresh };
 }

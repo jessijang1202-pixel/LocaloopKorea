@@ -43,13 +43,30 @@ async function recompute(
 ): Promise<RecomputeResult> {
   const force = body.force === true;
 
-  // Which places to process.
-  let placesQuery = supabase.from("places").select("id,category");
-  if (body.placeId) placesQuery = placesQuery.eq("id", body.placeId);
-
-  const { data: placesData, error: placesErr } = await placesQuery;
-  if (placesErr) throw new Error(placesErr.message);
-  const places = (placesData ?? []) as PlaceRow[];
+  // Which places to process. Paged — Supabase caps an unbounded select at
+  // 1000 rows, so a bare `all: true` recompute was silently only touching
+  // the first 1000 places (~25% of the table) and reporting that as "done".
+  const places: PlaceRow[] = [];
+  if (body.placeId) {
+    const { data, error } = await supabase
+      .from("places")
+      .select("id,category")
+      .eq("id", body.placeId);
+    if (error) throw new Error(error.message);
+    places.push(...((data ?? []) as PlaceRow[]));
+  } else {
+    for (let from = 0; ; from += 1000) {
+      const { data, error } = await supabase
+        .from("places")
+        .select("id,category")
+        .order("id")
+        .range(from, from + 999);
+      if (error) throw new Error(error.message);
+      const page = (data ?? []) as PlaceRow[];
+      places.push(...page);
+      if (page.length < 1000) break;
+    }
+  }
 
   const result: RecomputeResult = {
     total: places.length,

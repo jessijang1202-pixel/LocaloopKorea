@@ -1,15 +1,24 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-// Set to true to bypass all auth redirects for testing. Re-enable for production.
-const BYPASS_AUTH = true;
+// Regular-app auth (login/protected routes) is live. Admin auth stays
+// bypassed until an account is actually promoted to role="admin" in the
+// `profiles` table — right now no such row exists, and there is no
+// SUPABASE_SERVICE_ROLE_KEY configured to self-provision one, so flipping
+// this on would lock everyone out of /admin with no recovery path. Promote
+// your account's `profiles.role` to "admin" (Supabase dashboard SQL editor:
+// update profiles set role = 'admin' where id = '<your auth.users id>';),
+// then flip this to false.
+const BYPASS_ADMIN_AUTH = true;
+const BYPASS_APP_AUTH = false;
 
-const PROTECTED = [
-  "/tasks", "/courses", "/community", "/chat", "/profile",
-  "/places", "/guides", "/food", "/meetups", "/settings", "/saved",
-];
+// Map, tasks, and other browsing surfaces stay open to anonymous visitors —
+// login is required only for the personal/write features (profile, community
+// posting, saved places). Gating /tasks would force a login step in front of
+// the airport-landing -> tasks flow the whole app is built around.
+const PROTECTED = ["/profile", "/community", "/saved"];
 
-const ONBOARDING_GATED = ["/tasks", "/courses", "/community"];
+const ONBOARDING_GATED = ["/community"];
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
@@ -31,7 +40,7 @@ export async function updateSession(request: NextRequest) {
 
   // ── Admin route protection ──
   if (isAdminRoute && !isAdminLogin) {
-    if (BYPASS_AUTH || !url.startsWith("https://") || key.length < 20) {
+    if (BYPASS_ADMIN_AUTH || !url.startsWith("https://") || key.length < 20) {
       return supabaseResponse;
     }
 
@@ -72,8 +81,8 @@ export async function updateSession(request: NextRequest) {
     return supabaseResponse;
   }
 
-  // ── Regular app auth bypass for development ──────────────────────
-  if (BYPASS_AUTH) return supabaseResponse;
+  // ── Regular app auth ──────────────────────────────────────────────
+  if (BYPASS_APP_AUTH) return supabaseResponse;
 
   if (!url.startsWith("https://") || key.length < 20) {
     return supabaseResponse;
@@ -112,7 +121,7 @@ export async function updateSession(request: NextRequest) {
 
   if (user && (isAuthPage || isIntroPage)) {
     const dest = request.nextUrl.clone();
-    dest.pathname = "/map";
+    dest.pathname = "/tasks";
     return NextResponse.redirect(dest);
   }
 

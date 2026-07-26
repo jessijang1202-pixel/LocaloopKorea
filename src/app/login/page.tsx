@@ -116,7 +116,7 @@ function LoginForm() {
 
         {/* Guest button */}
         <button
-          onClick={() => router.push("/map")}
+          onClick={() => router.push("/intro")}
           style={{
             width: "100%", height: 52, borderRadius: 14,
             background: "var(--primary-light)", border: "1.5px solid var(--why-border)",
@@ -125,7 +125,7 @@ function LoginForm() {
           }}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          {ko ? "먼저 둘러보기 · 이태원부터" : "Explore first · Itaewon default"}
+          {ko ? "먼저 둘러보기" : "Explore first"}
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </button>
 

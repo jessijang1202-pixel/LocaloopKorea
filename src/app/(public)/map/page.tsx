@@ -297,7 +297,7 @@ function MapPageInner() {
 
   // 지도에서 찾기 (browse mode) location consent — same shared flag/hook as
   // the task-filtered view, so granting once anywhere never re-prompts.
-  const { coords, showModal: showConsent, allow: allowLocation, skip: skipLocation } = useLocationWithConsent();
+  const { coords, showModal: showConsent, allow: allowLocation, skip: skipLocation, refresh, refreshing } = useLocationWithConsent();
 
   useEffect(() => {
     let cancelled = false;
@@ -516,6 +516,28 @@ function MapPageInner() {
         </div>
       </div>
 
+      {/* Recenter to my location — floating above the sheet */}
+      <button
+        onClick={refresh}
+        aria-label={isKo ? "내 위치로 이동" : "Recenter to my location"}
+        style={{
+          position: "absolute", right: 14,
+          bottom: sheetExpanded ? "calc(70dvh + 14px)" : "calc(36% + 14px)",
+          zIndex: 15,
+          width: 42, height: 42, borderRadius: "50%",
+          background: chipBg, border: "none", cursor: "pointer",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          boxShadow: "0 2px 12px rgba(0,0,0,0.22)",
+          transition: "bottom 0.3s cubic-bezier(0.32,0.72,0,1)",
+        }}
+      >
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke={chipFg} strokeWidth="2" strokeLinecap="round" style={{ animation: refreshing ? "ll-recenter-spin 0.9s linear infinite" : "none" }}>
+          <circle cx="12" cy="12" r="3" />
+          <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+        </svg>
+      </button>
+      <style>{`@keyframes ll-recenter-spin { to { transform: rotate(360deg); } }`}</style>
+
       {/* Bottom sheet */}
       <div
         style={{
@@ -673,6 +695,22 @@ function MapPageInner() {
           zoom={5}
           onPinClick={(id) => { const p = livePlaces.find((x) => x.id === id); if (p) setSelected(p); }}
         />
+        <button
+          onClick={refresh}
+          aria-label={isKo ? "내 위치로 이동" : "Recenter to my location"}
+          style={{
+            position: "absolute", right: 16, top: 16, zIndex: 10,
+            width: 42, height: 42, borderRadius: "50%",
+            background: "var(--card)", border: "1px solid var(--border)", cursor: "pointer",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            boxShadow: "0 2px 12px rgba(0,0,0,0.14)",
+          }}
+        >
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--foreground)" strokeWidth="2" strokeLinecap="round" style={{ animation: refreshing ? "ll-recenter-spin 0.9s linear infinite" : "none" }}>
+            <circle cx="12" cy="12" r="3" />
+            <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+          </svg>
+        </button>
         {selected && (
           <div style={{ position: "absolute", bottom: 24, left: "50%", transform: "translateX(-50%)", width: "min(400px, calc(100% - 48px))", background: "var(--card)", borderRadius: 20, border: "1px solid var(--border)", boxShadow: "0 8px 40px rgba(0,0,0,0.18)", padding: "14px 16px", zIndex: 10 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>

@@ -18,7 +18,7 @@ export async function loginAction(_prev: { error: string }, formData: FormData) 
     return { error: error.message };
   }
 
-  // Redirect to `next` param if provided, otherwise go to map
+  // Redirect to `next` param if provided, otherwise go to the main task list
   const next = formData.get("next") as string | null;
-  redirect(next && next.startsWith("/") ? next : "/map");
+  redirect(next && next.startsWith("/") ? next : "/tasks");
 }

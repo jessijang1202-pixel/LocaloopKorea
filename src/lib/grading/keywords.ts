@@ -304,6 +304,30 @@ export const KEYWORD_RULES: KeywordRule[] = [
     polarity: "positive",
     label: { ko: "로컬 명소(local spot)", en: "Local spot" },
   },
+  // Common phrasing in ordinary Korean blog reviews (not written with a
+  // foreigner audience in mind) that still signals genuine neighborhood/local
+  // standing — added because the original dictionary only matched explicit
+  // "foreigner-aware" phrasing (현지인 맛집, 관광객 없음, ...), which rarely
+  // appears in typical 맛집 후기 posts, so every place with only this kind of
+  // ordinary review text fell back to the LF baseline with zero signal.
+  {
+    pattern: /동네\s*맛집/gi,
+    category: "LF",
+    polarity: "positive",
+    label: { ko: "동네 맛집", en: "Neighborhood favorite" },
+  },
+  {
+    pattern: /단골\s*(집|가게|손님)/gi,
+    category: "LF",
+    polarity: "positive",
+    label: { ko: "단골집", en: "Regulars' spot" },
+  },
+  {
+    pattern: /노포|백년\s*가게|오래된\s*맛집|\d+년\s*(전통|째|동안)/gi,
+    category: "LF",
+    polarity: "positive",
+    label: { ko: "오래된 노포/백년가게", en: "Long-established local shop" },
+  },
   // negative
   {
     pattern: /관광객\s*(많|바글|가득|넘)/gi,
