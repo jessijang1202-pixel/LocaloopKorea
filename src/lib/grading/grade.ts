@@ -101,7 +101,7 @@ for (const [type, w] of Object.entries(WEIGHTS_BY_TYPE)) {
 // actually documents real positive signal.
 // KEEP IN SYNC with compute_place_grade() in
 // supabase/migrations/20260710_grading_engine.sql.
-const GRADE_S_MIN = 80;
+const GRADE_S_MIN = 78;
 const GRADE_A_MIN = 76;
 const GRADE_B_MIN = 45;
 const GRADE_C_MIN = 25;

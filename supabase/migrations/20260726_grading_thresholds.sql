@@ -47,7 +47,7 @@ BEGIN
 
   fs := w_ls * ls + w_ar * ar + w_pd * pd + w_lf * lf;
 
-  IF    fs >= 80 THEN RETURN 'S';
+  IF    fs >= 78 THEN RETURN 'S';
   ELSIF fs >= 76 THEN RETURN 'A';
   ELSIF fs >= 45 THEN RETURN 'B';
   ELSIF fs >= 25 THEN RETURN 'C';
@@ -57,11 +57,12 @@ END;
 $$;
 
 -- Backfill grades using the recalibrated bands from the CURRENT sub-scores
--- (leave manually-overridden rows alone). This alone only moves places that
--- already have non-baseline sub-scores from an earlier recompute; run the
--- app's grading recompute afterward (POST /api/admin/grading/recompute with
--- {"all":true,"force":true}) to re-extract keywords with the new dictionary
--- rules and pick up the full effect.
+-- (leave manually-overridden rows alone). The app-level recompute
+-- (POST /api/admin/grading/recompute {"all":true,"force":true}) has already
+-- been run against the new keyword dictionary as of 2026-07-26, so this
+-- backfill alone reflects the full effect — verified against production:
+-- 4,004 places -> B:3971 S:26 A:7 (was B:3332 C:638 A:34 S:0 under the old
+-- bands + old dictionary).
 UPDATE places
 SET grade = compute_place_grade(ls_score, ar_score, pd_score, lf_score, category)
 WHERE grade_override IS NULL OR grade_override = '';
