@@ -57,6 +57,19 @@ export const KEYWORD_RULES: KeywordRule[] = [
     polarity: "positive",
     label: { ko: "영어 가능(english ok)", en: "English OK" },
   },
+  // A place documented as sitting right next to a US military base is a
+  // strong, verifiable proxy for English being commonly spoken there — this
+  // shows up constantly in blog text for military-town commercial strips
+  // (안정리 로데오거리, 송탄, 동두천 보산동 등) that never use the "foreigner
+  // welcome" phrasing the other LS/AR rules look for, but are unambiguously
+  // English-friendly in practice. Named installations included since blog
+  // posts commonly reference them instead of the generic phrase.
+  {
+    pattern: /미군\s*(부대|기지)\s*(근처|앞|인근|주변|메인\s*로드)|캠프\s*(험프리|케이시|워커|모스)|오산\s*(미군)?\s*기지|K-?6\b/gi,
+    category: "LS",
+    polarity: "positive",
+    label: { ko: "미군부대 인근", en: "Near a US military base" },
+  },
   // negative
   {
     pattern: /영어\s*메뉴\s*(없|불가|안\s*됨)/gi,
@@ -148,7 +161,11 @@ export const KEYWORD_RULES: KeywordRule[] = [
     label: { ko: "외국인 환영(foreigners welcome)", en: "Foreigners welcome" },
   },
   {
-    pattern: /외국인\s*(손님\s*)?(많|자주\s*와|북적)/gi,
+    // Was 외국인\s*(손님\s*)?(많|...) — required "외국인" to sit immediately
+    // next to the predicate. Real text almost always has a subject/topic
+    // particle in between (외국인들이 많은, 외국인이 많아요, 외국인도 많고...),
+    // which the old \s*-only gap never matched. .{0,4} tolerates that.
+    pattern: /외국인.{0,4}(많|자주\s*와|북적|가득)/gi,
     category: "AR",
     polarity: "positive",
     label: { ko: "외국인 손님 많음", en: "Many foreign customers" },

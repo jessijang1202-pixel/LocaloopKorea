@@ -1,7 +1,8 @@
 // Module 400 — weight the sub-scores by place type and assign a grade.
 //
 //   FS = w1*LS + w2*AR + w3*PD + w4*LF        (0~100)
-//   grade bands: S >= 90, A >= 75, B >= 55, C >= 35, else D
+//   grade bands: S >= 80, A >= 76, B >= 45, C >= 25, else D (see rationale
+//   at the GRADE_S_MIN etc. constants below)
 //
 // Weight profiles follow patent claim 3 / fig.2. Each set is a named export and
 // must sum to 1.0 (asserted at module load). Order of keys is fixed to
@@ -86,10 +87,24 @@ for (const [type, w] of Object.entries(WEIGHTS_BY_TYPE)) {
 }
 
 // ─── Grade bands ─────────────────────────────────────────────────────────────
-const GRADE_S_MIN = 90;
-const GRADE_A_MIN = 75;
-const GRADE_B_MIN = 55;
-const GRADE_C_MIN = 35;
+// Recalibrated 2026-07: the original bands (S>=90, A>=75, B>=55, C>=35) were
+// set assuming much larger score swings than the keyword-hit weights in
+// score.ts actually produce. A place with zero matched keywords (no evidence
+// either way — the common case for ordinary blog review text) lands at a
+// "no-evidence" baseline FS of ~67-74 depending on weight profile (computed
+// from LS_BASE/AR_BASE/PD_BASE/LF_BASE); a place with 3-4 real positive hits
+// across different axes realistically reaches high-70s to mid-80s. Under the
+// old bands that ceiling never reached S, so S never appeared regardless of
+// how well-evidenced a place actually was. New bands keep the baseline
+// solidly in B (74 < GRADE_A_MIN, so no-evidence places are never
+// auto-promoted) while making S/A achievable for places whose collected text
+// actually documents real positive signal.
+// KEEP IN SYNC with compute_place_grade() in
+// supabase/migrations/20260710_grading_engine.sql.
+const GRADE_S_MIN = 80;
+const GRADE_A_MIN = 76;
+const GRADE_B_MIN = 45;
+const GRADE_C_MIN = 25;
 
 export function gradeFromFS(fs: number): GradeLetter {
   if (fs >= GRADE_S_MIN) return "S";
