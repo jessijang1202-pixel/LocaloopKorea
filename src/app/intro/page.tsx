@@ -42,7 +42,15 @@ function IntentPopup({ isDark, isKo, onStart }: { isDark: boolean; isKo: boolean
         <div style={{ fontSize: 11, fontWeight: 700, color: eyebrow, letterSpacing: "0.22em", marginBottom: 14 }}>
           WELCOME TO KOREA
         </div>
-        <h1 style={{ fontSize: 26, fontWeight: 800, color: headline, letterSpacing: "-0.5px", lineHeight: 1.3, marginBottom: 12 }}>
+        <div style={{ fontSize: 17, fontWeight: 900, color: headline, letterSpacing: "-0.02em", marginBottom: 8 }}>
+          Localoop Korea
+        </div>
+        <p style={{ fontSize: 13, color: bodyText, lineHeight: 1.6, marginBottom: 18 }}>
+          {isKo
+            ? "외국인을 위한 한국 생활 내비게이션. 외국인 친화도로 평가된 장소, 단계별 생활 가이드, 로컬 경험과 커뮤니티까지 한 곳에서."
+            : "Your life-navigation companion for Korea. Foreigner-friendliness graded places, step-by-step living guides, real local experiences, and community — all in one place."}
+        </p>
+        <h1 style={{ fontSize: 24, fontWeight: 800, color: headline, letterSpacing: "-0.5px", lineHeight: 1.3, marginBottom: 12 }}>
           {isKo ? "당신은 무엇을 원하십니까?" : "What do you want to do?"}
         </h1>
         <p style={{ fontSize: 14, color: bodyText, lineHeight: 1.6, marginBottom: 26 }}>
