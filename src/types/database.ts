@@ -58,6 +58,7 @@ export interface Place {
   english_support: boolean;
   card_payment: boolean;
   solo_friendly: boolean;
+  grade?: "S" | "A" | "B" | "C" | "D" | null;
   reservation_difficulty: ReservationDifficulty | null;
   created_at: string;
   region?: Region;

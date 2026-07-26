@@ -245,7 +245,7 @@ function SearchModal({
             <div style={{ fontSize: 11, fontWeight: 700, color: labelColor, marginBottom: 5 }}>{isKo ? "그레이드" : "Grade"}</div>
             <select value={localGrade ?? ""} onChange={(e) => setLocalGrade(e.target.value || null)} style={selectStyle}>
               <option value="">{isKo ? "전체 등급" : "All grades"}</option>
-              {["S", "A", "B", "C"].map((g) => <option key={g} value={g}>{g}</option>)}
+              {["S", "A", "B", "C", "D"].map((g) => <option key={g} value={g}>{g}</option>)}
             </select>
           </div>
 

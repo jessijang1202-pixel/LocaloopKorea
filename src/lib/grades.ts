@@ -12,7 +12,13 @@ import type { Place } from "@/types";
 //   D grade, and swap B/C relative to RATING_COLORS.
 // Do not merge these — the differing values are load-bearing.
 
-export function getRating(p: Place): "S" | "A" | "B" | "C" {
+// Prefer the real patent-2 grading-engine output (places.grade — S/A/B/C/D,
+// computed server-side from analyzed review text via a DB trigger) whenever
+// it's present. Only falls back to the coarse 3-boolean heuristic for places
+// that haven't been graded yet (no grading_sources collected) — that fallback
+// can only ever produce S/A/B/C, never D, so callers must accept both ranges.
+export function getRating(p: Place): "S" | "A" | "B" | "C" | "D" {
+  if (p.grade) return p.grade;
   if (p.english_support && p.card_payment && p.solo_friendly) return "S";
   if (p.english_support && p.card_payment) return "A";
   if (p.card_payment) return "B";
@@ -46,17 +52,17 @@ export function okTags(p: Place): OkTag[] {
 
 // map/page.tsx — CSS-var badge background
 export const GRADE_BG: Record<string, string> = {
-  S: "var(--grade-s)", A: "var(--grade-a)", B: "var(--grade-b)", C: "var(--grade-c)",
+  S: "var(--grade-s)", A: "var(--grade-a)", B: "var(--grade-b)", C: "var(--grade-c)", D: "var(--grade-d)",
 };
 
 // places/[slug]/page.tsx — CSS-var grade color (identical values to GRADE_BG)
 export const GRADE_COLOR: Record<string, string> = {
-  S: "var(--grade-s)", A: "var(--grade-a)", B: "var(--grade-b)", C: "var(--grade-c)",
+  S: "var(--grade-s)", A: "var(--grade-a)", B: "var(--grade-b)", C: "var(--grade-c)", D: "var(--grade-d)",
 };
 
 // Shared by map/page.tsx and places/[slug]/page.tsx — CSS-var text color
 export const GRADE_TEXT: Record<string, string> = {
-  S: "#fff", A: "#fff", B: "#fff", C: "var(--grade-c-text)",
+  S: "#fff", A: "#fff", B: "#fff", C: "var(--grade-c-text)", D: "var(--grade-d-text)",
 };
 
 // KakaoMap.tsx — hex pin colors
@@ -65,6 +71,7 @@ export const RATING_COLORS: Record<string, string> = {
   A: "#12BFB6",
   B: "#7B4DFF",
   C: "#FFC93C",
+  D: "#9A9488",
 };
 
 export const RATING_TEXT: Record<string, string> = {
@@ -72,6 +79,7 @@ export const RATING_TEXT: Record<string, string> = {
   A: "#fff",
   B: "#fff",
   C: "#3a2c00",
+  D: "#fff",
 };
 
 // admin/places/page.tsx — hex grade colors (includes D grade; B/C swapped vs RATING_COLORS)
