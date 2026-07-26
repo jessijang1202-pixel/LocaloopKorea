@@ -198,7 +198,7 @@ function OnboardingInner() {
       hero: "나를 알려주세요",
       heroSub: "내 정보를 입력하면 로컬루프가 더 잘 도와줄 수 있어요",
       back: "이전", next: "다음", finish: "시작하기", saving: "저장 중…",
-      doneTitle: "준비 완료!", doneSub: "이제 이태원 로컬 생활을 시작해볼까요?", doneBtn: "지도로 이동하기",
+      doneTitle: "준비 완료!", doneSub: "이제 내 주변 로컬 생활을 시작해볼까요?", doneBtn: "지도로 이동하기",
       steps: {
         nickname: { title: "어떻게 불릴까요?", sub: "앱에 표시될 이름이에요", namePh: "이름 또는 닉네임" },
         background: { title: "나에 대해 알려주세요", sub: "국적, 언어, 성별을 선택해 주세요" },

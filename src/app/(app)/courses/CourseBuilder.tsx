@@ -15,6 +15,7 @@ import {
   filterForTheme,
   composeThemedCourse,
   centroidOf,
+  haversineKm,
   type AdventureStyle,
   type CourseDuration,
   type CourseProfile,
@@ -27,7 +28,8 @@ import {
   fetchRegionOptions,
   type RegionOption,
 } from "@/lib/course/db";
-import { ITAEWON } from "@/content/map";
+import { INCHEON_AIRPORT } from "@/content/map";
+import { useLocationWithConsent } from "@/lib/geo-consent";
 import { CourseResultView } from "./CourseResultView";
 
 const BUDGETS = [10000, 30000, 50000, 100000];
@@ -96,20 +98,40 @@ export function CourseBuilder() {
 
   useEffect(() => setMounted(true), []);
 
-  // Load region options once; default to the region named 이태원 if present.
+  // Same shared consent flag as the map/course flows elsewhere — won't
+  // re-prompt if the user already answered anywhere in the app.
+  const { coords } = useLocationWithConsent();
+
+  // Load region options once; default to whichever region is nearest the
+  // resolved origin (real coordinates when granted, Incheon Airport
+  // otherwise) — never a hardcoded named region.
   useEffect(() => {
     let alive = true;
-    fetchRegionOptions().then((opts) => {
-      if (!alive) return;
-      setRegionOptions(opts);
-      const itaewon = opts.find(
-        (o) => o.name_ko === "이태원" || o.name_en === "Itaewon",
-      );
-      setRegionId((cur) => cur ?? (itaewon ?? opts[0])?.id ?? null);
-    });
+    Promise.all([fetchRegionOptions(), fetchCandidatePlacesWithFallback()]).then(
+      ([opts, { places }]) => {
+        if (!alive) return;
+        setRegionOptions(opts);
+        const origin = coords ?? INCHEON_AIRPORT;
+        let nearest: RegionOption | null = null;
+        let nearestKm = Infinity;
+        for (const o of opts) {
+          const centroid = centroidOf(places.filter((p) => p.regionId === o.id));
+          if (!centroid) continue;
+          const km = haversineKm(origin, centroid);
+          if (km < nearestKm) {
+            nearestKm = km;
+            nearest = o;
+          }
+        }
+        setRegionId((cur) => cur ?? (nearest ?? opts[0])?.id ?? null);
+      },
+    );
     return () => {
       alive = false;
     };
+    // Runs once on mount — coords may still resolve after this fires (best
+    // effort only); the region picker stays freely user-editable afterward.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!mounted) return null;
@@ -138,8 +160,8 @@ export function CourseBuilder() {
       const regionCandidates: CandidatePlace[] = places.filter(
         (p) => regionId == null || p.regionId === regionId,
       );
-      // Origin = centroid of the region's candidates (fallback: Itaewon).
-      const origin = centroidOf(regionCandidates) ?? ITAEWON;
+      // Origin = centroid of the region's candidates (fallback: Incheon Airport).
+      const origin = centroidOf(regionCandidates) ?? INCHEON_AIRPORT;
 
       const themedCandidates = () =>
         filterForTheme(places, {
@@ -236,7 +258,7 @@ export function CourseBuilder() {
             }}
           >
             {regionOptions.length === 0 && (
-              <option value="">{isKo ? "이태원" : "Itaewon"}</option>
+              <option value="">{isKo ? "불러오는 중…" : "Loading…"}</option>
             )}
             {regionOptions.map((o) => (
               <option key={o.id} value={o.id}>

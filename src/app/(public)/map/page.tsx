@@ -20,21 +20,22 @@ import { TASK_NODES, type TaskId } from "@/lib/engine";
 import { haversineKm } from "@/lib/course/geo";
 import {
   fetchLivePlaces,
-  travelFromItaewon,
+  travelFromOrigin,
   hotPlaceIds,
+  nearestRegion,
   type LiveRegion,
 } from "@/lib/places-live";
 
-// Single muted meta line for the grid cards. ITAEWON PICK cards show the
-// travel line; other-region cards prepend the city.
-function hotMetaLine(place: Place, isKo: boolean): string | null {
-  const t = travelFromItaewon(place);
+// Single muted meta line for the grid cards. "Near you" PICK cards show the
+// travel line from origin; other-region cards prepend the city.
+function hotMetaLine(place: Place, isKo: boolean, origin: { lat: number; lng: number }): string | null {
+  const t = travelFromOrigin(origin, place);
   return t ? `${isKo ? t.ko : t.en} · ${t.dist}` : null;
 }
 
-function otherMetaLine(place: Place, isKo: boolean, regions: LiveRegion[]): string | null {
+function otherMetaLine(place: Place, isKo: boolean, regions: LiveRegion[], origin: { lat: number; lng: number }): string | null {
   const city = regions.find((r) => r.id === place.region_id)?.city ?? "";
-  const t = travelFromItaewon(place);
+  const t = travelFromOrigin(origin, place);
   const parts: string[] = [];
   if (city) parts.push(city);
   if (t) parts.push(`${isKo ? t.ko : t.en} · ${t.dist}`);
@@ -99,9 +100,9 @@ function PlaceCardPC({ place, isSelected, isKo, onClick }: {
 // Task-filtered map — reached via "맵으로 이동" on a task card
 // (/map?task=<id>). Filters livePlaces down to the categories that task
 // actually needs (TASK_MAP_CATEGORIES), sorted by distance from the
-// resolved location (Incheon Airport fallback — replaces Itaewon as the
-// origin specifically for this flow; the browse mode below keeps its own
-// Itaewon anchor unchanged). Same card/grade UI as the rest of /map.
+// resolved location (real coords when granted, Incheon Airport fallback
+// otherwise — same origin convention as the browse mode below). Same
+// card/grade UI as the rest of /map.
 function TaskFilteredView({
   taskId,
   isKo,
@@ -299,6 +300,8 @@ function MapPageInner() {
   // the task-filtered view, so granting once anywhere never re-prompts.
   const { coords, showModal: showConsent, allow: allowLocation, skip: skipLocation, refresh, refreshing } = useLocationWithConsent();
 
+  const origin = coords ?? INCHEON_AIRPORT;
+
   useEffect(() => {
     let cancelled = false;
     void fetchLivePlaces().then(({ places, regions, source }) => {
@@ -306,11 +309,15 @@ function MapPageInner() {
       setLivePlaces(places);
       setLiveRegions(regions);
       setLiveSource(source);
-      const hot = hotPlaceIds(places, source);
+      const hot = hotPlaceIds(places, source, origin);
       const first = places.find((p) => p.id === hot[0]) ?? places[0];
       if (first) setSelected(first);
     });
     return () => { cancelled = true; };
+    // origin intentionally excluded — this fetch runs once on mount; the
+    // "near you" list itself (hotIds below) stays reactive to origin on
+    // every render, this effect only seeds the initial selected place.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const isDark = theme === "dark";
@@ -325,7 +332,7 @@ function MapPageInner() {
     return <TaskFilteredView taskId={taskParam} isKo={isKo} isDark={isDark} livePlaces={livePlaces} />;
   }
 
-  const hotIds = hotPlaceIds(livePlaces, liveSource);
+  const hotIds = hotPlaceIds(livePlaces, liveSource, origin);
   const hotPlaces = livePlaces.filter((p) => hotIds.includes(p.id));
 
   // Category chips (CHIPS ∪ MORE_CHIPS) match p.category directly by key —
@@ -343,25 +350,24 @@ function MapPageInner() {
     return true;
   });
 
-  // Once location is granted, "다른 지역 추천" sorts by actual distance from
-  // the user instead of arbitrary DB order — "위치기반으로 모든 데이터가 다
-  // 뜨도록" per the 지도에서 찾기 spec. Falls back to the existing order
-  // (Itaewon-relative, via travelFromItaewon in otherMetaLine) when no coords.
-  if (coords) {
-    filtered = [...filtered].sort((a, b) => {
-      if (a.lat == null || a.lng == null) return 1;
-      if (b.lat == null || b.lng == null) return -1;
-      const da = haversineKm(coords, { lat: a.lat, lng: a.lng });
-      const db = haversineKm(coords, { lat: b.lat, lng: b.lng });
-      return da - db;
-    });
-  }
+  // "다른 지역 추천" always sorts by distance from `origin` — real user
+  // coordinates when granted, Incheon Airport otherwise. Never Itaewon.
+  filtered = [...filtered].sort((a, b) => {
+    if (a.lat == null || a.lng == null) return 1;
+    if (b.lat == null || b.lng == null) return -1;
+    const da = haversineKm(origin, { lat: a.lat, lng: a.lng });
+    const db = haversineKm(origin, { lat: b.lat, lng: b.lng });
+    return da - db;
+  });
 
   // Fixed 10-item previews; "view more" now navigates to the area pages.
   const hotVisible = hotPlaces.slice(0, 10);
   const otherVisible = filtered.slice(0, 10);
-  const itaewonRegionSlug =
-    liveRegions.find((r) => r.name_ko === "이태원")?.slug ?? "itaewon";
+  // Region nearest `origin` — drives the PICK section's label and "view all"
+  // link. No Itaewon fallback: when nothing resolves (e.g. seed data not yet
+  // replaced by live places), the link degrades to the general area browser.
+  const nearRegion = nearestRegion(origin, livePlaces, liveRegions);
+  const nearRegionName = nearRegion ? (isKo ? nearRegion.name_ko : nearRegion.name_en) : (isKo ? "내 주변" : "Nearby");
 
   const pins = livePlaces.filter((p) => p.lat && p.lng).map((p) => ({
     id: p.id, lat: p.lat!, lng: p.lng!, title: p.name_en, rating: getRating(p), category: p.category,
@@ -569,7 +575,7 @@ function MapPageInner() {
         {/* Header */}
         <div style={{ padding: "10px 20px 12px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0, borderBottom: "1px solid var(--border)" }}>
           <span style={{ fontSize: 17, fontWeight: 700, color: "var(--foreground)" }}>
-            {isKo ? "이태원 근처" : "Near Itaewon"}&nbsp;
+            {isKo ? `${nearRegionName} 근처` : `Near ${nearRegionName}`}&nbsp;
             <span style={{ color: "var(--foreground-muted)", fontWeight: 500 }}>{isKo ? "148곳" : "148 places"}</span>
           </span>
           <button style={{ display: "flex", alignItems: "center", gap: 3, fontSize: 13, color: "var(--foreground-muted)", background: "none", border: "none", cursor: "pointer", fontWeight: 500 }}>
@@ -580,16 +586,16 @@ function MapPageInner() {
 
         {/* Scrollable content — both pick sections live here so sheet can collapse cleanly */}
         <div style={{ flex: 1, overflowY: "auto", padding: "0 16px" }}>
-          {/* 이태원 PICK — 1열, big badge */}
+          {/* 가까운 PICK — 1열, big badge */}
           <div style={{ paddingTop: 14, marginBottom: 22 }}>
             <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.1em", color: "var(--grade-s)", marginBottom: 10 }}>
-              {isKo ? "이태원 PICK" : "ITAEWON PICK"}
+              {isKo ? `${nearRegionName} PICK` : `${nearRegionName.toUpperCase()} PICK`}
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-              {hotVisible.map((p) => <PlaceGridCard key={p.id} place={p} isKo={isKo} metaLine={hotMetaLine(p, isKo)} />)}
+              {hotVisible.map((p) => <PlaceGridCard key={p.id} place={p} isKo={isKo} metaLine={hotMetaLine(p, isKo, origin)} />)}
             </div>
-            <Link href={`/areas/${itaewonRegionSlug}`} style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", marginTop: 10, padding: "10px 0", borderRadius: 12, background: "var(--content-bg)", border: "1px solid var(--border)", color: "var(--foreground-muted)", fontSize: 13, fontWeight: 600, cursor: "pointer", textDecoration: "none" }}>
-              {isKo ? "이태원 전체 보기" : "View all Itaewon"}
+            <Link href={nearRegion ? `/areas/${nearRegion.slug}` : "/areas"} style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", marginTop: 10, padding: "10px 0", borderRadius: 12, background: "var(--content-bg)", border: "1px solid var(--border)", color: "var(--foreground-muted)", fontSize: 13, fontWeight: 600, cursor: "pointer", textDecoration: "none" }}>
+              {isKo ? `${nearRegionName} 전체 보기` : `View all ${nearRegionName}`}
             </Link>
           </div>
 
@@ -599,7 +605,7 @@ function MapPageInner() {
               {isKo ? "다른 지역 추천" : "OTHER REGIONS"}
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-              {otherVisible.map((p) => <PlaceGridCard key={p.id} place={p} isKo={isKo} metaLine={otherMetaLine(p, isKo, liveRegions)} />)}
+              {otherVisible.map((p) => <PlaceGridCard key={p.id} place={p} isKo={isKo} metaLine={otherMetaLine(p, isKo, liveRegions, origin)} />)}
             </div>
             <Link href="/areas" style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", marginTop: 10, padding: "10px 0", borderRadius: 12, background: "var(--content-bg)", border: "1px solid var(--border)", color: "var(--foreground-muted)", fontSize: 13, fontWeight: 600, cursor: "pointer", textDecoration: "none" }}>
               {isKo ? "지역별 전체 보기" : "Browse all areas"}
@@ -660,16 +666,16 @@ function MapPageInner() {
           )}
         </div>
         <div style={{ flex: 1, overflowY: "auto", minHeight: 0, padding: "8px 14px" }}>
-          {/* 이태원 PICK — PC, big badge via PlaceCard2 hot */}
+          {/* 가까운 PICK — PC, big badge via PlaceCard2 hot */}
           <div style={{ marginBottom: 14, paddingBottom: 14, borderBottom: "1px solid var(--border)" }}>
             <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: "0.1em", color: "var(--grade-s)", marginBottom: 8 }}>
-              {isKo ? "이태원 PICK" : "ITAEWON PICK"}
+              {isKo ? `${nearRegionName} PICK` : `${nearRegionName.toUpperCase()} PICK`}
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-              {hotVisible.map((p) => <PlaceGridCard key={p.id} place={p} isKo={isKo} metaLine={hotMetaLine(p, isKo)} />)}
+              {hotVisible.map((p) => <PlaceGridCard key={p.id} place={p} isKo={isKo} metaLine={hotMetaLine(p, isKo, origin)} />)}
             </div>
-            <Link href={`/areas/${itaewonRegionSlug}`} style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", marginTop: 8, padding: "9px 0", borderRadius: 12, background: "var(--content-bg)", border: "1px solid var(--border)", color: "var(--foreground-muted)", fontSize: 12.5, fontWeight: 600, cursor: "pointer", textDecoration: "none" }}>
-              {isKo ? "이태원 전체 보기" : "View all Itaewon"}
+            <Link href={nearRegion ? `/areas/${nearRegion.slug}` : "/areas"} style={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", marginTop: 8, padding: "9px 0", borderRadius: 12, background: "var(--content-bg)", border: "1px solid var(--border)", color: "var(--foreground-muted)", fontSize: 12.5, fontWeight: 600, cursor: "pointer", textDecoration: "none" }}>
+              {isKo ? `${nearRegionName} 전체 보기` : `View all ${nearRegionName}`}
             </Link>
           </div>
 

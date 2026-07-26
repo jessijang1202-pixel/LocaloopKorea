@@ -1,12 +1,10 @@
 // Map page data, moved verbatim from map/page.tsx.
 
-export const ITAEWON = { lat: 37.534, lng: 126.9946 };
-
-// Incheon International Airport — the app's new default origin: where a
-// newly-arrived foreigner actually lands, used for the /intro home screen
-// and as the fallback origin for the task-filtered map (replacing Itaewon
-// for that flow specifically; /map's own "이태원 PICK" section keeps its
-// existing Itaewon anchor unchanged).
+// Incheon International Airport — the app's default origin whenever no real
+// user location is available: where a newly-arrived foreigner actually
+// lands. Used for /intro, and as the fallback origin everywhere a map/course
+// surface needs "somewhere to start from" before geolocation resolves (or
+// when the user declines it) — nothing in the app defaults to Itaewon.
 export const INCHEON_AIRPORT = { lat: 37.4602, lng: 126.4407 };
 
 export type FilterKey =

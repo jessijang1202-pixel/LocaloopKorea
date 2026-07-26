@@ -2,9 +2,11 @@
 
 // Location-based recommended course feed (patent no.3 module 500). On mount it
 // loads the collected-places dataset, tries browser geolocation to pick a home
-// region (nearest region centroid; silent 이태원 fallback), then composes up to
-// 10 ready-made themed course cards — home region first, nearest regions next.
-// Clicking a card expands its full timeline (CourseResultView) below the grid.
+// region (nearest region centroid; silent Incheon Airport fallback when
+// geolocation is denied/unavailable — never a hardcoded named region), then
+// composes up to 10 ready-made themed course cards — home region first,
+// nearest regions next. Clicking a card expands its full timeline
+// (CourseResultView) below the grid.
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -27,7 +29,7 @@ import {
   fetchRegionOptions,
   type RegionOption,
 } from "@/lib/course/db";
-import { ITAEWON } from "@/content/map";
+import { INCHEON_AIRPORT } from "@/content/map";
 import { CourseResultView } from "./CourseResultView";
 
 const FEED_SIZE = 10;
@@ -159,26 +161,22 @@ export function RecommendedCourses() {
           centroids.set(r.id, centroidOf(places.filter((p) => p.regionId === r.id)));
         }
 
-        // Home region: nearest centroid to user coords, else 이태원, else first.
-        let homeRegion: RegionOption;
-        if (coords) {
-          homeRegion = regions.reduce((best, r) => {
-            const cr = centroids.get(r.id);
-            const cb = centroids.get(best.id);
-            const dr = cr ? haversineKm(coords, cr) : Infinity;
-            const db = cb ? haversineKm(coords, cb) : Infinity;
-            return dr < db ? r : best;
-          }, regions[0]);
-        } else {
-          homeRegion =
-            regions.find((r) => r.name_ko === "이태원" || r.name_en === "Itaewon") ?? regions[0];
-        }
+        // Home region: nearest centroid to the resolved origin — real user
+        // coordinates when granted, Incheon Airport otherwise. Never a
+        // hardcoded named region.
+        const referencePoint = coords ?? INCHEON_AIRPORT;
+        const homeRegion = regions.reduce((best, r) => {
+          const cr = centroids.get(r.id);
+          const cb = centroids.get(best.id);
+          const dr = cr ? haversineKm(referencePoint, cr) : Infinity;
+          const db = cb ? haversineKm(referencePoint, cb) : Infinity;
+          return dr < db ? r : best;
+        }, regions[0]);
 
-        // Region order: home first; then nearest others by home centroid when we
-        // have coords, otherwise the original option order.
+        // Region order: home first, then the rest nearest-to-home.
         const homeCentroid = centroids.get(homeRegion.id) ?? null;
         const others = regions.filter((r) => r.id !== homeRegion.id);
-        if (coords && homeCentroid) {
+        if (homeCentroid) {
           others.sort((a, b) => {
             const ca = centroids.get(a.id);
             const cb = centroids.get(b.id);
@@ -195,7 +193,7 @@ export function RecommendedCourses() {
         const built: FeedCard[] = [];
         for (const region of ordered) {
           if (built.length >= FEED_SIZE) break;
-          const origin = centroids.get(region.id) ?? ITAEWON;
+          const origin = centroids.get(region.id) ?? INCHEON_AIRPORT;
           const filtered = filterForTheme(places, {
             regionId: region.id,
             budgetPerPerson: FEED_BUDGET,

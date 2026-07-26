@@ -4,10 +4,10 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL("https://localoop.kr"),
   title: "Localoop Korea — Dig into local Korea",
-  description: "한국 생활의 시작, Localoop Korea. 이태원부터 시작하는 외국인 친화 장소 추천과 로컬 커뮤니티.",
+  description: "한국 생활의 시작, Localoop Korea. 내 위치 기반 외국인 친화 장소 추천과 로컬 커뮤니티.",
   openGraph: {
     title: "Localoop Korea — Dig into local Korea",
-    description: "한국 생활의 시작, Localoop Korea. 이태원부터 시작하는 외국인 친화 장소 추천과 로컬 커뮤니티.",
+    description: "한국 생활의 시작, Localoop Korea. 내 위치 기반 외국인 친화 장소 추천과 로컬 커뮤니티.",
     url: "https://localoop.kr",
     siteName: "Localoop Korea",
     images: [
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Localoop Korea — Dig into local Korea",
-    description: "한국 생활의 시작, Localoop Korea. 이태원부터 시작하는 외국인 친화 장소 추천과 로컬 커뮤니티.",
+    description: "한국 생활의 시작, Localoop Korea. 내 위치 기반 외국인 친화 장소 추천과 로컬 커뮤니티.",
     images: ["/seoul_landscape.png"],
   },
   appleWebApp: {

@@ -116,7 +116,7 @@ export const STAGES: Record<string, StageDetail> = {
       { ko: "한국 전원 콘센트는 220V / Type C, F 방식이에요. 멀티 어댑터를 준비하세요.", en: "Korean outlets are 220V / Type C and F plugs. Bring a multi-adapter if needed." },
     ],
     links: [
-      { href: "/map", ko: "이태원 지도 보기", en: "View Itaewon Map" },
+      { href: "/map", ko: "지도 보기", en: "View Map" },
       { href: "/courses/itaewon-food", ko: "첫날 먹방 코스", en: "Day 1 Food Course" },
     ],
   },
