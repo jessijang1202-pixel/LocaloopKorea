@@ -2,15 +2,17 @@ import type { Place } from "@/types";
 
 // Single source for grade / rating logic.
 //
-// NOTE ON DIVERGENCE: the color palettes below are intentionally kept separate.
 // - GRADE_BG (map) and GRADE_COLOR (places) share identical CSS-var values but
 //   are kept as separately named exports to preserve each call site's naming.
 // - GRADE_TEXT is shared by the map + place-detail pages (CSS-var palette).
-// - RATING_COLORS / RATING_TEXT (KakaoMap) use hex values and DIFFER from the
-//   admin palette (e.g. B and C colors are swapped, and there is no D grade).
-// - ADMIN_GRADE_COLORS / ADMIN_GRADE_TEXT (admin) use hex values, include a
-//   D grade, and swap B/C relative to RATING_COLORS.
-// Do not merge these — the differing values are load-bearing.
+// - RATING_COLORS / RATING_TEXT (KakaoMap) use hex values (CSS vars aren't
+//   usable inside a Kakao map overlay's inline HTML string).
+// - ADMIN_GRADE_COLORS / ADMIN_GRADE_TEXT (admin) alias RATING_COLORS /
+//   RATING_TEXT directly — they used to be a hand-copied second palette with
+//   B and C swapped relative to the public site, which read as a real bug
+//   (same grade, different color depending which screen you're on), not an
+//   intentional difference. Aliasing instead of duplicating means they can't
+//   drift apart again.
 
 // Prefer the real patent-2 grading-engine output (places.grade — S/A/B/C/D,
 // computed server-side from analyzed review text via a DB trigger) whenever
@@ -82,6 +84,7 @@ export const RATING_TEXT: Record<string, string> = {
   D: "#fff",
 };
 
-// admin/places/page.tsx — hex grade colors (includes D grade; B/C swapped vs RATING_COLORS)
-export const ADMIN_GRADE_COLORS: Record<string, string> = { S: "#FF5636", A: "#12BFB6", B: "#FFC93C", C: "#7B4DFF", D: "#9A9488" };
-export const ADMIN_GRADE_TEXT: Record<string, string> = { S: "#fff", A: "#fff", B: "#3a2c00", C: "#fff", D: "#fff" };
+// admin/places/page.tsx — same palette as the public site (RATING_COLORS),
+// so a place's grade badge is the same color everywhere.
+export const ADMIN_GRADE_COLORS: Record<string, string> = RATING_COLORS;
+export const ADMIN_GRADE_TEXT: Record<string, string> = RATING_TEXT;
